@@ -4,13 +4,18 @@ const mongoose = require('mongoose');
 const models = require('../models');
 
 router.get(
-  '/replay/from/:dateFrom/to/:dateTo',
+  '/replay/:dateFrom/to/:dateTo',
   async (req, res, next) => {
     try {
       const { dateFrom, dateTo } = req.params;
 
       let orbit;
-      orbit = await models.Orbit.find();
+      orbit = await models.Orbit.find({
+        createdAt: {
+          $gte: ISODate(dateFrom),
+          $lt: ISODate(dateTo)
+        }
+      });
 
       res.json(orbit || {})
     } catch (error) {

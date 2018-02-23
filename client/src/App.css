@@ -1,5 +1,20 @@
 @import '~antd/dist/antd.css';
 
+#satWorldView {
+  width: 49.75%;
+  height: 50em;
+  touch-action: none;
+  float: left;
+  padding-right: 0.5%;
+}
+
+#satRotView {
+  width: 49.75%;
+  height: 50em;
+  touch-action: none;
+  float: left;
+}
+
 .App {
   text-align: center;
 }
