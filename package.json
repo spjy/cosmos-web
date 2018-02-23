@@ -1,0 +1,29 @@
+{
+  "name": "cosmos-web",
+  "version": "1.0.0",
+  "description": "This repository is for the cosmos web app.",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://spencerpjy@bitbucket.org/cizumigawa/cosmos-web-3d.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "homepage": "",
+  "dependencies": {
+    "body-parser": "^1.18.1",
+    "dotenv-extended": "^2.0.1",
+    "ejs": "^2.5.7",
+    "express": "^4.15.4",
+    "https": "^1.0.0",
+    "mongoose": "^5.0.6",
+    "redis": "^2.8.0",
+    "socket.io": "^2.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^1.12.1"
+  }
+}
