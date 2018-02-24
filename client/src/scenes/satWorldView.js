@@ -1,3 +1,9 @@
+import * as BABYLON from 'babylonjs';
+import 'babylonjs-loaders';
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:3001');
+
 const satWorldView = () => {
 
   /*

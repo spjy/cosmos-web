@@ -1,4 +1,10 @@
-export default satRotView = () => {
+import * as BABYLON from 'babylonjs';
+import io from 'socket.io-client';
+import '../objLoader.js';
+
+const socket = io('http://localhost:3001');
+
+const satRotView = () => {
   /*
   /
   /  STANDARD BABYLON INITIALIZATIONS
@@ -55,18 +61,18 @@ export default satRotView = () => {
     // Camera zoom speed
     camera.wheelPrecision = 1000;
 
-    $('#degreeOfView').submit((e) => {
-      e.preventDefault();
-      degreeOfView = $('#degree').val() * (Math.PI / 180);
-      console.log(degreeOfView);
-    });
-
-    $('#positionOfView').submit((e) => {
-      e.preventDefault();
-      positionOfView = $('#position').val().trim().split(',');
-      console.log(positionOfView);
-      camera.setPosition( new BABYLON.Vector3(Number(positionOfView[0]), Number(positionOfView[1]), Number(positionOfView[2])));
-    });
+    // $('#degreeOfView').submit((e) => {
+    //   e.preventDefault();
+    //   degreeOfView = $('#degree').val() * (Math.PI / 180);
+    //   console.log(degreeOfView);
+    // });
+    //
+    // $('#positionOfView').submit((e) => {
+    //   e.preventDefault();
+    //   positionOfView = $('#position').val().trim().split(',');
+    //   console.log(positionOfView);
+    //   camera.setPosition( new BABYLON.Vector3(Number(positionOfView[0]), Number(positionOfView[1]), Number(positionOfView[2])));
+    // });
 
     /*
     /
@@ -197,3 +203,5 @@ export default satRotView = () => {
     engine.resize();
   });
 };
+
+export default satRotView;

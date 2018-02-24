@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "antd": "^3.2.1",
+    "babylonjs": "^3.2.0-alpha10",
+    "babylonjs-loaders": "^3.2.0-alpha10",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-scripts": "^1.0.17",
