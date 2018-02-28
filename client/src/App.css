@@ -1,12 +1,21 @@
 @import '~antd/dist/antd.css';
 
 #satWorldView {
-  width: 50%;
+  width: 100%;
   height: 50em;
   touch-action: none;
   /* float: left; */
   padding-right: 0.5%;
   display: inline-block;
+}
+
+.media-buttons {
+  cursor: pointer;
+  font-size: '1.1em';
+  color: 'skyblue';
+}
+.media-buttons:hover {
+  color: blue;
 }
 
 /* #satRotView {

@@ -5,8 +5,6 @@ import satWorldView from './scenes/satWorldView';
 
 import './App.css';
 
-const socket = io('http://localhost:3001');
-
 class App extends Component {
 
   componentDidMount() {

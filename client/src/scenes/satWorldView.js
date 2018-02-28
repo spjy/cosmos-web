@@ -248,7 +248,7 @@ const satWorldView = () => {
 
     BABYLON.SceneLoader.ImportMesh("", "obj/", "cubesat.obj", scene, function(meshes) {
       meshes[0].scaling = new BABYLON.Vector3(1000, 1000, 1000); // Make satellite bigger
-      // meshes[0].position = new BABYLON.Vector3(6380, 0, 0);
+      meshes[0].position = new BABYLON.Vector3(6380, 0, 0);
       // meshes[0].scaling = new BABYLON.Vector3(1000, 1000, 1000);
       // let m = 0, n = 0;
       //
