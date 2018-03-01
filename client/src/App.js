@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Slider, Icon, DatePicker, Row, Col, Card, Form, Select, Button, Alert } from 'antd';
+import axios from 'axios';
 import io from 'socket.io-client';
 import ThreeD from './3D';
 
@@ -14,6 +15,9 @@ class App extends Component {
     max: 500,
     slider: 0,
     playable: false,
+    dateFrom: '',
+    dateTo: '',
+    satellite: '',
   };
 
   componentDidMount() {
@@ -30,8 +34,14 @@ class App extends Component {
     }, 1000);
   }
 
-  onChange(date, dateString) {
+  datePicker(date, dateString) {
     console.log(date, dateString);
+    this.setState({ dateFrom: dateString[0], dateTo: dateString[1] })
+  }
+
+  selectSatellite(value, option) {
+    console.log(value, option);
+    this.setState({ satellite: value });
   }
 
   handleChange(value) {
@@ -48,6 +58,13 @@ class App extends Component {
   stopSlider() {
     clearInterval(this.slider);
     this.setState({ playable: true });
+  }
+
+  submit(e, poo, cheeks) {
+    e.preventDefault();
+    axios.get(`/replay/${this.state.dateFrom}/to/${this.state.dateTo}`).then((res) => {
+      console.log(res);
+    });
   }
 
   componentWillUnmount() {
@@ -90,23 +107,24 @@ class App extends Component {
                       }}
                       disabled={this.state.disabled}
                       onChange={this.handleChange.bind(this)}
-                     />
+                    />
                   </Col>
                 </Row>
               </div>
             }
-            showIcon />
+          showIcon />
         </div>
         <br />
 
         <div style={{ padding: '0 2em' }}>
           <div style={{ background: '#ECECEC', padding: '30px' }}>
             <Card title="Replay" bordered={false} style={{ width: '100%' }}>
-              <Form layout="horizontal">
+              <Form layout="horizontal" onSubmit={this.submit.bind(this)}>
                 <Form.Item label="Satellite">
                   <Select
                     showSearch
                     placeholder="Select satellite"
+                    onChange={this.selectSatellite.bind(this)}
                     //optionFilterProp="children"
                     //onChange={handleChange}
                     //filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
@@ -116,7 +134,7 @@ class App extends Component {
                   </Select>
                 </Form.Item>
                 <Form.Item label="Date range">
-                  <DatePicker.RangePicker onChange={this.onChange} showTime format="YYYY-MM-DD HH:mm:ss" />
+                  <DatePicker.RangePicker onChange={this.datePicker.bind(this)} showTime format="YYYY-MM-DD HH:mm:ss" />
                 </Form.Item>
                 <Button type="primary" htmlType="submit" className="login-form-button">
                   Replay Orbit
