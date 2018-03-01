@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const models = require('../models');
 
 router.get(
-  '/replay/:dateFrom/to/:dateTo',
+  '/replay/:dateFrom/to/:dateTo/',
   async (req, res, next) => {
     try {
       const { dateFrom, dateTo } = req.params;
@@ -15,7 +15,7 @@ router.get(
           $gte: ISODate(dateFrom),
           $lt: ISODate(dateTo)
         }
-      });
+      }).limit(500);
 
       res.json(orbit || {})
     } catch (error) {

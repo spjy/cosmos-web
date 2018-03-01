@@ -5,7 +5,7 @@ const api = express.Router();
 
 const resources = require('../resources');
 
-// api.use('/', resources);
-// router.use('/api', api);
+api.use('/', resources);
+router.use('/api', api);
 
 module.exports = router;

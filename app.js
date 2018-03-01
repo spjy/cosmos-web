@@ -20,6 +20,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/', routes);
 
 let obj = {};
+let agentListObj = {};
 
 mongoose.connect(process.env.MONGO_URL);
 
@@ -42,7 +43,7 @@ cosmosSocket.on('message', function(message) {
   json_str = json_str.replace(/}{/g, ',')
   obj = JSON.parse(json_str);
 
-  //console.log(obj)
+  console.log(obj)
   //console.log(obj.agent_utc)
 
   if (obj.agent_node === 'cubesat1') { // Check if node is the cubesat
@@ -51,6 +52,10 @@ cosmosSocket.on('message', function(message) {
       let satellite_position_x = obj.node_loc_pos_eci.pos[0] / 1000;
       let satellite_position_y = obj.node_loc_pos_eci.pos[1] / 1000;
       let satellite_position_z = obj.node_loc_pos_eci.pos[2] / 1000;
+
+      console.log(satellite_position_x,
+satellite_position_y,
+satellite_position_z);
 
       // Emit satellite position to client
       io.emit('satellite position', {
@@ -107,13 +112,13 @@ cosmosSocket.on('message', function(message) {
     console.log('Received Binary Message of ' + message.binaryData.length + ' bytes');
   }
 
-  // // Maintain the list of agents
-  // if (!(obj.agent_proc in agentListObj)) {
-  //   agentListObj[obj.agent_proc] = [obj.agent_utc, ' '+obj.agent_node, ' '+obj.agent_addr, ' '+obj.agent_port, ' '+obj.agent_bsz];
-  // } else {
-  //   // Update the time stamp
-  //   agentListObj[obj.agent_proc][0] = obj.agent_utc;
-  // }
+  // Maintain the list of agents
+  if (!(obj.agent_proc in agentListObj)) {
+    agentListObj[obj.agent_proc] = [obj.agent_utc, ' '+obj.agent_node, ' '+obj.agent_addr, ' '+obj.agent_port, ' '+obj.agent_bsz];
+  } else {
+    // Update the time stamp
+    agentListObj[obj.agent_proc][0] = obj.agent_utc;
+  }
 
   // Collect the IMU Omega data from the ADCS agent
   if (obj.agent_proc === 'adcs') {
@@ -127,7 +132,4 @@ server.listen(3001, function() {
 	console.log('Server listening on port:s 3001');
 });
 
-var HOST = '192.168.150.255';
-var PORT = 10020;
-
-cosmosSocket.bind(PORT, HOST);
+cosmosSocket.bind(10020, process.env.SATELLITE_IP);

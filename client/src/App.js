@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Slider, Icon, DatePicker, Row, Col, Card, Form, Select, Button, Alert } from 'antd';
 import axios from 'axios';
 import io from 'socket.io-client';
-import ThreeD from './3D';
+import ThreeD from './components/3D';
 
 import './App.css';
 
@@ -18,6 +18,7 @@ class App extends Component {
     dateFrom: '',
     dateTo: '',
     satellite: '',
+    replay: [],
   };
 
   componentDidMount() {
@@ -64,6 +65,7 @@ class App extends Component {
     e.preventDefault();
     axios.get(`/replay/${this.state.dateFrom}/to/${this.state.dateTo}`).then((res) => {
       console.log(res);
+      //this.setState({ replay: res })
     });
   }
 
@@ -112,7 +114,8 @@ class App extends Component {
                 </Row>
               </div>
             }
-          showIcon />
+          showIcon 
+          />
         </div>
         <br />
 
