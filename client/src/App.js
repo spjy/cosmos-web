@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Slider, Icon, DatePicker, Row, Col, Card, Form, Select, Button, Alert } from 'antd';
-import axios from 'axios';
+import 'whatwg-fetch'
 import io from 'socket.io-client';
 import ThreeD from './components/3D';
 
 import './App.css';
 
-const socket = io('http://localhost:3001');
+const socket = io('http://localhost:3003');
 
 class App extends Component {
 
@@ -63,9 +63,24 @@ class App extends Component {
 
   submit(e, poo, cheeks) {
     e.preventDefault();
-    axios.get(`/replay/${this.state.dateFrom}/to/${this.state.dateTo}`).then((res) => {
-      console.log(res);
-      //this.setState({ replay: res })
+    // fetch(`http://localhost:3003/api/replay/${this.state.dateFrom}/to/${this.state.dateTo}`, {
+    //   method: 'GET',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   //credentials: 'same-origin',
+    //   "Access-Control-Allow-Origin": "http://localhost:3003",
+    // }).then((response) => {
+    //   console.log(response);
+    // });
+
+    socket.emit("satellite orbit history", {
+      dateFrom: Date(this.state.dateFrom).toISOString(),
+      dateTo: Date(this.state.dateTo).toISOString()
+    });
+
+    socket.on('satellite replay', (orbit) => {
+      console.log(orbit);
     });
   }
 
@@ -114,7 +129,7 @@ class App extends Component {
                 </Row>
               </div>
             }
-          showIcon 
+          showIcon
           />
         </div>
         <br />

@@ -21,7 +21,8 @@
     "https": "^1.0.0",
     "mongoose": "^5.0.6",
     "redis": "^2.8.0",
-    "socket.io": "^2.0.3"
+    "socket.io": "^2.0.3",
+    "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
     "nodemon": "^1.12.1"

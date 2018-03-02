@@ -9,6 +9,8 @@ router.get(
     try {
       const { dateFrom, dateTo } = req.params;
 
+      console.log(req.params);
+
       let orbit;
       orbit = await models.Orbit.find({
         createdAt: {

@@ -19,16 +19,33 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/', routes);
 
-let obj = {};
-let agentListObj = {};
-
-mongoose.connect(process.env.MONGO_URL);
+mongoose.connect(process.env.MONGO_URL, (err) => {
+  if (err) {
+    console.log(err);
+  }
+});
 
 io.on('connection', function (socket) {
-  socket.on('connected', function() {
-    console.log('heheh');
+  socket.on('satellite orbit history', async (dateFrom, dateTo) => {
+    console.log('i got activated k');
+    let orbit;
+
+    orbit = await models.Orbit.find({
+      createdAt: {
+        $gte: dateFrom,
+        $lt: dateTo
+      }
+    }).limit(20);
+
+    console.log(orbit);
+
+    socket.emit('satellite replay', orbit);
 	});
 });
+
+io.on('satellite orbit history', async (socket) => {
+
+})
 
 const cosmosSocket = dgram.createSocket({ type: 'udp4', reuseAddr: true });
 
@@ -37,25 +54,31 @@ cosmosSocket.on('listening', () => {
   console.log('UDP Server listening on ' + address.address + ":" + address.port);
 });
 
+let obj = {};
+let agentListObj = {};
+let imuOmega = {};
+let imuIndex = 0;
+let sentImuIndex = 0;
+
 cosmosSocket.on('message', function(message) {
   obj = message.slice(3,message.length-1);
   let json_str = obj.toString('ascii');
   json_str = json_str.replace(/}{/g, ',')
   obj = JSON.parse(json_str);
 
-  console.log(obj)
+  //console.log(obj)
   //console.log(obj.agent_utc)
 
   if (obj.agent_node === 'cubesat1') { // Check if node is the cubesat
-    if (obj.node_loc_pos_eci) { // If the position is defined
+    if (obj.node_loc_pos_eci.pos) { // If the position is defined
       // Convert x, y, z coordinates from meters to kilometers
       let satellite_position_x = obj.node_loc_pos_eci.pos[0] / 1000;
       let satellite_position_y = obj.node_loc_pos_eci.pos[1] / 1000;
       let satellite_position_z = obj.node_loc_pos_eci.pos[2] / 1000;
 
       console.log(satellite_position_x,
-satellite_position_y,
-satellite_position_z);
+        satellite_position_y,
+        satellite_position_z);
 
       // Emit satellite position to client
       io.emit('satellite position', {
@@ -63,14 +86,18 @@ satellite_position_z);
         y: satellite_position_y,
         z: satellite_position_z,
       });
-    }
 
-    // new models.Orbit({
-    //   satellite: 'cubesat1',
-    //   x: satellite_position_x,
-    //   y: satellite_position_y,
-    //   z: satellite_position_z,
-    // }).save();
+      new models.Orbit({
+        satellite: 'cubesat1',
+        x: satellite_position_x,
+        y: satellite_position_y,
+        z: satellite_position_z,
+      }).save((err) => {
+        if (err) {
+          console.log(err);
+        }
+      });
+    }
 
     // If quaternions are defined
     if (obj.node_loc_att_icrf) {
@@ -93,13 +120,17 @@ satellite_position_z);
         w: satellite_orientation_w,
       });
 
-      // new models.Orbit({
-      //   satellite: 'cubesat1',
-      //   x: satellite_position_x,
-      //   y: satellite_position_y,
-      //   z: satellite_position_z,
-      //   w: satellite_orientation_w,
-      // }).save();
+      new models.Attitude({
+        satellite: 'cubesat1',
+        x: satellite_orientation_x,
+        y: satellite_orientation_y,
+        z: satellite_orientation_z,
+        w: satellite_orientation_w,
+      }).save((err) => {
+        if (err) {
+          console.log(err);
+        }
+      });;
 
     }
   }
@@ -128,7 +159,26 @@ satellite_position_z);
 
 });
 
-server.listen(3001, function() {
+app.use(function (req, res, next) {
+
+  // Website you wish to allow to connect
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3003');
+
+  // Request methods you wish to allow
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+  // Request headers you wish to allow
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+  // Set to true if you need the website to include cookies in the requests sent
+  // to the API (e.g. in case you use sessions)
+  res.setHeader('Access-Control-Allow-Credentials', true);
+
+  // Pass to next layer of middleware
+  next();
+});
+
+server.listen(3003, function() {
 	console.log('Server listening on port:s 3001');
 });
 
