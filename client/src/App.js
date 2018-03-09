@@ -28,9 +28,9 @@ class App extends Component {
     if (this.state.playable) {
       this.setState({ playable: false }); // Prevent users from starting multiple intervals
       this.sliderIncrement();
-      socket.emit('satellite orbit', {
+      socket.emit('satellite orbit',
         this.state.replay[this.state.slider]
-      });
+      );
     }
   }
 
