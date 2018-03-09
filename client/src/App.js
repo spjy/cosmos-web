@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Slider, Icon, DatePicker, Row, Col, Card, Form, Select, Button, Alert } from 'antd';
+import { Slider, Icon, DatePicker, Row, Col, Card, Form, Select, Button, Alert, Popconfirm, List } from 'antd';
 import 'whatwg-fetch'
 import io from 'socket.io-client';
 import ThreeD from './components/3D';
@@ -24,6 +24,16 @@ class App extends Component {
   componentDidMount() {
   }
 
+  startSlider() {
+    if (this.state.playable) {
+      this.setState({ playable: false }); // Prevent users from starting multiple intervals
+      this.sliderIncrement();
+      socket.emit('satellite orbit', {
+        this.state.replay[this.state.slider]
+      });
+    }
+  }
+
   sliderIncrement() {
     this.slider = setInterval(() => {
       if (this.state.slider < this.state.max) { // Check if slider reached maximum value
@@ -32,30 +42,6 @@ class App extends Component {
         this.stopSlider(); // If so, clear interval
       }
     }, 1000);
-  }
-
-  datePicker(date, dateString) {
-    console.log(date, dateString);
-    this.setState({ dateFrom: dateString[0], dateTo: dateString[1] })
-  }
-
-  selectSatellite(value, option) {
-    console.log(value, option);
-    this.setState({ satellite: value });
-  }
-
-  handleChange(value) {
-    this.setState({ slider: value });
-  }
-
-  startSlider() {
-    if (this.state.playable) {
-      this.setState({ playable: false }); // Prevent users from starting multiple intervals
-      this.sliderIncrement();
-      socket.emit('satellite orbit',
-        this.state.replay[this.state.slider]
-      );
-    }
   }
 
   stopSlider() {
@@ -85,7 +71,20 @@ class App extends Component {
       this.setState({ replay: orbit, max: orbit.length });
       this.setState({ playable: true });
       this.startSlider();
+      this.setState({ playable: false });
     });
+  }
+
+  datePicker(date, dateString) {
+    this.setState({ dateFrom: dateString[0], dateTo: dateString[1] })
+  }
+
+  selectSatellite(value, option) {
+    this.setState({ satellite: value });
+  }
+
+  handleChange(value) {
+    this.setState({ slider: value });
   }
 
   componentWillUnmount() {
@@ -97,45 +96,74 @@ class App extends Component {
       <div>
         <ThreeD />
         <div style={{ padding: '2em' }}>
-          {/* <Alert message="Live" type="success" description="You are viewing the live orbit of cubesat1." showIcon /> */}
+          <div style={{ background: '#ECECEC', padding: '30px' }}>
 
-          <Alert message="Replay" type="warning"
-            description={
-              <div>
-                You are viewing a replay orbit of cubesat1.
-                <Row>
-                  <Col sm={2} md={1} style={{ paddingTop: '0.5em' }}>
-                    <Icon className="media-buttons"
-                      type="play-circle-o"
-                      onClick={this.startSlider.bind(this)}
-                    />
-                    &nbsp;
-                    <Icon className="media-buttons"
-                      type="pause-circle-o"
-                      onClick={this.stopSlider.bind(this)}
-                    />
-                    &nbsp;
-                    {this.state.slider}
-                  </Col>
-                  <Col sm={22} md={23}>
-                    <Slider
-                      defaultValue={0}
-                      value={this.state.slider}
-                      min={0} max={this.state.max}
-                      marks={{
-                        0: '0',
-                        [this.state.max / 2]: this.state.max / 2,
-                        [this.state.max]: this.state.max,
-                      }}
-                      disabled={this.state.disabled}
-                      onChange={this.handleChange.bind(this)}
-                    />
-                  </Col>
-                </Row>
-              </div>
-            }
-          showIcon
-          />
+            <Card title="Orbit Information" bordered={false} style={{ width: '100%' }}>
+              {this.state.replay.length > 0 ?
+                <Alert message={
+                  <div>
+                    Replay
+                    <Popconfirm title="Switch to live view?" okText="Yes" cancelText="No">
+                      <a><Icon style={{ paddingLeft: "0.5em" }} type="swap" /></a>
+                    </Popconfirm>
+                  </div>
+                } type="warning"
+                  description={
+                    <div>
+                      You are viewing a replay orbit of <strong>cubesat1</strong>.
+                      <Row>
+                        <Col sm={2} md={1} style={{ paddingTop: '0.5em' }}>
+                          <Icon className="media-buttons"
+                            type="play-circle-o"
+                            onClick={this.startSlider.bind(this)}
+                          />
+                          &nbsp;
+                          <Icon className="media-buttons"
+                            type="pause-circle-o"
+                            onClick={this.stopSlider.bind(this)}
+                          />
+                          &nbsp;
+                          {this.state.slider}
+                        </Col>
+                        <Col sm={22} md={23}>
+                          <Slider
+                            defaultValue={0}
+                            value={this.state.slider}
+                            min={0} max={this.state.max}
+                            marks={{
+                              0: '0',
+                              [this.state.max / 2]: this.state.max / 2,
+                              [this.state.max]: this.state.max,
+                            }}
+                            disabled={this.state.disabled}
+                            onChange={this.handleChange.bind(this)}
+                          />
+                        </Col>
+                      </Row>
+                    </div>
+                  }
+                  showIcon
+                />
+              :
+              <Alert message="Live" type="success" description={
+                <div>
+                  You are viewing the live orbit of <strong>cubesat1</strong>.
+                </div>
+              } showIcon />
+              }
+              <br />
+              <List
+                size="small"
+                bordered
+                dataSource={[
+                  'x: 6350',
+                  'y: 238',
+                  'z: 234'
+                ]}
+                renderItem={item => (<List.Item>{item}</List.Item>)}
+              />
+            </Card>
+          </div>
         </div>
         <br />
 
@@ -166,7 +194,6 @@ class App extends Component {
             </Card>
           </div>
         </div>
-
       </div>
     );
   }

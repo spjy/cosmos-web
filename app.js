@@ -34,7 +34,7 @@ io.on('connection', function (socket) {
     try {
       orbit = await models.Orbit.find({
         satellite: 'cubesat1'
-      }).limit(50);
+      }).sort({ createAt: -1 }).limit(50);
 
       socket.emit('satellite replay', orbit);
       console.log(orbit);
