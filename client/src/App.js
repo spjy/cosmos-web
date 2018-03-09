@@ -6,7 +6,7 @@ import ThreeD from './components/3D';
 
 import './App.css';
 
-const socket = io('http://localhost:3003');
+const socket = io('http://localhost:3001');
 
 class App extends Component {
 
@@ -22,7 +22,6 @@ class App extends Component {
   };
 
   componentDidMount() {
-    this.sliderIncrement();
   }
 
   sliderIncrement() {
@@ -53,6 +52,9 @@ class App extends Component {
     if (this.state.playable) {
       this.setState({ playable: false }); // Prevent users from starting multiple intervals
       this.sliderIncrement();
+      socket.emit('satellite orbit',
+        this.state.replay[this.state.slider]
+      );
     }
   }
 
@@ -75,12 +77,14 @@ class App extends Component {
     // });
 
     socket.emit("satellite orbit history", {
-      dateFrom: Date(this.state.dateFrom).toISOString(),
-      dateTo: Date(this.state.dateTo).toISOString()
+      dateFrom: this.state.dateFrom,
+      dateTo: this.state.dateTo
     });
 
     socket.on('satellite replay', (orbit) => {
-      console.log(orbit);
+      this.setState({ replay: orbit, max: orbit.length });
+      this.setState({ playable: true });
+      this.startSlider();
     });
   }
 
@@ -94,6 +98,7 @@ class App extends Component {
         <ThreeD />
         <div style={{ padding: '2em' }}>
           {/* <Alert message="Live" type="success" description="You are viewing the live orbit of cubesat1." showIcon /> */}
+
           <Alert message="Replay" type="warning"
             description={
               <div>

@@ -26,26 +26,31 @@ mongoose.connect(process.env.MONGO_URL, (err) => {
 });
 
 io.on('connection', function (socket) {
-  socket.on('satellite orbit history', async (dateFrom, dateTo) => {
-    console.log('i got activated k');
+  socket.on('satellite orbit history', async (date) => {
+
+    console.log(date.dateFrom, date.dateTo, 'i got activated k');
     let orbit;
 
-    orbit = await models.Orbit.find({
-      createdAt: {
-        $gte: dateFrom,
-        $lt: dateTo
-      }
-    }).limit(20);
+    try {
+      orbit = await models.Orbit.find({
+        satellite: 'cubesat1'
+      }).limit(50);
 
-    console.log(orbit);
+      socket.emit('satellite replay', orbit);
+      console.log(orbit);
 
-    socket.emit('satellite replay', orbit);
+    } catch (error) {
+      orbit = error;
+
+      socket.emit('satellite replay', orbit);
+    }
 	});
 });
 
-io.on('satellite orbit history', async (socket) => {
-
-})
+// io.on('satellite orbit history', async (socket) => {
+//   console.log('i got activated k');
+//
+// })
 
 const cosmosSocket = dgram.createSocket({ type: 'udp4', reuseAddr: true });
 
@@ -159,26 +164,26 @@ cosmosSocket.on('message', function(message) {
 
 });
 
-app.use(function (req, res, next) {
+// app.use(function (req, res, next) {
+//
+//   // Website you wish to allow to connect
+//   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3003');
+//
+//   // Request methods you wish to allow
+//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+//
+//   // Request headers you wish to allow
+//   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+//
+//   // Set to true if you need the website to include cookies in the requests sent
+//   // to the API (e.g. in case you use sessions)
+//   res.setHeader('Access-Control-Allow-Credentials', true);
+//
+//   // Pass to next layer of middleware
+//   next();
+// });
 
-  // Website you wish to allow to connect
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3003');
-
-  // Request methods you wish to allow
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-
-  // Request headers you wish to allow
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-
-  // Set to true if you need the website to include cookies in the requests sent
-  // to the API (e.g. in case you use sessions)
-  res.setHeader('Access-Control-Allow-Credentials', true);
-
-  // Pass to next layer of middleware
-  next();
-});
-
-server.listen(3003, function() {
+server.listen(3001, function() {
 	console.log('Server listening on port:s 3001');
 });
 

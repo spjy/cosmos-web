@@ -262,7 +262,7 @@ const satWorldView = () => {
       //meshes[0].position = new BABYLON.Vector3(6500, 0, 0);
 
 
-      socket.on('satellite position', (data) => { // Run function on emit from satellite data socket
+      socket.on('satellite orbit', (data) => { // Run function on emit from satellite data socket
         console.log(data);
         if (data) { // If data is defined
           meshes[0].position = new BABYLON.Vector3(data.x, data.y, data.z); // Set new position of satellite
