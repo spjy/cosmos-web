@@ -4,7 +4,7 @@ import io from 'socket.io-client';
 
 const socket = io('http://localhost:3001');
 
-const satWorldView = () => {
+const satWorldView = (orbit) => {
   /*
   /
   /  STANDARD BABYLON INITIALIZATIONS
@@ -259,7 +259,6 @@ const satWorldView = () => {
       // console.log('ahhh');
 
       //meshes[0].position = new BABYLON.Vector3(6500, 0, 0);
-
 
       socket.on('satellite orbit', (data) => { // Run function on emit from satellite data socket
         console.log(data);
