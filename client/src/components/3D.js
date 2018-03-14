@@ -19,7 +19,7 @@ class App extends Component {
         {/* <canvas id="satRotView"></canvas> */}
       </div>
     );
-    
+
   }
 }
 

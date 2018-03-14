@@ -11,33 +11,49 @@ const socket = io('http://localhost:3001');
 class App extends Component {
 
   state = {
-    disabled: false,
+    live: false,
+    satelliteOrbit: '',
+    satellite: '',
     max: 500,
     slider: 0,
     playable: false,
     dateFrom: '',
     dateTo: '',
-    satellite: '',
     replay: [],
+    currentCoord: {
+      satellite: '--',
+      x: '--',
+      y: '--',
+      z: '--'
+    },
   };
 
   componentDidMount() {
+    // socket.on('satellite orbit', (data) => {
+    //   if (data) {
+    //     this.setState({ live: true, satellite: data.satellite });
+    //     this.setState({
+    //       satelliteOrbit: data
+    //     });
+    //   }
+    // });
   }
 
   startSlider() {
     if (this.state.playable) {
       this.setState({ playable: false }); // Prevent users from starting multiple intervals
       this.sliderIncrement();
-      socket.emit('satellite orbit',
-        this.state.replay[this.state.slider]
-      );
+      console.log(this.state);
     }
   }
 
   sliderIncrement() {
     this.slider = setInterval(() => {
       if (this.state.slider < this.state.max) { // Check if slider reached maximum value
-        this.setState({ slider: this.state.slider + 1 }); // If not, keep incrementing
+        this.setState({ slider: this.state.slider + 1,
+          currentCoord: this.state.replay[this.state.slider]
+        }); // If not, keep incrementing
+        socket.emit('satellite orbit', this.state.currentCoord)
       } else {
         this.stopSlider(); // If so, clear interval
       }
@@ -68,10 +84,18 @@ class App extends Component {
     });
 
     socket.on('satellite replay', (orbit) => {
-      this.setState({ replay: orbit, max: orbit.length });
-      this.setState({ playable: true });
-      this.startSlider();
-      this.setState({ playable: false });
+      console.log(orbit[0]);
+      if (orbit) {
+        this.setState({
+          live: false,
+          playable: true,
+          replay: orbit,
+          max: orbit.length,
+          currentCoord: orbit[0]
+        });
+        this.startSlider();
+        this.setState({ playable: false });
+      }
     });
   }
 
@@ -99,7 +123,7 @@ class App extends Component {
           <div style={{ background: '#ECECEC', padding: '30px' }}>
 
             <Card title="Orbit Information" bordered={false} style={{ width: '100%' }}>
-              {this.state.replay.length > 0 ?
+              {this.state.live === false ?
                 <Alert message={
                   <div>
                     Replay
@@ -110,7 +134,7 @@ class App extends Component {
                 } type="warning"
                   description={
                     <div>
-                      You are viewing a replay orbit of <strong>cubesat1</strong>.
+                      You are viewing a replay orbit of <strong>{this.state.currentCoord.satellite}</strong>.
                       <Row>
                         <Col sm={2} md={1} style={{ paddingTop: '0.5em' }}>
                           <Icon className="media-buttons"
@@ -135,7 +159,6 @@ class App extends Component {
                               [this.state.max / 2]: this.state.max / 2,
                               [this.state.max]: this.state.max,
                             }}
-                            disabled={this.state.disabled}
                             onChange={this.handleChange.bind(this)}
                           />
                         </Col>
@@ -156,9 +179,9 @@ class App extends Component {
                 size="small"
                 bordered
                 dataSource={[
-                  'x: 6350',
-                  'y: 238',
-                  'z: 234'
+                  `x: ${this.state.currentCoord.x}`,
+                  `y: ${this.state.currentCoord.y}`,
+                  `z: ${this.state.currentCoord.z}`
                 ]}
                 renderItem={item => (<List.Item>{item}</List.Item>)}
               />

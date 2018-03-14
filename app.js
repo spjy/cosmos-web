@@ -37,7 +37,7 @@ io.on('connection', function (socket) {
       }).sort({ createAt: -1 }).limit(50);
 
       socket.emit('satellite replay', orbit);
-      console.log(orbit);
+      //console.log(orbit);
 
     } catch (error) {
       orbit = error;
@@ -45,6 +45,10 @@ io.on('connection', function (socket) {
       socket.emit('satellite replay', orbit);
     }
 	});
+
+  socket.on('satellite orbit', (data) => {
+    io.emit('satellite orbit', data);
+  });
 });
 
 // io.on('satellite orbit history', async (socket) => {
