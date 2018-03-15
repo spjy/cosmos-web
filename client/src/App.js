@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
-import { Slider, Icon, DatePicker, Row, Col, Card, Form, Select, Button, Alert, Popconfirm, List } from 'antd';
+import { Slider, Icon, DatePicker, Row, Col, Card, Form, Select, Button, Alert, Popconfirm, } from 'antd';
 import 'whatwg-fetch'
 import io from 'socket.io-client';
-import ThreeD from './components/3D';
+
+import Navbar from './components/Navbar';
+import OrbitInformation from './components/OrbitInformation';
+import LiveOrbit from './components/LiveOrbit';
+import ThreeD from './components/ThreeD';
 
 import './App.css';
 
@@ -11,6 +15,7 @@ const socket = io('http://localhost:3001');
 class App extends Component {
 
   state = {
+    current: 'home',
     live: false,
     satelliteOrbit: '',
     satellite: '',
@@ -22,28 +27,27 @@ class App extends Component {
     replay: [],
     currentCoord: {
       satellite: '--',
-      x: '--',
-      y: '--',
-      z: '--'
+      x: 0,
+      y: 0,
+      z: 0
     },
   };
 
-  componentDidMount() {
-    // socket.on('satellite orbit', (data) => {
-    //   if (data) {
-    //     this.setState({ live: true, satellite: data.satellite });
-    //     this.setState({
-    //       satelliteOrbit: data
-    //     });
-    //   }
-    // });
-  }
+  // componentDidMount() {
+  //   socket.on('satellite orbit', (data) => {
+  //     if (data) {
+  //       this.setState({ live: true, satellite: data.satellite });
+  //       this.setState({
+  //         satelliteOrbit: data
+  //       });
+  //     }
+  //   });
+  // }
 
   startSlider() {
     if (this.state.playable) {
       this.setState({ playable: false }); // Prevent users from starting multiple intervals
       this.sliderIncrement();
-      console.log(this.state);
     }
   }
 
@@ -107,7 +111,7 @@ class App extends Component {
     this.setState({ satellite: value });
   }
 
-  handleChange(value) {
+  onSliderChange(value) {
     this.setState({ slider: value });
   }
 
@@ -118,7 +122,8 @@ class App extends Component {
   render() {
     return (
       <div>
-        <ThreeD />
+        <Navbar />
+        <ThreeD data={this.state.currentCoord} />
         <div style={{ padding: '2em' }}>
           <div style={{ background: '#ECECEC', padding: '30px' }}>
 
@@ -159,7 +164,7 @@ class App extends Component {
                               [this.state.max / 2]: this.state.max / 2,
                               [this.state.max]: this.state.max,
                             }}
-                            onChange={this.handleChange.bind(this)}
+                            onChange={this.onSliderChange.bind(this)}
                           />
                         </Col>
                       </Row>
@@ -168,23 +173,10 @@ class App extends Component {
                   showIcon
                 />
               :
-              <Alert message="Live" type="success" description={
-                <div>
-                  You are viewing the live orbit of <strong>cubesat1</strong>.
-                </div>
-              } showIcon />
+                <LiveOrbit satellite="cubesat1" />
               }
               <br />
-              <List
-                size="small"
-                bordered
-                dataSource={[
-                  `x: ${this.state.currentCoord.x}`,
-                  `y: ${this.state.currentCoord.y}`,
-                  `z: ${this.state.currentCoord.z}`
-                ]}
-                renderItem={item => (<List.Item>{item}</List.Item>)}
-              />
+              <OrbitInformation x={this.state.currentCoord.x} y={this.state.currentCoord.y} z={this.state.currentCoord.z} />
             </Card>
           </div>
         </div>
