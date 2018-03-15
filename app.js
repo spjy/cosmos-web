@@ -34,7 +34,7 @@ io.on('connection', function (socket) {
     try {
       orbit = await models.Orbit.find({
         satellite: 'cubesat1'
-      }).sort({ createAt: -1 }).limit(50);
+      }).sort({ createdAt: -1 }).limit(50);
 
       socket.emit('satellite replay', orbit);
       //console.log(orbit);
@@ -45,10 +45,6 @@ io.on('connection', function (socket) {
       socket.emit('satellite replay', orbit);
     }
 	});
-
-  socket.on('satellite orbit', (data) => {
-    io.emit('satellite orbit', data);
-  });
 });
 
 // io.on('satellite orbit history', async (socket) => {
@@ -191,4 +187,4 @@ server.listen(3001, function() {
 	console.log('Server listening on port:s 3001');
 });
 
-cosmosSocket.bind(10020, process.env.SATELLITE_IP);
+//cosmosSocket.bind(10020, process.env.SATELLITE_IP);

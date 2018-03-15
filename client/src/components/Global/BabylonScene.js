@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import * as BABYLON from 'babylonjs';
-import io from 'socket.io-client';
-import satWorldView from '../scenes/satWorldView';
 //import satRotView from './scenes/satRotView';
 
-import '../App.css';
+import '../../App.css';
 const scene = BABYLON.Scene;
 const engine = BABYLON.Engine;
 const canvas = HTMLCanvasElement;

@@ -4,14 +4,15 @@ import { List } from 'antd';
 
 class OrbitInformation extends Component {
   render() {
+    const { x, y, z } = this.props;
     return (
       <List
         size="small"
         bordered
         dataSource={[
-          `x: ${this.props.x}`,
-          `y: ${this.props.y}`,
-          `z: ${this.props.z}`
+          `x: ${x}`,
+          `y: ${y}`,
+          `z: ${z}`
         ]}
         renderItem={item => (<List.Item>{item}</List.Item>)}
       />
