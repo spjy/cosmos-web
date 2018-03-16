@@ -44,6 +44,7 @@ class ReplayForm extends Component {
                 <Select.Option value="neutron1">neutron1</Select.Option>
               </Select>
             </Form.Item>
+            <Form.Item label="Date range">
               <DatePicker.RangePicker onChange={this.datePicker.bind(this)} showTime format="YYYY-MM-DD HH:mm:ss" />
             </Form.Item>
             <Button type="primary" htmlType="submit" className="login-form-button">

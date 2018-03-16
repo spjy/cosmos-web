@@ -51,16 +51,6 @@ class ThreeD extends Component {
     }
 
   render() {
-    // 'rest' can contain additional properties that you can flow through to canvas:
-    // (id, className, etc.)
-    let { width, height, ...rest } = this.props;
-
-    let opts: any = {};
-
-    if (width !== undefined && height !== undefined) {
-      opts.width = width;
-      opts.height = height;
-    }
     return (
       <div>
         <canvas

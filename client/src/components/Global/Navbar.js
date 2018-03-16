@@ -27,11 +27,11 @@ class Navbar extends Component {
             <Icon type="home" />COSMOS Web
           </Link>
         </Menu.Item>
-          <Menu.Item key="orbit">
-            <Link to="/orbit">
-              <Icon type="sync" />Orbit
-            </Link>
-          </Menu.Item>
+        <Menu.Item key="orbit">
+          <Link to="/orbit">
+            <Icon type="sync" />Orbit
+          </Link>
+        </Menu.Item>
         <Menu.Item key="attitude">
           <Link to="/attitude">
             <Icon type="swap-right" />Attitude
