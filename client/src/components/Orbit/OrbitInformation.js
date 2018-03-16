@@ -1,26 +1,49 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { List } from 'antd';
+import { Table } from 'antd';
+
+const columns = [{
+  title: 'Satellite',
+  dataIndex: 'satellite',
+  key: 'satellite',
+  width: '15em'
+}, {
+  title: 'x',
+  dataIndex: 'x',
+  key: 'x',
+  width: '15em'
+}, {
+  title: 'y',
+  dataIndex: 'y',
+  key: 'y',
+  width: '15em'
+}, {
+  title: 'z',
+  dataIndex: 'z',
+  key: 'z',
+}];
 
 class OrbitInformation extends Component {
   render() {
-    const { x, y, z } = this.props;
+    const { satellite, x, y, z } = this.props;
+
+    const data = [{
+      key: '1',
+      satellite: satellite,
+      x: x,
+      y: y,
+      z: z,
+    }];
     return (
-      <List
-        size="small"
-        bordered
-        dataSource={[
-          `x: ${x}`,
-          `y: ${y}`,
-          `z: ${z}`
-        ]}
-        renderItem={item => (<List.Item>{item}</List.Item>)}
-      />
+      <div style={{ padding: '0 20em' }}>
+        <Table columns={columns} dataSource={data} size="small" pagination={false} />
+      </div>
     );
   }
 }
 
 OrbitInformation.propTypes = {
+  satellite: PropTypes.string,
   x: PropTypes.number,
   y: PropTypes.number,
   z: PropTypes.number

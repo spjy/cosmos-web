@@ -41,8 +41,8 @@ class OrbitThreeD extends Component {
     */
 
     // create a basic light, aiming 0,10,0 - meaning, to the sky
-    const light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 10, 0), scene);
-    const light2 = new BABYLON.HemisphericLight('light2', new BABYLON.Vector3(0, -10, 0), scene);
+    new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 10, 0), scene);
+    new BABYLON.HemisphericLight('light2', new BABYLON.Vector3(0, -10, 0), scene);
 
     /*
     /  CAMERA
@@ -216,7 +216,7 @@ class OrbitThreeD extends Component {
     // load in satellite obj file
     BABYLON.SceneLoader.Load("/obj/", "cubesat.obj", engine, function(scene) { });
 
-    const CUBESAT = assetsManager.addMeshTask("CUBESAT", "", "/obj/", "cubesat.obj");
+    assetsManager.addMeshTask("CUBESAT", "", "/obj/", "cubesat.obj");
 
     // Default satellite position
 
@@ -260,7 +260,7 @@ class OrbitThreeD extends Component {
   }
 
   componentWillUpdate = (nextProps, nextState) => {
-    if (this) {
+    if (typeof this.updateSatelliteLocation() === 'function') { // check if function is defined
       this.updateSatelliteLocation();
     }
   }

@@ -78,7 +78,7 @@ cosmosSocket.on('message', function(message) {
   //console.log(obj.agent_utc)
 
   if (obj.agent_node === 'cubesat1') { // Check if node is the cubesat
-    if (obj.node_loc_pos_eci.pos) { // If the position is defined
+    if (obj.node_loc_pos_eci) { // If the position is defined
       // Convert x, y, z coordinates from meters to kilometers
       let satellite_position_x = obj.node_loc_pos_eci.pos[0] / 1000;
       let satellite_position_y = obj.node_loc_pos_eci.pos[1] / 1000;
@@ -122,7 +122,7 @@ cosmosSocket.on('message', function(message) {
       // console.log(satellite_orientation_z);
 
       // Emit data to client
-      io.emit('satellite orientation', {
+      io.emit('satellite attitude', {
         x: satellite_orientation_x,
         y: satellite_orientation_y,
         z: satellite_orientation_z,

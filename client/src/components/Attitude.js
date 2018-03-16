@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { DatePicker, Card, Form, Select, Button } from 'antd';
+import { Card } from 'antd';
 import 'whatwg-fetch'
 import io from 'socket.io-client';
 
 import Navbar from './Global/Navbar';
 import Replay from './Global/Replay';
-import AttitudeInformation from './Attitude/AttitudeInformation';
 import Live from './Global/Live';
+import ReplayForm from './Global/ReplayForm';
+import AttitudeInformation from './Attitude/AttitudeInformation';
 import AttitudeThreeD from './Attitude/AttitudeThreeD';
 
 import '../App.css';
@@ -17,13 +18,10 @@ class Attitude extends Component {
 
   state = {
     live: false,
-    satelliteSelected: '',
     satellite: '--',
     max: 500,
     slider: 0,
     playable: false,
-    dateFrom: '',
-    dateTo: '',
     replay: [],
     currentCoord: {
       w: 0,
@@ -52,9 +50,10 @@ class Attitude extends Component {
     });
   }
 
-  submit(e) {
-    e.preventDefault();
-    fetch(`http://localhost:3001/api/replay/attitude/${this.state.satelliteSelected}/${this.state.dateFrom}/to/${this.state.dateTo}`, {
+  onReplayFormSubmit(value) {
+    const { satelliteSelected, dateFrom, dateTo } = value;
+
+    fetch(`http://localhost:3001/api/replay/attitude/${satelliteSelected}/${dateFrom}/to/${dateTo}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -96,6 +95,13 @@ class Attitude extends Component {
       <div>
         <Navbar />
         <AttitudeThreeD data={this.state.currentCoord} />
+        <AttitudeInformation
+          satellite={this.state.satellite}
+          w={this.state.currentCoord.w}
+          x={this.state.currentCoord.x}
+          y={this.state.currentCoord.y}
+          z={this.state.currentCoord.z}
+        />
         <div style={{ padding: '1em' }}>
           <div style={{ background: '#ECECEC', padding: '10px' }}>
 
@@ -117,13 +123,6 @@ class Attitude extends Component {
                 satellite={this.state.satellite}
               />
               }
-              <br />
-              <AttitudeInformation
-                w={this.state.currentCoord.w}
-                x={this.state.currentCoord.x}
-                y={this.state.currentCoord.y}
-                z={this.state.currentCoord.z}
-              />
             </Card>
           </div>
         </div>
@@ -131,29 +130,8 @@ class Attitude extends Component {
 
         <div style={{ padding: '0 1em' }}>
           <div style={{ background: '#ECECEC', padding: '10px' }}>
-            <Card title="Replay" bordered={false} style={{ width: '100%' }}>
-              <Form layout="horizontal" onSubmit={this.submit.bind(this)}>
-                <Form.Item label="Satellite">
-                  <Select
-                    showSearch
-                    placeholder="Select satellite"
-                    onChange={this.selectSatellite.bind(this)}
-                    //optionFilterProp="children"
-                    //onChange={handleChange}
-                    //filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                  >
-                    <Select.Option value="cubesat1">cubesat1</Select.Option>
-                    <Select.Option value="neutron1">neutron1</Select.Option>
-                  </Select>
-                </Form.Item>
-                <Form.Item label="Date range">
-                  <DatePicker.RangePicker onChange={this.datePicker.bind(this)} showTime format="YYYY-MM-DD HH:mm:ss" />
-                </Form.Item>
-                <Button type="primary" htmlType="submit" className="login-form-button">
-                  Replay Attitude
-                </Button>
-              </Form>
-            </Card>
+            <ReplayForm onReplayFormSubmit={this.onReplayFormSubmit.bind(this)} />
+
           </div>
         </div>
       </div>

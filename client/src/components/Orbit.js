@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { DatePicker, Card, Form, Select, Button } from 'antd';
+import { Card } from 'antd';
 import 'whatwg-fetch'
 import io from 'socket.io-client';
 
 import Navbar from './Global/Navbar';
 import Replay from './Global/Replay';
-import OrbitInformation from './Orbit/OrbitInformation';
 import Live from './Global/Live';
+import ReplayForm from './Global/ReplayForm';
+import OrbitInformation from './Orbit/OrbitInformation';
 import OrbitThreeD from './Orbit/OrbitThreeD';
 
 import '../App.css';
@@ -17,13 +18,10 @@ class Orbit extends Component {
 
   state = {
     live: false,
-    satelliteSelected: '--',
     satellite: '--',
     max: 500,
     slider: 0,
     playable: false,
-    dateFrom: '',
-    dateTo: '',
     replay: [],
     currentCoord: {
       x: 0,
@@ -33,9 +31,9 @@ class Orbit extends Component {
   };
 
   componentDidMount() {
-    socket.on('satellite orbit', (data) => {
-      if (this.state.replay.length === 0) {
-        if (data) {
+    socket.on('satellite orbit', (data) => { // check if there is a live orbit
+      if (this.state.replay.length === 0) { // check if there is replay going
+        if (data) { // check if data exists
           this.setState({
             live: true,
             satellite: data.satellite,
@@ -50,14 +48,19 @@ class Orbit extends Component {
     });
   }
 
-  submit(e) {
-    e.preventDefault();
-    fetch(`http://localhost:3001/api/replay/orbit/${this.state.satelliteSelected}/${this.state.dateFrom}/to/${this.state.dateTo}`, {
+  onReplayChange(value) {
+    this.setState(value); // Set state from changes from replay component
+  }
+
+  onReplayFormSubmit(value) {
+
+    const { satelliteSelected, dateFrom, dateTo } = value;
+
+    fetch(`http://localhost:3001/api/replay/orbit/${satelliteSelected}/${dateFrom}/to/${dateTo}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
       },
-      //credentials: 'same-origin',
     }).then((response) => {
       response.json().then((data) => {
         console.log(data);
@@ -77,28 +80,28 @@ class Orbit extends Component {
     }).catch(err => console.log(err));
   }
 
-  datePicker(date, dateString) {
-    this.setState({ dateFrom: dateString[0], dateTo: dateString[1] })
-  }
-
-  selectSatellite(value, option) {
-    this.setState({ satelliteSelected: value });
-  }
-
-  onReplayChange(value) {
-    this.setState(value); // Set state from changes from replay component
-  }
-
   render() {
     return (
       <div>
         <Navbar />
         <OrbitThreeD data={this.state.currentCoord} />
+        <OrbitInformation
+          satellite={this.state.satellite}
+          x={this.state.currentCoord.x}
+          y={this.state.currentCoord.y}
+          z={this.state.currentCoord.z}
+        />
         <div style={{ padding: '1em' }}>
           <div style={{ background: '#ECECEC', padding: '10px' }}>
 
             <Card title="Orbit Information" bordered={false} style={{ width: '100%' }}>
-              {this.state.live === false ?
+              {this.props.live
+                ?
+                  <Live
+                    type="orbit"
+                    satellite={this.state.satellite}
+                  />
+                :
                 <Replay
                   type="orbit"
                   playable={this.state.playable}
@@ -109,14 +112,8 @@ class Orbit extends Component {
                   onReplayChange={this.onReplayChange.bind(this)}
                   ref="replay"
                 />
-              :
-              <Live
-                type="orbit"
-                satellite={this.state.satellite}
-              />
               }
               <br />
-              <OrbitInformation x={this.state.currentCoord.x} y={this.state.currentCoord.y} z={this.state.currentCoord.z} />
             </Card>
           </div>
         </div>
@@ -124,29 +121,7 @@ class Orbit extends Component {
 
         <div style={{ padding: '0 1em' }}>
           <div style={{ background: '#ECECEC', padding: '10px' }}>
-            <Card title="Replay" bordered={false} style={{ width: '100%' }}>
-              <Form layout="horizontal" onSubmit={this.submit.bind(this)}>
-                <Form.Item label="Satellite">
-                  <Select
-                    showSearch
-                    placeholder="Select satellite"
-                    onChange={this.selectSatellite.bind(this)}
-                    //optionFilterProp="children"
-                    //onChange={handleChange}
-                    //filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                  >
-                    <Select.Option value="cubesat1">cubesat1</Select.Option>
-                    <Select.Option value="neutron1">neutron1</Select.Option>
-                  </Select>
-                </Form.Item>
-                <Form.Item label="Date range">
-                  <DatePicker.RangePicker onChange={this.datePicker.bind(this)} showTime format="YYYY-MM-DD HH:mm:ss" />
-                </Form.Item>
-                <Button type="primary" htmlType="submit" className="login-form-button">
-                  Replay Orbit
-                </Button>
-              </Form>
-            </Card>
+            <ReplayForm onReplayFormSubmit={this.onReplayFormSubmit.bind(this)} />
           </div>
         </div>
       </div>

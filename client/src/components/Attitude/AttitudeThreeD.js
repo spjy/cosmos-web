@@ -35,8 +35,8 @@ class AttitudeThreeD extends Component {
     */
 
     // create a basic light, aiming 0,10,0 - meaning, to the sky
-    const light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 10, 0), scene);
-    const light2 = new BABYLON.HemisphericLight('light2', new BABYLON.Vector3(0, -10, 0), scene);
+    new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 10, 0), scene);
+    new BABYLON.HemisphericLight('light2', new BABYLON.Vector3(0, -10, 0), scene);
 
     /*
     /
@@ -164,15 +164,11 @@ class AttitudeThreeD extends Component {
     // load in satellite obj file
     BABYLON.SceneLoader.Load("/obj/", "cubesat.obj", engine, function(scene) { });
 
-    const CUBESAT = assetsManager.addMeshTask("CUBESAT", "", "/obj/", "cubesat.obj");
+    assetsManager.addMeshTask("CUBESAT", "", "/obj/", "cubesat.obj");
 
     BABYLON.SceneLoader.ImportMesh("", "obj/", "cubesat.obj", scene, (meshes) => {
       console.log(meshes);
       meshes[0].alwaysSelectAsActiveMesh = true;
-      // meshes[0].rotationQuaternion = new BABYLON.Quaternion(.5, .5, .5, 0);
-      // setInterval(() => {
-      //   meshes[0].rotationQuaternion = new BABYLON.Quaternion(Math.floor(Math.random() * 2) + 0.1, Math.floor(Math.random() * 2) + 0.1, Math.floor(Math.random() * 2) + 0.1, 0);
-      // }, 500);
 
       this.updateSatelliteAttitude = () => {
         meshes[0].rotationQuaternion = new BABYLON.Quaternion(this.props.data.w, this.props.data.x, this.props.data.y, this.props.data.z); //
@@ -188,7 +184,9 @@ class AttitudeThreeD extends Component {
   }
 
   componentWillUpdate = (nextProps, nextState) => {
-    this.updateSatelliteAttitude();
+    if (typeof this.updateSatelliteAttitude() === 'function') { // check if function is defined
+      this.updateSatelliteAttitude();
+    }
   }
 
   render() {
