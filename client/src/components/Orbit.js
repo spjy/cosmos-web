@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { Slider, Icon, DatePicker, Row, Col, Card, Form, Select, Button, Alert, Popconfirm, } from 'antd';
+import { DatePicker, Card, Form, Select, Button } from 'antd';
 import 'whatwg-fetch'
 import io from 'socket.io-client';
 
 import Navbar from './Global/Navbar';
+import Replay from './Global/Replay';
 import OrbitInformation from './Orbit/OrbitInformation';
-import LiveOrbit from './Orbit/LiveOrbit';
-import ReplayOrbit from './Orbit/ReplayOrbit';
+import Live from './Global/Live';
 import OrbitThreeD from './Orbit/OrbitThreeD';
 
 import '../App.css';
@@ -17,7 +17,8 @@ class Orbit extends Component {
 
   state = {
     live: false,
-    satellite: '',
+    satelliteSelected: '--',
+    satellite: '--',
     max: 500,
     slider: 0,
     playable: false,
@@ -33,52 +34,47 @@ class Orbit extends Component {
 
   componentDidMount() {
     socket.on('satellite orbit', (data) => {
-      if (data) {
-        this.setState({
-          live: true,
-          satellite: data.satellite,
-          currentCoord: {
-            x: data.x,
-            y: data.y,
-            z: data.z
-          }
-        });
+      if (this.state.replay.length === 0) {
+        if (data) {
+          this.setState({
+            live: true,
+            satellite: data.satellite,
+            currentCoord: {
+              x: data.x,
+              y: data.y,
+              z: data.z
+            }
+          });
+        }
       }
     });
   }
 
-  submit(e, poo, cheeks) {
+  submit(e) {
     e.preventDefault();
-    // fetch(`http://localhost:3003/api/replay/${this.state.dateFrom}/to/${this.state.dateTo}`, {
-    //   method: 'GET',
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   },
-    //   //credentials: 'same-origin',
-    //   "Access-Control-Allow-Origin": "http://localhost:3003",
-    // }).then((response) => {
-    //   console.log(response);
-    // });
-
-    socket.emit("satellite orbit history", {
-      dateFrom: this.state.dateFrom,
-      dateTo: this.state.dateTo
-    });
-
-    socket.on('satellite replay', (orbit) => {
-      if (orbit) {
-        this.setState({
-          live: false,
-          playable: true,
-          replay: orbit,
-          max: orbit.length,
-          currentCoord: orbit[0],
-          satellite: orbit[0].satellite,
-        });
-        this.refs.replayOrbit.startSlider(); // initialize function from replay component
-        this.setState({ playable: false });
-      }
-    });
+    fetch(`http://localhost:3001/api/replay/orbit/${this.state.satelliteSelected}/${this.state.dateFrom}/to/${this.state.dateTo}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      //credentials: 'same-origin',
+    }).then((response) => {
+      response.json().then((data) => {
+        console.log(data);
+        if (data && data.length > 0) {
+          this.setState({
+            live: false,
+            playable: true,
+            replay: data,
+            max: data.length,
+            currentCoord: data[0],
+            satellite: data[0].satellite,
+          });
+          this.refs.replay.startSlider(); // initialize function from replay component
+          this.setState({ playable: false });
+        }
+      });
+    }).catch(err => console.log(err));
   }
 
   datePicker(date, dateString) {
@@ -86,10 +82,10 @@ class Orbit extends Component {
   }
 
   selectSatellite(value, option) {
-    this.setState({ satellite: value });
+    this.setState({ satelliteSelected: value });
   }
 
-  onReplayOrbitChange(value) {
+  onReplayChange(value) {
     this.setState(value); // Set state from changes from replay component
   }
 
@@ -103,18 +99,19 @@ class Orbit extends Component {
 
             <Card title="Orbit Information" bordered={false} style={{ width: '100%' }}>
               {this.state.live === false ?
-                <ReplayOrbit
+                <Replay
                   type="orbit"
                   playable={this.state.playable}
                   satellite={this.state.satellite}
                   max={this.state.max}
                   slider={this.state.slider}
                   replay={this.state.replay}
-                  onReplayOrbitChange={this.onReplayOrbitChange.bind(this)}
-                  ref="replayOrbit"
+                  onReplayChange={this.onReplayChange.bind(this)}
+                  ref="replay"
                 />
               :
-              <LiveOrbit
+              <Live
+                type="orbit"
                 satellite={this.state.satellite}
               />
               }

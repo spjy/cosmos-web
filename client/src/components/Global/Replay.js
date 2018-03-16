@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Slider, Icon, Row, Col, Alert, Popconfirm } from 'antd';
 
-class ReplayOrbit extends Component {
+class Replay extends Component {
 
   startSlider() {
     if (this.props.playable) {
-      this.props.onReplayOrbitChange({
+      this.props.onReplayChange({
         playable: false // Prevent users from starting multiple intervals
       })
       this.sliderIncrement();
@@ -16,7 +16,7 @@ class ReplayOrbit extends Component {
   sliderIncrement() {
     this.slider = setInterval(() => {
       if (this.props.slider < this.props.max) { // Check if slider reached maximum value
-        this.props.onReplayOrbitChange({
+        this.props.onReplayChange({
           slider: this.props.slider + 1,
           currentCoord: this.props.replay[this.props.slider]
         });
@@ -32,13 +32,13 @@ class ReplayOrbit extends Component {
 
   stopSlider() {
     clearInterval(this.slider);
-    this.props.onReplayOrbitChange({
+    this.props.onReplayChange({
       playable: true
     });
   }
 
   onSliderChange(value) {
-    this.props.onReplayOrbitChange({
+    this.props.onReplayChange({
       slider: value
     });
   }
@@ -53,7 +53,11 @@ class ReplayOrbit extends Component {
         <Alert message={
           <div>
             Replay
-            <Popconfirm title="Switch to live view?" okText="Yes" cancelText="No">
+            <Popconfirm
+              title="Switch to live view?"
+              okText="Yes"
+              cancelText="No"
+              onConfirm={() => this.props.onReplayChange({ live: true, replay: [] })}>
               <a><Icon style={{ paddingLeft: "0.5em" }} type="swap" /></a>
             </Popconfirm>
           </div>
@@ -100,13 +104,13 @@ class ReplayOrbit extends Component {
   }
 }
 
-ReplayOrbit.propTypes = {
+Replay.propTypes = {
   type: PropTypes.string.isRequired,
   playable: PropTypes.bool.isRequired,
   satellite: PropTypes.string.isRequired,
   max: PropTypes.number.isRequired,
   slider: PropTypes.number.isRequired,
-  onReplayOrbitChange: PropTypes.func.isRequired,
+  onReplayChange: PropTypes.func.isRequired,
 }
 
-export default ReplayOrbit;
+export default Replay;

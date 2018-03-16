@@ -7,7 +7,7 @@ class LiveOrbit extends Component {
     return (
       <Alert message="Live" type="success" description={
         <div>
-          You are viewing the live orbit of <strong>{this.props.satellite}</strong>.
+          You are viewing the live {this.props.type} of <strong>{this.props.satellite}</strong>.
         </div>
       } showIcon />
     );
@@ -15,6 +15,7 @@ class LiveOrbit extends Component {
 }
 
 LiveOrbit.propTypes = {
+  type: PropTypes.string,
   satellite: PropTypes.string
 }
 

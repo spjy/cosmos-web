@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { Slider, Icon, DatePicker, Row, Col, Card, Form, Select, Button, Alert, Popconfirm } from 'antd';
+import { DatePicker, Card, Form, Select, Button } from 'antd';
 import 'whatwg-fetch'
 import io from 'socket.io-client';
 
 import Navbar from './Global/Navbar';
+import Replay from './Global/Replay';
 import AttitudeInformation from './Attitude/AttitudeInformation';
-import LiveOrbit from './Orbit/LiveOrbit';
-import ReplayOrbit from './Orbit/ReplayOrbit';
+import Live from './Global/Live';
 import AttitudeThreeD from './Attitude/AttitudeThreeD';
 
 import '../App.css';
@@ -16,10 +16,9 @@ const socket = io('http://localhost:3001');
 class Attitude extends Component {
 
   state = {
-    current: 'home',
     live: false,
-    satelliteOrbit: '',
-    satellite: '',
+    satelliteSelected: '',
+    satellite: '--',
     max: 500,
     slider: 0,
     playable: false,
@@ -35,76 +34,49 @@ class Attitude extends Component {
   };
 
   componentDidMount() {
-    socket.on('satellite orbit', (data) => {
-      if (data) {
-        this.setState({
-          live: true,
-          satellite: data.satellite,
-          currentCoord: {
-            x: data.x,
-            y: data.y,
-            z: data.z
-          }
-        });
+    socket.on('satellite attitude', (data) => {
+      if (this.state.replay.length === 0) {
+        if (data) {
+          this.setState({
+            live: true,
+            satellite: data.satellite,
+            currentCoord: {
+              w: data.w,
+              x: data.x,
+              y: data.y,
+              z: data.z
+            }
+          });
+        }
       }
     });
   }
 
-  startSlider() {
-    if (this.state.playable) {
-      this.setState({ playable: false }); // Prevent users from starting multiple intervals
-      this.sliderIncrement();
-    }
-  }
-
-  sliderIncrement() {
-    this.slider = setInterval(() => {
-      if (this.state.slider < this.state.max) { // Check if slider reached maximum value
-        this.setState({ slider: this.state.slider + 1,
-          currentCoord: this.state.replay[this.state.slider]
-        }); // If not, keep incrementing
-      } else {
-        this.stopSlider(); // If so, clear interval
-      }
-    }, 1000);
-  }
-
-  stopSlider() {
-    clearInterval(this.slider);
-    this.setState({ playable: true });
-  }
-
-  submit(e, poo, cheeks) {
+  submit(e) {
     e.preventDefault();
-    // fetch(`http://localhost:3003/api/replay/${this.state.dateFrom}/to/${this.state.dateTo}`, {
-    //   method: 'GET',
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   },
-    //   //credentials: 'same-origin',
-    //   "Access-Control-Allow-Origin": "http://localhost:3003",
-    // }).then((response) => {
-    //   console.log(response);
-    // });
-
-    socket.emit("satellite orbit history", {
-      dateFrom: this.state.dateFrom,
-      dateTo: this.state.dateTo
-    });
-
-    socket.on('satellite replay', (orbit) => {
-      if (orbit) {
-        this.setState({
-          live: false,
-          playable: true,
-          replay: orbit,
-          max: orbit.length,
-          currentCoord: orbit[0]
-        });
-        this.startSlider();
-        this.setState({ playable: false });
-      }
-    });
+    fetch(`http://localhost:3001/api/replay/attitude/${this.state.satelliteSelected}/${this.state.dateFrom}/to/${this.state.dateTo}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      //credentials: 'same-origin',
+    }).then((response) => {
+      response.json().then((data) => {
+        console.log(data);
+        if (data && data.length > 0) {
+          this.setState({
+            live: false,
+            playable: true,
+            replay: data,
+            max: data.length,
+            currentCoord: data[0],
+            satellite: data[0].satellite,
+          });
+          this.refs.replay.startSlider(); // initialize function from replay component
+          this.setState({ playable: false });
+        }
+      });
+    }).catch(err => console.log(err));
   }
 
   datePicker(date, dateString) {
@@ -112,15 +84,11 @@ class Attitude extends Component {
   }
 
   selectSatellite(value, option) {
-    this.setState({ satellite: value });
+    this.setState({ satelliteSelected: value });
   }
 
-  onSliderChange(value) {
-    this.setState({ slider: value });
-  }
-
-  componentWillUnmount() {
-    this.stopSlider();
+  onReplayChange(value) {
+    this.setState(value); // Set state from changes from replay component
   }
 
   render() {
@@ -130,62 +98,32 @@ class Attitude extends Component {
         <AttitudeThreeD data={this.state.currentCoord} />
         <div style={{ padding: '1em' }}>
           <div style={{ background: '#ECECEC', padding: '10px' }}>
-            <Card title="Orbit Information" bordered={false} style={{ width: '100%' }}>
+
+            <Card title="Attitude Information" bordered={false} style={{ width: '100%' }}>
               {this.state.live === false ?
-                // <ReplayOrbit
-                //   playable={this.state.playable}
-                //   satellite={this.state.satellite}
-                //   max={this.state.max}
-                //   slider={this.state.slider}
-                // />
-                  <Alert message={
-                    <div>
-                      Replay
-                      <Popconfirm title="Switch to live view?" okText="Yes" cancelText="No">
-                        <a><Icon style={{ paddingLeft: "0.5em" }} type="swap" /></a>
-                      </Popconfirm>
-                    </div>
-                  } type="warning"
-                    description={
-                      <div>
-                        You are viewing a replay orbit of <strong>{this.state.satellite}</strong>.
-                        <Row>
-                          <Col sm={2} md={1} style={{ paddingTop: '0.5em' }}>
-                            <Icon className="media-buttons"
-                              type="play-circle-o"
-                              onClick={this.startSlider.bind(this)}
-                            />
-                            &nbsp;
-                            <Icon className="media-buttons"
-                              type="pause-circle-o"
-                              onClick={this.stopSlider.bind(this)}
-                            />
-                            &nbsp;
-                            {this.state.slider}
-                          </Col>
-                          <Col sm={22} md={23}>
-                            <Slider
-                              defaultValue={0}
-                              value={this.state.slider}
-                              min={0} max={this.state.max}
-                              marks={{
-                                0: '0',
-                                [this.state.max / 2]: this.state.max / 2,
-                                [this.state.max]: this.state.max,
-                              }}
-                              onChange={this.onSliderChange.bind(this)}
-                            />
-                          </Col>
-                        </Row>
-                      </div>
-                    }
-                    showIcon
-                  />
+                <Replay
+                  type="attitude"
+                  playable={this.state.playable}
+                  satellite={this.state.satellite}
+                  max={this.state.max}
+                  slider={this.state.slider}
+                  replay={this.state.replay}
+                  onReplayChange={this.onReplayChange.bind(this)}
+                  ref="replay"
+                />
               :
-              <LiveOrbit satellite={this.state.satellite} />
+              <Live
+                type="attitude"
+                satellite={this.state.satellite}
+              />
               }
               <br />
-              <AttitudeInformation w={this.state.currentCoord.w} x={this.state.currentCoord.x} y={this.state.currentCoord.y} z={this.state.currentCoord.z} />
+              <AttitudeInformation
+                w={this.state.currentCoord.w}
+                x={this.state.currentCoord.x}
+                y={this.state.currentCoord.y}
+                z={this.state.currentCoord.z}
+              />
             </Card>
           </div>
         </div>
@@ -212,7 +150,7 @@ class Attitude extends Component {
                   <DatePicker.RangePicker onChange={this.datePicker.bind(this)} showTime format="YYYY-MM-DD HH:mm:ss" />
                 </Form.Item>
                 <Button type="primary" htmlType="submit" className="login-form-button">
-                  Replay Orbit
+                  Replay Attitude
                 </Button>
               </Form>
             </Card>

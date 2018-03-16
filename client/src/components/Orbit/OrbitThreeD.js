@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import * as BABYLON from 'babylonjs';
 import 'babylonjs-loaders'
 
 import BabylonScene from '../Global/BabylonScene';
 
 class OrbitThreeD extends Component {
+
+  constructor() {
+    super();
+    this.updateSatelliteLocation = this.updateSatelliteLocation;
+  }
 
   onSceneMount = (e) => {
     const { canvas, scene, engine } = e;
@@ -254,16 +260,22 @@ class OrbitThreeD extends Component {
   }
 
   componentWillUpdate = (nextProps, nextState) => {
-    this.updateSatelliteLocation();
+    if (this) {
+      this.updateSatelliteLocation();
+    }
   }
 
   render() {
-      return (
-          <div>
-            <BabylonScene onSceneMount={this.onSceneMount} />
-          </div>
-      )
+    return (
+      <div>
+        <BabylonScene onSceneMount={this.onSceneMount} />
+      </div>
+    )
   }
+}
+
+OrbitThreeD.propTypes = {
+  data: PropTypes.object.isRequired,
 }
 
 export default OrbitThreeD;

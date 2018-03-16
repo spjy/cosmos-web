@@ -9,6 +9,9 @@ const io = require('socket.io').listen(server);
 const dgram = require('dgram');
 const mongoose = require('mongoose');
 
+const cors = require('cors');
+app.use(cors());
+
 const routes = require('./routes');
 const models = require('./models');
 
@@ -86,7 +89,8 @@ cosmosSocket.on('message', function(message) {
         satellite_position_z);
 
       // Emit satellite position to client
-      io.emit('satellite position', {
+      io.emit('satellite orbit', {
+        satellite: 'cubesat1',
         x: satellite_position_x,
         y: satellite_position_y,
         z: satellite_position_z,
@@ -187,4 +191,4 @@ server.listen(3001, function() {
 	console.log('Server listening on port:s 3001');
 });
 
-//cosmosSocket.bind(10020, process.env.SATELLITE_IP);
+cosmosSocket.bind(10020, process.env.SATELLITE_IP);

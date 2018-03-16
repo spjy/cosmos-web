@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import * as BABYLON from 'babylonjs';
 import 'babylonjs-loaders'
 
@@ -18,7 +19,7 @@ class AttitudeThreeD extends Component {
     const makeTextPlane = function(text, color, size) {
       const dynamicTexture = new BABYLON.DynamicTexture("DynamicTexture", 50, scene, true);
       dynamicTexture.hasAlpha = true;
-      dynamicTexture.drawText(text, 5, 40, "bold 24px Arial", color, "transparent", true);
+      dynamicTexture.drawText(text, 5, 40, "bold 10px Arial", color, "transparent", true);
       const plane = new BABYLON.Mesh.CreatePlane("TextPlane", size, scene, true);
       plane.material = new BABYLON.StandardMaterial("TextPlaneMaterial", scene);
       plane.material.backFaceCulling = false;
@@ -165,7 +166,9 @@ class AttitudeThreeD extends Component {
 
     const CUBESAT = assetsManager.addMeshTask("CUBESAT", "", "/obj/", "cubesat.obj");
 
-    BABYLON.SceneLoader.ImportMesh("", "obj/", "cubesat.obj", scene, function(meshes) {
+    BABYLON.SceneLoader.ImportMesh("", "obj/", "cubesat.obj", scene, (meshes) => {
+      console.log(meshes);
+      meshes[0].alwaysSelectAsActiveMesh = true;
       // meshes[0].rotationQuaternion = new BABYLON.Quaternion(.5, .5, .5, 0);
       // setInterval(() => {
       //   meshes[0].rotationQuaternion = new BABYLON.Quaternion(Math.floor(Math.random() * 2) + 0.1, Math.floor(Math.random() * 2) + 0.1, Math.floor(Math.random() * 2) + 0.1, 0);
@@ -195,6 +198,10 @@ class AttitudeThreeD extends Component {
       </div>
     )
   }
+}
+
+AttitudeThreeD.propTypes = {
+  data: PropTypes.object.isRequired,
 }
 
 export default AttitudeThreeD;
