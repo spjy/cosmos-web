@@ -1,8 +1,7 @@
 # COSMOS Web #
 for the Hawaii Space Flight Laboratory, by Spencer Young
 
-COSMOS Web is an app that visualizes live orbit and attitude data using a 3D rendering. It also can save old data and replay it.
-
+COSMOS Web is an app that visualizes live orbit and attitude data using a 3D rendering. It also can save historical data and replay it.
 
 ### Requirements ###
 - MongoDB
@@ -12,7 +11,7 @@ COSMOS Web is an app that visualizes live orbit and attitude data using a 3D ren
 
 1. Clone the repository
 2. In `/`, rename `.env.example` to `.env`. For the `BROADCAST_IP`, enter the IP of the propagator or socket.
-3. Install dependencies: `npm install`
+3. Install dependencies in `/` and `/client`: `npm install`
 
 ### Running ###
 
