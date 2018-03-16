@@ -12,8 +12,8 @@ const data = [
 ];
 
 const cols = {
-  sold: { alias: '销售量' },
-  genre: { alias: '游戏种类' }
+  sold: { alias: 'Sold' },
+  genre: { alias: 'Genre' }
 };
 
 class Plot extends Component {

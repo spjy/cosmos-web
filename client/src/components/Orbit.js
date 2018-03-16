@@ -16,7 +16,6 @@ const socket = io('http://localhost:3001');
 class Orbit extends Component {
 
   state = {
-    current: 'home',
     live: false,
     satellite: '',
     max: 500,
@@ -48,30 +47,6 @@ class Orbit extends Component {
     });
   }
 
-  startSlider() {
-    if (this.state.playable) {
-      this.setState({ playable: false }); // Prevent users from starting multiple intervals
-      this.sliderIncrement();
-    }
-  }
-
-  sliderIncrement() {
-    this.slider = setInterval(() => {
-      if (this.state.slider < this.state.max) { // Check if slider reached maximum value
-        this.setState({ slider: this.state.slider + 1,
-          currentCoord: this.state.replay[this.state.slider]
-        }); // If not, keep incrementing
-      } else {
-        this.stopSlider(); // If so, clear interval
-      }
-    }, 1000);
-  }
-
-  stopSlider() {
-    clearInterval(this.slider);
-    this.setState({ playable: true });
-  }
-
   submit(e, poo, cheeks) {
     e.preventDefault();
     // fetch(`http://localhost:3003/api/replay/${this.state.dateFrom}/to/${this.state.dateTo}`, {
@@ -97,9 +72,10 @@ class Orbit extends Component {
           playable: true,
           replay: orbit,
           max: orbit.length,
-          currentCoord: orbit[0]
+          currentCoord: orbit[0],
+          satellite: orbit[0].satellite,
         });
-        this.startSlider();
+        this.refs.replayOrbit.startSlider(); // initialize function from replay component
         this.setState({ playable: false });
       }
     });
@@ -113,12 +89,8 @@ class Orbit extends Component {
     this.setState({ satellite: value });
   }
 
-  onSliderChange(value) {
-    this.setState({ slider: value });
-  }
-
-  componentWillUnmount() {
-    this.stopSlider();
+  onReplayOrbitChange(value) {
+    this.setState(value); // Set state from changes from replay component
   }
 
   render() {
@@ -128,59 +100,23 @@ class Orbit extends Component {
         <OrbitThreeD data={this.state.currentCoord} />
         <div style={{ padding: '1em' }}>
           <div style={{ background: '#ECECEC', padding: '10px' }}>
+
             <Card title="Orbit Information" bordered={false} style={{ width: '100%' }}>
               {this.state.live === false ?
-                // <ReplayOrbit
-                //   playable={this.state.playable}
-                //   satellite={this.state.satellite}
-                //   max={this.state.max}
-                //   slider={this.state.slider}
-                // />
-                  <Alert message={
-                    <div>
-                      Replay
-                      <Popconfirm title="Switch to live view?" okText="Yes" cancelText="No">
-                        <a><Icon style={{ paddingLeft: "0.5em" }} type="swap" /></a>
-                      </Popconfirm>
-                    </div>
-                  } type="warning"
-                    description={
-                      <div>
-                        You are viewing a replay orbit of <strong>{this.state.satellite}</strong>.
-                        <Row>
-                          <Col sm={2} md={1} style={{ paddingTop: '0.5em' }}>
-                            <Icon className="media-buttons"
-                              type="play-circle-o"
-                              onClick={this.startSlider.bind(this)}
-                            />
-                            &nbsp;
-                            <Icon className="media-buttons"
-                              type="pause-circle-o"
-                              onClick={this.stopSlider.bind(this)}
-                            />
-                            &nbsp;
-                            {this.state.slider}
-                          </Col>
-                          <Col sm={22} md={23}>
-                            <Slider
-                              defaultValue={0}
-                              value={this.state.slider}
-                              min={0} max={this.state.max}
-                              marks={{
-                                0: '0',
-                                [this.state.max / 2]: this.state.max / 2,
-                                [this.state.max]: this.state.max,
-                              }}
-                              onChange={this.onSliderChange.bind(this)}
-                            />
-                          </Col>
-                        </Row>
-                      </div>
-                    }
-                    showIcon
-                  />
+                <ReplayOrbit
+                  type="orbit"
+                  playable={this.state.playable}
+                  satellite={this.state.satellite}
+                  max={this.state.max}
+                  slider={this.state.slider}
+                  replay={this.state.replay}
+                  onReplayOrbitChange={this.onReplayOrbitChange.bind(this)}
+                  ref="replayOrbit"
+                />
               :
-              <LiveOrbit satellite={this.state.satellite} />
+              <LiveOrbit
+                satellite={this.state.satellite}
+              />
               }
               <br />
               <OrbitInformation x={this.state.currentCoord.x} y={this.state.currentCoord.y} z={this.state.currentCoord.z} />

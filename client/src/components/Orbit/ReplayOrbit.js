@@ -6,7 +6,9 @@ class ReplayOrbit extends Component {
 
   startSlider() {
     if (this.props.playable) {
-      this.setState({ playable: false }); // Prevent users from starting multiple intervals
+      this.props.onReplayOrbitChange({
+        playable: false // Prevent users from starting multiple intervals
+      })
       this.sliderIncrement();
     }
   }
@@ -14,9 +16,14 @@ class ReplayOrbit extends Component {
   sliderIncrement() {
     this.slider = setInterval(() => {
       if (this.props.slider < this.props.max) { // Check if slider reached maximum value
-        this.setState({ slider: this.props.slider + 1,
+        this.props.onReplayOrbitChange({
+          slider: this.props.slider + 1,
           currentCoord: this.props.replay[this.props.slider]
-        }); // If not, keep incrementing
+        });
+        // this.setState({
+        //   slider: this.props.slider + 1,
+        //   currentCoord: this.props.replay[this.props.slider]
+        // }); // If not, keep incrementing
       } else {
         this.stopSlider(); // If so, clear interval
       }
@@ -25,11 +32,15 @@ class ReplayOrbit extends Component {
 
   stopSlider() {
     clearInterval(this.slider);
-    this.setState({ playable: true });
+    this.props.onReplayOrbitChange({
+      playable: true
+    });
   }
 
   onSliderChange(value) {
-    this.setState({ slider: value });
+    this.props.onReplayOrbitChange({
+      slider: value
+    });
   }
 
   componentWillUnmount() {
@@ -49,15 +60,17 @@ class ReplayOrbit extends Component {
         } type="warning"
           description={
             <div>
-              You are viewing a replay orbit of <strong>{this.props.satellite}</strong>.
+              You are viewing a replay {this.props.type} of <strong>{this.props.satellite}</strong>.
               <Row>
                 <Col sm={2} md={1} style={{ paddingTop: '0.5em' }}>
-                  <Icon className="media-buttons"
+                  <Icon
+                    className="media-buttons"
                     type="play-circle-o"
                     onClick={this.startSlider.bind(this)}
                   />
                   &nbsp;
-                  <Icon className="media-buttons"
+                  <Icon
+                    className="media-buttons"
                     type="pause-circle-o"
                     onClick={this.stopSlider.bind(this)}
                   />
@@ -88,10 +101,12 @@ class ReplayOrbit extends Component {
 }
 
 ReplayOrbit.propTypes = {
+  type: PropTypes.string.isRequired,
   playable: PropTypes.bool.isRequired,
   satellite: PropTypes.string.isRequired,
   max: PropTypes.number.isRequired,
   slider: PropTypes.number.isRequired,
+  onReplayOrbitChange: PropTypes.func.isRequired,
 }
 
 export default ReplayOrbit;
