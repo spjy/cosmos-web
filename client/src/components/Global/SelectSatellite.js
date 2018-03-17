@@ -12,7 +12,6 @@ class SelectSatellite extends Component {
               placeholder="Select satellite"
               onChange={this.selectSatellite.bind(this)}
               //optionFilterProp="children"
-              //onChange={handleChange}
               //filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             >
               <Select.Option value="cubesat1">cubesat1</Select.Option>

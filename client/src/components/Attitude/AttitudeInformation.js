@@ -50,6 +50,7 @@ class AttitudeInformation extends Component {
 
 AttitudeInformation.propTypes = {
   satellite: PropTypes.string,
+  w: PropTypes.number,
   x: PropTypes.number,
   y: PropTypes.number,
   z: PropTypes.number

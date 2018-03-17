@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import { Card, Col, Row, Icon, Divider } from 'antd';
+import { Card, Col, Row, Icon } from 'antd';
 
 import Navbar from './Global/Navbar';
-
-
-
 
 class Home extends Component {
   render() {

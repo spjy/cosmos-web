@@ -1,22 +1,20 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Alert } from 'antd';
 
-class LiveOrbit extends Component {
-  render() {
-    return (
-      <Alert message="Live" type="success" description={
-        <div>
-          You are viewing the live {this.props.type} of <strong>{this.props.satellite}</strong>.
-        </div>
-      } showIcon />
-    );
-  }
-}
+const Live = ({ type, satellite }) => {
+  return (
+    <Alert message="Live" type="success" description={
+      <div>
+        You are viewing the live {type} of <strong>{satellite}</strong>.
+      </div>
+    } showIcon />
+  );
+};
 
-LiveOrbit.propTypes = {
+Live.propTypes = {
   type: PropTypes.string,
   satellite: PropTypes.string
-}
+};
 
-export default LiveOrbit;
+export default Live;

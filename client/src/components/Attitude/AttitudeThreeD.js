@@ -53,19 +53,6 @@ class AttitudeThreeD extends Component {
     // Camera zoom speed
     camera.wheelPrecision = 1000;
 
-    // $('#degreeOfView').submit((e) => {
-    //   e.preventDefault();
-    //   degreeOfView = $('#degree').val() * (Math.PI / 180);
-    //   console.log(degreeOfView);
-    // });
-    //
-    // $('#positionOfView').submit((e) => {
-    //   e.preventDefault();
-    //   positionOfView = $('#position').val().trim().split(',');
-    //   console.log(positionOfView);
-    //   camera.setPosition( new BABYLON.Vector3(Number(positionOfView[0]), Number(positionOfView[1]), Number(positionOfView[2])));
-    // });
-
     /*
     /
     /  SATELLITE AXES, ARROWS & TEXT
