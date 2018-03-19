@@ -10,10 +10,15 @@ describe('<Live />', () => {
     satellite: 'cubesat1',
   }
 
+  const wrapper = shallow(<Live type="orbit" satellite="cubesat1" />);
+
   it('renders <Live />', () => {
-    const wrapper = shallow(<Live {...props} />);
+    expect(wrapper.exists()).to.equal(true);
   });
 
-  it('displays the type of live feed correctly');
+  it('receives the correct props', () => {    
+    expect(wrapper.props().type).to.equal('orbit');
+  });
+
   it('displays the correct satellite');
 });
