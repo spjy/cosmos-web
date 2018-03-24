@@ -123,6 +123,7 @@ cosmosSocket.on('message', function(message) {
 
       // Emit data to client
       io.emit('satellite attitude', {
+        satellite: 'cubesat1',
         x: satellite_orientation_x,
         y: satellite_orientation_y,
         z: satellite_orientation_z,

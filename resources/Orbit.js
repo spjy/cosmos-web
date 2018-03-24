@@ -18,7 +18,7 @@ router.get(
         //   $gte: dateFrom,
         //   $lt: dateTo,
         // }
-      }).sort({ createdAt: -1 }).limit(50);
+      }).sort({ createdAt: -1 }).limit(500);
 
       res.json(orbit || {})
     } catch (error) {

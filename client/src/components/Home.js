@@ -8,7 +8,7 @@ class Home extends Component {
     return (
       <div>
         <div style={{ backgroundColor: '#ECECEC' }}>
-          <Navbar />
+          <Navbar current="home" />
           <div style={{padding: '5em', textAlign: 'center'}}>
             <h1>COSMOS Web</h1>
             for the Hawaii Space Flight Laboratory

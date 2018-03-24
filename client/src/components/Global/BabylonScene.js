@@ -44,9 +44,9 @@ class ThreeD extends Component {
       window.removeEventListener('resize', this.onResizeWindow);
     }
 
-    onCanvasLoaded = (c : HTMLCanvasElement) => {
-      if (c !== null) {
-        this.canvas = c;
+    onCanvasLoaded = (HTMLCanvasElement) => {
+      if (HTMLCanvasElement !== null) {
+        this.canvas = HTMLCanvasElement;
       }
     }
 

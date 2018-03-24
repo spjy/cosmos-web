@@ -40,6 +40,7 @@ class AttitudeInformation extends Component {
       y: y,
       z: z,
     }];
+    
     return (
       <div style={{ padding: '0 20em' }}>
         <Table columns={columns} dataSource={data} size="small" pagination={false} />

@@ -154,11 +154,15 @@ class AttitudeThreeD extends Component {
     assetsManager.addMeshTask("CUBESAT", "", "/obj/", "cubesat.obj");
 
     BABYLON.SceneLoader.ImportMesh("", "obj/", "cubesat.obj", scene, (meshes) => {
-      console.log(meshes);
       meshes[0].alwaysSelectAsActiveMesh = true;
 
       this.updateSatelliteAttitude = () => {
-        meshes[0].rotationQuaternion = new BABYLON.Quaternion(this.props.data.w, this.props.data.x, this.props.data.y, this.props.data.z); //
+        meshes[0].rotationQuaternion = new BABYLON.Quaternion(
+          this.props.data.w, 
+          this.props.data.x, 
+          this.props.data.y, 
+          this.props.data.z
+        );
       }
     });
 
@@ -171,7 +175,7 @@ class AttitudeThreeD extends Component {
   }
 
   componentWillUpdate = (nextProps, nextState) => {
-    if (typeof this.updateSatelliteAttitude() === 'function') { // check if function is defined
+    if (typeof(this.updateSatelliteAttitude) === 'function') { // check if function is defined
       this.updateSatelliteAttitude();
     }
   }

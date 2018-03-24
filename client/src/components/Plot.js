@@ -44,7 +44,7 @@ class Plot extends Component {
     }
     return (
       <div>
-        <Navbar />
+        <Navbar current="plot" />
         <br />
         <Chart height={400} data={dv} scale={cols} forceFit>
           <Legend />

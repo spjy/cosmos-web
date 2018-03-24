@@ -93,7 +93,7 @@ class Attitude extends Component {
   render() {
     return (
       <div>
-        <Navbar />
+        <Navbar current="attitude" />
         <AttitudeThreeD data={this.state.currentCoord} />
         <AttitudeInformation
           satellite={this.state.satellite}
@@ -106,7 +106,13 @@ class Attitude extends Component {
           <div style={{ background: '#ECECEC', padding: '10px' }}>
 
             <Card title="Attitude Information" bordered={false} style={{ width: '100%' }}>
-              {this.state.live === false ?
+              {this.state.live
+              ?
+                <Live
+                  type="attitude"
+                  satellite={this.state.satellite}
+                />
+              :
                 <Replay
                   type="attitude"
                   playable={this.state.playable}
@@ -117,11 +123,6 @@ class Attitude extends Component {
                   onReplayChange={this.onReplayChange.bind(this)}
                   ref="replay"
                 />
-              :
-              <Live
-                type="attitude"
-                satellite={this.state.satellite}
-              />
               }
             </Card>
           </div>

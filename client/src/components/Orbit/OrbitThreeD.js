@@ -260,7 +260,7 @@ class OrbitThreeD extends Component {
   }
 
   componentWillUpdate = (nextProps, nextState) => {
-    if (typeof this.updateSatelliteLocation() === 'function') { // check if function is defined
+    if (typeof(this.updateSatelliteLocation) === 'function') { // check if function is defined
       this.updateSatelliteLocation();
     }
   }

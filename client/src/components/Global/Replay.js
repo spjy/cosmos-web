@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Slider, Icon, Row, Col, Alert, Popconfirm } from 'antd';
+import moment from 'moment';
 
 class Replay extends Component {
 
@@ -14,16 +15,39 @@ class Replay extends Component {
   }
 
   sliderIncrement() {
+    // let delay = 1000;
+    // this.delay = () => {
+    //   if (this.props.slider < this.props.max) { // Check if slider reached maximum value
+    //     let date1;
+
+    //     if (this.props.slider === this.props.max - 1) { // Prevent from going above the maximum value
+    //       date1 = 0;
+    //     } else {
+    //       date1 = -(moment(this.props.replay[this.props.slider + 1].createdAt)); // get date one, convert to positive
+    //     }
+
+    //     let date2 = -(moment(this.props.replay[this.props.slider].createdAt)); // get date two, convert to positive
+        
+    //     delay = moment(date1).diff(moment(date2)); // find difference between two dates
+    //     console.log(delay);
+        
+    //     this.props.onReplayChange({
+    //       slider: this.props.slider + 1,
+    //       currentCoord: this.props.replay[this.props.slider]
+    //     });
+    //   } else {
+    //     this.stopSlider(); // If so, clear interval
+    //   }
+    //   setTimeout(this.delay, delay);
+    // }
+
+    // this.slider = setTimeout(this.delay, delay); // recursively increase interval
     this.slider = setInterval(() => {
       if (this.props.slider < this.props.max) { // Check if slider reached maximum value
         this.props.onReplayChange({
           slider: this.props.slider + 1,
           currentCoord: this.props.replay[this.props.slider]
         });
-        // this.setState({
-        //   slider: this.props.slider + 1,
-        //   currentCoord: this.props.replay[this.props.slider]
-        // }); // If not, keep incrementing
       } else {
         this.stopSlider(); // If so, clear interval
       }
@@ -32,6 +56,7 @@ class Replay extends Component {
 
   stopSlider() {
     clearInterval(this.slider);
+    
     this.props.onReplayChange({
       playable: true
     });

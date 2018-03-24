@@ -6,7 +6,7 @@ import { Menu, Icon } from 'antd';
 
 class Navbar extends Component {
   state = {
-    current: ''
+    current: this.props.current
   }
 
   // handleClick = (e) => {
@@ -48,7 +48,7 @@ class Navbar extends Component {
 }
 
 Navbar.propTypes = {
-  satellite: PropTypes.string
+  current: PropTypes.string
 }
 
 export default Navbar;

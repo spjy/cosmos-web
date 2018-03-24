@@ -64,6 +64,7 @@ class Orbit extends Component {
     }).then((response) => {
       response.json().then((data) => {
         console.log(data);
+        
         if (data && data.length > 0) {
           this.setState({
             live: false,
@@ -83,7 +84,7 @@ class Orbit extends Component {
   render() {
     return (
       <div>
-        <Navbar />
+        <Navbar current="orbit" />
         <OrbitThreeD data={this.state.currentCoord} />
         <OrbitInformation
           satellite={this.state.satellite}
@@ -95,28 +96,29 @@ class Orbit extends Component {
           <div style={{ background: '#ECECEC', padding: '10px' }}>
 
             <Card title="Orbit Information" bordered={false} style={{ width: '100%' }}>
-              {this.props.live
+              {this.state.live
                 ?
                   <Live
                     type="orbit"
                     satellite={this.state.satellite}
                   />
                 :
-                <Replay
-                  type="orbit"
-                  playable={this.state.playable}
-                  satellite={this.state.satellite}
-                  max={this.state.max}
-                  slider={this.state.slider}
-                  replay={this.state.replay}
-                  onReplayChange={this.onReplayChange.bind(this)}
-                  ref="replay"
-                />
+                  <Replay
+                    type="orbit"
+                    playable={this.state.playable}
+                    satellite={this.state.satellite}
+                    max={this.state.max}
+                    slider={this.state.slider}
+                    replay={this.state.replay}
+                    onReplayChange={this.onReplayChange.bind(this)}
+                    ref="replay"
+                  />
               }
               <br />
             </Card>
           </div>
         </div>
+
         <br />
 
         <div style={{ padding: '0 1em' }}>
