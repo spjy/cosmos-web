@@ -85,7 +85,7 @@ class Orbit extends Component {
     return (
       <div>
         <Navbar current="orbit" />
-        <OrbitThreeD data={this.state.currentCoord} />
+        <OrbitThreeD data={this.state.currentCoord} replay={this.state.replay} />
         <OrbitInformation
           satellite={this.state.satellite}
           x={this.state.currentCoord.x}

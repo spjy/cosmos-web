@@ -7,11 +7,6 @@ import BabylonScene from '../Global/BabylonScene';
 
 class OrbitThreeD extends Component {
 
-  constructor() {
-    super();
-    this.updateSatelliteLocation = this.updateSatelliteLocation;
-  }
-
   onSceneMount = (e) => {
     const { canvas, scene, engine } = e;
 

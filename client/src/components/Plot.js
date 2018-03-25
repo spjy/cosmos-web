@@ -32,9 +32,9 @@ class Plot extends Component {
     const dv = ds.createView().source(this.state.data);
     dv.transform({
       type: 'fold',
-      fields: [ 'cubesat1', 'neutron1' ], // 展开字段集
-      key: 'city', // key字段
-      value: 'temperature', // value字段
+      fields: [ 'cubesat1', 'neutron1' ],
+      key: 'satellite',
+      value: 'temperature',
     });
     console.log(dv);
     const cols = {
@@ -51,8 +51,8 @@ class Plot extends Component {
           <Axis name="month" />
           <Axis name="temperature" label={{formatter: val => `${val}°C`}}/>
           <Tooltip crosshairs={{type : "y"}}/>
-          <Geom type="line" position="month*temperature" size={2} color={'city'} />
-          <Geom type='point' position="month*temperature" size={4} shape={'circle'} color={'city'} style={{ stroke: '#fff', lineWidth: 1}} />
+          <Geom type="line" position="month*temperature" size={2} color={'satellite'} />
+          <Geom type='point' position="month*temperature" size={4} shape={'circle'} color={'satellite'} style={{ stroke: '#fff', lineWidth: 1}} />
         </Chart>
       </div>
     );

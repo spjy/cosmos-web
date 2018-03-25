@@ -29,19 +29,19 @@ class Replay extends Component {
     //     let date2 = -(moment(this.props.replay[this.props.slider].createdAt)); // get date two, convert to positive
         
     //     delay = moment(date1).diff(moment(date2)); // find difference between two dates
-    //     console.log(delay);
         
     //     this.props.onReplayChange({
     //       slider: this.props.slider + 1,
     //       currentCoord: this.props.replay[this.props.slider]
     //     });
+
+    //     setTimeout(this.delay, delay);
     //   } else {
     //     this.stopSlider(); // If so, clear interval
     //   }
-    //   setTimeout(this.delay, delay);
     // }
 
-    // this.slider = setTimeout(this.delay, delay); // recursively increase interval
+    // this.slider = setTimeout(this.delay, delay);
     this.slider = setInterval(() => {
       if (this.props.slider < this.props.max) { // Check if slider reached maximum value
         this.props.onReplayChange({
