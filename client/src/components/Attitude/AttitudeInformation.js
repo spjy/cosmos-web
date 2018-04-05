@@ -6,22 +6,22 @@ const columns = [{
   title: 'Satellite',
   dataIndex: 'satellite',
   key: 'satellite',
-  width: '15em'
+  width: '12%'
 }, {
   title: 'w',
   dataIndex: 'w',
   key: 'w',
-  width: '15em'
+  width: '22%'
 }, {
   title: 'x',
   dataIndex: 'x',
   key: 'x',
-  width: '15em'
+  width: '22%'
 }, {
   title: 'y',
   dataIndex: 'y',
   key: 'y',
-  width: '15em'
+  width: '22%'
 }, {
   title: 'z',
   dataIndex: 'z',
@@ -40,9 +40,9 @@ class AttitudeInformation extends Component {
       y: y,
       z: z,
     }];
-    
+
     return (
-      <div style={{ padding: '0 20em' }}>
+      <div style={{ padding: '1em' }}>
         <Table columns={columns} dataSource={data} size="small" pagination={false} />
       </div>
     );

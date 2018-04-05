@@ -6,17 +6,17 @@ const columns = [{
   title: 'Satellite',
   dataIndex: 'satellite',
   key: 'satellite',
-  width: '15em'
+  width: '16%'
 }, {
   title: 'x',
   dataIndex: 'x',
   key: 'x',
-  width: '15em'
+  width: '28%'
 }, {
   title: 'y',
   dataIndex: 'y',
   key: 'y',
-  width: '15em'
+  width: '28%'
 }, {
   title: 'z',
   dataIndex: 'z',
@@ -34,9 +34,9 @@ class OrbitInformation extends Component {
       y: y,
       z: z,
     }];
-    
+
     return (
-      <div style={{ padding: '0 20em' }}>
+      <div style={{ padding: '1em' }}>
         <Table columns={columns} dataSource={data} size="small" pagination={false} />
       </div>
     );

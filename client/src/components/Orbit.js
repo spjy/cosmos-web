@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import moment from 'moment';
 import { Card } from 'antd';
 import 'whatwg-fetch'
 import io from 'socket.io-client';
@@ -53,7 +54,6 @@ class Orbit extends Component {
   }
 
   onReplayFormSubmit(value) {
-
     const { satelliteSelected, dateFrom, dateTo } = value;
 
     fetch(`http://localhost:3001/api/replay/orbit/${satelliteSelected}/${dateFrom}/to/${dateTo}`, {
@@ -64,7 +64,7 @@ class Orbit extends Component {
     }).then((response) => {
       response.json().then((data) => {
         console.log(data);
-        
+
         if (data && data.length > 0) {
           this.setState({
             live: false,

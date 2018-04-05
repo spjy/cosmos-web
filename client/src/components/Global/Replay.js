@@ -15,48 +15,38 @@ class Replay extends Component {
   }
 
   sliderIncrement() {
-    // let delay = 1000;
-    // this.delay = () => {
-    //   if (this.props.slider < this.props.max) { // Check if slider reached maximum value
-    //     let date1;
-
-    //     if (this.props.slider === this.props.max - 1) { // Prevent from going above the maximum value
-    //       date1 = 0;
-    //     } else {
-    //       date1 = -(moment(this.props.replay[this.props.slider + 1].createdAt)); // get date one, convert to positive
-    //     }
-
-    //     let date2 = -(moment(this.props.replay[this.props.slider].createdAt)); // get date two, convert to positive
-        
-    //     delay = moment(date1).diff(moment(date2)); // find difference between two dates
-        
-    //     this.props.onReplayChange({
-    //       slider: this.props.slider + 1,
-    //       currentCoord: this.props.replay[this.props.slider]
-    //     });
-
-    //     setTimeout(this.delay, delay);
-    //   } else {
-    //     this.stopSlider(); // If so, clear interval
-    //   }
-    // }
-
-    // this.slider = setTimeout(this.delay, delay);
-    this.slider = setInterval(() => {
+    let delay = 1000;
+    this.delay = () => {
       if (this.props.slider < this.props.max) { // Check if slider reached maximum value
+        let date1;
+
+        if (this.props.slider === this.props.max - 1) { // Prevent from going above the maximum value
+          date1 = 0;
+        } else {
+          date1 = -(moment(this.props.replay[this.props.slider + 1].createdAt)); // get date one, convert to positive
+        }
+
+        let date2 = -(moment(this.props.replay[this.props.slider].createdAt)); // get date two, convert to positive
+
+        delay = moment(date1).diff(moment(date2)); // find difference between two dates
+
         this.props.onReplayChange({
           slider: this.props.slider + 1,
           currentCoord: this.props.replay[this.props.slider]
         });
+
+        this.slider = setTimeout(this.delay, delay);
       } else {
         this.stopSlider(); // If so, clear interval
       }
-    }, 1000);
+    }
+
+    setTimeout(this.delay, delay);
   }
 
   stopSlider() {
-    clearInterval(this.slider);
-    
+    clearTimeout(this.slider);
+
     this.props.onReplayChange({
       playable: true
     });

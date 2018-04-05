@@ -41,7 +41,7 @@ class ReplayForm extends Component {
               </Select>
             </Form.Item>
             <Form.Item label="Date range">
-              <DatePicker.RangePicker onChange={this.datePicker.bind(this)} showTime format="YYYY-MM-DD HH:mm:ss" />
+              <DatePicker.RangePicker onChange={this.datePicker.bind(this)} showTime format="YYYY-MM-DDTHH:mm:ssZ" />
             </Form.Item>
             <Button type="primary" htmlType="submit" className="login-form-button">
               Replay Orbit
