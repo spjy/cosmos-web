@@ -14,7 +14,7 @@ COSMOS Web is an app that visualizes live orbit and attitude data using a 3D ren
 2. In `/`, rename `.env.example` to `.env`. Replace `SATELLITE_IP` with the IP of the propagator or socket.
 3. Install dependencies in `/` and `/client`: 
 ```
-npm install
+$ npm install
 ```
 
 ### Running ###
