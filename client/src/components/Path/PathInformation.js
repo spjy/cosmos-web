@@ -9,13 +9,13 @@ const columns = [{
   width: '16%'
 }, {
   title: 'Latitude',
-  dataIndex: 'x',
-  key: 'x',
+  dataIndex: 'latitude',
+  key: 'latitude',
   width: '42%'
 }, {
   title: 'Longitude',
-  dataIndex: 'y',
-  key: 'y',
+  dataIndex: 'longitude',
+  key: 'longitude',
   width: '42%'
 }, {
 }];
