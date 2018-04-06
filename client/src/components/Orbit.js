@@ -54,9 +54,9 @@ class Orbit extends Component {
   }
 
   onReplayFormSubmit(value) {
-    const { satelliteSelected, dateFrom, dateTo } = value;
+    const { selected, dateFrom, dateTo } = value;
 
-    fetch(`http://localhost:3001/api/replay/orbit/${satelliteSelected}/${dateFrom}/to/${dateTo}`, {
+    fetch(`http://localhost:3001/api/replay/orbit/${selected}/${dateFrom}/to/${dateTo}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -94,7 +94,6 @@ class Orbit extends Component {
         />
         <div style={{ padding: '1em' }}>
           <div style={{ background: '#ECECEC', padding: '10px' }}>
-
             <Card title="Orbit Information" bordered={false} style={{ width: '100%' }}>
               {this.state.live
                 ?

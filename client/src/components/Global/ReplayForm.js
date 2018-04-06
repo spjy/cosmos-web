@@ -4,7 +4,7 @@ import { Card, Form, Select, Button, DatePicker } from 'antd';
 class ReplayForm extends Component {
 
   state = {
-    select: '',
+    selected: '',
     dateFrom: '',
     dateTo: '',
   }
@@ -13,14 +13,14 @@ class ReplayForm extends Component {
     this.setState({ dateFrom: dateString[0], dateTo: dateString[1] })
   }
 
-  select(value, option) {
-    this.setState({ select: value });
+  selected(value, option) {
+    this.setState({ selected: value });
   }
 
   submit(e) {
     e.preventDefault();
     this.props.onReplayFormSubmit({
-      select: this.state.select,
+      selected: this.state.selected,
       dateFrom: this.state.dateFrom,
       dateTo: this.state.dateTo,
     })
@@ -35,7 +35,7 @@ class ReplayForm extends Component {
               <Select
                 showSearch
                 placeholder="Select"
-                onChange={this.select.bind(this)}
+                onChange={this.selected.bind(this)}
               >
                 <Select.Option value="cubesat1">cubesat1</Select.Option>
               </Select>

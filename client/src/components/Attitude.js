@@ -51,9 +51,9 @@ class Attitude extends Component {
   }
 
   onReplayFormSubmit(value) {
-    const { satelliteSelected, dateFrom, dateTo } = value;
+    const { selected, dateFrom, dateTo } = value;
 
-    fetch(`http://localhost:3001/api/replay/attitude/${satelliteSelected}/${dateFrom}/to/${dateTo}`, {
+    fetch(`http://localhost:3001/api/replay/attitude/${selected}/${dateFrom}/to/${dateTo}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'

@@ -23,6 +23,7 @@ class GoogleMaps extends Component {
       <GoogleMap
         defaultZoom={8}
         defaultCenter={{ lat: 50, lng: 1 }}
+        options={{ gestureHandling: "greedy" }}
       >
         {this.state.lines.map((line, i) => {
           return (
