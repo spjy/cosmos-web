@@ -44,7 +44,7 @@ class Path extends Component {
     });
   }
 
-  onReplayFormSubmit() {
+  onReplayFormSubmit(value) {
     const { selected, dateFrom, dateTo } = value;
 
     fetch(`http://localhost:3001/api/replay/path/${selected}/${dateFrom}/to/${dateTo}`, {
