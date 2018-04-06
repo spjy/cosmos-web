@@ -58,6 +58,10 @@ class Replay extends Component {
     });
   }
 
+  onConfirmLiveView() {
+    this.props.onReplayChange({ live: true, replay: [] });
+  }
+
   componentWillUnmount() {
     this.stopSlider();
   }
@@ -72,7 +76,7 @@ class Replay extends Component {
               title="Switch to live view?"
               okText="Yes"
               cancelText="No"
-              onConfirm={() => this.props.onReplayChange({ live: true, replay: [] })}>
+              onConfirm={this.onConfirmLiveView.bind(this)}>
               <a><Icon style={{ paddingLeft: "0.5em" }} type="swap" /></a>
             </Popconfirm>
           </div>

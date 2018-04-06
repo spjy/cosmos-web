@@ -54,7 +54,7 @@ class ThreeD extends Component {
     return (
       <div>
         <canvas
-          id="satWorldView"
+          id="scene"
           ref={this.onCanvasLoaded}></canvas>
         {/* <canvas id="satRotView"></canvas> */}
       </div>

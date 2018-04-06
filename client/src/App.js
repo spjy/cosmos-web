@@ -5,6 +5,7 @@ import Home from './components/Home';
 import Orbit from './components/Orbit';
 import Attitude from './components/Attitude';
 import Plot from './components/Plot';
+import Path from './components/Path';
 
 const App = ({}) => (
   <div>
@@ -14,6 +15,7 @@ const App = ({}) => (
         <Route exact path="/orbit" component={Orbit} />
         <Route exact path="/attitude" component={Attitude} />
         <Route exact path="/plot" component={Plot} />
+        <Route exact path="/path" component={Path} />
       </Switch>
     </Router>
   </div>
