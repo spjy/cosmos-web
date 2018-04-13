@@ -16,6 +16,10 @@ COSMOS Web is an app that visualizes live orbit and attitude data using a 3D ren
 ```
 $ npm install
 ```
+4. Install nodemon globally:
+```
+$ npm install -g nodemon
+```
 
 ### Running ###
 

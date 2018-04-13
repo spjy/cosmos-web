@@ -28,33 +28,6 @@ mongoose.connect(process.env.MONGO_URL, (err) => {
   }
 });
 
-io.on('connection', function (socket) {
-  socket.on('satellite orbit history', async (date) => {
-
-    console.log(date.dateFrom, date.dateTo, 'i got activated k');
-    let orbit;
-
-    try {
-      orbit = await models.Orbit.find({
-        satellite: 'cubesat1'
-      }).sort({ createdAt: -1 }).limit(50);
-
-      socket.emit('satellite replay', orbit);
-      //console.log(orbit);
-
-    } catch (error) {
-      orbit = error;
-
-      socket.emit('satellite replay', orbit);
-    }
-	});
-});
-
-// io.on('satellite orbit history', async (socket) => {
-//   console.log('i got activated k');
-//
-// })
-
 const cosmosSocket = dgram.createSocket({ type: 'udp4', reuseAddr: true });
 
 cosmosSocket.on('listening', () => {
@@ -84,9 +57,9 @@ cosmosSocket.on('message', function(message) {
       let satellite_position_y = obj.node_loc_pos_eci.pos[1] / 1000;
       let satellite_position_z = obj.node_loc_pos_eci.pos[2] / 1000;
 
-      console.log(satellite_position_x,
-        satellite_position_y,
-        satellite_position_z);
+      // console.log(satellite_position_x,
+      //   satellite_position_y,
+      //   satellite_position_z);
 
       // Emit satellite position to client
       io.emit('satellite orbit', {
@@ -168,25 +141,6 @@ cosmosSocket.on('message', function(message) {
   }
 
 });
-
-// app.use(function (req, res, next) {
-//
-//   // Website you wish to allow to connect
-//   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3003');
-//
-//   // Request methods you wish to allow
-//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-//
-//   // Request headers you wish to allow
-//   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-//
-//   // Set to true if you need the website to include cookies in the requests sent
-//   // to the API (e.g. in case you use sessions)
-//   res.setHeader('Access-Control-Allow-Credentials', true);
-//
-//   // Pass to next layer of middleware
-//   next();
-// });
 
 server.listen(3001, function() {
 	console.log('Server listening on port:s 3001');
