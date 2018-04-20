@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card } from 'antd';
+import { notification } from 'antd';
 import 'whatwg-fetch'
 import io from 'socket.io-client';
 
@@ -75,7 +75,13 @@ class Attitude extends Component {
           this.setState({ playable: false });
         }
       });
-    }).catch(err => console.log(err));
+    }).catch(err => {
+      notification.error({
+        message: 'Error',
+        description: 'An error occurred.'
+      })
+      console.log(err)
+    });
   }
 
   datePicker(date, dateString) {
@@ -93,8 +99,14 @@ class Attitude extends Component {
   render() {
     return (
       <div>
-        <Navbar current="attitude" />
-        <AttitudeThreeD data={this.state.currentCoord} />
+        <Navbar
+          current="attitude"
+        />
+
+        <AttitudeThreeD
+          data={this.state.currentCoord}
+        />
+
         <AttitudeInformation
           satellite={this.state.satellite}
           w={this.state.currentCoord.w}
@@ -102,39 +114,31 @@ class Attitude extends Component {
           y={this.state.currentCoord.y}
           z={this.state.currentCoord.z}
         />
-        <div style={{ padding: '1em' }}>
-          <div style={{ background: '#ECECEC', padding: '10px' }}>
 
-            <Card title="Attitude Information" bordered={false} style={{ width: '100%' }}>
-              {this.state.live
-              ?
-                <Live
-                  type="attitude"
-                  satellite={this.state.satellite}
-                />
-              :
-                <Replay
-                  type="attitude"
-                  playable={this.state.playable}
-                  satellite={this.state.satellite}
-                  max={this.state.max}
-                  slider={this.state.slider}
-                  replay={this.state.replay}
-                  onReplayChange={this.onReplayChange.bind(this)}
-                  ref="replay"
-                />
-              }
-            </Card>
-          </div>
-        </div>
+        {this.state.live
+        ?
+          <Live
+            type="attitude"
+            satellite={this.state.satellite}
+          />
+        :
+          <Replay
+            type="attitude"
+            playable={this.state.playable}
+            satellite={this.state.satellite}
+            max={this.state.max}
+            slider={this.state.slider}
+            replay={this.state.replay}
+            onReplayChange={this.onReplayChange.bind(this)}
+            ref="replay"
+          />
+        }
+
         <br />
 
-        <div style={{ padding: '0 1em' }}>
-          <div style={{ background: '#ECECEC', padding: '10px' }}>
-            <ReplayForm onReplayFormSubmit={this.onReplayFormSubmit.bind(this)} />
-
-          </div>
-        </div>
+        <ReplayForm
+          onReplayFormSubmit={this.onReplayFormSubmit.bind(this)}
+        />
       </div>
     );
   }

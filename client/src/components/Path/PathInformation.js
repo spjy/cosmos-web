@@ -33,7 +33,10 @@ class OrbitInformation extends Component {
 
     return (
       <div style={{ padding: '1em' }}>
-        <Table columns={columns} dataSource={data} size="small" pagination={false} />
+        <Table
+          columns={columns}
+          dataSource={data} size="small"
+          pagination={false} />
       </div>
     );
   }

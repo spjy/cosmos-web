@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Card } from 'antd';
+import { notification } from 'antd';
 import io from 'socket.io-client';
 
 import Navbar from './Global/Navbar';
 import GoogleMaps from './Path/GoogleMaps';
 import PathInformation from './Path/PathInformation';
+import BalloonInformation from './Path/BalloonInformation';
 import Live from './Global/Live';
 import Replay from './Global/Replay';
 import ReplayForm from './Global/ReplayForm';
@@ -54,8 +55,6 @@ class Path extends Component {
       },
     }).then((response) => {
       response.json().then((data) => {
-        console.log(data);
-
         if (data && data.length > 0) {
           this.setState({
             live: false,
@@ -68,8 +67,20 @@ class Path extends Component {
           this.refs.replay.startSlider(); // initialize function from replay component
           this.setState({ playable: false });
         }
+      }).catch(err => {
+        notification.error({
+          message: 'Error',
+          description: 'An error occurred.'
+        })
+        console.log(err);
       });
-    }).catch(err => console.log(err));
+    }).catch(err => {
+      notification.error({
+        message: 'Error',
+        description: 'An error occurred.'
+      })
+      console.log(err);
+    });
   }
 
   onReplayChange(value) {
@@ -79,13 +90,21 @@ class Path extends Component {
   render() {
     return (
       <div>
-        <Navbar current="path" />
+        <Navbar
+          current="path"
+        />
 
         <GoogleMaps
           googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyBv6j0uD6J2xfPGI_gR-0aYH7qLhrxCR8s&v=3.exp&libraries=geometry,drawing,places"
           loadingElement={<div style={{ height: `80bh` }} />}
-          containerElement={<div style={{ height: `80vh` }} />}
-          mapElement={<div style={{ height: `80vh` }} />}
+          containerElement={<div style={{ height: `72vh` }} />}
+          mapElement={<div style={{ height: `72vh` }} />}
+        />
+
+        <BalloonInformation
+          velocity={5}
+          acceleration={3}
+          altitude={100}
         />
 
         <PathInformation
@@ -94,37 +113,28 @@ class Path extends Component {
           longitude={1.1}
         />
 
-        <div style={{ padding: '1em' }}>
-          <div style={{ background: '#ECECEC', padding: '10px' }}>
-            <Card title="Path Information" bordered={false} style={{ width: '100%' }}>
-              {this.state.live
-                ?
-                  <Live
-                    type="orbit"
-                    satellite={this.state.satellite}
-                  />
-                :
-                  <Replay
-                    type="orbit"
-                    playable={this.state.playable}
-                    satellite={this.state.satellite}
-                    max={this.state.max}
-                    slider={this.state.slider}
-                    replay={this.state.replay}
-                    onReplayChange={this.onReplayChange.bind(this)}
-                    ref="replay"
-                  />
-              }
-              <br />
-            </Card>
-          </div>
-        </div>
+        {this.state.live
+          ?
+            <Live
+              type="orbit"
+              satellite={this.state.satellite}
+            />
+          :
+            <Replay
+              type="orbit"
+              playable={this.state.playable}
+              satellite={this.state.satellite}
+              max={this.state.max}
+              slider={this.state.slider}
+              replay={this.state.replay}
+              onReplayChange={this.onReplayChange.bind(this)}
+              ref="replay"
+            />
+        }
 
-       <div style={{ padding: '0 1em' }}>
-         <div style={{ background: '#ECECEC', padding: '10px' }}>
-           <ReplayForm onReplayFormSubmit={this.onReplayFormSubmit.bind(this)} />
-         </div>
-       </div>
+        <br />
+
+        <ReplayForm onReplayFormSubmit={this.onReplayFormSubmit.bind(this)} />
       </div>
     );
   }

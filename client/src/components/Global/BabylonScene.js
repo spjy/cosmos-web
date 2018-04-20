@@ -52,12 +52,7 @@ class ThreeD extends Component {
 
   render() {
     return (
-      <div>
-        <canvas
-          id="scene"
-          ref={this.onCanvasLoaded}></canvas>
-        {/* <canvas id="satRotView"></canvas> */}
-      </div>
+      <canvas id="scene" ref={this.onCanvasLoaded}></canvas>
     );
 
   }

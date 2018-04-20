@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Chart, Geom, Axis, Tooltip, Legend, Coord } from 'bizcharts';
+import { Chart, Geom, Axis, Tooltip, Legend } from 'bizcharts';
 import DataSet from '@antv/data-set';
 
 import Navbar from './Global/Navbar';
