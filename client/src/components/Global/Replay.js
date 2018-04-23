@@ -30,7 +30,7 @@ class Replay extends Component {
 
         delay = moment(date1).diff(moment(date2)); // find difference between two dates
 
-        this.props.onReplayChange({
+        this.props.onReplayChange({ // send data to parent
           slider: this.props.slider + 1,
           currentCoord: this.props.replay[this.props.slider]
         });
@@ -45,42 +45,44 @@ class Replay extends Component {
   }
 
   stopSlider() {
-    clearTimeout(this.slider);
+    clearTimeout(this.slider); // stop timeout
 
-    this.props.onReplayChange({
+    this.props.onReplayChange({ // allow replay to be played
       playable: true
     });
   }
 
   onSliderChange(value) {
-    this.props.onReplayChange({
+    this.props.onReplayChange({ // change value of slider
       slider: value
     });
   }
 
   onConfirmLiveView() {
-    this.props.onReplayChange({ live: true, replay: [] });
+    this.props.onReplayChange({ live: true, replay: [] }); // change to live view
   }
 
   componentWillUnmount() {
-    this.stopSlider();
+    this.stopSlider(); // stop slider
   }
 
   render() {
     return (
-      <div>
-        <Alert message={
-          <div>
-            Replay
-            <Popconfirm
-              title="Switch to live view?"
-              okText="Yes"
-              cancelText="No"
-              onConfirm={this.onConfirmLiveView.bind(this)}>
-              <a><Icon style={{ paddingLeft: "0.5em" }} type="swap" /></a>
-            </Popconfirm>
-          </div>
-        } type="warning"
+      <div style={{ padding: '1em' }}>
+        <Alert
+          message={
+            <div>
+              Replay
+              <Popconfirm
+                title="Switch to live view?"
+                okText="Yes"
+                cancelText="No"
+                onConfirm={this.onConfirmLiveView.bind(this)}>
+                <a><Icon style={{ paddingLeft: "0.5em" }} type="swap" /></a>
+              </Popconfirm>
+            </div>
+          }
+          type="warning"
           description={
             <div>
               You are viewing a replay {this.props.type} of <strong>{this.props.satellite}</strong>.

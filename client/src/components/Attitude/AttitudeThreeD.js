@@ -29,9 +29,7 @@ class AttitudeThreeD extends Component {
     };
 
     /*
-    /
     /  LIGHTS
-    /
     */
 
     // create a basic light, aiming 0,10,0 - meaning, to the sky
@@ -39,9 +37,7 @@ class AttitudeThreeD extends Component {
     new BABYLON.HemisphericLight('light2', new BABYLON.Vector3(0, -10, 0), scene);
 
     /*
-    /
     /  CAMERA
-    /
     */
 
     // create arc rotate camera at initial arc pi/4 pi/4 at radius 20 centered around (0,0,0)
@@ -54,9 +50,7 @@ class AttitudeThreeD extends Component {
     camera.wheelPrecision = 1000;
 
     /*
-    /
     /  SATELLITE AXES, ARROWS & TEXT
-    /
     */
 
     // Reusable satellite axis settings
@@ -65,70 +59,59 @@ class AttitudeThreeD extends Component {
       diameterTop: 0.01,
       diameterBottom: 0.01,
       tessellation: 10,
-      position: 25
+      position: 25,
+    };
+
+    const satArrowSettings = {
+      height: 0.1,
+      diameterTop: 0,
+      diameterBottom: 0.1,
+      tessellation: 10,
     };
 
     // cylindrical z axis with args height, top diameter, bottom diameter, tessellations, (3) face colors
     const satAxisX = BABYLON.MeshBuilder.CreateCylinder("satAxisX", {
-      height: satAxisSettings.height,
-      diameterTop: satAxisSettings.diameterTop,
-      diameterBottom: satAxisSettings.diameterBottom,
-      tessellation: satAxisSettings.tessellation,
-      faceColors: [new BABYLON.Color4(1, 0, 0, 1), new BABYLON.Color4(1, 0, 0, 1), new BABYLON.Color4(1, 0, 0, 1)]
+      ...satAxisSettings,
+      faceColors: [new BABYLON.Color4(1, 0, 0, 1), new BABYLON.Color4(1, 0, 0, 1), new BABYLON.Color4(1, 0, 0, 1)],
     }, scene);
     satAxisX.position = new BABYLON.Vector3(satAxisSettings.position, 0, 0);
     satAxisX.rotation = new BABYLON.Vector3(0, 0, (3 * Math.PI) / 2);
 
     // cylindrical z axis with args height, top diameter, bottom diameter, tessellations, (3) face colors
     const satAxisY = BABYLON.MeshBuilder.CreateCylinder("satAxisY", {
-      height: satAxisSettings.height,
-      diameterTop: satAxisSettings.diameterTop,
-      diameterBottom: satAxisSettings.diameterBottom,
-      tessellation: satAxisSettings.tessellation,
-      faceColors: [new BABYLON.Color4(0, 1, 0, 1), new BABYLON.Color4(0, 1, 0, 1), new BABYLON.Color4(0, 1, 0, 1)]
+      ...satAxisSettings,
+      faceColors: [new BABYLON.Color4(0, 1, 0, 1), new BABYLON.Color4(0, 1, 0, 1), new BABYLON.Color4(0, 1, 0, 1)],
     }, scene);
     satAxisY.position = new BABYLON.Vector3(0, satAxisSettings.position, 0);
     satAxisY.rotation = new BABYLON.Vector3(0, (3 * Math.PI) / 2, 0);
 
     // cylindrical z axis with args height, top diameter, bottom diameter, tessellations, (3) face colors
     const satAxisZ = BABYLON.MeshBuilder.CreateCylinder("satAxisZ", {
-      height: satAxisSettings.height,
-      diameterTop: satAxisSettings.diameterTop,
-      diameterBottom: satAxisSettings.diameterBottom,
-      tessellation: satAxisSettings.tessellation,
-      faceColors: [new BABYLON.Color4(0, 0, 1, 1), new BABYLON.Color4(0, 0, 1, 1), new BABYLON.Color4(0, 0, 1, 1)]
+      ...satAxisSettings,
+      faceColors: [new BABYLON.Color4(0, 0, 1, 1), new BABYLON.Color4(0, 0, 1, 1), new BABYLON.Color4(0, 0, 1, 1)],
     }, scene);
     satAxisZ.position = new BABYLON.Vector3(0, 0, satAxisSettings.position);
     satAxisZ.rotation = new BABYLON.Vector3((3 * Math.PI) / 2, 0, 0);
 
     // create cylinder for x axis at (1,0,0)
     const satArrowX = BABYLON.MeshBuilder.CreateCylinder("satArrowX", {
-      height: 0.1,
-      diameterTop: 0,
-      diameterBottom: 0.1,
-      tessellation: 10,
-      faceColors: [new BABYLON.Color4(1, 0, 0, 1), new BABYLON.Color4(1, 0, 0, 1), new BABYLON.Color4(1, 0, 0, 1)]
+      ...satArrowSettings,
+      faceColors: [new BABYLON.Color4(1, 0, 0, 1), new BABYLON.Color4(1, 0, 0, 1), new BABYLON.Color4(1, 0, 0, 1)],
     }, scene);
     satArrowX.position = new BABYLON.Vector3(1, 0, 0);
     satArrowX.rotation = new BABYLON.Vector3(0, 0, (3 * Math.PI) / 2);
 
     // create arrow for y axis at (0,1,0)
     const satArrowY = BABYLON.MeshBuilder.CreateCylinder("satArrowY", {
-      height: 0.1,
-      diameterTop: 0,
-      diameterBottom: 0.1,
-      tessellation: 10,
-      faceColors: [new BABYLON.Color4(0, 1, 0, 1), new BABYLON.Color4(0, 1, 0, 1), new BABYLON.Color4(0, 1, 0, 1)]
+      ...satArrowSettings,
+      faceColors: [new BABYLON.Color4(0, 1, 0, 1), new BABYLON.Color4(0, 1, 0, 1), new BABYLON.Color4(0, 1, 0, 1)],
     }, scene);
     satArrowY.position = new BABYLON.Vector3(0, 1, 0);
 
     // create arrow for x axis at (0,0,1)
     const satArrowZ = BABYLON.MeshBuilder.CreateCylinder("satArrowZ", {
-      height: 0.1,
-      diameterTop: 0,
-      diameterBottom: 0.1,
-      tessellation: 10,
-      faceColors: [new BABYLON.Color4(0, 0, 1, 1), new BABYLON.Color4(0, 0, 1, 1), new BABYLON.Color4(0, 0, 1, 1)]
+      ...satArrowSettings,
+      faceColors: [new BABYLON.Color4(0, 0, 1, 1), new BABYLON.Color4(0, 0, 1, 1), new BABYLON.Color4(0, 0, 1, 1)],
     }, scene);
     satArrowZ.position = new BABYLON.Vector3(0, 0, 1);
     satArrowZ.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
@@ -143,9 +126,7 @@ class AttitudeThreeD extends Component {
     ZCoordText.position = new BABYLON.Vector3(0, 0.05, 0.9);
 
     /*
-    /
     /  SATELLITE IMPORTS & OPTIONS
-    /
     */
 
     // load in satellite obj file
@@ -158,9 +139,9 @@ class AttitudeThreeD extends Component {
 
       this.updateSatelliteAttitude = () => {
         meshes[0].rotationQuaternion = new BABYLON.Quaternion(
-          this.props.data.w, 
-          this.props.data.x, 
-          this.props.data.y, 
+          this.props.data.w,
+          this.props.data.x,
+          this.props.data.y,
           this.props.data.z
         );
       }
@@ -182,9 +163,7 @@ class AttitudeThreeD extends Component {
 
   render() {
     return (
-      <div>
-        <BabylonScene onSceneMount={this.onSceneMount} />
-      </div>
+      <BabylonScene onSceneMount={this.onSceneMount} />
     )
   }
 }

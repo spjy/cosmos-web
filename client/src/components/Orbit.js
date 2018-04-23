@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import moment from 'moment';
-import { Card } from 'antd';
+import { notification } from 'antd';
 import 'whatwg-fetch'
 import io from 'socket.io-client';
 
@@ -78,53 +77,58 @@ class Orbit extends Component {
           this.setState({ playable: false });
         }
       });
-    }).catch(err => console.log(err));
+    }).catch(err => {
+      notification.error({
+        message: 'Error',
+        description: 'An error occurred.'
+      })
+      console.log(err)
+    });
   }
 
   render() {
     return (
       <div>
-        <Navbar current="orbit" />
-        <OrbitThreeD data={this.state.currentCoord} replay={this.state.replay} />
+        <Navbar
+          current="orbit"
+        />
+
+        <OrbitThreeD
+          data={this.state.currentCoord}
+          replay={this.state.replay}
+        />
+
         <OrbitInformation
           satellite={this.state.satellite}
           x={this.state.currentCoord.x}
           y={this.state.currentCoord.y}
           z={this.state.currentCoord.z}
         />
-        <div style={{ padding: '1em' }}>
-          <div style={{ background: '#ECECEC', padding: '10px' }}>
-            <Card title="Orbit Information" bordered={false} style={{ width: '100%' }}>
-              {this.state.live
-                ?
-                  <Live
-                    type="orbit"
-                    satellite={this.state.satellite}
-                  />
-                :
-                  <Replay
-                    type="orbit"
-                    playable={this.state.playable}
-                    satellite={this.state.satellite}
-                    max={this.state.max}
-                    slider={this.state.slider}
-                    replay={this.state.replay}
-                    onReplayChange={this.onReplayChange.bind(this)}
-                    ref="replay"
-                  />
-              }
-              <br />
-            </Card>
-          </div>
-        </div>
+
+        {this.state.live
+          ?
+            <Live
+              type="orbit"
+              satellite={this.state.satellite}
+            />
+          :
+            <Replay
+              type="orbit"
+              playable={this.state.playable}
+              satellite={this.state.satellite}
+              max={this.state.max}
+              slider={this.state.slider}
+              replay={this.state.replay}
+              onReplayChange={this.onReplayChange.bind(this)}
+              ref="replay"
+            />
+        }
 
         <br />
 
-        <div style={{ padding: '0 1em' }}>
-          <div style={{ background: '#ECECEC', padding: '10px' }}>
-            <ReplayForm onReplayFormSubmit={this.onReplayFormSubmit.bind(this)} />
-          </div>
-        </div>
+        <ReplayForm
+          onReplayFormSubmit={this.onReplayFormSubmit.bind(this)}
+        />
       </div>
     );
   }

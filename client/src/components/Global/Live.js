@@ -4,11 +4,18 @@ import { Alert } from 'antd';
 
 const Live = ({ type, satellite }) => {
   return (
-    <Alert message="Live" type="success" description={
-      <div>
-        You are viewing the live {type} of <strong>{satellite}</strong>.
-      </div>
-    } showIcon />
+    <div  style={{ padding: '1em' }}>
+      <Alert
+        message="Live"
+        type="success"
+        description={
+          <div>
+            You are viewing the live {type} of <strong>{satellite}</strong>.
+          </div>
+        }
+        showIcon
+      />
+    </div>
   );
 };
 

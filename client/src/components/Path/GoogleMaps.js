@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withScriptjs, withGoogleMap, GoogleMap, Polyline } from "react-google-maps"
+import { withScriptjs, withGoogleMap, GoogleMap, Polyline, Marker } from "react-google-maps"
 
 class GoogleMaps extends Component {
 
@@ -25,6 +25,7 @@ class GoogleMaps extends Component {
         defaultCenter={{ lat: 50, lng: 1 }}
         options={{ gestureHandling: "greedy" }}
       >
+        <Marker position={{lat:50, lng:1}} />
         {this.state.lines.map((line, i) => {
           return (
             <Polyline
@@ -32,7 +33,7 @@ class GoogleMaps extends Component {
               options={{
               strokeColor: '#00a1e1',
               strokeOpacity: 1,
-              strokeWeight: 2,
+              strokeWeight: 2.5,
             }}
             key={i}
             />
