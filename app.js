@@ -50,6 +50,15 @@ cosmosSocket.on('message', function(message) {
   //console.log(obj)
   //console.log(obj.agent_utc)
 
+  if (obj.agent_node === 'me213ao') {
+    io.emit('balloon path', {
+      latitude: obj.device_gps_dgeocv_000[0],
+      longitude: obj.device_gps_dgeocv_000[1],
+      acceleration: obj.device_imu_accel_000[0],
+      altitude: obj.device_gps_dgeocv_000[2],
+    });
+  }
+
   if (obj.agent_node === 'cubesat1') { // Check if node is the cubesat
     if (obj.node_loc_pos_eci) { // If the position is defined
       // Convert x, y, z coordinates from meters to kilometers
@@ -116,6 +125,10 @@ cosmosSocket.on('message', function(message) {
       });;
 
     }
+
+    // 10.42.0.126
+
+
   }
 
   agent_utc = obj.agent_utc;

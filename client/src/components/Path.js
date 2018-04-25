@@ -21,26 +21,41 @@ class Path extends Component {
     slider: 0,
     playable: false,
     replay: [],
+    path: [[
+      {lat:50, lng:1},
+      {lat:50.1, lng:1.1},
+      {lat:50.2, lng:1.2}
+    ]],
     currentCoord: {
       latitude: 0,
-      longitude: 0
+      longitude: 0,
+      altitude: 0,
+      velocity: 0,
+      acceleration: 0,
     },
   };
 
   componentDidMount() {
-    socket.on('satellite path', (data) => { // check if there is a live orbit
+    socket.on('balloon path', (data) => { // check if there is a live orbit
       if (this.state.replay.length === 0) { // check if there is replay going
         if (data) { // check if data exists
           this.setState({
             live: true,
             satellite: data.satellite,
             currentCoord: {
-              x: data.x,
-              y: data.y,
-              z: data.z
+              latitude: data.latitude,
+              longitude: data.longitude,
+              altitude: data.altitude,
+              velocity: data.velocity,
+              acceleration: data.acceleration,
             }
           });
         }
+
+        this.setState({
+          path: [...this.state.path, [{ lat: data.latitude, lng: data.longitude }]],
+        })
+
       }
     });
   }
@@ -99,18 +114,20 @@ class Path extends Component {
           loadingElement={<div style={{ height: `80bh` }} />}
           containerElement={<div style={{ height: `72vh` }} />}
           mapElement={<div style={{ height: `72vh` }} />}
+          path={this.state.path}
+          position={{latitude: this.state.currentCoord.latitude, longitude: this.state.currentCoord.latitude}}
         />
 
         <BalloonInformation
-          velocity={5}
-          acceleration={3}
-          altitude={100}
+          velocity={this.state.currentCoord.velocity}
+          acceleration={this.state.currentCoord.acceleration}
+          altitude={this.state.currentCoord.altitude}
         />
 
         <PathInformation
           satellite={"Balloon"}
-          latitude={50.4}
-          longitude={1.1}
+          latitude={this.state.currentCoord.latitude}
+          longitude={this.state.currentCoord.longitude}
         />
 
         {this.state.live
