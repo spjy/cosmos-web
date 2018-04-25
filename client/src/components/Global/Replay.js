@@ -67,6 +67,9 @@ class Replay extends Component {
   }
 
   render() {
+
+    const { type, satellite, slider, max } = this.props;
+
     return (
       <div style={{ padding: '1em' }}>
         <Alert
@@ -85,7 +88,7 @@ class Replay extends Component {
           type="warning"
           description={
             <div>
-              You are viewing a replay {this.props.type} of <strong>{this.props.satellite}</strong>.
+              You are viewing a replay {type} of <strong>{satellite}</strong>.
               <Row>
                 <Col sm={2} md={1} style={{ paddingTop: '0.5em' }}>
                   <Icon
@@ -100,17 +103,17 @@ class Replay extends Component {
                     onClick={this.stopSlider.bind(this)}
                   />
                   &nbsp;
-                  {this.props.slider}
+                  {slider}
                 </Col>
                 <Col sm={22} md={23}>
                   <Slider
                     defaultValue={0}
-                    value={this.props.slider || 0}
-                    min={0} max={this.props.max}
+                    value={slider || 0}
+                    min={0} max={max}
                     marks={{
                       0: '0',
-                      [this.props.max / 2]: this.props.max / 2,
-                      [this.props.max]: this.props.max,
+                      [max / 2]: max / 2,
+                      [max]: max,
                     }}
                     onChange={this.onSliderChange.bind(this)}
                   />

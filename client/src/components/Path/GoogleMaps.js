@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { withScriptjs, withGoogleMap, GoogleMap, Polyline, Marker } from "react-google-maps"
 
 class GoogleMaps extends Component {
@@ -20,14 +21,16 @@ class GoogleMaps extends Component {
   // }
 
   render() {
+    const { path, position } = this.props
+
     return (
       <GoogleMap
         defaultZoom={8}
         defaultCenter={{ lat: 0, lng: 0 }}
         options={{ gestureHandling: "greedy" }}
       >
-        <Marker position={{lat: this.props.position.latitude, lng: this.props.position.longitude}} />
-        {this.props.path.map((line, i) => {
+        <Marker position={{lat: position.latitude, lng: position.longitude}} />
+        {path.map((line, i) => {
           return (
             <Polyline
               path={line}
@@ -44,7 +47,11 @@ class GoogleMaps extends Component {
       </GoogleMap>
     );
   }
+}
 
+GoogleMaps.propTypes = {
+  path: PropTypes.array,
+  positon: PropTypes.object,
 }
 
 export default withScriptjs(withGoogleMap(GoogleMaps));

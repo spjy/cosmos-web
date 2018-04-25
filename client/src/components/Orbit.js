@@ -34,13 +34,15 @@ class Orbit extends Component {
     socket.on('satellite orbit', (data) => { // check if there is a live orbit
       if (this.state.replay.length === 0) { // check if there is replay going
         if (data) { // check if data exists
+          const { satellite, x, y, z } = data;
+
           this.setState({
             live: true,
-            satellite: data.satellite,
+            satellite: satellite,
             currentCoord: {
-              x: data.x,
-              y: data.y,
-              z: data.z
+              x: x,
+              y: y,
+              z: z
             }
           });
         }
@@ -87,6 +89,9 @@ class Orbit extends Component {
   }
 
   render() {
+
+    const { currentCoord, replay, satellite, playable, max, slider, live } = this.state;
+
     return (
       <div>
         <Navbar
@@ -94,31 +99,31 @@ class Orbit extends Component {
         />
 
         <OrbitThreeD
-          data={this.state.currentCoord}
-          replay={this.state.replay}
+          data={currentCoord}
+          replay={replay}
         />
 
         <OrbitInformation
-          satellite={this.state.satellite}
-          x={this.state.currentCoord.x}
-          y={this.state.currentCoord.y}
-          z={this.state.currentCoord.z}
+          satellite={satellite}
+          x={currentCoord.x}
+          y={currentCoord.y}
+          z={currentCoord.z}
         />
 
-        {this.state.live
+        {live
           ?
             <Live
               type="orbit"
-              satellite={this.state.satellite}
+              satellite={satellite}
             />
           :
             <Replay
               type="orbit"
-              playable={this.state.playable}
-              satellite={this.state.satellite}
-              max={this.state.max}
-              slider={this.state.slider}
-              replay={this.state.replay}
+              playable={playable}
+              satellite={satellite}
+              max={max}
+              slider={slider}
+              replay={replay}
               onReplayChange={this.onReplayChange.bind(this)}
               ref="replay"
             />

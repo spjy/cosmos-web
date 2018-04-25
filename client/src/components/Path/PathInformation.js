@@ -46,7 +46,6 @@ OrbitInformation.propTypes = {
   satellite: PropTypes.string,
   latitude: PropTypes.number,
   longitude: PropTypes.number,
-  z: PropTypes.number
 }
 
 export default OrbitInformation;

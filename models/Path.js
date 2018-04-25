@@ -5,11 +5,15 @@ const schema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  lat: {
+  latitude: {
     type: Number,
     required: true,
   },
-  long: {
+  longitude: {
+    type: Number,
+    required: true,
+  },
+  altitude: {
     type: Number,
     required: true,
   },

@@ -21,11 +21,7 @@ class Path extends Component {
     slider: 0,
     playable: false,
     replay: [],
-    path: [[
-      {lat:50, lng:1},
-      {lat:50.1, lng:1.1},
-      {lat:50.2, lng:1.2}
-    ]],
+    path: [[]],
     currentCoord: {
       latitude: 0,
       longitude: 0,
@@ -39,23 +35,24 @@ class Path extends Component {
     socket.on('balloon path', (data) => { // check if there is a live orbit
       if (this.state.replay.length === 0) { // check if there is replay going
         if (data) { // check if data exists
+          const { satellite, latitude, longitude, altitude, velocity, acceleration } = data;
+
           this.setState({
             live: true,
-            satellite: data.satellite,
+            satellite: satellite,
             currentCoord: {
-              latitude: data.latitude,
-              longitude: data.longitude,
-              altitude: data.altitude,
-              velocity: data.velocity,
-              acceleration: data.acceleration,
+              latitude: latitude,
+              longitude: longitude,
+              altitude: altitude,
+              velocity: velocity,
+              acceleration: acceleration,
             }
           });
+
+          this.setState({
+            path: [...this.state.path, [{ lat: latitude, lng: longitude }]],
+          });
         }
-
-        this.setState({
-          path: [...this.state.path, [{ lat: data.latitude, lng: data.longitude }]],
-        })
-
       }
     });
   }

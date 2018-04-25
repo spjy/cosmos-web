@@ -47,20 +47,41 @@ cosmosSocket.on('message', function(message) {
   json_str = json_str.replace(/}{/g, ',')
   obj = JSON.parse(json_str);
 
-  //console.log(obj)
-  //console.log(obj.agent_utc)
-
   if (obj.agent_node === 'me213ao') {
-    io.emit('balloon path', {
-      latitude: obj.device_gps_dgeocv_000[0],
-      longitude: obj.device_gps_dgeocv_000[1],
-      acceleration: obj.device_imu_accel_000[0],
-      altitude: obj.device_gps_dgeocv_000[2],
-    });
+    if (obj.device_gps_dgeocv_000 && obj.device_imu_accel_000) {
+
+      let latitude = obj.device_gps_dgeocv_000[0];
+      let longitude = obj.device_gps_dgeocv_000[1];
+      let altitude = obj.device_gps_dgeocv_000[2];
+      let acceleration = obj.device_imu_accel_000[0];
+
+      io.emit('balloon path', {
+        satellite: 'me213ao',
+        latitude,
+        longitude,
+        altitude,
+        acceleration,
+        // acceleration: Math.sqrt(Math.pow(obj.device_imu_accel_000[0], 2) + 
+        // Math.pow(obj.device_imu_accel_000[1], 2) + 
+        // Math.pow(obj.device_imu_accel_000[2], 2)),
+      });
+
+      // new models.Path({
+      //   satellite: 'me213ao',
+      //   latitude,
+      //   longitude,
+      //   altitude,
+      // }).save(err => {
+      //  if (err) {
+      //    console.log(err);
+      //  }
+      //});
+    }
   }
 
   if (obj.agent_node === 'cubesat1') { // Check if node is the cubesat
     if (obj.node_loc_pos_eci) { // If the position is defined
+
       // Convert x, y, z coordinates from meters to kilometers
       let satellite_position_x = obj.node_loc_pos_eci.pos[0] / 1000;
       let satellite_position_y = obj.node_loc_pos_eci.pos[1] / 1000;
@@ -127,8 +148,6 @@ cosmosSocket.on('message', function(message) {
     }
 
     // 10.42.0.126
-
-
   }
 
   agent_utc = obj.agent_utc;
