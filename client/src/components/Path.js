@@ -26,8 +26,7 @@ class Path extends Component {
       latitude: 0,
       longitude: 0,
       altitude: 0,
-      velocity: 0,
-      acceleration: 0,
+      acceleration: [0,0,0],
     },
   };
 
@@ -37,7 +36,7 @@ class Path extends Component {
         if (data) { // check if data exists
           console.log(data);
           
-          const { satellite, latitude, longitude, altitude, velocity, acceleration } = data;
+          const { satellite, latitude, longitude, altitude, acceleration } = data;
 
           this.setState({
             live: true,
@@ -46,7 +45,6 @@ class Path extends Component {
               latitude: latitude,
               longitude: longitude,
               altitude: altitude,
-              velocity: velocity,
               acceleration: acceleration,
             }
           });
@@ -126,7 +124,6 @@ class Path extends Component {
         />
 
         <BalloonInformation
-          velocity={this.state.currentCoord.velocity}
           acceleration={this.state.currentCoord.acceleration}
           altitude={this.state.currentCoord.altitude}
         />

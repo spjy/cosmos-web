@@ -2,34 +2,35 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Table } from 'antd';
 
-const columns = [{
-  title: 'Velocity (kmph)',
-  dataIndex: 'velocity',
-  key: 'velocity',
-  width: '33%'
-}, {
+const columns = [
+//   {
+//   title: 'Velocity (kmph)',
+//   dataIndex: 'velocity',
+//   key: 'velocity',
+//   width: '33%'
+// }, 
+{
   title: 'Acceleration (kmph²)',
   dataIndex: 'acceleration',
   key: 'acceleration',
-  width: '33%'
+  width: '50%'
 }, {
   title: 'Altitude (m)',
   dataIndex: 'altitude',
   key: 'altitude',
-  width: '33%'
+  width: '50%'
 }, {
 }];
 
 class BalloonInformation extends Component {
   render() {
-    const { velocity,
+    const {
       acceleration,
       altitude } = this.props;
 
     const data = [{
       key: '1',
-      velocity: velocity,
-      acceleration: acceleration,
+      acceleration: `${acceleration[0]}, ${acceleration[1]}, ${acceleration[2]}`,
       altitude: altitude,
     }];
 
@@ -42,8 +43,7 @@ class BalloonInformation extends Component {
 }
 
 BalloonInformation.propTypes = {
-  velocity: PropTypes.number,
-  acceleration: PropTypes.number,
+  acceleration: PropTypes.array,
   altitude: PropTypes.number,
 }
 
