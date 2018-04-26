@@ -49,9 +49,15 @@ class Path extends Component {
             }
           });
 
-          this.setState({
-            path: [...this.state.path, [{ lat: latitude, lng: longitude }]],
-          });
+          this.setState(prevState => ({
+            path: [
+              ...this.state.path, 
+              [
+                { lat: prevState.currentCoord.latitude, lng: prevState.currentCoord.longitude }, 
+                { lat: latitude, lng: longitude }
+              ]
+            ],
+          }));
         }
       }
     });
