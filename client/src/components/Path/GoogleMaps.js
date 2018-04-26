@@ -21,15 +21,19 @@ class GoogleMaps extends Component {
   // }
 
   render() {
-    const { path, position } = this.props
+    const { path, position } = this.props;
 
     return (
       <GoogleMap
-        defaultZoom={8}
+        defaultZoom={2}
         defaultCenter={{ lat: 0, lng: 0 }}
         options={{ gestureHandling: "greedy" }}
       >
-        <Marker position={{lat: position.latitude, lng: position.longitude}} />
+        {position.map((pos, i) => {
+          return (
+            <Marker position={{lat: pos.lat, lng: pos.lng }} key={i} />
+          );
+        })}
         {path.map((line, i) => {
           return (
             <Polyline

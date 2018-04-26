@@ -47,20 +47,18 @@ cosmosSocket.on('message', function(message) {
   json_str = json_str.replace(/}{/g, ',')
   obj = JSON.parse(json_str);
 
-  if (obj.agent_node === 'me213ao') {
-    if (obj.device_gps_dgeocv_000 && obj.device_imu_accel_000) {
-
-      let latitude = obj.device_gps_dgeocv_000[0];
-      let longitude = obj.device_gps_dgeocv_000[1];
-      let altitude = obj.device_gps_dgeocv_000[2];
-      let acceleration = obj.device_imu_accel_000[0];
-
+  if (obj.agent_node === 'me213ao') {    
+    if (obj.device_gps_geods_000) {
+      let latitude = obj.device_gps_geods_000.lat;
+      let longitude = obj.device_gps_geods_000.lon;
+      let altitude = obj.device_gps_geods_000.h;
+      
+      console.log(altitude)
       io.emit('balloon path', {
         satellite: 'me213ao',
         latitude,
         longitude,
         altitude,
-        acceleration,
         // acceleration: Math.sqrt(Math.pow(obj.device_imu_accel_000[0], 2) + 
         // Math.pow(obj.device_imu_accel_000[1], 2) + 
         // Math.pow(obj.device_imu_accel_000[2], 2)),
@@ -76,6 +74,11 @@ cosmosSocket.on('message', function(message) {
       //    console.log(err);
       //  }
       //});
+    }
+
+    if (obj.device_imu_accel_000) {
+      let acceleration = obj.device_imu_accel_000[0];
+
     }
   }
 

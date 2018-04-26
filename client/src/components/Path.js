@@ -35,6 +35,8 @@ class Path extends Component {
     socket.on('balloon path', (data) => { // check if there is a live orbit
       if (this.state.replay.length === 0) { // check if there is replay going
         if (data) { // check if data exists
+          console.log(data);
+          
           const { satellite, latitude, longitude, altitude, velocity, acceleration } = data;
 
           this.setState({
@@ -118,7 +120,9 @@ class Path extends Component {
           containerElement={<div style={{ height: `72vh` }} />}
           mapElement={<div style={{ height: `72vh` }} />}
           path={this.state.path}
-          position={{latitude: this.state.currentCoord.latitude, longitude: this.state.currentCoord.latitude}}
+          position={[
+            {lat: this.state.currentCoord.latitude, lng: this.state.currentCoord.longitude}
+          ]}
         />
 
         <BalloonInformation
