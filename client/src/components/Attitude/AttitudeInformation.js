@@ -6,22 +6,22 @@ const columns = [{
   title: 'Satellite',
   dataIndex: 'satellite',
   key: 'satellite',
-  width: '12%'
+  width: '12%',
 }, {
   title: 'w',
   dataIndex: 'w',
   key: 'w',
-  width: '22%'
+  width: '22%',
 }, {
   title: 'x',
   dataIndex: 'x',
   key: 'x',
-  width: '22%'
+  width: '22%',
 }, {
   title: 'y',
   dataIndex: 'y',
   key: 'y',
-  width: '22%'
+  width: '22%',
 }, {
   title: 'z',
   dataIndex: 'z',
@@ -30,7 +30,9 @@ const columns = [{
 
 class AttitudeInformation extends Component {
   render() {
-    const { satellite, w, x, y, z } = this.props;
+    const {
+      satellite, w, x, y, z
+    } = this.props;
 
     const data = [{
       key: '1',
@@ -43,7 +45,12 @@ class AttitudeInformation extends Component {
 
     return (
       <div style={{ padding: '1em' }}>
-        <Table columns={columns} dataSource={data} size="small" pagination={false} />
+        <Table
+          columns={columns}
+          dataSource={data}
+          size="small"
+          pagination={false}
+        />
       </div>
     );
   }
@@ -55,6 +62,6 @@ AttitudeInformation.propTypes = {
   x: PropTypes.number,
   y: PropTypes.number,
   z: PropTypes.number
-}
+};
 
 export default AttitudeInformation;

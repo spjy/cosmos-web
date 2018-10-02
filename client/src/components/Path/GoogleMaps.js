@@ -29,24 +29,28 @@ class GoogleMaps extends Component {
         defaultCenter={{ lat: 0, lng: 0 }}
         options={{ gestureHandling: "greedy" }}
       >
-        {position.map((pos, i) => {
-          return (
-            <Marker position={{lat: pos.lat, lng: pos.lng }} key={i} />
-          );
-        })}
-        {path.map((line, i) => {
-          return (
-            <Polyline
-              path={line}
-              options={{
-              strokeColor: '#00a1e1',
-              strokeOpacity: 1,
-              strokeWeight: 2.5,
-            }}
-            key={i}
-            />
-          )
-        })}
+        {
+          position.map((pos, i) => {
+            return (
+              <Marker position={{lat: pos.lat, lng: pos.lng }} key={i} />
+            );
+          })
+        }
+        {
+          path.map((line, i) => {
+            return (
+              <Polyline
+                path={line}
+                options={{
+                strokeColor: '#00a1e1',
+                strokeOpacity: 1,
+                strokeWeight: 2.5,
+              }}
+              key={i}
+              />
+            )
+          })
+        }
 
       </GoogleMap>
     );

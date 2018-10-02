@@ -26,7 +26,7 @@ class Orbit extends Component {
     currentCoord: {
       x: 0,
       y: 0,
-      z: 0
+      z: 0,
     },
   };
 
@@ -42,8 +42,8 @@ class Orbit extends Component {
             currentCoord: {
               x: x,
               y: y,
-              z: z
-            }
+              z: z,
+            },
           });
         }
       }

@@ -9,7 +9,8 @@ class Replay extends Component {
     if (this.props.playable) {
       this.props.onReplayChange({
         playable: false // Prevent users from starting multiple intervals
-      })
+      });
+
       this.sliderIncrement();
     }
   }
@@ -48,18 +49,21 @@ class Replay extends Component {
     clearTimeout(this.slider); // stop timeout
 
     this.props.onReplayChange({ // allow replay to be played
-      playable: true
+      playable: true,
     });
   }
 
   onSliderChange(value) {
     this.props.onReplayChange({ // change value of slider
-      slider: value
+      slider: value,
     });
   }
 
   onConfirmLiveView() {
-    this.props.onReplayChange({ live: true, replay: [] }); // change to live view
+    this.props.onReplayChange({
+      live: true,
+      replay: [],
+    }); // change to live view
   }
 
   componentWillUnmount() {
@@ -81,7 +85,9 @@ class Replay extends Component {
                 okText="Yes"
                 cancelText="No"
                 onConfirm={this.onConfirmLiveView.bind(this)}>
-                <a><Icon style={{ paddingLeft: "0.5em" }} type="swap" /></a>
+                <a>
+                  <Icon style={{ paddingLeft: "0.5em" }} type="swap" />
+                </a>
               </Popconfirm>
             </div>
           }
@@ -105,7 +111,10 @@ class Replay extends Component {
                   &nbsp;
                   {slider}
                 </Col>
-                <Col sm={22} md={23}>
+                <Col
+                  sm={22}
+                  md={23}
+                >
                   <Slider
                     defaultValue={0}
                     value={slider || 0}
@@ -135,6 +144,6 @@ Replay.propTypes = {
   max: PropTypes.number.isRequired,
   slider: PropTypes.number.isRequired,
   onReplayChange: PropTypes.func.isRequired,
-}
+};
 
 export default Replay;

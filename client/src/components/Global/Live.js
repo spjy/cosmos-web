@@ -4,7 +4,7 @@ import { Alert } from 'antd';
 
 const Live = ({ type, satellite }) => {
   return (
-    <div  style={{ padding: '1em' }}>
+    <div style={{ padding: '1em' }}>
       <Alert
         message="Live"
         type="success"
