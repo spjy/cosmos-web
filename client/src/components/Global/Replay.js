@@ -86,7 +86,10 @@ class Replay extends Component {
                 cancelText="No"
                 onConfirm={this.onConfirmLiveView.bind(this)}>
                 <a>
-                  <Icon style={{ paddingLeft: "0.5em" }} type="swap" />
+                  <Icon
+                    style={{ paddingLeft: "0.5em" }}
+                    type="swap"
+                  />
                 </a>
               </Popconfirm>
             </div>
@@ -96,7 +99,11 @@ class Replay extends Component {
             <div>
               You are viewing a replay {type} of <strong>{satellite}</strong>.
               <Row>
-                <Col sm={2} md={1} style={{ paddingTop: '0.5em' }}>
+                <Col
+                  sm={2}
+                  md={1}
+                  style={{ paddingTop: '0.5em' }}
+                >
                   <Icon
                     className="media-buttons"
                     type="play-circle-o"
@@ -111,6 +118,7 @@ class Replay extends Component {
                   &nbsp;
                   {slider}
                 </Col>
+
                 <Col
                   sm={22}
                   md={23}

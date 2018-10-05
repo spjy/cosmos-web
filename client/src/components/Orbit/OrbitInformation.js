@@ -30,7 +30,12 @@ const columns = [
 
 class OrbitInformation extends Component {
   render() {
-    const { satellite, x, y, z } = this.props;
+    const {
+      satellite,
+      x,
+      y,
+      z,
+    } = this.props;
 
     const data = [
       {
@@ -48,7 +53,8 @@ class OrbitInformation extends Component {
           columns={columns}
           dataSource={data}
           size="small"
-          pagination={false} />
+          pagination={false}
+        />
       </div>
     );
   }
@@ -59,6 +65,6 @@ OrbitInformation.propTypes = {
   x: PropTypes.number,
   y: PropTypes.number,
   z: PropTypes.number
-}
+};
 
 export default OrbitInformation;
