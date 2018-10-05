@@ -29,11 +29,13 @@ class BalloonInformation extends Component {
       altitude 
     } = this.props;
 
-    const data = [{
-      key: '1',
-      acceleration: `${acceleration[0]}, ${acceleration[1]}, ${acceleration[2]}`,
-      altitude: altitude,
-    }];
+    const data = [
+      {
+        key: '1',
+        acceleration: `${acceleration[0]}, ${acceleration[1]}, ${acceleration[2]}`,
+        altitude: altitude,
+      }
+    ];
 
     return (
       <div 
@@ -53,6 +55,6 @@ class BalloonInformation extends Component {
 BalloonInformation.propTypes = {
   acceleration: PropTypes.array,
   altitude: PropTypes.number,
-}
+};
 
 export default BalloonInformation;

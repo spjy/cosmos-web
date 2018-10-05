@@ -10,6 +10,7 @@ const dgram = require('dgram');
 const mongoose = require('mongoose');
 
 const cors = require('cors');
+
 app.use(cors());
 
 const routes = require('./routes');
@@ -35,20 +36,20 @@ cosmosSocket.on('listening', () => {
   console.log('UDP Server listening on ' + address.address + ":" + address.port);
 });
 
-let obj = {};
 let agentListObj = {};
 let imuOmega = {};
 let imuIndex = 0;
 let sentImuIndex = 0;
 
-cosmosSocket.on('message', function(message) {
-  obj = message.slice(3,message.length-1);
-  let json_str = obj.toString('ascii');
-  json_str = json_str.replace(/}{/g, ',')
-  obj = JSON.parse(json_str);
+cosmosSocket.on('message', (message) => {
+  const obj = message.slice(3, message.length - 1);
+  let jsonStr = obj.toString('ascii');
+  jsonStr = jsonStr.replace(/}{/g, ',');
+  obj = JSON.parse(jsonStr);
+
+  const { agent_utc } = obj;
 
   if (obj.agent_node === 'me213ao') {
-
     if (obj.device_gps_geods_000) {
       let latitude = obj.device_gps_geods_000.lat;
       let longitude = obj.device_gps_geods_000.lon;
@@ -66,7 +67,11 @@ cosmosSocket.on('message', function(message) {
         latitude,
         longitude,
         altitude,
-        acceleration: [acceleration_x, acceleration_y, acceleration_z]
+        acceleration: [
+          acceleration_x,
+          acceleration_y,
+          acceleration_z,
+        ],
       });
 
       // new models.Path({
@@ -146,14 +151,10 @@ cosmosSocket.on('message', function(message) {
         if (err) {
           console.log(err);
         }
-      });;
-
+      });
     }
-
     // 10.42.0.126
   }
-
-  agent_utc = obj.agent_utc;
 
   if (message.type === 'utf8') {
     console.log('Received Message: ' + message.utf8Data);
@@ -172,12 +173,11 @@ cosmosSocket.on('message', function(message) {
   // Collect the IMU Omega data from the ADCS agent
   if (obj.agent_proc === 'adcs') {
     imuOmega[imuIndex] = obj.device_imu_omega_000;
-    imuIndex++;
+    imuIndex += imuIndex;
   }
-
 });
 
-server.listen(3001, function() {
+server.listen(3001, () => {
 	console.log('Server listening on port:s 3001');
 });
 

@@ -34,7 +34,9 @@ class Orbit extends Component {
     socket.on('satellite orbit', (data) => { // check if there is a live orbit
       if (this.state.replay.length === 0) { // check if there is replay going
         if (data) { // check if data exists
-          const { satellite, x, y, z } = data;
+          const {
+            satellite, x, y, z
+          } = data;
 
           this.setState({
             live: true,
@@ -84,7 +86,7 @@ class Orbit extends Component {
         message: 'Error',
         description: 'An error occurred.'
       })
-      console.log(err)
+      console.log(err);
     });
   }
 

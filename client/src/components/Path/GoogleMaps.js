@@ -32,7 +32,13 @@ class GoogleMaps extends Component {
         {
           position.map((pos, i) => {
             return (
-              <Marker position={{lat: pos.lat, lng: pos.lng }} key={i} />
+              <Marker
+                position={{
+                  lat: pos.lat,
+                  lng: pos.lng,
+                }}
+                key={i}
+              />
             );
           })
         }
@@ -42,11 +48,11 @@ class GoogleMaps extends Component {
               <Polyline
                 path={line}
                 options={{
-                strokeColor: '#00a1e1',
-                strokeOpacity: 1,
-                strokeWeight: 2.5,
-              }}
-              key={i}
+                  strokeColor: '#00a1e1',
+                  strokeOpacity: 1,
+                  strokeWeight: 2.5,
+                }}
+                key={i}
               />
             )
           })
@@ -60,6 +66,6 @@ class GoogleMaps extends Component {
 GoogleMaps.propTypes = {
   path: PropTypes.array,
   positon: PropTypes.object,
-}
+};
 
 export default withScriptjs(withGoogleMap(GoogleMaps));
