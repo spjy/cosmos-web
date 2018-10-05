@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Table } from 'antd';
 
@@ -34,33 +34,27 @@ const columns = [
   }
 ];
 
-class AttitudeInformation extends Component {
-  render() {
-    const {
-      satellite, w, x, y, z
-    } = this.props;
+const AttitudeInformation = ({ satellite, w, x, y , z}) => {
+  const data = [{
+    key: '1',
+    satellite: satellite,
+    w: w,
+    x: x,
+    y: y,
+    z: z,
+  }];
 
-    const data = [{
-      key: '1',
-      satellite: satellite,
-      w: w,
-      x: x,
-      y: y,
-      z: z,
-    }];
-
-    return (
-      <div style={{ padding: '1em' }}>
-        <Table
-          columns={columns}
-          dataSource={data}
-          size="small"
-          pagination={false}
-        />
-      </div>
-    );
-  }
-}
+  return (
+    <div style={{ padding: '1em' }}>
+      <Table
+        columns={columns}
+        dataSource={data}
+        size="small"
+        pagination={false}
+      />
+    </div>
+  );
+};
 
 AttitudeInformation.propTypes = {
   satellite: PropTypes.string,

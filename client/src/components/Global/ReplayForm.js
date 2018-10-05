@@ -59,7 +59,8 @@ class ReplayForm extends Component {
                   <Select.Option value="cubesat1">cubesat1</Select.Option>
                 </Select>
               </Form.Item>
-              <Form.Item 
+
+              <Form.Item
                 label="Date range"
               >
                 <DatePicker.RangePicker
@@ -68,6 +69,7 @@ class ReplayForm extends Component {
                   format="YYYY-MM-DDTHH:mm:ssZ"
                 />
               </Form.Item>
+              
               <Button
                 type="primary"
                 htmlType="submit"

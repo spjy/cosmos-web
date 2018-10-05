@@ -7,7 +7,7 @@ import Attitude from './components/Attitude';
 import Plot from './components/Plot';
 import Path from './components/Path';
 
-const App = ({}) => (
+const App = () => (
   <div>
     <Router>
       <Switch>

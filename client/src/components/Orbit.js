@@ -57,7 +57,11 @@ class Orbit extends Component {
   }
 
   onReplayFormSubmit(value) {
-    const { selected, dateFrom, dateTo } = value;
+    const {
+      selected,
+      dateFrom,
+      dateTo
+    } = value;
 
     fetch(`http://localhost:3001/api/replay/orbit/${selected}/${dateFrom}/to/${dateTo}`, {
       method: 'GET',
@@ -66,8 +70,6 @@ class Orbit extends Component {
       },
     }).then((response) => {
       response.json().then((data) => {
-        console.log(data);
-
         if (data && data.length > 0) {
           this.setState({
             live: false,
@@ -92,7 +94,15 @@ class Orbit extends Component {
 
   render() {
 
-    const { currentCoord, replay, satellite, playable, max, slider, live } = this.state;
+    const {
+      currentCoord,
+      replay,
+      satellite,
+      playable,
+      max,
+      slider,
+      live,
+    } = this.state;
 
     return (
       <div>

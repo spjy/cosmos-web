@@ -14,9 +14,11 @@ class DroneData extends Component {
   }
 
   render() {
-    const { velocity,
+    const {
+      velocity,
       acceleration,
-      altitude } = this.props;
+      altitude
+    } = this.props;
 
     const data = [{
       key: '1',
