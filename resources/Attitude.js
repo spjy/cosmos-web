@@ -1,6 +1,5 @@
 const router = require('express').Router();
 
-const mongoose = require('mongoose');
 const models = require('../models');
 
 router.get(
@@ -9,21 +8,22 @@ router.get(
     try {
       const { satellite, dateFrom, dateTo } = req.params;
 
-      let attitude;
-      attitude = await models.Attitude.find({
-        createdAt: {
-          $gte: dateFrom,
-          $lt: dateTo,
-        }
-      }).sort({ createdAt: -1 });
+      const attitude = await models.Attitude
+        .find({
+          createdAt: {
+            $gte: dateFrom,
+            $lt: dateTo,
+          },
+        })
+        .sort({ createdAt: -1 });
 
-      res.json(attitude || {})
+      res.json(attitude || {});
     } catch (error) {
       next(error);
     }
 
     return next();
-  }
+  },
 );
 
 module.exports = router;

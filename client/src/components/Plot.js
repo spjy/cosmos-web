@@ -23,10 +23,6 @@ class Plot extends Component {
     ]
   }
 
-  componentDidMount() {
-
-  }
-
   render() {
     const ds = new DataSet();
     const dv = ds.createView().source(this.state.data);
@@ -44,15 +40,46 @@ class Plot extends Component {
     }
     return (
       <div>
-        <Navbar current="plot" />
+        <Navbar
+          current="plot"
+        />
         <br />
-        <Chart height={400} data={dv} scale={cols} forceFit>
+        <Chart
+          height={400}
+          data={dv}
+          scale={cols}
+          forceFit
+        >
           <Legend />
-          <Axis name="month" />
-          <Axis name="temperature" label={{formatter: val => `${val}°C`}}/>
-          <Tooltip crosshairs={{type : "y"}}/>
-          <Geom type="line" position="month*temperature" size={2} color={'satellite'} />
-          <Geom type='point' position="month*temperature" size={4} shape={'circle'} color={'satellite'} style={{ stroke: '#fff', lineWidth: 1}} />
+          
+          <Axis
+            name="month"
+          />
+
+          <Axis
+            name="temperature"
+            label={{formatter: val => `${val}°C`}}
+          />
+
+          <Tooltip
+            crosshairs={{type : "y"}}
+          />
+
+          <Geom
+            type="line"
+            position="month*temperature"
+            size={2}
+            color={'satellite'}
+          />
+
+          <Geom
+            type='point'
+            position="month*temperature"
+            size={4}
+            shape={'circle'}
+            color={'satellite'}
+            style={{ stroke: '#fff', lineWidth: 1}}
+          />
         </Chart>
       </div>
     );

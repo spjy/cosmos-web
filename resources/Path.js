@@ -1,6 +1,5 @@
 const router = require('express').Router();
 
-const mongoose = require('mongoose');
 const models = require('../models');
 
 router.get(
@@ -8,14 +7,15 @@ router.get(
   async (req, res, next) => {
     try {
       const { satellite, dateFrom, dateTo } = req.params;
-      
-      let orbit;
-      orbit = await models.Path.find({
-        createdAt: {
-          $gte: dateFrom,
-          $lt: dateTo,
-        }
-      }).sort({ createdAt: -1 });
+
+      const orbit = await models.Path
+        .find({
+          createdAt: {
+            $gte: dateFrom,
+            $lt: dateTo,
+          },
+        })
+        .sort({ createdAt: -1 });
 
       res.json(orbit || {});
     } catch (error) {
@@ -23,7 +23,7 @@ router.get(
     }
 
     return next();
-  }
+  },
 );
 
 module.exports = router;

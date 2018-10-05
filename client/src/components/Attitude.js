@@ -61,7 +61,6 @@ class Attitude extends Component {
       //credentials: 'same-origin',
     }).then((response) => {
       response.json().then((data) => {
-        console.log(data);
         if (data && data.length > 0) {
           this.setState({
             live: false,

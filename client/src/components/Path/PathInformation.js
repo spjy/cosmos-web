@@ -43,7 +43,8 @@ class OrbitInformation extends Component {
         <Table
           columns={columns}
           dataSource={data} size="small"
-          pagination={false} />
+          pagination={false}
+        />
       </div>
     );
   }
