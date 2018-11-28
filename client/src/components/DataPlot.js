@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-// import Plot from 'react-plotly.js';
-// import { Chart, Geom, Axis, Tooltip, Legend } from 'bizcharts';
-// import DataSet from '@antv/data-set';
 
 import io from 'socket.io-client';
 import Navbar from './Global/Navbar';
@@ -54,8 +51,9 @@ class DataPlot extends Component {
         <br />
         <AgentList />
         <br/>
-        <CosmosAgent/>
         <CosmosPlot/>
+
+
       </div>
 
     );
