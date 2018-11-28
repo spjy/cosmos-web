@@ -1,60 +1,63 @@
 import React, { Component } from 'react';
-import { Chart, Geom, Axis, Tooltip, Legend } from 'bizcharts';
-import DataSet from '@antv/data-set';
+// import Plot from 'react-plotly.js';
+// import { Chart, Geom, Axis, Tooltip, Legend } from 'bizcharts';
+// import DataSet from '@antv/data-set';
 
+import io from 'socket.io-client';
 import Navbar from './Global/Navbar';
-
+import AgentList from './Cosmos/AgentList';
+import CosmosAgent from './Cosmos/CosmosAgent';
+import CosmosPlot from './Cosmos/CosmosPlot';
+const socket = io('http://localhost:3001');
 class DataPlot extends Component {
 
-  state = {
-    data: [
-      { month: '10:30', cubesat1: 7.0, neutron1: 3.9 },
-      { month: '10:31', cubesat1: 6.9, neutron1: 4.2 },
-      { month: '10:32', cubesat1: 9.5, neutron1: 5.7 },
-      { month: '10:33', cubesat1: 14.5, neutron1: 8.5 },
-      { month: '10:34', cubesat1: 18.4, neutron1: 11.9 },
-      { month: '10:35', cubesat1: 21.5, neutron1: 15.2 },
-      { month: '10:36', cubesat1: 25.2, neutron1: 17.0 },
-      { month: '10:37', cubesat1: 26.5, neutron1: 16.6 },
-      { month: '10:38', cubesat1: 23.3, neutron1: 14.2 },
-      { month: '10:39', cubesat1: 18.3, neutron1: 10.3 },
-      { month: '10:40', cubesat1: 13.9, neutron1: 6.6 },
-      { month: '10:41', cubesat1: 9.6, neutron1: 4.8 }
-    ]
-  }
+  // state = {
+  //   data:[]
+  // }
 
-  componentDidMount() {
-
-  }
+  // componentDidMount() {
+    // socket.on('agent subscribe post527', (data) => { // check if there is a live orbit
+    //     if (data) { // check if data exists
+    //       var this_data = this.state.data;
+    //
+    //
+    //       var data_entry = {time: data['agent_utc'], temp: data['device_tsen_temp_001'] }
+    //       console.log(this_data);
+    //       this_data.push(data_entry);
+    //       this.setState({
+    //         data: this_data
+    //
+    //       });
+    //   }
+      // console.log(data);
+    // });
+  // }
 
   render() {
-    const ds = new DataSet();
-    const dv = ds.createView().source(this.state.data);
-    dv.transform({
-      type: 'fold',
-      fields: [ 'cubesat1', 'neutron1' ],
-      key: 'satellite',
-      value: 'temperature',
-    });
-    console.log(dv);
-    const cols = {
-      month: {
-        range: [ 0, 1 ]
-      }
-    }
+    // const ds = new DataSet();
+    // const dv = ds.createView().source(this.state.data);
+    // dv.transform({
+    //   type: 'fold',
+    //   fields: [ 'temp' ],
+    //   key: 'satellite',
+    //   value: 'temperature',
+    // });
+    // // console.log(this.state.data[0].time);
+    // const cols = {
+    //   time: {
+    //     range: [ 0,1 ]
+    //   }
+    // }
     return (
       <div>
         <Navbar current="dataplot" />
         <br />
-        <Chart height={400} data={dv} scale={cols} forceFit>
-          <Legend />
-          <Axis name="month" />
-          <Axis name="temperature" label={{formatter: val => `${val}°C`}}/>
-          <Tooltip crosshairs={{type : "y"}}/>
-          <Geom type="line" position="month*temperature" size={2} color={'satellite'} />
-          <Geom type='point' position="month*temperature" size={4} shape={'circle'} color={'satellite'} style={{ stroke: '#fff', lineWidth: 1}} />
-        </Chart>
+        <AgentList />
+        <br/>
+        <CosmosAgent/>
+        <CosmosPlot/>
       </div>
+
     );
   }
 
