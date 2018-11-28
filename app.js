@@ -7,8 +7,7 @@ const server = require('http').createServer(app);
 const path = require('path');
 const io = require('socket.io').listen(server);
 const dgram = require('dgram');
-const mongoose = require('mongoose');
-
+// const mongoose = require('mongoose');
 const cors = require('cors');
 app.use(cors());
 
@@ -22,12 +21,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/', routes);
 
-mongoose.connect(process.env.MONGO_URL, (err) => {
-  if (err) {
-    console.log(err);
-  }
-});
-
+// mongoose.connect(process.env.MONGO_URL, (err) => {
+//   if (err) {
+//     console.log(err);
+//   }
+// });
+/* COSMOS SOCKET SETUP */
 const cosmosSocket = dgram.createSocket({ type: 'udp4', reuseAddr: true });
 
 const COSMOS_PORT = 10020;
@@ -38,6 +37,7 @@ cosmosSocket.on('listening', () => {
   const address = cosmosSocket.address();
   console.log('UDP Server listening on ' + address.address + ":" + address.port);
 });
+
 
 let obj = {};
 let agentListObj = {};
@@ -167,9 +167,46 @@ cosmosSocket.on('message', function(message) {
   // Maintain the list of agents
   if (!(obj.agent_proc in agentListObj)) {
     agentListObj[obj.agent_proc] = [obj.agent_utc, ' '+obj.agent_node, ' '+obj.agent_addr, ' '+obj.agent_port, ' '+obj.agent_bsz];
+
+    /* insert agent in agent_list mongodb*/
+    MongoClient.connect(mongo_url_cosmos,{ useNewUrlParser: true }, function(err, db) {
+      var dbo = db.db("cosmos");
+      var agent_list = dbo.collection('agent_list');
+      agent_list.insertOne(
+        {
+          agent_proc:obj.agent_proc,
+          agent_utc: obj.agent_utc,
+          agent_node: obj.agent_node,
+          agent_addr:obj.agent_addr,
+          agent_port:obj.agent_port,
+          agent_bsz:obj.agent_bsz
+        },
+        function (err, r){
+          io.emit('agent update list', agentListObj);
+          db.close();
+        }
+      );
+
+
+    });
   } else {
     // Update the time stamp
     agentListObj[obj.agent_proc][0] = obj.agent_utc;
+    /* update agent in mongodb
+    */
+    // MongoClient.connect(mongo_url_cosmos,{ useNewUrlParser: true }, function(err, db) {
+    //   var dbo = db.db("cosmos");
+    //   var agent_list = dbo.collection('agent_list');
+    //   agent_list.updateOne(
+    //     { agent_proc:obj.agent_proc },
+    //     {$set:{ agent_utc: obj.agent_utc }},
+    //     {upsert:true},
+    //     function (err, r){
+    //       io.emit('agent update list', agentListObj);
+    //       db.close();
+    //     }
+    //   );
+    // });
   }
 
   // Collect the IMU Omega data from the ADCS agent
@@ -179,8 +216,14 @@ cosmosSocket.on('message', function(message) {
   }
 
 });
+/* MONGO SETUP */
+// var cosmosdb = require('./cosmosdb'); // includes cosmosdb.js
+var MongoClient = require('mongodb').MongoClient
+      , assert = require('assert');
+var mongo_url_cosmos = process.env.MONGO_URL;
 
 setInterval(function(){
+
     io.emit('agent update list', agentListObj);
 }, 5000);
 
