@@ -4,6 +4,7 @@ import io from 'socket.io-client';
 import Navbar from './Global/Navbar';
 import AgentList from './Cosmos/AgentList';
 import CosmosAgent from './Cosmos/CosmosAgent';
+// import CosmosPlotInfo from './Cosmos/CosmosPlotInfo';
 import CosmosPlot from './Cosmos/CosmosPlot';
 const socket = io('http://localhost:3001');
 class DataPlot extends Component {
