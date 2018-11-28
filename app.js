@@ -30,7 +30,11 @@ mongoose.connect(process.env.MONGO_URL, (err) => {
 
 const cosmosSocket = dgram.createSocket({ type: 'udp4', reuseAddr: true });
 
+const COSMOS_PORT = 10020;
+const COSMOS_ADDR ="225.1.1.1"
+cosmosSocket.bind(COSMOS_PORT);
 cosmosSocket.on('listening', () => {
+  cosmosSocket.addMembership(COSMOS_ADDR);
   const address = cosmosSocket.address();
   console.log('UDP Server listening on ' + address.address + ":" + address.port);
 });
@@ -40,13 +44,12 @@ let agentListObj = {};
 let imuOmega = {};
 let imuIndex = 0;
 let sentImuIndex = 0;
-
 cosmosSocket.on('message', function(message) {
   obj = message.slice(3,message.length-1);
   let json_str = obj.toString('ascii');
   json_str = json_str.replace(/}{/g, ',')
   obj = JSON.parse(json_str);
-
+  io.emit('agent subscribe '+obj.agent_proc, obj);
   if (obj.agent_node === 'me213ao') {
 
     if (obj.device_gps_geods_000) {
@@ -54,7 +57,7 @@ cosmosSocket.on('message', function(message) {
       let longitude = obj.device_gps_geods_000.lon;
       let altitude = obj.device_gps_geods_000.h;
       let acceleration_x, acceleration_y, acceleration_z;
-      
+
       if (obj.device_imu_accel_000) {
         acceleration_x = obj.device_imu_accel_000[0];
         acceleration_y = obj.device_imu_accel_000[1];
@@ -177,8 +180,12 @@ cosmosSocket.on('message', function(message) {
 
 });
 
+setInterval(function(){
+    io.emit('agent update list', agentListObj);
+}, 5000);
+
 server.listen(3001, function() {
 	console.log('Server listening on port:s 3001');
 });
 
-cosmosSocket.bind(10020, process.env.SATELLITE_IP);
+// cosmosSocket.bind(10020, process.env.SATELLITE_IP);
