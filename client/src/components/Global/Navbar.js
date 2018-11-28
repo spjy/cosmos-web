@@ -55,6 +55,13 @@ class Navbar extends Component {
             </Menu.Item>
           </Menu.ItemGroup>
         </Menu.SubMenu>
+        <Menu.SubMenu title={<span><Icon type="tool" />Tools</span>}>
+          <Menu.Item key="dataplot">
+            <Link to="/dataplot">
+              <Icon type="line-chart" />Data Plot
+            </Link>
+          </Menu.Item>
+        </Menu.SubMenu>
 
       </Menu>
     );

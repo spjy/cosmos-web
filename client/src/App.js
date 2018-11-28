@@ -6,6 +6,7 @@ import Orbit from './components/Orbit';
 import Attitude from './components/Attitude';
 import Plot from './components/Plot';
 import Path from './components/Path';
+import DataPlot from './components/DataPlot';
 
 const App = ({}) => (
   <div>
@@ -16,6 +17,7 @@ const App = ({}) => (
         <Route exact path="/attitude" component={Attitude} />
         <Route exact path="/plot" component={Plot} />
         <Route exact path="/path" component={Path} />
+        <Route exact path="/dataplot" component={DataPlot} />
       </Switch>
     </Router>
   </div>
