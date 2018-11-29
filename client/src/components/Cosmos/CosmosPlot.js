@@ -24,6 +24,10 @@ constructor(){
 
 
     }
+    componentWillUnmount() {
+      var prevState = this.state.agent_selection;
+      socket.removeAllListeners('agent subscribe '+prevState);
+    }
     updateInfo(info){
       var prevState = this.state.agent_selection;
       var state = {
