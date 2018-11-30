@@ -2,9 +2,41 @@ import React, { Component } from 'react';
 import { Select } from 'antd';
 
 import io from 'socket.io-client';
-// import CosmosPlot from './CosmosPlot';
+
 
 const socket = io('http://localhost:3001');
+function parseCosmosJson(json){
+  /* returns array of data json names with properties */
+  var keys = Object.keys(json);
+  var names = [];
+  for(var i = 0; i < keys.length; i++){
+    var entry = json[keys[i]];
+    var name = keys[i];
+    var vals = 0;
+    var children = [];
+    if(!name.includes("agent_")) {
+      if(Array.isArray(entry)){
+        // if the value is an array
+        vals = entry.length;
+      }
+      else if(typeof entry === 'object') {
+        vals = 0;
+        children = parseCosmosJson(entry);
+      }
+      else {
+        vals = 1;
+      }
+      names.push({
+        name:name,
+        num_values: vals,
+        children: children
+      });
+    }
+  }
+  return names;
+}
+
+
 class CosmosPlotInfo extends Component {
 
   constructor(){
@@ -32,6 +64,7 @@ class CosmosPlotInfo extends Component {
         this.setState(saved_state);
     });
   }
+
   handleAgentChange(value){
     let prev_selection = 'agent subscribe '+this.state.agent_selection;
     var saved_state = this.state;
@@ -42,26 +75,29 @@ class CosmosPlotInfo extends Component {
     socket.on('agent subscribe '+this.state.agent_selection, (data) => {
       /* get data keys */
       var saved_state = this.state;
-      var keys = Object.keys(data);
-      var names = [];
-      for(var i = 0; i < keys.length; i++){
-        if(keys[i].includes("device_") || keys[i].includes("node_") ){
-          names.push(keys[i]);
-        }
-      }
-      saved_state.data_names = names;
+
+      // console.log(parseCosmosJson(data));
+      saved_state.data_names = parseCosmosJson(data);
       this.setState(saved_state); // update
       socket.removeAllListeners('agent subscribe '+this.state.agent_selection);
     });
   }
 
   handleDataChange(value){
-    // console.log(String(value))
+    // console.log(value)
     var saved_state = this.state;
+    // saved_state.data_selection = value;
     saved_state.data_selection = value;
     this.setState(saved_state); // update
 
-    var properties = [this.state.agent_selection, this.state.data_selection, this.state.data_length];
+    var data=[];
+    for(var i = 0; i <value.length; i++){
+      data.push(this.state.data_names[value[i]]);
+    }
+    var properties = {
+      agent_selection:this.state.agent_selection,
+      data_selection: data,
+      data_length: this.state.data_length };
     this.props.updateInfo(properties);
     // console.log('info: ', this.state);
   }
@@ -78,12 +114,19 @@ class CosmosPlotInfo extends Component {
     var data_key = [];
     var data_list = this.state.data_names;
     for(var i =0; i < data_list.length; i++){
-      data_key.push(<DataOption key={String(data_list[i])}>{String(data_list[i])}</DataOption>);
+      var key = String(data_list[i].name);
+      var title=key;
+      if(data_list[i].num_values >1){
+        title+= " ["+String(data_list[i].num_values)+"]";
+      }
+      else if(data_list[i].num_values ==0){
+        title+= " {"+String(data_list[i].children.length)+"}";
+      }
+      data_key.push(<DataOption key={key} value={i}>{title}</DataOption>);
     }
 
     return (
       <div>
-
         <Select
           mode="single"
           style={{ width: '400px' }}
@@ -101,7 +144,6 @@ class CosmosPlotInfo extends Component {
         >
         {data_key}
         </Select>
-
       </div>
     );
   }
