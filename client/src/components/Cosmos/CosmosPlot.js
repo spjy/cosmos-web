@@ -16,10 +16,9 @@ function get_plot_structure(selection,  parent_str){
 
   }
   else {
-    parent_str+=":";
+    parent_str+="_";
   }
-  var e = {fields:[]}
-  // structure[0] = e;
+  var e = {fields:[]};
   for(var i=0; i <selection.length; i++){
     var num_lines = selection[i].num_values;
     if( num_lines === 1){
@@ -108,7 +107,7 @@ function get_data(selection, json_data, parent_str){
     data_entry['time'] =   json_data['agent_utc'];
   }
   else {
-    parent_str+=":";
+    parent_str+="_";
   }
 
   for(var i=0; i <selection.length; i++){
@@ -136,39 +135,50 @@ function get_data(selection, json_data, parent_str){
 // function get_data_recusion(select)
 class CosmosPlot extends Component {
 /* Returns a select box filled with active agents */
-constructor(){
-  super();
-    this.state = {
-      agent_selection: '',
-      data_selection: '',
+  constructor(props){
+    super(props);
+    if(props.jsonObj){
+      this.state = {
+        agent: props.jsonObj.agent,
+        data_selection:  '',
+        data_length: props.jsonObj.xRange,
+        title: '',
+        using_json: true
+      };
+    }
+    else{
+      this.state = {
+        agent: '',
+        data_selection: '',
+        data_length: 100,
+        title: '',
+        data:[],
+        using_json: false
+      };
+    }
 
-      data_length:0,
-      data:[]
-    };
 
   }
 
     componentDidMount() {
 
-
-
     }
     componentWillUnmount() {
-      var prevState = this.state.agent_selection;
+      var prevState = this.state.agent;
       socket.removeAllListeners('agent subscribe '+prevState);
     }
     updateInfo(info){
-      var prevState = this.state.agent_selection;
-      var state = {
-        agent_selection: info.agent_selection,
-        data_selection: info.data_selection,
-        data_length:info.data_length,
-        data:[]
-        };
-        // console.log(info.data_selection );
-      this.setState(state);
+      var prevState = this.state.agent;
+
+      var saved_state = this.state;
+      saved_state.agent =  info.agent_selection;
+      saved_state.data_selection =  info.data_selection;
+      saved_state.data_length=info.data_length;
+      saved_state.data=[];
+      this.setState(saved_state);
       socket.removeAllListeners('agent subscribe '+prevState);
-      socket.on('agent subscribe '+state.agent_selection, (data) => {
+      console.log('agent subscribe '+saved_state.agent );
+      socket.on('agent subscribe '+saved_state.agent, (data) => { // subscribe to agent
         if (data) {
           // console.log(data)
           var saved_state = this.state;
@@ -184,13 +194,15 @@ constructor(){
       });
     }
 
+    createJson(){
+
+    }
 
     render() {
-
       return (
         <div>
-          <CosmosPlotInfo updateInfo = {this.updateInfo.bind(this)} />
-          <GroupPlots data={this.state.data} structure={this.state.data_selection}/>
+          <CosmosPlotInfo updateInfo = {this.updateInfo.bind(this)} jsonObj = {this.props.jsonObj} />
+          <GroupPlots data={this.state.data} structure={this.state.data_selection} using_json={this.state.using_json}/>
         </div>
       );
 
