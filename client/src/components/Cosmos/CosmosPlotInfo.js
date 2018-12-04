@@ -158,38 +158,7 @@ class CosmosPlotInfo extends Component {
       console.log('info: ', this.state);
     }
   }
-  update(jsonObj){
-    // var saved_state = this.state;
-    // saved_state.agent_selection = jsonObj.agent;
-    // saved_state.data_length=jsonObj.xRange;
-    // saved_state.using_json = true;
-    // saved_state.valid = false;
-    // this.setState(saved_state);
-    // socket.on('agent subscribe '+this.props.jsonObj.agent, (data) => {
-    //   socket.removeAllListeners('agent subscribe '+this.props.jsonObj.agent);
-    //   var saved_state = this.state;
-    //   var names = [];
-    //   names = parseCosmosJson(data);
-    //   console.log(names);
-    //   var vals=[];
-    //   for(var i=0; i <this.props.jsonObj.values.length; i++){
-    //     var match = this.props.jsonObj.values[i].data;
-    //     const result = names.find( fruit => fruit.name === match );
-    //     vals.push(result);
-    //   }
-    //   console.log(vals);
-    //   saved_state.data_names = names;
-    //   saved_state.data_selection = vals;
-    //   if(vals.length > 0){
-    //     saved_state.valid = true;
-    //   }
-    //   this.setState(saved_state);
-    //   this.props.updateInfo( {
-    //         agent_selection:this.state.agent_selection,
-    //         data_selection: vals,
-    //         data_length: this.state.data_length});
-    // });
-  }
+
 
   render() {
     const AgentOption = Select.Option;

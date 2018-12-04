@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-
-import io from 'socket.io-client';
 import Navbar from './Global/Navbar';
 import AgentList from './Cosmos/AgentList';
-import CosmosPlot from './Cosmos/CosmosPlot';
+// import CosmosPlot from './Cosmos/CosmosPlot';
+import CosmosAgent from './Cosmos/CosmosAgent';
+import CosmosAgentJson from './Cosmos/CosmosAgentJson';
 import CosmosJsonParser from './Cosmos/CosmosJsonParser';
-const socket = io('http://localhost:3001');
 class DataPlot extends Component {
 
   state= {
@@ -24,13 +23,13 @@ class DataPlot extends Component {
         <br />
         <AgentList />
         <br/>
-        <CosmosJsonParser updateJsonObj = {this.onJsonUpload.bind(this)}/>
-        { plots.map(function(p, index){
-          return <CosmosPlot key={index} jsonObj = {p} />;
-        })}
-        <CosmosPlot/>
 
-
+        <div ids='cosmos-plot-json' class= 'cosmos-plot'>
+          <CosmosJsonParser />
+        </div>
+        <div id='cosmos-plot-live' class= 'cosmos-plot'>
+          <CosmosAgent />
+        </div>
       </div>
 
     );

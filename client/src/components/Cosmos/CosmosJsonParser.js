@@ -1,35 +1,14 @@
 import React, { Component } from 'react';
-
-const ImportFromFileBodyComponent = () => {
-    let fileReader;
-
-    const handleFileRead = (e) => {
-        const content = fileReader.result;
-        console.log(JSON.parse(content));
-        // … do something with the 'content' …
-    };
-
-    const handleFileChosen = (file) => {
-        fileReader = new FileReader();
-        fileReader.onloadend = handleFileRead;
-        fileReader.readAsText(file);
-    };
-
-    return <div className='upload-expense'>
-        <input type='file'
-               id='file'
-               className='input-file'
-               accept='.json'
-               onChange={e => handleFileChosen(e.target.files[0])}
-        />
-    </div>;
-};
+import CosmosAgentJson from './CosmosAgentJson';
 
 class CosmosJsonParser extends Component {
 
   constructor(){
     super();
     this.handleFileChosen= this.handleFileChosen.bind(this);
+    this.state = {
+      jsonArray: []
+    }
   }
   handleFileChosen = (file) => {
     let fileReader;
@@ -37,7 +16,8 @@ class CosmosJsonParser extends Component {
       fileReader.onloadend = (e) => {
           const content = fileReader.result;
           var json = JSON.parse(content)
-          this.props.updateJsonObj(json); // pass json to DataPlot::onJsonUpload()
+          // this.props.updateJsonObj(json); // pass json to DataPlot::onJsonUpload()
+          this.setState({jsonArray: json});
       };
       fileReader.readAsText(file);
     };
@@ -46,7 +26,7 @@ class CosmosJsonParser extends Component {
   }
   render() {
 
-
+    var plots = (this.state.jsonArray ? this.state.jsonArray: []) ;
     return (
       <div className='upload-json'>
         <input type='file'
@@ -55,6 +35,10 @@ class CosmosJsonParser extends Component {
                accept='.json'
                onChange={e => this.handleFileChosen(e.target.files[0])}
         />
+        <br/>
+        { plots.map(function(p, index){
+                return <CosmosAgentJson key={index} jsonObj = {p} />;
+              })}
     </div>
     );
   }

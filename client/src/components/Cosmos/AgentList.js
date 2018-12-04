@@ -75,9 +75,6 @@ class AgentList extends Component {
 
         };
       }
-      function handleChange(value){
-        console.log(`selected ${value}`);
-      }
       return (
         <div>
           <Table

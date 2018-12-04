@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import io from 'socket.io-client';
 import { Chart, Geom, Axis, Tooltip, Legend } from 'bizcharts';
 import DataSet from '@antv/data-set';
-import CosmosPlotInfo from './CosmosPlotInfo';
+// import CosmosPlotInfo from './CosmosPlotInfo';
 // import CosmosAgent from './CosmosAgent';
 
 const socket = io('http://localhost:3001');
@@ -82,7 +82,7 @@ function GroupPlots(props){
        = [{ name: '', num_values: 0, children: []},...]
     */
     var data_selection = props.structure;
-
+    // console.log("GroupPlots",data_selection)
     var plotFields= get_plot_structure(data_selection,  '');
     return (
       <div>
@@ -137,53 +137,73 @@ class CosmosPlot extends Component {
 /* Returns a select box filled with active agents */
   constructor(props){
     super(props);
-    if(props.jsonObj){
+
       this.state = {
-        agent: props.jsonObj.agent,
-        data_selection:  '',
-        data_length: props.jsonObj.xRange,
-        title: '',
-        using_json: true
-      };
-    }
-    else{
-      this.state = {
-        agent: '',
-        data_selection: '',
-        data_length: 100,
-        title: '',
         data:[],
-        using_json: false
+        agent: props.agent,
+        data_length:100
       };
-    }
+
 
 
   }
 
     componentDidMount() {
-
-    }
-    componentWillUnmount() {
-      var prevState = this.state.agent;
-      socket.removeAllListeners('agent subscribe '+prevState);
-    }
-    updateInfo(info){
-      var prevState = this.state.agent;
-
-      var saved_state = this.state;
-      saved_state.agent =  info.agent_selection;
-      saved_state.data_selection =  info.data_selection;
-      saved_state.data_length=info.data_length;
-      saved_state.data=[];
-      this.setState(saved_state);
-      socket.removeAllListeners('agent subscribe '+prevState);
-      console.log('agent subscribe '+saved_state.agent );
-      socket.on('agent subscribe '+saved_state.agent, (data) => { // subscribe to agent
+      socket.on('agent subscribe '+this.props.agent, (data) => { // subscribe to agent
         if (data) {
           // console.log(data)
           var saved_state = this.state;
 
-          var data_entry = get_data(saved_state.data_selection, data, '');
+          var data_entry = get_data(this.props.data_selected, data, '');
+          // console.log(data_entry)
+          saved_state.data.push(data_entry);
+          if(saved_state.data.length > this.state.data_length){
+            saved_state.data.shift();
+          }
+          this.setState(saved_state);
+        }
+      });
+    }
+    componentWillUnmount() {
+      var prevState = this.props.agent;
+      socket.removeAllListeners('agent subscribe '+prevState);
+    }
+    componentDidUpdate(prevProps) {
+      // Typical usage (don't forget to compare props):
+      if (this.props.agent !== prevProps.agent) {
+        console.log("CosmosPlot agent changed" );
+        socket.removeAllListeners('agent subscribe '+prevProps.agent);
+        var saved_state = this.state;
+        saved_state.agent = this.props.agent;
+        this.setState(saved_state);
+        socket.on('agent subscribe '+this.props.agent, (data) => { // subscribe to agent
+          if (data) {
+            // console.log(data)
+            var saved_state = this.state;
+
+            var data_entry = get_data(this.props.data_selected, data, '');
+            // console.log(data_entry)
+            saved_state.data.push(data_entry);
+            if(saved_state.data.length > this.state.data_length){
+              saved_state.data.shift();
+            }
+            this.setState(saved_state);
+          }
+        });
+      }
+
+    }
+    updateAgent(){
+      var saved_state = this.state;
+      socket.removeAllListeners('agent subscribe '+ saved_state.agent);
+      saved_state.agent = this.props.agent;
+      this.setState(saved_state);
+      socket.on('agent subscribe '+this.props.agent, (data) => { // subscribe to agent
+        if (data) {
+          // console.log(data)
+          var saved_state = this.state;
+
+          var data_entry = get_data(this.props.data_selected, data, '');
           // console.log(data_entry)
           saved_state.data.push(data_entry);
           if(saved_state.data.length > this.state.data_length){
@@ -194,17 +214,13 @@ class CosmosPlot extends Component {
       });
     }
 
-    createJson(){
-
-    }
-
     render() {
       return (
         <div>
-          <CosmosPlotInfo updateInfo = {this.updateInfo.bind(this)} jsonObj = {this.props.jsonObj} />
-          <GroupPlots data={this.state.data} structure={this.state.data_selection} using_json={this.state.using_json}/>
+          <GroupPlots data={this.state.data} structure={this.props.data_selected}/>
         </div>
       );
+
 
     }
 }
