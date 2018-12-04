@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Table } from 'antd';
+import Navbar from './../Global/Navbar';
+
 
 import io from 'socket.io-client';
 
@@ -77,6 +79,8 @@ class AgentList extends Component {
       }
       return (
         <div>
+          <Navbar current="dataplot" />
+          <br/>
           <Table
             columns={columns}
             dataSource={data}

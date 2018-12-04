@@ -7,6 +7,7 @@ import Attitude from './components/Attitude';
 import Plot from './components/Plot';
 import Path from './components/Path';
 import DataPlot from './components/DataPlot';
+import AgentList from './components/Cosmos/AgentList';
 
 const App = ({}) => (
   <div>
@@ -18,6 +19,7 @@ const App = ({}) => (
         <Route exact path="/plot" component={Plot} />
         <Route exact path="/path" component={Path} />
         <Route exact path="/dataplot" component={DataPlot} />
+        <Route exact path="/agentlist" component={AgentList} />
       </Switch>
     </Router>
   </div>
