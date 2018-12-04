@@ -57,7 +57,7 @@ class CosmosAgentJson extends Component {
   }
 
     componentDidMount() {
-      if(!this.props.jsonObj.agent=='')
+      if(!this.props.jsonObj.agent==='')
         this.updateAgent(this.props.jsonObj.agent);
     }
 
@@ -79,7 +79,7 @@ class CosmosAgentJson extends Component {
             var keys = Object.keys(data);
             for (var k = 0; k < keys.length; k++){
                 agent_list.push(data[keys[k]]);
-                if(keys[k] == agent){
+                if(keys[k] === agent){
                   agent_live=true;
                 }
             }
@@ -132,6 +132,7 @@ class CosmosAgentJson extends Component {
       }
       return selected;
     }
+
 
     render() {
       const AgentOption = Select.Option;

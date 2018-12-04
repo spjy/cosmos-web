@@ -67,7 +67,7 @@ class CosmosAgent extends Component {
                   agent_list[keys[k]] = data[keys[k]];
               }
             }
-            this.state.agents = agent_list;
+            saved_state.agents = agent_list;
             this.setState(saved_state);
         });
 
@@ -99,17 +99,18 @@ class CosmosAgent extends Component {
 
     handleAgentChange(value){
         this.updateAgent(String(value));
-        console.log(this.state);
+        // console.log(this.state);
     }
     handleDataChange(value){
       var data=[];
       for(var i = 0; i <value.length; i++){
-        data.push(this.state.data_list[value[i]]);
+        const result = this.state.data_list.find( f=> f.name === value[i]);
+        if(result)
+          data.push(result);
       }
       var saved_state = this.state;
       saved_state.data_selection = data;
       this.setState(saved_state); // update
-      console.log(this.state)
     }
 
 
@@ -120,7 +121,7 @@ class CosmosAgent extends Component {
       const DataOption = Select.Option;
       var data_key = [];
       var selected_data = [];
-      var using_json = false;
+      // var using_json = false;
       var selected_agent = [];
 
       var agent_list  = this.state.agents;
@@ -130,21 +131,21 @@ class CosmosAgent extends Component {
       }
 
       var data_list = this.state.data_list;
-      for(var i =0; i < data_list.length; i++){
-        var key = String(data_list[i].name);
+      for(var j =0; j < data_list.length; j++){
+        var key = String(data_list[j].name);
         var title=key;
-        if(data_list[i].num_values >1){
-          title+= " ["+String(data_list[i].num_values)+"]";
+        if(data_list[j].num_values >1){
+          title+= " ["+String(data_list[j].num_values)+"]";
         }
-        else if(data_list[i].num_values === 0){
-          title+= " {"+String(data_list[i].children.length)+"}";
+        else if(data_list[j].num_values === 0){
+          title+= " {"+String(data_list[j].children.length)+"}";
         }
-        data_key.push(<DataOption key={key} value={i}>{title}</DataOption>);
+        data_key.push(<DataOption key={key} value={key}>{title}</DataOption>);
       }
-      // selected_data = [];
-      // for(var i=0; i < this.state.data_selection.length; i++){
-      //   selected_data.push(this.state.data_selection[i].name);
-      // }
+      selected_data = [];
+      for(var k=0; k < this.state.data_selection.length; k++){
+        selected_data.push(this.state.data_selection[k].name);
+      }
       selected_agent= this.state.agent_selection;
 
       const cPlot = (this.state.data_selection.length > 0 ) ?
@@ -164,7 +165,7 @@ class CosmosAgent extends Component {
           {agent_names}
           </Select>
           <Select
-            // value = {selected_data}
+            value = {selected_data}
             mode="multiple"
             style={{ width: '400px' }}
             placeholder="Select Data to Plot"
