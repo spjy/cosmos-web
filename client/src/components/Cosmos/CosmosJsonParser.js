@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import CosmosAgentJson from './CosmosAgentJson';
+import { Button } from 'antd';
 // const default_json =     {
 //         "agent": "",
 //         "node": "",
@@ -53,7 +54,8 @@ class CosmosJsonParser extends Component {
     while( jsonArr.length <= index){
       jsonArr.push({});
     }
-    this.state.jsonArray[index] = jsonObj;
+    jsonArr[index] = jsonObj;
+      this.setState({jsonArray: jsonArr});
     //TODO : write changes to file
     const file_content = JSON.stringify(this.state.jsonArray);
     console.log(file_content)
@@ -61,6 +63,7 @@ class CosmosJsonParser extends Component {
   render() {
 
     var plots = (this.state.jsonArray ? this.state.jsonArray: []) ;
+
     return (
       <div className='upload-json'>
         <input type='file'
@@ -69,6 +72,7 @@ class CosmosJsonParser extends Component {
                accept='.json'
                onChange={e => this.handleFileChosen(e.target.files[0])}
         />
+
         <br/>
 
           <Plots info={plots} saveJsonObj={this.updateJson.bind(this)} />
