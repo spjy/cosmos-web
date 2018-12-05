@@ -91,6 +91,12 @@ class CosmosAgentJson extends Component {
       }
 
     }
+    componentWillUnmount() {
+      // Remove listeners
+        socket.removeAllListeners('agent update list');
+        socket.removeAllListeners('agent subscribe '+this.props.jsonObj.agent);
+        socket.removeAllListeners('agent subscribe '+this.state.agent_selection);
+    }
 
     updateAgent(agent){
       // call when agent selection is changed
@@ -210,6 +216,10 @@ class CosmosAgentJson extends Component {
         });
 
     }
+    onClickDelete(){
+
+      this.props.selfDestruct(this.props.id);
+    }
     onClickSave(){
       socket.removeAllListeners('agent update list');
       var saved_state = this.state;
@@ -225,11 +235,12 @@ class CosmosAgentJson extends Component {
       saved_state.edit = edit_mode.DEFAULT;
       this.setState(saved_state);
     }
+
     onClickCancel(){
       // this.updateAgent(this.props.jsonObj.agent);
       socket.removeAllListeners('agent update list');
       var saved_state = this.state;
-      saved_state.edit = false;
+      saved_state.edit = edit_mode.LOADING;
       this.setState(saved_state);
       this.updateAgent(this.props.jsonObj.agent);
       var saved_state = this.state;
@@ -252,23 +263,7 @@ class CosmosAgentJson extends Component {
         for(var i = 0; i <value.length; i++){
           const result = this.state.data_list.find( f=> f.name === value[i]);
           if(result)
-            data.push(result);      // const AgentOption = Select.Option;
-      // var agent_names=[];
-      // const DataOption = Select.Option;
-      // var data_key = [];
-      // var selected_data = [];
-      // var selected_agent = [];
-      //
-      // // var agent = this.props.jsonObj.agent
-      // var agent = this.state.agent_selection;
-      // selected_agent.push(agent);
-      // agent_names.push(<AgentOption key={agent} value={agent}>{agent}</AgentOption>);
-      // var vals = this.props.jsonObj.values;
-      // for(var i=0; i < vals.length; i++){
-      //   var key = vals[i].data;
-      //   data_key.push(<DataOption key={key} value={key}>{key}</DataOption>);
-      //   selected_data.push(key);
-      // }
+            data.push(result);
         }
         var saved_state = this.state;
         saved_state.data_selection = data;
@@ -347,7 +342,10 @@ class CosmosAgentJson extends Component {
             buttons = <Button type='default'><Icon type="loading"/></Button>;
           }
           else {
-            buttons = <Button type='default' onClick={this.onClickEdit.bind(this)}><Icon type="edit" /></Button>
+            buttons = <Button.Group>
+                        <Button type='default' onClick={this.onClickEdit.bind(this)}><Icon type="edit" /></Button>
+                        <Button type='danger' onClick={this.onClickDelete.bind(this)}><Icon type="delete" /></Button>
+                      </Button.Group>;
           }
         break;
       }

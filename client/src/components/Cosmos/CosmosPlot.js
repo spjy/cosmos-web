@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import io from 'socket.io-client';
 import { Chart, Geom, Axis, Tooltip, Legend } from 'bizcharts';
 import DataSet from '@antv/data-set';
-// import CosmosPlotInfo from './CosmosPlotInfo';
-// import CosmosAgent from './CosmosAgent';
+
 
 const socket = io('http://localhost:3001');
 function get_plot_structure(selection,  parent_str){

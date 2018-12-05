@@ -14,9 +14,6 @@ class DataPlot extends Component {
         <div ids='cosmos-plot-json' className= 'cosmos-plot'>
           <CosmosJsonParser />
         </div>
-        <div id='cosmos-plot-live' className= 'cosmos-plot'>
-          <CosmosAgent />
-        </div>
       </div>
 
     );

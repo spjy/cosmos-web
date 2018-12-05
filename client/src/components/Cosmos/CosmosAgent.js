@@ -141,7 +141,8 @@ class CosmosAgent extends Component {
         }
         data_key.push(<DataOption key={key} value={key}>{title}</DataOption>);
       }
-      selected_data = [];
+
+
       for(var k=0; k < this.state.data_selection.length; k++){
         selected_data.push(this.state.data_selection[k].name);
       }
