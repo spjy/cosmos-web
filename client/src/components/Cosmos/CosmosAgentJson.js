@@ -51,14 +51,14 @@ class CosmosAgentJson extends Component {
         data_list: [],
         data_selection:[],
         agent_selection: '',
-        edit:false
+        edit: false
       };
 
 
   }
 
     componentDidMount() {
-      if(!this.props.jsonObj.agent==='')
+      if(this.props.jsonObj.agent!=='')
         this.updateAgent(this.props.jsonObj.agent);
     }
 
@@ -111,7 +111,8 @@ class CosmosAgentJson extends Component {
             this.setState({
               data_list: [],
               data_selection:[],
-              agent_selection: agent
+              agent_selection: agent,
+              edit: false
             });
           }
 
