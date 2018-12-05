@@ -1,6 +1,32 @@
 import React, { Component } from 'react';
 import CosmosAgentJson from './CosmosAgentJson';
-
+// const default_json =     {
+//         "agent": "",
+//         "node": "",
+//         "title": "",
+//         "values": [
+//             {
+//                 "data": "",
+//                 "logdata": 1,
+//                 "name": "",
+//                 "precision": 7,
+//                 "scale": 1,
+//                 "units": ""
+//             }
+//         ],
+//         "visible": 0,
+//         "xLabel": "",
+//         "xRange": 0,
+//         "yLabel": "",
+//         "yRange": 0
+//     };
+function Plots(props){
+  var plots = props.info;
+  const result =  plots.map(function(p, index){
+          return <CosmosAgentJson key={index} id={index} jsonObj = {p} saveJsonObj={props.saveJsonObj} />;
+        });
+  return result;
+}
 class CosmosJsonParser extends Component {
 
   constructor(){
@@ -21,8 +47,16 @@ class CosmosJsonParser extends Component {
       };
       fileReader.readAsText(file);
     };
-  handleChange(){
 
+  updateJson(jsonObj, index){
+    var jsonArr = this.state.jsonArray;
+    while( jsonArr.length <= index){
+      jsonArr.push({});
+    }
+    this.state.jsonArray[index] = jsonObj;
+    //TODO : write changes to file
+    const file_content = JSON.stringify(this.state.jsonArray);
+    console.log(file_content)
   }
   render() {
 
@@ -36,9 +70,8 @@ class CosmosJsonParser extends Component {
                onChange={e => this.handleFileChosen(e.target.files[0])}
         />
         <br/>
-        { plots.map(function(p, index){
-                return <CosmosAgentJson key={index} jsonObj = {p} />;
-              })}
+
+          <Plots info={plots} saveJsonObj={this.updateJson.bind(this)} />
     </div>
     );
   }

@@ -46,11 +46,13 @@ function get_data_list(json) {
 class CosmosAgentJson extends Component {
 /* CosmosPlot using .json configuration file */
   constructor(props){
+    console.log(props.id)
     super(props);
       this.state = {
         data_list: [],
         data_selection:[],
         agent_selection: '',
+        agents:[],
         edit: false
       };
 
@@ -111,8 +113,9 @@ class CosmosAgentJson extends Component {
             this.setState({
               data_list: [],
               data_selection:[],
+              agent_list:[],
               agent_selection: agent,
-              edit: false
+              edit: this.state.edit
             });
           }
 
@@ -132,9 +135,12 @@ class CosmosAgentJson extends Component {
           selected.push(result);
         else
           console.log(match, " is wrong")
+
       }
       return selected;
     }
+
+
     onClickEdit(){
       var saved_state = this.state;
       saved_state.edit = true;
@@ -148,6 +154,9 @@ class CosmosAgentJson extends Component {
 
             }
           }
+          var saved_state = this.state;
+          saved_state.agents = agent_list;
+          this.setState(saved_state);
         });
 
     }
@@ -157,17 +166,58 @@ class CosmosAgentJson extends Component {
       this.setState(saved_state);
       socket.removeAllListeners('agent update list');
       // update json
+      const obj = {};
+
+      this.props.saveJsonObj(obj, this.props.id);
+      this.updateAgent(this.props.jsonObj.agent);
     }
     onClickCancel(){
       this.updateAgent(this.props.jsonObj.agent);
       var saved_state = this.state;
       saved_state.edit = false;
       this.setState(saved_state);
+      this.updateAgent(this.props.jsonObj.agent);
       socket.removeAllListeners('agent update list');
     }
 
+    handleAgentChange(value){
+        if(!this.state.edit) {
+          this.updateAgent(String(value));
+        }
+        // console.log(this.state);
+    }
+    handleDataChange(value){
+      if(!this.state.edit) {
+        var data=[];
+        for(var i = 0; i <value.length; i++){
+          const result = this.state.data_list.find( f=> f.name === value[i]);
+          if(result)
+            data.push(result);
+        }
+        var saved_state = this.state;
+        saved_state.data_selection = data;
+        this.setState(saved_state); // update
+      }
 
+    }
     render() {
+      // const AgentOption = Select.Option;
+      // var agent_names=[];
+      // const DataOption = Select.Option;
+      // var data_key = [];
+      // var selected_data = [];
+      // var selected_agent = [];
+      //
+      // // var agent = this.props.jsonObj.agent
+      // var agent = this.state.agent_selection;
+      // selected_agent.push(agent);
+      // agent_names.push(<AgentOption key={agent} value={agent}>{agent}</AgentOption>);
+      // var vals = this.props.jsonObj.values;
+      // for(var i=0; i < vals.length; i++){
+      //   var key = vals[i].data;
+      //   data_key.push(<DataOption key={key} value={key}>{key}</DataOption>);
+      //   selected_data.push(key);
+      // }
       const AgentOption = Select.Option;
       var agent_names=[];
       const DataOption = Select.Option;
@@ -175,54 +225,104 @@ class CosmosAgentJson extends Component {
       var selected_data = [];
       var selected_agent = [];
 
-      var agent = this.props.jsonObj.agent
-      selected_agent.push(agent);
-      agent_names.push(<AgentOption key={agent} value={agent}>{agent}</AgentOption>);
-      var vals = this.props.jsonObj.values;
-      for(var i=0; i < vals.length; i++){
-        var key = vals[i].data;
-        data_key.push(<DataOption key={key} value={key}>{key}</DataOption>);
-        selected_data.push(key);
+      var agent_list  = this.state.agents;
+      var keys = Object.keys(agent_list);
+      for(var i =0; i < keys.length; i++){
+        agent_names.push(<AgentOption key={String(keys[i])}>{String(keys[i])}</AgentOption>);
       }
+
+      var data_list = this.state.data_list;
+      for(var j =0; j < data_list.length; j++){
+        var key = String(data_list[j].name);
+        var title=key;
+        if(data_list[j].num_values >1){
+          title+= " ["+String(data_list[j].num_values)+"]";
+        }
+        else if(data_list[j].num_values === 0){
+          title+= " {"+String(data_list[j].children.length)+"}";
+        }
+        data_key.push(<DataOption key={key} value={key}>{title}</DataOption>);
+      }
+
+
+      for(var k=0; k < this.state.data_selection.length; k++){
+        selected_data.push(this.state.data_selection[k].name);
+      }
+      selected_agent= this.state.agent_selection;
 
       console.log("CosmosAgentJson: render() datalen: ",this.state.data_selection.length);
       const cPlot = (this.state.data_selection.length > 0 ) ?
-        <CosmosPlot data_selected={this.state.data_selection} agent ={this.props.jsonObj.agent}/>
+        <CosmosPlot data_selected={this.state.data_selection} agent ={selected_agent}/>
         :<h3> No valid data to plot</h3>;
-
       const buttons = this.state.edit ?
-      <Button.Group>
-          <Button type='primary'  onClick={this.onClickSave.bind(this)}> Save</Button>
-          <Button type='danger' onClick={this.onClickCancel.bind(this)}>Cancel</Button></Button.Group>
+          <Button.Group>
+              <Button type='primary'  onClick={this.onClickSave.bind(this)}> Save</Button>
+              <Button type='danger' onClick={this.onClickCancel.bind(this)}>Cancel</Button></Button.Group>
           : <Button type='default' onClick={this.onClickEdit.bind(this)}><Icon type="edit" /></Button> ;
-      return (
 
-        <div>
+      if(this.state.edit){
+        return (
 
-          <Select
-            mode="single"
-            style={{ width: '400px' }}
-            placeholder="Select Agent"
-            value = {this.props.jsonObj.agent}
-            disabled
-          >
-          {agent_names}
-          </Select>
-          <Select
-            value = {selected_data}
-            mode="multiple"
-            style={{ width: '400px' }}
-            placeholder="Select Data to Plot"
-            disabled
-          >
-          {data_key}
-          </Select>
-          {buttons}
-          {cPlot}
-        </div>
+          <div>
+
+            <Select
+              mode="single"
+              style={{ width: '400px' }}
+              placeholder="Select Agent"
+              onChange={this.handleAgentChange.bind(this)}
+              value = {selected_agent}
+            >
+            {agent_names}
+            </Select>
+            <Select
+              value = {selected_data}
+              mode="multiple"
+              style={{ width: '400px' }}
+              placeholder="Select Data to Plot"
+              onChange={this.handleDataChange.bind(this)}
+            >
+            {data_key}
+            </Select>
+            {buttons}
+            {cPlot}
+          </div>
 
 
-      );
+        );
+      }
+      else {
+        return (
+
+          <div>
+
+            <Select
+              mode="single"
+              style={{ width: '400px' }}
+              placeholder="Select Agent"
+              onChange={this.handleAgentChange.bind(this)}
+              value = {selected_agent}
+              disabled
+            >
+            {agent_names}
+            </Select>
+            <Select
+              value = {selected_data}
+              mode="multiple"
+              style={{ width: '400px' }}
+              placeholder="Select Data to Plot"
+              onChange={this.handleDataChange.bind(this)}
+              disabled
+            >
+            {data_key}
+            </Select>
+            {buttons}
+            {cPlot}
+          </div>
+
+
+        );
+      }
+
 
     }
 
