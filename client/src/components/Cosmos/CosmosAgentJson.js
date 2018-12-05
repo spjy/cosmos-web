@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
 import CosmosPlot from './CosmosPlot';
-import { Select } from 'antd';
+import { Select , Icon } from 'antd';
+import { Button } from 'antd';
 const socket = io('http://localhost:3001');
 
 function get_data_list(json) {
@@ -47,10 +48,10 @@ class CosmosAgentJson extends Component {
   constructor(props){
     super(props);
       this.state = {
-        // agents:[],
         data_list: [],
         data_selection:[],
-        agent_selection: ''
+        agent_selection: '',
+        edit:false
       };
 
 
@@ -63,7 +64,7 @@ class CosmosAgentJson extends Component {
 
     componentDidUpdate(prevProps) {
       // Typical usage (don't forget to compare props):
-      if (this.props.jsonObj.agent !== prevProps.jsonObj.agent) {
+      if (this.props.jsonObj !== prevProps.jsonObj) {
         // console.log("CosmosAgentJson agent changed ", this.props.jsonObj.agent );
         this.updateAgent(String(this.props.jsonObj.agent));
       }
@@ -72,6 +73,7 @@ class CosmosAgentJson extends Component {
 
     updateAgent(agent){
       // call when agent selection is changed
+      console.log("CosmosAgentJson updateAgent")
       socket.on('agent update list', (data) => { // check if there is a live orbit
         var agent_list = [];
         var agent_live = false;
@@ -132,6 +134,36 @@ class CosmosAgentJson extends Component {
       }
       return selected;
     }
+    onClickEdit(){
+      var saved_state = this.state;
+      saved_state.edit = true;
+      this.setState(saved_state);
+      socket.on('agent update list', (data) => { // check if there is a live orbit
+        var agent_list = [];
+          if (data) { // check if data exists
+            var keys = Object.keys(data);
+            for (var k = 0; k < keys.length; k++){
+                agent_list.push(data[keys[k]]);
+
+            }
+          }
+        });
+
+    }
+    onClickSave(){
+      var saved_state = this.state;
+      saved_state.edit = false;
+      this.setState(saved_state);
+      socket.removeAllListeners('agent update list');
+      // update json
+    }
+    onClickCancel(){
+      this.updateAgent(this.props.jsonObj.agent);
+      var saved_state = this.state;
+      saved_state.edit = false;
+      this.setState(saved_state);
+      socket.removeAllListeners('agent update list');
+    }
 
 
     render() {
@@ -152,11 +184,16 @@ class CosmosAgentJson extends Component {
         selected_data.push(key);
       }
 
-      // console.log("CosmosAgentJson: render() datalen: ",this.state.data_selection.length);
+      console.log("CosmosAgentJson: render() datalen: ",this.state.data_selection.length);
       const cPlot = (this.state.data_selection.length > 0 ) ?
         <CosmosPlot data_selected={this.state.data_selection} agent ={this.props.jsonObj.agent}/>
         :<h3> No valid data to plot</h3>;
 
+      const buttons = this.state.edit ?
+      <Button.Group>
+          <Button type='primary'  onClick={this.onClickSave.bind(this)}> Save</Button>
+          <Button type='danger' onClick={this.onClickCancel.bind(this)}>Cancel</Button></Button.Group>
+          : <Button type='default' onClick={this.onClickEdit.bind(this)}><Icon type="edit" /></Button> ;
       return (
 
         <div>
@@ -179,6 +216,7 @@ class CosmosAgentJson extends Component {
           >
           {data_key}
           </Select>
+          {buttons}
           {cPlot}
         </div>
 

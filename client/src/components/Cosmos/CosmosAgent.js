@@ -121,7 +121,6 @@ class CosmosAgent extends Component {
       const DataOption = Select.Option;
       var data_key = [];
       var selected_data = [];
-      // var using_json = false;
       var selected_agent = [];
 
       var agent_list  = this.state.agents;
