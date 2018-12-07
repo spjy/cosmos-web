@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import CosmosAgentJson from './CosmosAgentJson';
-import { Button, Icon } from 'antd';
+import { Button, Icon, Modal } from 'antd';
 const default_json =     {
         "agent": "null",
         "node": "",
@@ -36,8 +36,10 @@ class CosmosJsonParser extends Component {
     this.handleFileChosen= this.handleFileChosen.bind(this);
     this.state = {
       jsonArray: [],
-      file_chosen:false
+      file_chosen:false,
+      view_modal:false
     }
+
   }
   handleFileChosen = (file) => {
     let fileReader;
@@ -49,7 +51,7 @@ class CosmosJsonParser extends Component {
           this.setState({jsonArray: json, file_chosen:true});
       };
       fileReader.readAsText(file);
-      console.log(file)
+      // console.log(file)
     };
 
   updateJson(jsonObj, index){
@@ -66,7 +68,7 @@ class CosmosJsonParser extends Component {
     console.log(file_content)
   }
   removeChild(index){
-    console.log("goodbye", index)
+    // console.log("goodbye", index)
     var saved_state = this.state;
     saved_state.jsonArray.splice(index,1);
     this.setState(saved_state);
@@ -76,22 +78,43 @@ class CosmosJsonParser extends Component {
     saved_state.jsonArray.push(default_json);
     this.setState(saved_state);
   }
+  copyJsonToClipboard(){
+    this.textArea.select();
+    document.execCommand('copy');
+
+    var saved_state = this.state;
+    saved_state.view_modal=false;
+    this.setState(saved_state);
+  }
+  viewJson(){
+    var saved_state = this.state;
+    saved_state.view_modal=true;
+    this.setState(saved_state);
+  }
   render() {
 
     var plots = (this.state.jsonArray ? this.state.jsonArray: []) ;
     var addButton=<Button type='default' onClick={this.onClickAdd.bind(this)}><Icon type="plus"/> New Plot</Button>;
-
-
-
+    var contents= JSON.stringify(this.state.jsonArray, null,2);
+    var modal = <Modal title="Json content"
+      visible={this.state.view_modal}
+      onOk={this.copyJsonToClipboard.bind(this)}
+      okText="Copy to Clipboard (rn this doesnt do anything)"
+    >
+    <textarea ref={(textarea) => this.textArea = textarea } value={contents}/>
+    </Modal>;
+    var view_modal_button = <Button type='default' onClick={this.viewJson.bind(this)}> View </Button>;
     return (
       <div className='upload-json'>
+        {this.state.view_modal && modal}
+
         <input type='file'
                id='json-file'
                className='input-file'
                accept='.json'
                onChange={e => this.handleFileChosen(e.target.files[0])}
         />
-
+        {this.state.file_chosen && view_modal_button}
         <br/>
 
           <Plots info={plots} saveJsonObj={this.updateJson.bind(this)} selfDestruct={this.removeChild.bind(this)}/>
