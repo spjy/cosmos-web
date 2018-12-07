@@ -136,7 +136,7 @@ class CosmosAgentJson extends Component {
             socket.removeAllListeners('agent update list');
           }
           else {
-            console.log("CosmosAgentJson updateAgent dead", agent)
+            console.log("CosmosAgentJson updateAgent dead", agent, this.props.id)
             this.setState({
               data_list: [],
               data_selection:[],
@@ -231,7 +231,7 @@ class CosmosAgentJson extends Component {
 
       this.props.saveJsonObj(obj, this.props.id);
       this.updateAgent(this.props.jsonObj.agent);
-      var saved_state = this.state;
+      saved_state = this.state;
       saved_state.edit = edit_mode.DEFAULT;
       this.setState(saved_state);
     }
