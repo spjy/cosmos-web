@@ -49,6 +49,7 @@ cosmosSocket.on('message', function(message) {
   let json_str = obj.toString('ascii');
   json_str = json_str.replace(/}{/g, ',')
   obj = JSON.parse(json_str);
+  // console.log(obj)
   io.emit('agent subscribe '+obj.agent_proc, obj);
   if (obj.agent_node === 'me213ao') {
 
@@ -169,26 +170,26 @@ cosmosSocket.on('message', function(message) {
     agentListObj[obj.agent_proc] = [obj.agent_utc, ' '+obj.agent_node, ' '+obj.agent_addr, ' '+obj.agent_port, ' '+obj.agent_bsz];
 
     /* insert agent in agent_list mongodb*/
-    MongoClient.connect(mongo_url_cosmos,{ useNewUrlParser: true }, function(err, db) {
-      var dbo = db.db("cosmos");
-      var agent_list = dbo.collection('agent_list');
-      agent_list.insertOne(
-        {
-          agent_proc:obj.agent_proc,
-          agent_utc: obj.agent_utc,
-          agent_node: obj.agent_node,
-          agent_addr:obj.agent_addr,
-          agent_port:obj.agent_port,
-          agent_bsz:obj.agent_bsz
-        },
-        function (err, r){
-          io.emit('agent update list', agentListObj);
-          db.close();
-        }
-      );
-
-
-    });
+    // MongoClient.connect(mongo_url_cosmos,{ useNewUrlParser: true }, function(err, db) {
+    //   var dbo = db.db("cosmos");
+    //   var agent_list = dbo.collection('agent_list');
+    //   agent_list.insertOne(
+    //     {
+    //       agent_proc:obj.agent_proc,
+    //       agent_utc: obj.agent_utc,
+    //       agent_node: obj.agent_node,
+    //       agent_addr:obj.agent_addr,
+    //       agent_port:obj.agent_port,
+    //       agent_bsz:obj.agent_bsz
+    //     },
+    //     function (err, r){
+    //       io.emit('agent update list', agentListObj);
+    //       db.close();
+    //     }
+    //   );
+    //
+    //
+    // });
   } else {
     // Update the time stamp
     agentListObj[obj.agent_proc][0] = obj.agent_utc;
@@ -228,7 +229,7 @@ setInterval(function(){
 }, 5000);
 
 server.listen(3001, function() {
-	console.log('Server listening on port:s 3001');
+	console.log('Server listening on port:', server.port);
 });
 
 // cosmosSocket.bind(10020, process.env.SATELLITE_IP);
