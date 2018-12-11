@@ -12,7 +12,7 @@
   },
   "proxy": {
     "/api": {
-      "target": "http://localhost:3001/",
+      "target": "http://192.168.150.23:3001/",
       "ws": true
     }
   },

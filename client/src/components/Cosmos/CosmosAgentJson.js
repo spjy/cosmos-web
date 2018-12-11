@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 import CosmosPlot from './CosmosPlot';
 import { Select , Icon } from 'antd';
 import { Button } from 'antd';
-const socket = io('http://localhost:3001');
+const socket = io('http://192.168.150.23:3001');
 const agent_status = {
   INACTIVE:0,
   ACTIVE:1,
@@ -161,8 +161,7 @@ class CosmosAgentJson extends Component {
         const result = data_list.find( f=> f.name === match);
         if(result)
           selected.push(result);
-        else
-          console.log(match, " is wrong")
+
 
       }
       return selected;
@@ -208,7 +207,7 @@ class CosmosAgentJson extends Component {
 
             }
           }
-          console.log(agent_list)
+          // console.log(agent_list)
           var saved_state = this.state;
           saved_state.agents = agent_list;
           saved_state.edit = edit_mode.EDIT;

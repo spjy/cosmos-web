@@ -4,7 +4,7 @@ import { Chart, Geom, Axis, Tooltip, Legend } from 'bizcharts';
 import DataSet from '@antv/data-set';
 
 
-const socket = io('http://localhost:3001');
+const socket = io('http://192.168.150.23:3001');
 function get_plot_structure(selection,  parent_str){
 
   var structure = [];

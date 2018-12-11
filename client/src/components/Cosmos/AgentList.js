@@ -5,7 +5,7 @@ import Navbar from './../Global/Navbar';
 
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:3001');
+const socket = io('http://192.168.150.23:3001');
 const columns = [{
   title: 'Agent',
   dataIndex: 'agent_proc',

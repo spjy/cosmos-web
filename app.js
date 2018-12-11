@@ -26,6 +26,7 @@ app.use('/', routes);
 //     console.log(err);
 //   }
 // });
+
 /* COSMOS SOCKET SETUP */
 const cosmosSocket = dgram.createSocket({ type: 'udp4', reuseAddr: true });
 
@@ -227,9 +228,14 @@ setInterval(function(){
 
     io.emit('agent update list', agentListObj);
 }, 5000);
-
-server.listen(3001, function() {
-	console.log('Server listening on port:', server.port);
+const port_io = 3001;
+// const hostname_io = '192.168.150.23';
+const hostname_env = process.env.SATELLITE_IP;
+server.listen(port_io, hostname_env, () => {
+  console.log(`Server running at http://${hostname_env}:${port_io}/`);
 });
+// server.listen(3001, function() {
+// 	console.log('Server listening on port:', server.port);
+// });
 
 // cosmosSocket.bind(10020, process.env.SATELLITE_IP);

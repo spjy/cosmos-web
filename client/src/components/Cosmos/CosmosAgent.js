@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import io from 'socket.io-client';
 import CosmosPlot from './CosmosPlot';
 import { Select } from 'antd';
-const socket = io('http://localhost:3001');
+const socket = io('http://192.168.150.23:3001');
 
 function get_data_list(json) {
   /* returns array of data json names with properties

@@ -12,7 +12,7 @@ import AttitudeThreeD from './Attitude/AttitudeThreeD';
 
 import '../App.css';
 
-const socket = io('http://localhost:3001');
+const socket = io('http://192.168.150.23:3001');
 
 class Attitude extends Component {
 
@@ -53,7 +53,7 @@ class Attitude extends Component {
   onReplayFormSubmit(value) {
     const { selected, dateFrom, dateTo } = value;
 
-    fetch(`http://localhost:3001/api/replay/attitude/${selected}/${dateFrom}/to/${dateTo}`, {
+    fetch(`http://192.168.150.23:3001/api/replay/attitude/${selected}/${dateFrom}/to/${dateTo}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
