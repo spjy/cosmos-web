@@ -3,7 +3,8 @@ import io from 'socket.io-client';
 import CosmosPlot from './CosmosPlot';
 import { Select , Icon } from 'antd';
 import { Button } from 'antd';
-const socket = io('http://192.168.150.23:3001');
+import cosmosInfo from './CosmosInfo'
+const socket = io(cosmosInfo.socket);
 const agent_status = {
   INACTIVE:0,
   ACTIVE:1,
@@ -57,12 +58,14 @@ class CosmosAgentJson extends Component {
 /* CosmosPlot using .json configuration file */
   constructor(props){
     super(props);
+    var edit_state = edit_mode.DEFAULT;
+    // if(props.jsonObj.agent==='null') edit_state = edit_mode.EDIT;
       this.state = {
         data_list: [],
         data_selection:[],
         agent_selection: '',
         agents:[],
-        edit: edit_mode.DEFAULT,
+        edit: edit_state,
         agent_status: agent_status.NONE
       };
 

@@ -3,8 +3,8 @@ import io from 'socket.io-client';
 import { Chart, Geom, Axis, Tooltip, Legend } from 'bizcharts';
 import DataSet from '@antv/data-set';
 
-
-const socket = io('http://192.168.150.23:3001');
+import cosmosInfo from './CosmosInfo'
+const socket = io(cosmosInfo.socket);
 function get_plot_structure(selection,  parent_str){
 
   var structure = [];

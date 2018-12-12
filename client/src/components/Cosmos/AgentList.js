@@ -4,8 +4,9 @@ import Navbar from './../Global/Navbar';
 
 
 import io from 'socket.io-client';
+import cosmosInfo from './CosmosInfo'
+const socket = io(cosmosInfo.socket);
 
-const socket = io('http://192.168.150.23:3001');
 const columns = [{
   title: 'Agent',
   dataIndex: 'agent_proc',
@@ -55,6 +56,11 @@ class AgentList extends Component {
             agents:agent_list
           });
       });
+    }
+    componentWillUnmount() {
+      // Remove listeners
+        socket.removeAllListeners('agent update list');
+
     }
 
     onReplayChange(value) {

@@ -10,7 +10,8 @@ import Live from './Global/Live';
 import Replay from './Global/Replay';
 import ReplayForm from './Global/ReplayForm';
 
-const socket = io('http://192.168.150.23:3001');
+import cosmosInfo from './Cosmos/CosmosInfo'
+const socket = io(cosmosInfo.socket);
 
 class Path extends Component {
 
@@ -66,7 +67,7 @@ class Path extends Component {
   onReplayFormSubmit(value) {
     const { selected, dateFrom, dateTo } = value;
 
-    fetch(`http://192.168.150.23:3001/api/replay/path/${selected}/${dateFrom}/to/${dateTo}`, {
+    fetch(`${cosmosInfo.socket}/api/replay/path/${selected}/${dateFrom}/to/${dateTo}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
