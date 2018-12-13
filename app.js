@@ -13,6 +13,7 @@ app.use(cors());
 
 const routes = require('./routes');
 const models = require('./models');
+const cosmosdb = require('./cosmosdb'); // includes cosmosdb.js
 
 app.use(express.static(__dirname + '/node_modules'));
 app.use(express.static(path.join(__dirname, '/public')));
@@ -39,6 +40,21 @@ cosmosSocket.on('listening', () => {
   console.log('UDP Server listening on ' + address.address + ":" + address.port);
 });
 
+var agentListDB = [];
+/* MONGO SETUP */
+
+var MongoClient = require('mongodb').MongoClient
+      , assert = require('assert');
+var mongo_url_cosmos = process.env.MONGO_URL;
+MongoClient.connect(mongo_url_cosmos,{ useNewUrlParser: true }, function(err, db) {
+  var dbo = db.db("cosmos");
+  var agent_list = dbo.collection('agent_list');
+  agent_list.distinct('agent_proc', function(err, docs){
+    agentListDB = docs;
+    // console.log("DB Agent list:", agentListDB);
+    db.close();
+  });
+});
 
 let obj = {};
 let agentListObj = {};
@@ -170,45 +186,9 @@ cosmosSocket.on('message', function(message) {
   if (!(obj.agent_proc in agentListObj)) {
     agentListObj[obj.agent_proc] = [obj.agent_utc, ' '+obj.agent_node, ' '+obj.agent_addr, ' '+obj.agent_port, ' '+obj.agent_bsz];
 
-    /* insert agent in agent_list mongodb*/
-    // MongoClient.connect(mongo_url_cosmos,{ useNewUrlParser: true }, function(err, db) {
-    //   var dbo = db.db("cosmos");
-    //   var agent_list = dbo.collection('agent_list');
-    //   agent_list.insertOne(
-    //     {
-    //       agent_proc:obj.agent_proc,
-    //       agent_utc: obj.agent_utc,
-    //       agent_node: obj.agent_node,
-    //       agent_addr:obj.agent_addr,
-    //       agent_port:obj.agent_port,
-    //       agent_bsz:obj.agent_bsz
-    //     },
-    //     function (err, r){
-    //       io.emit('agent update list', agentListObj);
-    //       db.close();
-    //     }
-    //   );
-    //
-    //
-    // });
   } else {
     // Update the time stamp
     agentListObj[obj.agent_proc][0] = obj.agent_utc;
-    /* update agent in mongodb
-    */
-    // MongoClient.connect(mongo_url_cosmos,{ useNewUrlParser: true }, function(err, db) {
-    //   var dbo = db.db("cosmos");
-    //   var agent_list = dbo.collection('agent_list');
-    //   agent_list.updateOne(
-    //     { agent_proc:obj.agent_proc },
-    //     {$set:{ agent_utc: obj.agent_utc }},
-    //     {upsert:true},
-    //     function (err, r){
-    //       io.emit('agent update list', agentListObj);
-    //       db.close();
-    //     }
-    //   );
-    // });
   }
 
   // Collect the IMU Omega data from the ADCS agent
@@ -216,17 +196,56 @@ cosmosSocket.on('message', function(message) {
     imuOmega[imuIndex] = obj.device_imu_omega_000;
     imuIndex++;
   }
+  if(agentListDB.indexOf(obj.agent_proc)>-1){
+    // update time stamp
+    // console.log(agentListDB)
+    MongoClient.connect(mongo_url_cosmos,{ useNewUrlParser: true }, function(err, db) {
+      var dbo = db.db("cosmos");
+      var agent_list = dbo.collection('agent_list');
+      agent_list.updateOne(
+        {agent_proc:obj.agent_proc },
+        { $set: {agent_utc: obj.agent_utc} },
+        {upsert:true},
+        function (err, r){
+
+          db.close();
+      });
+    });
+  }
+  else {
+    // generate structrue of data, insert to mongo DB
+    MongoClient.connect(mongo_url_cosmos,{ useNewUrlParser: true }, function(err, db) {
+      var dbo = db.db("cosmos");
+      var agent_list = dbo.collection('agent_list');
+      var data_struc = cosmosdb.agent_structure(obj);
+      agent_list.insertOne(
+        {
+          agent_proc: obj.agent_proc,
+          agent_addr:  obj.agent_addr,
+          agent_port: obj.agent_port,
+          agent_node: obj.agent_node,
+          agent_utc: obj.agent_utc,
+          structure: data_struc
+        },
+        function (err, r){
+          agent_list.distinct('agent_proc', function(err, docs){
+            agentListDB = docs;
+            // console.log("DB Agent list:", agentListDB);
+            db.close();
+          });
+          db.close();
+      });
+    });
+  }
 
 });
-/* MONGO SETUP */
-// var cosmosdb = require('./cosmosdb'); // includes cosmosdb.js
-var MongoClient = require('mongodb').MongoClient
-      , assert = require('assert');
-var mongo_url_cosmos = process.env.MONGO_URL;
+
 
 setInterval(function(){
 
     io.emit('agent update list', agentListObj);
+    // console.log(agentListObj)
+
 }, 5000);
 const port_io = 3001;
 // const hostname_io = '192.168.150.23';
