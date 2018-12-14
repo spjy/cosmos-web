@@ -2,86 +2,81 @@ import React, { Component } from 'react';
 import io from 'socket.io-client';
 import { notification } from 'antd';
 import CosmosPlotForm from './CosmosPlotForm';
-import { Select , Icon } from 'antd';
+import { Select , Icon ,Card} from 'antd';
 import { Button } from 'antd';
+import Navbar from './../Global/Navbar';
 // import 'whatwg-fetch';
 import cosmosInfo from './CosmosInfo'
 const socket = io(cosmosInfo.socket);
+const tabList = [{
+  key: 'config_tab',
+  tab: 'Configure',
+}, {
+  key: 'plot_tab',
+  tab: 'Plot',
+}];
 
 class CosmosAgentDB extends Component {
 /* CosmosPlot using .json configuration file */
   constructor(props){
     super(props);
       this.state = {
-
+        key:'config_tab'
       };
 
 
   }
 
-    componentDidMount() {
-      console.log('i am trying.....')
-        // fetch(`${cosmosInfo.socket}/api/agent_list`, {
-        //   method: 'GET',
-        //   headers: {
-        //     'Content-Type': 'application/json'
-        //   },
-        //   //credentials: 'same-origin',
-        // }).then((response) => {
-        //   response.json().then((data) => {
-        //     console.log('we got:',data);
-        //     // if (data && data.length > 0) {
-        //     //   this.setState({
-        //     //     live: false,
-        //     //     playable: true,
-        //     //     replay: data,
-        //     //     max: data.length,
-        //     //     currentCoord: data[0],
-        //     //     satellite: data[0].satellite,
-        //     //   });
-        //     //   this.refs.replay.startSlider(); // initialize function from replay component
-        //     //   this.setState({ playable: false });
-        //     // }
-        //   });
-        // }).catch(err => {
-        //   notification.error({
-        //     message: 'Error',
-        //     description: 'An error occurred.'
-        //   })
-        //   console.log(err)
-        // });
-        fetch(`${cosmosInfo.socket}/api/agent_list`)
-        .then(response => response.json())
-        .then(data => console.log( "received:",data ));
-    }
+  componentDidMount() {
 
-    componentDidUpdate(prevProps) {
+  }
+
+  componentDidUpdate(prevProps) {
 
 
-    }
-    componentWillUnmount() {
+  }
+  componentWillUnmount() {
 
-    }
+  }
+  onTabChange = (key, type) => {
+    console.log(key, type);
+    var state = this.state;
+    state.key=key;
+    this.setState(state);
+  }
+  render() {
 
 
-    render() {
+    const contentList = {
+      config_tab: <CosmosPlotForm/>,
+      plot_tab: <p>Coming soon...</p>,
+    };
 
 
+    return (
+
+      <div>
+        <Navbar current="dataplot" />
+        <div>
+        <Card
+          style={{ width: '100%' }}
+          title="Data Plot"
+          tabList={tabList}
+          activetabkey={this.state.key}
+          onTabChange={(key) => { this.onTabChange(key, 'key'); }}
+        >
+          {contentList[this.state.key]}
+        </Card>
+
+        </div>
+      </div>
+
+
+    );
 
 
 
-        return (
-
-          <div>
-
-          </div>
-
-
-        );
-
-
-
-    }
+  }
 
 }
 
