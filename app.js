@@ -7,7 +7,7 @@ const server = require('http').createServer(app);
 const path = require('path');
 const io = require('socket.io').listen(server);
 const dgram = require('dgram');
-// const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 const cors = require('cors');
 app.use(cors());
 
@@ -22,12 +22,22 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/', routes);
 
-// mongoose.connect(process.env.MONGO_URL, (err) => {
-//   if (err) {
-//     console.log(err);
-//   }
-// });
-
+mongoose.connect(process.env.MONGO_URL, (err) => {
+  if (err) {
+    console.log(err);
+  }
+});
+// function updateAgentList(){
+//   MongoClient.connect(mongo_url_cosmos,{ useNewUrlParser: true }, function(err, db) {
+//     var dbo = db.db("cosmos");
+//     var agent_list = dbo.collection('agent_list');
+//     agent_list.distinct('agent_proc', function(err, docs){
+//       agentListDB = docs;
+//       // console.log("DB Agent list:", agentListDB);
+//       db.close();
+//     });
+//   });
+// }
 /* COSMOS SOCKET SETUP */
 const cosmosSocket = dgram.createSocket({ type: 'udp4', reuseAddr: true });
 
@@ -43,19 +53,17 @@ cosmosSocket.on('listening', () => {
 var agentListDB = [];
 /* MONGO SETUP */
 
-var MongoClient = require('mongodb').MongoClient
-      , assert = require('assert');
-var mongo_url_cosmos = process.env.MONGO_URL;
-MongoClient.connect(mongo_url_cosmos,{ useNewUrlParser: true }, function(err, db) {
-  var dbo = db.db("cosmos");
-  var agent_list = dbo.collection('agent_list');
-  agent_list.distinct('agent_proc', function(err, docs){
-    agentListDB = docs;
-    // console.log("DB Agent list:", agentListDB);
-    db.close();
-  });
+// var MongoClient = require('mongodb').MongoClient
+//       , assert = require('assert');
+// var mongo_url_cosmos = process.env.MONGO_URL;
+// console.log("MONGO_URL:", mongo_url_cosmos);
+// updateAgentList();
+models.AgentList.find().distinct('agent_proc', function(err, docs){
+  if(!err){
+    agentListDB = Array.from(docs);
+    // console.log(docs, typeof Array(agentListDB))
+  }else {throw err;}
 });
-
 let obj = {};
 let agentListObj = {};
 let imuOmega = {};
@@ -128,7 +136,7 @@ cosmosSocket.on('message', function(message) {
         x: satellite_position_x,
         y: satellite_position_y,
         z: satellite_position_z,
-      }).save((err) => {
+      }).save((err) => { // this is where it is inserted to mongodb
         if (err) {
           console.log(err);
         }
@@ -163,7 +171,7 @@ cosmosSocket.on('message', function(message) {
         y: satellite_orientation_y,
         z: satellite_orientation_z,
         w: satellite_orientation_w,
-      }).save((err) => {
+      }).save((err) => { // this is where it is inserted to mongodb
         if (err) {
           console.log(err);
         }
@@ -196,46 +204,52 @@ cosmosSocket.on('message', function(message) {
     imuOmega[imuIndex] = obj.device_imu_omega_000;
     imuIndex++;
   }
-  if(agentListDB.indexOf(obj.agent_proc)>-1){
+  // console.log(Array.isArray(agentListDB))
+  if(Array.from(agentListDB).indexOf(obj.agent_proc)>-1){ // agent exists in mongoDB 'agent_list' collection
     // update time stamp
     // console.log(agentListDB)
-    MongoClient.connect(mongo_url_cosmos,{ useNewUrlParser: true }, function(err, db) {
-      var dbo = db.db("cosmos");
-      var agent_list = dbo.collection('agent_list');
-      agent_list.updateOne(
-        {agent_proc:obj.agent_proc },
-        { $set: {agent_utc: obj.agent_utc} },
-        {upsert:true},
-        function (err, r){
-
-          db.close();
-      });
+    models.AgentList.findOneAndUpdate(
+      {agent_proc:obj.agent_proc},  // find query
+      { $set: {agent_utc: obj.agent_utc}}, // update query
+      function (err, docs) { // callback
+      if(!err){
+        agentListDB = docs;
+      }else {throw err;}
     });
+
   }
   else {
-    // generate structrue of data, insert to mongo DB
-    MongoClient.connect(mongo_url_cosmos,{ useNewUrlParser: true }, function(err, db) {
-      var dbo = db.db("cosmos");
-      var agent_list = dbo.collection('agent_list');
-      var data_struc = cosmosdb.agent_structure(obj);
-      agent_list.insertOne(
-        {
-          agent_proc: obj.agent_proc,
-          agent_addr:  obj.agent_addr,
-          agent_port: obj.agent_port,
-          agent_node: obj.agent_node,
-          agent_utc: obj.agent_utc,
-          structure: data_struc
-        },
-        function (err, r){
-          agent_list.distinct('agent_proc', function(err, docs){
-            agentListDB = docs;
-            // console.log("DB Agent list:", agentListDB);
-            db.close();
+
+    // update list and double check the list again
+    models.AgentList.find().distinct('agent_proc', function(err, docs){
+      if(!err){
+        agentListDB = docs;
+        if(Array.from(agentListDB).indexOf(obj.agent_proc)<=-1){
+          var data_struc = cosmosdb.agent_structure(obj);
+          new models.AgentList(
+            {
+              agent_proc: obj.agent_proc,
+              agent_addr:  obj.agent_addr,
+              agent_port: obj.agent_port,
+              agent_node: obj.agent_node,
+              agent_utc: obj.agent_utc,
+              structure: data_struc
+            },
+          ).save((err) => { // this is where it is inserted to mongodb
+            if (err) {
+              console.log(err);
+            } else {
+              models.AgentList.find().distinct('agent_proc', function(err, docs){
+                if(!err){
+                  agentListDB = docs;
+                }
+              });
+            }
           });
-          db.close();
-      });
+        }
+      }
     });
+
   }
 
 });

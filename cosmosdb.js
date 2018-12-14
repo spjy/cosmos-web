@@ -7,9 +7,7 @@ var cosmosdb = {
       var entry = json[keys[i]];
       var name = keys[i];
       var values = []
-
       if(!name.includes("agent_")){
-
         if(Array.isArray(entry)){
           for(var c = 0; c < entry.length; c++){
             var child = [name, c];
@@ -26,14 +24,11 @@ var cosmosdb = {
               item.push(child[j])
             }
             list.push(item)
-
           }
         }
         else {
           list.push([name])
-
         }
-
       }
     }
     return list;
