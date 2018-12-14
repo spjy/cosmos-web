@@ -8,6 +8,7 @@ import Plot from './components/Plot';
 import Path from './components/Path';
 import DataPlot from './components/DataPlot';
 import AgentList from './components/Cosmos/AgentList';
+import CosmosAgentDB from './components/Cosmos/CosmosAgentDB';
 
 const App = ({}) => (
   <div>
@@ -20,6 +21,7 @@ const App = ({}) => (
         <Route exact path="/path" component={Path} />
         <Route exact path="/dataplot" component={DataPlot} />
         <Route exact path="/agentlist" component={AgentList} />
+        <Route exact path="/cosmosagentdb" component={CosmosAgentDB} />
       </Switch>
     </Router>
   </div>
