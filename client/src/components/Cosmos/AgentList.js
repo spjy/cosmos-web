@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Table } from 'antd';
 import Navbar from './../Global/Navbar';
-
-
 import io from 'socket.io-client';
 import cosmosInfo from './CosmosInfo'
 const socket = io(cosmosInfo.socket);
@@ -38,48 +36,31 @@ const columns = [{
 class AgentList extends Component {
 /* Returns a table element of all agents, which gets updated every five seconds */
     state = {
-
       agents:[]
-
     };
 
     componentDidMount() {
-      socket.on('agent update list', (data) => { // check if there is a live orbit
-        var agent_list = this.state.agents;
-          if (data) { // check if data exists
-            var keys = Object.keys(data);
-            for (var k = 0; k < keys.length; k++){
-                agent_list[keys[k]] = data[keys[k]];
-            }
-          }
-          this.setState({
-            agents:agent_list
-          });
-      });
+      fetch(`${cosmosInfo.socket}/api/agent_list`)
+      .then(response => response.json())
+      .then(data =>
+        this.setState({
+          agents:data.result
+        })
+      );
     }
-    componentWillUnmount() {
-      // Remove listeners
-        socket.removeAllListeners('agent update list');
-
-    }
-
-    onReplayChange(value) {
-      this.setState(value); // Set state from changes from replay component
-    }
-
 
     render() {
       var agent_list  = this.state.agents;
-      var keys = Object.keys(agent_list);
+      // var keys = Object.keys(agent_list);
       var data=[]
-      for(var i =0; i < keys.length; i++){
+      for(var i =0; i < agent_list.length; i++){
         data[i]={
           key : String(i),
-          agent_proc: String(keys[i]),
-          agent_node: agent_list[keys[i]][1],
-          agent_addr: agent_list[keys[i]][2],
-          agent_port: agent_list[keys[i]][3],
-          agent_utc: agent_list[keys[i]][0],
+          agent_proc: String(agent_list[i].agent_proc),
+          agent_node: agent_list[i].agent_node,
+          agent_addr: agent_list[i].agent_addr,
+          agent_port: agent_list[i].agent_port,
+          agent_utc: agent_list[i].agent_utc
 
         };
       }
