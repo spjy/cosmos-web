@@ -7,7 +7,7 @@ class JsonForm extends Component {
   constructor(){
     super();
     this.handleFileChosen= this.handleFileChosen.bind(this);
-    console.log(this.props)
+    // console.log(this.props)
     this.state = {
       jsonArray: [],
       file_chosen:false,

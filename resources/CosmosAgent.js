@@ -4,16 +4,18 @@ const mongoose = require('mongoose');
 const models = require('../models');
 
 router.get(
-  '/agent_list',
+  '/cosmos_agent/:agent/',
   async (req, res, next) => {
     try {
-
-      var query = await models.AgentList.find({}, function(err, docs){
+      const vals = req.params;
+      var query = await models.AgentList.find({agent_proc:vals.agent}, function(err, docs){
         if(!err){
           res.json({result: docs} );
         }else {throw err;}
 
       });
+
+
 
     } catch (error) {
       next(error);

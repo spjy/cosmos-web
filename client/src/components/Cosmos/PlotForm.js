@@ -70,110 +70,111 @@ function generate_treeselect_data(structure){
   }
   return tree_data;
 }
+
+function get_data_index(data_list, structure){
+  var indexes = [];
+  var dataname_iter;
+  for(var i=0;i<data_list.length; i++){
+    dataname_iter = data_list[i];
+    for(var j = 0; j < dataname_iter.length; i++){
+
+    }
+  }
+}
 class PlotForm extends Component {
-  // this.props.updateInfo() = function to call when updating form info
+  /* this.props.updateInfo() = function to call when updating form info
   // this.props.info
+  */
   constructor(props){
     super(props);
     var agent = this.props.info;
-    // TODO: load state from props.info CosmosPlotEntry class
-    // console.log('Plotform:agent =',agent)
+    /* load state from props.info CosmosPlotEntry class*/
+    // console.log('Plotform:agent.vlaues =',this.props.info.values)
       this.state = {
-        edit: false,
         agent_list:[],
-        agent: '',
-        valid:false,
-        data_selected:[]
+        agent: {agent_proc: this.props.info.agent, structure: this.props.info.structure },
+        data_selected:this.props.info.values,
+        valid: this.props.info.live || this.props.info.archive,
+        edit: false
       };
 
 
   }
-  receivedAgentList(agent_list){
-    // console.log(agent_list)
-    // check if agent has data available (if agent is in agent_list)
-    // console.log("agent:", this.props.info.agent)
-    var agent_ind = agent_list.find(x=> { return x.agent_proc === this.props.info.agent});
-    console.log(this.props.info)
-    var agent;
-    var agent_valid = false;
-    var data_selected=[];
-    if(agent_ind){
-      // console.log("agent found")
-      agent = agent_ind;
-      agent_valid = true;
-      // TODO: set data_selected =[] indices of agent.structure for selected data
-    }
-    else {
-      // console.log("agent not found")
-      var data_names =  this.props.info.values;
-      var structure = this.props.info.values;
-      // for(var i = 0; i <data_names.length; i++){
-      //   structure.push([data_names[i].name]);
-      // }
-      agent = {
-        agent_proc: this.props.info.agent,
-        structure: structure
-      };
-      for(var i =0; i < structure.length; i++){
-        data_selected.push(String(i))
-      }
 
-    }
-    this.setState({
-      agent_list:agent_list,
-      agent: agent,
-      data_selected:data_selected,
-      valid: agent_valid,
-      edit: false
-    });
-    console.log("agent=",agent)
-  }
+
   componentDidMount() {
-    // fetch agent list ,check if agent is alive or archived
-    fetch(`${cosmosInfo.socket}/api/agent_list`)
-    .then(response => response.json())
-    .then(data =>
-      this.receivedAgentList(data.result)
-
-    );
+    console.log(this.state.agent)
   }
 
-
+  componentDidUpdate(prevProps){
+    if(this.props.info.agent !== prevProps.info.agent){
+      this.setState({
+        agent_list:[],
+        agent: {agent_proc: this.props.info.agent, structure: this.props.info.structure },
+        data_selected:this.props.info.values,
+        valid: this.props.info.live || this.props.info.archive,
+        edit: false
+      })
+    }
+  }
 
   agentSelected(value) {
-    var state = this.state;
-    state.agent = this.state.agent_list[value];
-    this.setState(state);
+    // var state = this.state;
+    // state.agent = this.state.agent_list[value];
+    // state.data_selected=[];
+    this.setState({
+      agent: this.state.agent_list[value],
+      data_selected: []
+    });
     // console.log("agent: ", this.state.agent," structure:", this.state.agent.structure);
 
   }
   dataSelected(value) {
     console.log("data:", value);
-    var state = this.state;
-    state.data_selected = value;
-    this.setState(state);
-    // TODO: call this.props.updateInfo to update parent component
-    var new_vals={
-      id: this.props.id,
-      agent:this.state.agent,
-      values:this.state.data_selected
-    }
-    this.props.updateInfo(new_vals);
+    this.setState({data_selected : value});
+
+  }
+  receivedAgentList(agent_list){
+    this.setState({
+      agent_list: agent_list,
+      edit:true
+    });
+
   }
   onClickEdit(){
-
+    fetch(`${cosmosInfo.socket}/api/agent_list`)
+    .then(response => response.json())
+    .then(data =>
+      this.receivedAgentList(data.result)
+    );
   }
-
+  onClickDelete(){
+    this.onClickCancel();
+    this.props.selfDestruct(this.props.id);
+  }
 
   onClickSave(){
     // call this.props.updateInfo() to update parent with values
     // set this.state.edit = false to disable inputs
-    console.log("save")
+    this.setState({edit:false});
+    // TODO: call this.props.updateInfo to update parent component
+    var info={
+      id: this.props.id,
+      agent:this.state.agent.agent_proc,
+      values: this.state.data_selected
+    }
+    this.props.updateInfo(info);
   }
   onClickCancel(){
     // update state from props
     // set this.state.edit = false to disable inputs
-    console.log("cancel")
+    this.setState({
+      agent_list:[],
+      agent: {agent_proc: this.props.info.agent, structure: this.props.info.structure },
+      data_selected:this.props.info.values,
+      valid: this.props.info.live || this.props.info.archive,
+      edit: false
+    })
   }
 
 
@@ -189,25 +190,18 @@ render() {
     var AgentStatus;
     var agent_status_msg;
     if(this.state.valid){
-      agent_status_msg=this.state.agent.agent_proc +" is Live";
+      // agent_status_msg=this.state.agent.agent_proc +" is Live";
+      agent_status_msg=this.props.info.agent +" is Live";
       AgentStatus = <Alert message={agent_status_msg} type="success" showIcon />
       tree_data = generate_treeselect_data(this.state.agent.structure);
     }
     else {
-      agent_status_msg="There is no data for agent "+this.state.agent.agent_proc ;
+      // agent_status_msg="There is no data for agent "+this.state.agent.agent_proc ;
+      agent_status_msg="There is no data for agent "+this.props.info.agent ;
       AgentStatus =  <Alert message={agent_status_msg} type="warning" showIcon />
     }
-    if(this.state.agent_list.length>0)tree_data = generate_treeselect_data(this.state.agent.structure);
-    var disable_form = !(this.state.edit)
-    const tree_props = {
-      treeData: tree_data,
-      value: this.state.data_selected,
-      onChange: this.dataSelected.bind(this),
-      treeCheckable:true,
-      showCheckedStrategy:TreeSelect.SHOW_PARENT,
-      searchPlaceholder:'Select',
-      diabled:{disable_form}
-    };
+    tree_data = generate_treeselect_data(this.state.agent.structure);
+    var disable_form;
 
     var contentList = {
       config_tab: <p>Configure</p>,
@@ -216,12 +210,18 @@ render() {
     var actionButtons;
     var agentSelect;
     if(this.state.edit){
-      actionButtons = [<Button type="default" key="0" onClick={this.onClickSave.bind(this)}>
-                  <Icon type="check"/>
-                </Button>,
-                <Button type="danger"  key="1" onClick={this.onClickCancel.bind(this)}>
-                  <Icon type="close"/>
-                </Button> ];
+      disable_form = false;
+      actionButtons = [
+        <Button type="default" key="0" onClick={this.onClickSave.bind(this)}>
+          <Icon type="save"/>
+        </Button>,
+        <Button type="danger"  key="1" onClick={this.onClickCancel.bind(this)}>
+          <Icon type="close"/>
+        </Button> ,
+        <Button type="default" key="2"onClick={this.onClickDelete.bind(this)}>
+          <Icon type="delete"/>
+        </Button>
+              ];
       agentSelect= <Select
                         showSearch
                         value={this.state.agent.agent_proc}
@@ -231,19 +231,30 @@ render() {
                         {agent_names}
                       </Select>
     } else{
+      disable_form = true;
       agentSelect= <Select
                         showSearch
                         placeholder="Select"
                         value={this.state.agent.agent_proc}
                         onChange={this.agentSelected.bind(this)}
                         style={{width: '300px'}}
+                        disabled
                       >
                         {agent_names}
                       </Select>
       actionButtons = <Button type="default" onClick={this.onClickEdit.bind(this)}>
-                  <Icon type="edit"/>
-                </Button>
+          <Icon type="edit"/> Edit
+        </Button>
     }
+    const tree_props = {
+      treeData: tree_data,
+      value: this.state.data_selected,
+      onChange: this.dataSelected.bind(this),
+      treeCheckable:true,
+      showCheckedStrategy:TreeSelect.SHOW_PARENT,
+      searchPlaceholder:'Select',
+      disabled:disable_form
+    };
     return (
       <div style={{ padding: '0 1em' }}>
 
