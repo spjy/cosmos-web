@@ -3,7 +3,7 @@ import Navbar from './Global/Navbar';
 import JsonForm from './Cosmos/JsonForm'
 import CosmosPlotEntry from './Cosmos/CosmosPlotEntry'
 import PlotForm from './Cosmos/PlotForm'
-import CosmosPlot from './Cosmos/CosmosPlot'
+import CosmosPlotLive from './Cosmos/CosmosPlotLive'
 import { Select , Card , Button, Icon} from 'antd';
 
 const import_type = {
@@ -80,7 +80,7 @@ function PlotTabContent(props) {
 
   var plotentries = props.entries;
   var plot_contents=plotentries.map(function(p, index){
-    return <CosmosPlot
+    return <CosmosPlotLive
                 key={index}
                 id={index}
                 info={p} />;

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import io from 'socket.io-client';
 import { Chart, Geom, Axis, Tooltip, Legend } from 'bizcharts';
 import DataSet from '@antv/data-set';
-
+import { Chart, Geom, Axis, Tooltip, Legend } from 'bizcharts';
 import cosmosInfo from './CosmosInfo'
 const socket = io(cosmosInfo.socket);
 function get_plot_structure(selection,  parent_str){
@@ -48,7 +48,7 @@ function Plot(props){
  *
  */
   const ds = new DataSet();
-  const dv = ds.createView().source(props.data);
+  const dv = ds.createView().source(this.state.data);
   dv.transform({
     type: 'fold',
     fields:  props.fields,
@@ -216,7 +216,14 @@ class CosmosPlot extends Component {
     render() {
       return (
         <div>
-          <GroupPlots data={this.state.data} structure={this.props.data_selected}/>
+        <Chart height={400} data={dv} scale={cols} forceFit>
+          <Legend />
+          <Axis name="time" />
+          <Axis name="Data" label={{formatter: val => `${val}°F`}}/>
+          <Tooltip crosshairs={{type : "y"}}/>
+          <Geom type="line" position="time*temperature" size={2} color={'satellite'} />
+          <Geom type='point' position="time*temperature" size={4} shape={'circle'} color={'satellite'} style={{ stroke: '#fff', lineWidth: 1}} />
+        </Chart>
         </div>
       );
 

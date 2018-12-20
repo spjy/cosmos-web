@@ -82,44 +82,14 @@ class CosmosPlotEntry  {
       "yRange": this.yRange
     });
   }
-  // setup_agent = async()=>{
-  //   const agent_info = await this.fetch_agent_info();
-  //   return agent_info;
-  //   // this.agent_info_received(agent_info)
-  // }
+
   setup_agent (){
     /* fetch the MongoDB entry in agent_list for this agent */
     console.log("setup_agent")
     return fetch(`${cosmosInfo.socket}/api/cosmos_agent/${this.agent}`)
       .then(response => response.json())
       .then(data =>
-        // {
-      //   var info = data.result[0];
-      //   if(info){
-      //     this.archive = true;
-      //     this.structure = info.structure;
-      //     this.node = info.agent_node;
-      //     this.generate_structure_map();
-      //   }
-      //   else {
-      //     this.archive = false;
-      //     this.values=[];
-      //     this.structure = [];
-      //     for(var i=0; i < this.jsonvalues.length;i++){
-      //       this.values.push(String(i));
-      //       this.structure.push([this.jsonvalues[i].data]);
-      //       this.map.push({
-      //         string: this.jsonvalues[i].data,
-      //        values: [String(i)]});
-      //     }
-      //     console.log("values",this.values)
-      //   }
-      //   this.live = false;
-      //   return "done";
-      // }
-      // //   // console.log('CosmosPlotEntry:fetch_agent_info', data.result)
         this.agent_info_received(data.result[0])
-        // {return data.result[0]}
     );
   }
   fetch_agent_info(){
@@ -131,8 +101,6 @@ class CosmosPlotEntry  {
         this.structure = info.structure;
         this.generate_structure_map();
       }
-
-        // {return data.result[0]}
     );
   }
   agent_info_received(info){
