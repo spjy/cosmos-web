@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Form, Select, Button, Icon, TreeSelect, Alert} from 'antd';
+import { Form, Select, Badge, TreeSelect, Alert, Input , Row, Col ,Card } from 'antd';
 import cosmosInfo from './CosmosInfo'
-
+import io from 'socket.io-client';
+const socket = io(cosmosInfo.socket);
 function generate_treeselect_data(structure){
   var tree_data = [];
   for(var i =0; i < structure.length; i++){
@@ -15,7 +16,7 @@ function generate_treeselect_data(structure){
       if(j === 0){ // first level, find in tree_data
         title=entry[0];
         index = tree_data.findIndex(x => x.title === title);
-        if(index > 0){ // found at first level
+        if(index >= 0){ // found at first level
           // set parent as tree_data[index]
           parent = tree_data[index];
         }
@@ -23,16 +24,16 @@ function generate_treeselect_data(structure){
           if(j===entry.length-1){ // add to tree_data without chidlren []
             tree_data.push({
               title:title,
-              value: String(i),
-              key: String(i)
+              value:title,
+              key:title
             });
             parent = null;
           }
           else {// add to tree_data with children , set added entry as parent
             child_index =tree_data.push({
               title:title,
-              value: 'parent'+String(i),
-              key: 'parent'+String(i),
+              value:title,
+              key:title,
               children:[]
             });
             parent = tree_data[child_index-1]
@@ -42,23 +43,25 @@ function generate_treeselect_data(structure){
       else { // find in parent.children
         title +='_'+entry[j];
         index = parent.children.findIndex(x => x.title === title);
-        if(index > 0){ // found, set parent as parent.children[index]
+
+        if(index >= 0){ // found, set parent as parent.children[index]
           parent = parent.children[index];
         }
         else { // not found, add entry
+          // console.log('looking for',title, "in", parent.children,"given", index)
           if(j===entry.length-1){ // add to parent.children without chidlren []
             parent.children.push({
               title:title,
-              value: String(i),
-              key: String(i)
+              value:title,
+              key:title
             });
             parent = null;
           }
           else {// add to parent.children with children , set added entry as parent
             child_index =parent.children.push({
               title:title,
-              value: 'parent'+String(i),
-              key: 'parent'+String(i),
+              value:title,
+              key:title,
 
               children:[]
             })
@@ -68,34 +71,23 @@ function generate_treeselect_data(structure){
       }
     }
   }
+  // console.log('tree',tree_data)
   return tree_data;
 }
 
-function get_data_index(data_list, structure){
-  var indexes = [];
-  var dataname_iter;
-  for(var i=0;i<data_list.length; i++){
-    dataname_iter = data_list[i];
-    for(var j = 0; j < dataname_iter.length; i++){
-
-    }
-  }
-}
 class PlotForm extends Component {
   /* this.props.updateInfo() = function to call when updating form info
   // this.props.info
   */
   constructor(props){
     super(props);
-    var agent = this.props.info;
-    /* load state from props.info CosmosPlotEntry class*/
-    // console.log('Plotform:agent.vlaues =',this.props.info.values)
+    var data_selected = [];
+    for(var i=0; i < this.props.info.jsonvalues.length; i++){
+      data_selected.push(this.props.info.jsonvalues[i].data);
+    }
       this.state = {
         agent_list:[],
-        agent: {agent_proc: this.props.info.agent, structure: this.props.info.structure },
-        data_selected:this.props.info.values,
-        valid: this.props.info.live || this.props.info.archive,
-        edit: false
+        data_selected:data_selected
       };
 
 
@@ -103,149 +95,105 @@ class PlotForm extends Component {
 
 
   componentDidMount() {
-    console.log(this.state.agent)
+    fetch(`${cosmosInfo.socket}/api/agent_list`)
+    .then(response => response.json())
+    .then(data =>
+      this.setState({agent_list:data.result})
+    );
+    socket.on('agent update list', (data) => { // subscribe to agent
+        if (data) {
+          var agents = this.state.agent_list;
+          for(var i=0; i < agents.length; i++){
+              if(data[agents[i].agent_proc]) {
+                // console.log( agents[i].agent_proc," live")
+                agents[i].live=true;
+              } else {
+                agents[i].live=false;
+              }
+          }
+          this.setState({agent_list:agents})
+        }
+      });
   }
 
   componentDidUpdate(prevProps){
-    if(this.props.info.agent !== prevProps.info.agent){
+    var data_selected =[];
+
+    if(this.props.info.jsonvalues !== prevProps.info.jsonvalues){
+      for(var i=0; i < this.props.info.jsonvalues.length; i++){
+        data_selected.push(this.props.info.jsonvalues[i].data);
+      }
       this.setState({
-        agent_list:[],
-        agent: {agent_proc: this.props.info.agent, structure: this.props.info.structure },
-        data_selected:this.props.info.values,
-        valid: this.props.info.live || this.props.info.archive,
-        edit: false
-      })
+        data_selected: data_selected
+      });
     }
   }
 
   agentSelected(value) {
-    // var state = this.state;
-    // state.agent = this.state.agent_list[value];
-    // state.data_selected=[];
+      this.props.updateInfo({ /* calls DataPlot->updateEntry()*/
+        id: this.props.id,
+        agent:this.state.agent_list[value].agent_proc,
+        values: []
+      });
     this.setState({
-      agent: this.state.agent_list[value],
       data_selected: []
     });
-    // console.log("agent: ", this.state.agent," structure:", this.state.agent.structure);
 
   }
   dataSelected(value) {
-    console.log("data:", value);
-    this.setState({data_selected : value});
-
-  }
-  receivedAgentList(agent_list){
-    this.setState({
-      agent_list: agent_list,
-      edit:true
-    });
-
-  }
-  onClickEdit(){
-    fetch(`${cosmosInfo.socket}/api/agent_list`)
-    .then(response => response.json())
-    .then(data =>
-      this.receivedAgentList(data.result)
-    );
-  }
-  onClickDelete(){
-    this.onClickCancel();
-    this.props.selfDestruct(this.props.id);
-  }
-
-  onClickSave(){
-    // call this.props.updateInfo() to update parent with values
-    // set this.state.edit = false to disable inputs
-    this.setState({edit:false});
-    // TODO: call this.props.updateInfo to update parent component
-    var info={
+    console.log("values selected:", value)
+    this.props.updateInfo({
       id: this.props.id,
-      agent:this.state.agent.agent_proc,
-      values: this.state.data_selected
-    }
-    this.props.updateInfo(info);
-  }
-  onClickCancel(){
-    // update state from props
-    // set this.state.edit = false to disable inputs
-    this.setState({
-      agent_list:[],
-      agent: {agent_proc: this.props.info.agent, structure: this.props.info.structure },
-      data_selected:this.props.info.values,
-      valid: this.props.info.live || this.props.info.archive,
-      edit: false
-    })
+      agent:this.props.info.agent
+    });
+    this.setState({data_selected : value});
   }
 
-
+  handleSubmit = (e) => {
+    e.preventDefault();
+  }
+  handleFieldChange(event){
+    console.log("key:",event.target.id)
+    console.log("value:",event.target.value)
+    this.props.updateValue({key:event.target.id, value: event.target.value, id: this.props.id});
+  }
 render() {
     //agent list
     const AgentOption = Select.Option;
     var agent_names=[];
     var agent_list  = this.state.agent_list;
+    var badge;
     for(var i =0; i < agent_list.length; i++){
-      agent_names.push(<AgentOption key={i} >{agent_list[i].agent_proc}</AgentOption>);
+      badge="default"
+      if(agent_list[i].live===true) badge ="success"
+      agent_names.push(<AgentOption key={i} ><Badge status={badge} /> {agent_list[i].agent_proc} </AgentOption>);
     }
     var tree_data =[];
     var AgentStatus;
     var agent_status_msg;
-    if(this.state.valid){
+    if(this.props.info.live){
       // agent_status_msg=this.state.agent.agent_proc +" is Live";
       agent_status_msg=this.props.info.agent +" is Live";
       AgentStatus = <Alert message={agent_status_msg} type="success" showIcon />
-      tree_data = generate_treeselect_data(this.state.agent.structure);
+      tree_data = generate_treeselect_data(this.props.info.structure);
     }
     else {
       // agent_status_msg="There is no data for agent "+this.state.agent.agent_proc ;
       agent_status_msg="There is no data for agent "+this.props.info.agent ;
       AgentStatus =  <Alert message={agent_status_msg} type="warning" showIcon />
     }
-    tree_data = generate_treeselect_data(this.state.agent.structure);
-    var disable_form;
+    tree_data = generate_treeselect_data(this.props.info.structure);
 
-    var contentList = {
-      config_tab: <p>Configure</p>,
-      plot_tab: <p>Plot</p>,
-    };
-    var actionButtons;
-    var agentSelect;
-    if(this.state.edit){
-      disable_form = false;
-      actionButtons = [
-        <Button type="default" key="0" onClick={this.onClickSave.bind(this)}>
-          <Icon type="save"/>
-        </Button>,
-        <Button type="danger"  key="1" onClick={this.onClickCancel.bind(this)}>
-          <Icon type="close"/>
-        </Button> ,
-        <Button type="default" key="2"onClick={this.onClickDelete.bind(this)}>
-          <Icon type="delete"/>
-        </Button>
-              ];
-      agentSelect= <Select
-                        showSearch
-                        value={this.state.agent.agent_proc}
-                        onChange={this.agentSelected.bind(this)}
-                        style={{width: '300px'}}
-                      >
-                        {agent_names}
-                      </Select>
-    } else{
-      disable_form = true;
-      agentSelect= <Select
-                        showSearch
-                        placeholder="Select"
-                        value={this.state.agent.agent_proc}
-                        onChange={this.agentSelected.bind(this)}
-                        style={{width: '300px'}}
-                        disabled
-                      >
-                        {agent_names}
-                      </Select>
-      actionButtons = <Button type="default" onClick={this.onClickEdit.bind(this)}>
-          <Icon type="edit"/> Edit
-        </Button>
-    }
+    const form_style = {width: '300px'}
+    var agentSelect= <Select
+                      showSearch
+                      value={this.props.info.agent}
+                      onChange={this.agentSelected.bind(this)}
+                      style={form_style}
+                    >
+                      {agent_names}
+                    </Select>
+
     const tree_props = {
       treeData: tree_data,
       value: this.state.data_selected,
@@ -253,23 +201,58 @@ render() {
       treeCheckable:true,
       showCheckedStrategy:TreeSelect.SHOW_PARENT,
       searchPlaceholder:'Select',
-      disabled:disable_form
     };
     return (
-      <div style={{ padding: '0 1em' }}>
+      <div style={{ padding: '0 1em' , margin: '20px' }}>
+        <Card>
+            <Form layout="vertical" onSubmit={this.handleSubmit.bind(this)}>
+              <Row gutter={16}>
+                <Col span={8} >
+                  <Form.Item label="Plot Title">
+                    <Input placeholder="Title"
+                      id="plot_title"
+                      onChange={this.handleFieldChange.bind(this)}
+                    style={form_style}/>
+                  </Form.Item>
+                </Col>
+                <Col span={8}  >
+                  <Form.Item label="X-Axis Label">
+                    <Input placeholder="Label"
+                      id="xLabel"
+                      onChange={this.handleFieldChange.bind(this)}
+                    style={form_style}/>
+                  </Form.Item>
+                </Col>
+                <Col span={8} >
+                  <Form.Item label="Y-Axis Label">
+                    <Input placeholder="Label"
+                      id="yLabel"
+                      onChange={this.handleFieldChange.bind(this)}
+                    style={form_style}/>
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={16}>
+                <Col span={8} >
+                  <Form.Item label="Agent">
+                  {agentSelect}
+                  </Form.Item>
+                </Col>
+                <Col span={8}  >
+                  <Form.Item label="DataSet">
+                    <TreeSelect style={{width: '300px'}} {... tree_props}>
+                    </TreeSelect>
+                  </Form.Item>
+                </Col>
+                <Col span={8}  >
+                </Col>
+              </Row>
 
-            <Form layout="inline" >
-              <Form.Item label="Agent">
-              {agentSelect}
-              </Form.Item>
-              <Form.Item label="DataSet">
-                <TreeSelect style={{width: '300px'}} {... tree_props}>
-                </TreeSelect>
-              </Form.Item>
-              {actionButtons}
+
+
             </Form>
             {AgentStatus}
-
+        </Card>
       </div>
     );
   }
