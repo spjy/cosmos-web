@@ -53,7 +53,7 @@ class AgentList extends Component {
       );
       socket.on('agent update list', (data) => { // subscribe to agent
         if (data) {
-          console.log(data)
+          // console.log(data)
           var agents = this.state.agents;
           for(var i=0; i < agents.length; i++){
               if(data[agents[i].agent_proc]) {
@@ -70,7 +70,7 @@ class AgentList extends Component {
 
     render() {
       var agent_list  = this.state.agents;
-      console.log(this.state.agents)
+      // console.log(this.state.agents)
       // var keys = Object.keys(agent_list);
       var data=[]
       for(var i =0; i < agent_list.length; i++){

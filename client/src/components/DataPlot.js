@@ -121,7 +121,7 @@ class DataPlot extends Component {
         var agents = this.state.cosmosPlotEntries;
         for(var i=0; i < this.state.cosmosPlotEntries.length; i++){
             if(data[agents[i].agent]) {
-              console.log( agents[i].agent," live")
+              // console.log( agents[i].agent," live")
               agents[i].live=true;
             }
 

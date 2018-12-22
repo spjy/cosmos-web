@@ -128,6 +128,10 @@ class PlotForm extends Component {
       });
     }
   }
+  componentWillUnmount() {
+    var prevState = this.props.info.agent;
+    socket.removeAllListeners('agent update list'+prevState);
+  }
 
   agentSelected(value) {
       this.props.updateInfo({ /* calls DataPlot->updateEntry()*/
