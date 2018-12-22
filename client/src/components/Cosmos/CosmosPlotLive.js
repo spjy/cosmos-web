@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import io from 'socket.io-client';
 // import { Chart, Geom, Axis, Tooltip, Legend } from 'bizcharts';
 // import DataSet from '@antv/data-set';
-import { Card} from 'antd';
+import { Card, Alert, Row, Col} from 'antd';
 import cosmosInfo from './CosmosInfo'
 import { LineChart, Line ,XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Label} from 'recharts';
 const colors=["#82ca9d", "#9ca4ed","#f4a742","#e81d0b","#ed9ce6"]
@@ -33,7 +33,7 @@ class CosmosPlotLive extends Component {
       console.log('slected data:',selected)
 
       this.state = {
-        data:[]
+        data:[], current_data:{}
       };
   }
 
@@ -43,14 +43,16 @@ class CosmosPlotLive extends Component {
         if (data) {
 
         var saved_data = this.state.data;
-
-        var data_entry = get_data(data, this.props.info.values);
-        console.log('data_entry', data_entry)
-        if(saved_data.length > this.props.info.xRange){
-          saved_data.shift();
+        if(this.props.info.values.label.length>0){
+          var data_entry = get_data(data, this.props.info.values);
+          // console.log('data_entry', data_entry)
+          if(saved_data.length > this.props.info.xRange){
+            saved_data.shift();
+          }
+          saved_data = [... saved_data, data_entry]
+          this.setState({data:saved_data, current_data: data_entry});
         }
-        saved_data = [... saved_data, data_entry]
-        this.setState({data:saved_data});
+
         }
 
       });
@@ -83,26 +85,44 @@ class CosmosPlotLive extends Component {
             />)
       }
 
-      // {this.props.info.xLabel}
-      // {this.props.info.yLabel}
+      const legend_wrapper={
+        display:'block',
+        margin:'20px',
+        width: '200px'
+      }
+      const legend = [];
+      var current_data =this.state.current_data;
+      const labels = this.props.info.values.label;
+      for(var i=0; i<labels.length; i++){
+        var color={color:colors[i%colors.length]}
+        legend.push(<h4 style={color}>{labels[i]}</h4>);
+        legend.push(<p >{current_data[labels[i]]}</p>);
+      }
       if(data.length>0) {
         Plots=
-          <ResponsiveContainer width="100%" height={400}>
-            <LineChart data={data}>
-              <XAxis dataKey="utc"  type = 'number' domain={['auto','auto']}>
-                <Label value="Xlabel" offset={0} position="insideBottom" />
-              </XAxis>
-              <YAxis domain={['auto','auto']} >
-                <Label value= "Ylabel" angle={-90}   position="insideLeft" />
-              </YAxis>
-              <Tooltip/>
-              <Legend  verticalAlign="top"/>
-              {lines}
-            </LineChart>
-            </ResponsiveContainer>
+        <Row >
+          <Col span={18} >
+            <ResponsiveContainer width="100%" height={400}>
+              <LineChart data={data}>
+                <XAxis dataKey="utc"  type = 'number' domain={['auto','auto']}>
+                  <Label value="Xlabel" offset={0} position="insideBottom" />
+                </XAxis>
+                <YAxis domain={['auto','auto']} >
+                  <Label value= "Ylabel" angle={-90}   position="insideLeft" />
+                </YAxis>
+                <Tooltip/>
+                {lines}
+              </LineChart>
+              </ResponsiveContainer>
+            </Col>
+            <Col span={6} >
+            <Card>  {legend}
+            </Card>
+            </Col>
+          </Row>
 
       } else {
-        Plots = <p> Nothing to see here </p>
+        Plots = <Alert message="No data available" type="error" showIcon />
       }
 
       return (
@@ -111,7 +131,6 @@ class CosmosPlotLive extends Component {
             style={{ width: '100%' }}
             title={this.props.info.plot_title}
           >
-
           {Plots}
           </Card>
         </div>
