@@ -159,7 +159,6 @@ class CosmosPlotEntry  {
     /* populate values array from jsonvalues list*/
     var vals={label:[],structure:[]};
     var temp;
-    var index;
     for(var i=0; i < this.jsonvalues.length; i++){
       temp = this.map_string(this.jsonvalues[i].data);
       for(var j=0; j< temp.length; j++){

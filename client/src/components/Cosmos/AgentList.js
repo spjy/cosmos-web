@@ -67,7 +67,9 @@ class AgentList extends Component {
         }
       });
     }
-
+    componentWillUnmount() {
+      socket.removeAllListeners('agent update list');
+    }
     render() {
       var agent_list  = this.state.agents;
       // console.log(this.state.agents)
@@ -90,7 +92,7 @@ class AgentList extends Component {
       }
       return (
         <div>
-          <Navbar current="dataplot" />
+          <Navbar current="agentlist" />
           <br/>
           <Table
             columns={columns}

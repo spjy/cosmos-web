@@ -4,21 +4,25 @@ import io from 'socket.io-client';
 // import DataSet from '@antv/data-set';
 import { Card, Alert, Row, Col} from 'antd';
 import cosmosInfo from './CosmosInfo'
-import { LineChart, Line ,XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Label} from 'recharts';
+import { LineChart, Line ,XAxis, YAxis, Tooltip, ResponsiveContainer, Label} from 'recharts';
 const colors=["#82ca9d", "#9ca4ed","#f4a742","#e81d0b","#ed9ce6"]
 const socket = io(cosmosInfo.socket);
 
 function get_data(data,fields){
   var values = {};
   var p, val;
-
+  // console.log("get_data data:", data, "fields", fields)
   values.utc=Number(data.agent_utc);
   for(var i = 0; i < fields.label.length; i++){
     p = fields.structure[i];
     val = data;
-    for(var j = 0; j <p.length; p++ ){
+    console.log("structure", p);
+    for(var j = 0; j <p.length; j++ ){
+
       val=val[p[j]];
+      console.log("name",p[j],"val",val)
     }
+
     values[fields.label[i]]=Number(val);
   }
 
@@ -46,10 +50,11 @@ class CosmosPlotLive extends Component {
         if(this.props.info.values.label.length>0){
           var data_entry = get_data(data, this.props.info.values);
           // console.log('data_entry', data_entry)
+          // console.log(data_entry)
           if(saved_data.length > this.props.info.xRange){
             saved_data.shift();
           }
-          saved_data = [... saved_data, data_entry]
+          saved_data = [...saved_data, data_entry]
           this.setState({data:saved_data, current_data: data_entry});
         }
 
@@ -85,18 +90,13 @@ class CosmosPlotLive extends Component {
             />)
       }
 
-      const legend_wrapper={
-        display:'block',
-        margin:'20px',
-        width: '200px'
-      }
       const legend = [];
       var current_data =this.state.current_data;
       const labels = this.props.info.values.label;
-      for(var i=0; i<labels.length; i++){
-        var color={color:colors[i%colors.length]}
-        legend.push(<div key={String(i)}><h4 style={color}>{labels[i]}</h4><p >{current_data[labels[i]]}</p></div>);
-        
+      for(var j=0; j<labels.length; j++){
+        var color={color:colors[j%colors.length]}
+        legend.push(<div key={String(j)}><h4 style={color}>{labels[j]}</h4><p >{current_data[labels[j]]}</p></div>);
+
       }
       if(data.length>0) {
         Plots=
