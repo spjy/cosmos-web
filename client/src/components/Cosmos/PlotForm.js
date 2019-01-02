@@ -145,10 +145,11 @@ class PlotForm extends Component {
 
   }
   dataSelected(value) {
-    console.log("values selected:", value)
+    // console.log("values selected:", value)
     this.props.updateInfo({
       id: this.props.id,
-      agent:this.props.info.agent
+      agent:this.props.info.agent,
+      values:value
     });
     this.setState({data_selected : value});
   }
@@ -157,8 +158,8 @@ class PlotForm extends Component {
     e.preventDefault();
   }
   handleFieldChange(event){
-    console.log("key:",event.target.id)
-    console.log("value:",event.target.value)
+    // console.log("key:",event.target.id)
+    // console.log("value:",event.target.value)
     this.props.updateValue({key:event.target.id, value: event.target.value, id: this.props.id});
   }
 render() {
@@ -216,6 +217,7 @@ render() {
                     <Input placeholder="Title"
                       id="plot_title"
                       onChange={this.handleFieldChange.bind(this)}
+                      value={this.props.info.plot_title}
                     style={form_style}/>
                   </Form.Item>
                 </Col>

@@ -95,8 +95,8 @@ class CosmosPlotLive extends Component {
       const labels = this.props.info.values.label;
       for(var i=0; i<labels.length; i++){
         var color={color:colors[i%colors.length]}
-        legend.push(<h4 style={color}>{labels[i]}</h4>);
-        legend.push(<p >{current_data[labels[i]]}</p>);
+        legend.push(<div key={String(i)}><h4 style={color}>{labels[i]}</h4><p >{current_data[labels[i]]}</p></div>);
+        
       }
       if(data.length>0) {
         Plots=
@@ -105,10 +105,10 @@ class CosmosPlotLive extends Component {
             <ResponsiveContainer width="100%" height={400}>
               <LineChart data={data}>
                 <XAxis dataKey="utc"  type = 'number' domain={['auto','auto']}>
-                  <Label value="Xlabel" offset={0} position="insideBottom" />
+                  <Label value={this.props.info.xLabel} offset={0} position="insideBottom" />
                 </XAxis>
                 <YAxis domain={['auto','auto']} >
-                  <Label value= "Ylabel" angle={-90}   position="insideLeft" />
+                  <Label value= {this.props.info.yLabel} angle={-90}   position="insideLeft" />
                 </YAxis>
                 <Tooltip/>
                 {lines}
