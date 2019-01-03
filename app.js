@@ -29,6 +29,7 @@ mongoose.connect(process.env.MONGO_URL, (err) => {
 });
 var agents_to_log = []// agents to log data
 io.on('connection', function(client) {
+  // handle requests from client
     client.on('start record',function(msg){
         var index = agents_to_log.indexOf(msg);
         if (index === -1) {
@@ -42,6 +43,13 @@ io.on('connection', function(client) {
            agents_to_log.splice(index, 1);
         }
         // console.log(agents_to_log)
+    });
+    client.on('save config',function(msg){
+      new models.PlotConfigurations(msg).save((err) => { // this is where it is inserted to mongodb
+        if (err) {
+          console.log(err);
+        }
+      });
     });
 });
 // function updateAgentList(){

@@ -187,6 +187,19 @@ class CosmosPlotEntry  {
     }
     else return [];
   }
+  to_json(){
+    return {
+      "agent":this.agent,
+      "node":this.node,
+      "title":this.plot_title,
+      "xLabel":this.xLabel,
+      "yLabel":this.yLabel,
+      "yRange":this.yRange,
+      "xRange": this.xRange,
+      "visible":this.visible,
+      "values":this.jsonvalues
+    }
+  }
 
 }
 

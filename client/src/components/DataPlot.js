@@ -4,6 +4,7 @@ import JsonForm from './Cosmos/JsonForm'
 import CosmosPlotEntry from './Cosmos/CosmosPlotEntry'
 import PlotForm from './Cosmos/PlotForm'
 import CosmosPlotLive from './Cosmos/CosmosPlotLive'
+import ConfigSelectForm from './Cosmos/ConfigSelectForm'
 import { Select , Card , Button, Icon} from 'antd';
 import io from 'socket.io-client';
 import cosmosInfo from './Cosmos/CosmosInfo'
@@ -37,27 +38,39 @@ function ConfigTabContent (props) {
   var config_contents; // contents of config tab
   var entries = props.entries;
   var json_form;
+  var save_config;
+  var add_plot;
+  var config_select;
   switch(props.currentConfigSource){
     case import_type.JSON:
       json_form = <JsonForm onChangeJson={props.onChangeJson} />
       if(entries.length>0) {
-        config_contents = <Button type="default" onClick={props.addPlot}>
+        add_plot = <Button type="default" onClick={props.addPlot}>
                     <Icon type="plus"/> Add
+                  </Button>
+        save_config = <Button type="default" onClick={props.saveConfig}>
+                    <Icon type="save"/> Save Configurations
                   </Button>
       }
     break;
     case import_type.SAVED:
-      config_contents = <p>Select config </p>
+      config_select = <ConfigSelectForm />
     break;
     case import_type.NEW:
-      config_contents = <Button type="default" onClick={props.addPlot}>
+      add_plot = <Button type="default" onClick={props.addPlot}>
                   <Icon type="plus"/> Add
                 </Button>
+      if(entries.length>0) {
+        save_config = <Button type="default" onClick={props.saveConfig}>
+                    <Icon type="save"/> Save Configurations
+                  </Button>
+      }
     break;
     default:
       config_contents = <p> Choose one </p>
     break;
   }
+
   var plot_forms = entries.map(function(p, index){
     return <PlotForm
                 key={index}
@@ -81,8 +94,11 @@ function ConfigTabContent (props) {
         <Option value={import_type.NEW}>New Configuration</Option>
       </Select>
       {json_form}
+      {config_select}
       {plot_forms}
       {config_contents}
+      {add_plot}
+      {save_config}
     </div>
     );
 }
@@ -186,6 +202,23 @@ class DataPlot extends Component {
     this.setState(saved_state);
   }
 
+  onClickSaveConfig(){
+    var jsonArr = [];
+    for(var i =0; i < this.state.cosmosPlotEntries.length; i++){
+      jsonArr.push(this.state.cosmosPlotEntries[i].to_json());
+    }
+    var config={
+      name:'test',
+      description: 'desc',
+      author: 'me',
+      created: new Date(),
+      edited: new Date(),
+      json: jsonArr
+    }
+    console.log("SAVE CLICKED")
+    socket.emit("save config", config);
+  }
+
   render() {
 
     const contentList = {
@@ -199,6 +232,7 @@ class DataPlot extends Component {
                       addPlot={this.onClickAddConfig.bind(this)}
                       selfDestruct={this.removeEntry.bind(this)}
                       updateValue={this.updateConfig.bind(this)}
+                      saveConfig={this.onClickSaveConfig.bind(this)}
                       />,
 
       plot_tab: <PlotTabContent
