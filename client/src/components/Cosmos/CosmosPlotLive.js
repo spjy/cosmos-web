@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import io from 'socket.io-client';
 // import { Chart, Geom, Axis, Tooltip, Legend } from 'bizcharts';
 // import DataSet from '@antv/data-set';
-import { Card, Alert, Row, Col} from 'antd';
+import { Card, Alert, Row, Col, Button} from 'antd';
 import cosmosInfo from './CosmosInfo'
 import { LineChart, Line ,XAxis, YAxis, Tooltip, ResponsiveContainer, Label} from 'recharts';
 const colors=["#82ca9d", "#9ca4ed","#f4a742","#e81d0b","#ed9ce6"]
@@ -11,16 +11,12 @@ const socket = io(cosmosInfo.socket);
 function get_data(data,fields){
   var values = {};
   var p, val;
-  // console.log("get_data data:", data, "fields", fields)
   values.utc=Number(data.agent_utc);
   for(var i = 0; i < fields.label.length; i++){
     p = fields.structure[i];
     val = data;
-    console.log("structure", p);
     for(var j = 0; j <p.length; j++ ){
-
       val=val[p[j]];
-      console.log("name",p[j],"val",val)
     }
 
     values[fields.label[i]]=Number(val);
@@ -74,7 +70,10 @@ class CosmosPlotLive extends Component {
       socket.removeAllListeners('agent subscribe '+prevState);
     }
 
-
+    onClickRecord(){
+      console.log('record')
+      socket.emit('record', this.props.info.agent);
+    }
     render() {
       var data = [];
       data = this.state.data;
@@ -116,7 +115,11 @@ class CosmosPlotLive extends Component {
               </ResponsiveContainer>
             </Col>
             <Col span={6} >
-            <Card>  {legend}
+            <Card>
+              {legend}
+            </Card>
+            <Card>
+              <Button type="primary" onClick={this.onClickRecord.bind(this)}> Record </Button>
             </Card>
             </Col>
           </Row>

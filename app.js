@@ -27,6 +27,16 @@ mongoose.connect(process.env.MONGO_URL, (err) => {
     console.log(err);
   }
 });
+var agents_to_log = []// agents to log data
+io.on('connection', function(client) {
+    client.on('start record',function(msg){
+        console.log('START RECORDING', msg)
+        agents_to_log.push(msg);
+    });
+    client.on('end record',function(msg){
+        console.log('END RECORDING', msg)
+    });
+});
 // function updateAgentList(){
 //   MongoClient.connect(mongo_url_cosmos,{ useNewUrlParser: true }, function(err, db) {
 //     var dbo = db.db("cosmos");
@@ -253,7 +263,9 @@ cosmosSocket.on('message', function(message) {
   }
 
 });
-
+io.on('record', (data) => { // subscribe to agent
+  console.log("RECORD requested", data)
+});
 
 setInterval(function(){
 
