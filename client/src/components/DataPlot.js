@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import Navbar from './Global/Navbar';
-import JsonForm from './Cosmos/JsonForm'
 import CosmosPlotEntry from './Cosmos/CosmosPlotEntry'
-import PlotForm from './Cosmos/PlotForm'
 import CosmosPlotLive from './Cosmos/CosmosPlotLive'
-import ConfigSelectForm from './Cosmos/ConfigSelectForm'
-import { Select , Card , Button, Icon} from 'antd';
+import ConfigTab from './Cosmos/ConfigTab'
+import {  Card } from 'antd';
 import io from 'socket.io-client';
 import cosmosInfo from './Cosmos/CosmosInfo'
 const socket = io(cosmosInfo.socket);
@@ -33,92 +31,23 @@ async function get_all_agent_info(cosmos_plot_entries){
   }
   return;
 }
-const Option = Select.Option;
-function ConfigTabContent (props) {
-  var config_contents; // contents of config tab
-  var entries = props.entries;
-  var json_form;
-  var save_config;
-  var add_plot;
-  var config_select;
-  switch(props.currentConfigSource){
-    case import_type.JSON:
-      json_form = <JsonForm onChangeJson={props.onChangeJson} />
-      if(entries.length>0) {
-        add_plot = <Button type="default" onClick={props.addPlot}>
-                    <Icon type="plus"/> Add
-                  </Button>
-        save_config = <Button type="default" onClick={props.saveConfig}>
-                    <Icon type="save"/> Save Configurations
-                  </Button>
-      }
-    break;
-    case import_type.SAVED:
-      config_select = <ConfigSelectForm />
-    break;
-    case import_type.NEW:
-      add_plot = <Button type="default" onClick={props.addPlot}>
-                  <Icon type="plus"/> Add
-                </Button>
-      if(entries.length>0) {
-        save_config = <Button type="default" onClick={props.saveConfig}>
-                    <Icon type="save"/> Save Configurations
-                  </Button>
-      }
-    break;
-    default:
-      config_contents = <p> Choose one </p>
-    break;
-  }
 
-  var plot_forms = entries.map(function(p, index){
-    return <PlotForm
-                key={index}
-                id={index}
-                info={p}
-                updateInfo={props.updatePlotInfo}
-                selfDestruct={props.selfDestruct}
-                updateValue={props.updateValue}/>;
-  });
-  return (
-    <div>
-      <Select
-        showSearch
-        placeholder="Load Configuration From"
-        onChange={props.onChangeConfigSource}
-        style={{width: '300px'}}
-        value={props.currentConfigSource}
-      >
-        <Option value={import_type.JSON}>JSON File</Option>
-        <Option value={import_type.SAVED}>Saved Configuration</Option>
-        <Option value={import_type.NEW}>New Configuration</Option>
-      </Select>
-      {json_form}
-      {config_select}
-      {plot_forms}
-      {config_contents}
-      {add_plot}
-      {save_config}
-    </div>
-    );
-}
 function PlotTabContent(props) {
-
   var plotentries = props.entries;
-  var plot_contents=plotentries.map(function(p, index){
-    return <CosmosPlotLive
-                key={index}
-                id={index}
-                info={p}
-                />;
-              });
+  var plot_contents=[];
+  for(var i = 0; i < plotentries.length; i++){
+    plot_contents.push(<CosmosPlotLive
+                key={i}
+                id={i}
+                info={plotentries[i]}
+                />);
+  }
   return (
     <div>
       {plot_contents}
     </div>
   );
 }
-
 
 class DataPlot extends Component {
   constructor(props){
@@ -131,21 +60,11 @@ class DataPlot extends Component {
 
 
   }
-  componentDidMount() {
-    socket.on('agent update list', (data) => { // subscribe to agent
-      if (data) {
-        var agents = this.state.cosmosPlotEntries;
-        for(var i=0; i < this.state.cosmosPlotEntries.length; i++){
-            if(data[agents[i].agent]) {
-              // console.log( agents[i].agent," live")
-              agents[i].live=true;
-            }
-
-        }
-        this.setState({cosmosPlotEntries:agents})
-      }
-    });
-  }
+  // componentDidMount() {
+  // }
+  // componentWillUnmount(){
+  //   socket.removeAllListeners('agent update list');
+  // }
 
   onTabChange = (key, type) => {
     // console.log(key, type);
@@ -154,13 +73,17 @@ class DataPlot extends Component {
     this.setState(state);
   }
   onChangeConfigSource(source){
-    var state = this.state;
-    state.config_source = source;
-    state.cosmosPlotEntries =[];
-    this.setState(state);
+    this.setState({config_source:source, cosmosPlotEntries:[]});
 
   }
-  onClickAddConfig(){
+  updateAgentStatus(entries){
+
+    this.setState({cosmosPlotEntries:entries});
+  }
+  clearEntries(){
+    this.setState({cosmosPlotEntries:[]});
+  }
+  onClickAddEntry(){
     var entry = new CosmosPlotEntry();
     var entries = this.state.cosmosPlotEntries;
     entries.push(entry);
@@ -169,14 +92,12 @@ class DataPlot extends Component {
 
   importJsonArray(jsonArr){
     // called from JsonForm when a file is selected
-    var state = this.state;
     var entries = [];
     for(var i=0; i < jsonArr.length; i++){
       entries.push(new CosmosPlotEntry(jsonArr[i]));
     }
     get_all_agent_info(entries).then((result)=>{
-      state.cosmosPlotEntries = entries;
-      this.setState(state);
+      this.setState({cosmosPlotEntries:entries});
     });
 
   }
@@ -193,7 +114,7 @@ class DataPlot extends Component {
      */
     var entries = this.state.cosmosPlotEntries;
     update_agent_info(entries[new_vals.id], new_vals).then((result)=>{
-      this.setState(entries);
+      this.setState({cosmosPlotEntries:entries});
     });
   }
   updateConfig(obj){
@@ -223,16 +144,18 @@ class DataPlot extends Component {
 
     const contentList = {
       config_tab:
-        <ConfigTabContent
+        <ConfigTab
                       onChangeConfigSource={this.onChangeConfigSource.bind(this)}
                       entries={this.state.cosmosPlotEntries}
                       onChangeJson={this.importJsonArray.bind(this)}
                       updatePlotInfo={this.updateEntry.bind(this)}
                       currentConfigSource={this.state.config_source}
-                      addPlot={this.onClickAddConfig.bind(this)}
+                      addPlot={this.onClickAddEntry.bind(this)}
                       selfDestruct={this.removeEntry.bind(this)}
                       updateValue={this.updateConfig.bind(this)}
                       saveConfig={this.onClickSaveConfig.bind(this)}
+                      updateAgentStatus={this.updateAgentStatus.bind(this)}
+                      clearEntries={this.clearEntries.bind(this)}
                       />,
 
       plot_tab: <PlotTabContent

@@ -1,14 +1,7 @@
 import cosmosInfo from './CosmosInfo'
 
 class CosmosPlotEntry  {
-  // var agent :string;
-  // var node :string;
-  // var plot_title :string;
-  // var xLabel :string;
-  // var yLabel :string;
-  // var visible :boolean;
-  // var xRange: number;
-  // var yRange: number;
+
 
   constructor(jsonObj){
     if(jsonObj){
@@ -23,7 +16,7 @@ class CosmosPlotEntry  {
       this.visible = jsonObj.visible;
       this.live = false;
       this.archive = false;
-      this.values={};
+      this.values={label:[],structure:[]};
       this.jsonvalues=jsonObj.values;
       this.map=[];
       this.structure=[];
@@ -38,7 +31,7 @@ class CosmosPlotEntry  {
       this.yRange = 10;
       this.xRange = 3600;
       this.visible = true;
-      this.values={};
+      this.values={label:[],structure:[]};
       this.jsonvalues=[];
       this.live = false;
       this.archive = false;
