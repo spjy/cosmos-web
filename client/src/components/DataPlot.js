@@ -123,21 +123,38 @@ class DataPlot extends Component {
     this.setState(saved_state);
   }
 
-  onClickSaveConfig(){
+  saveConfig(info){
     var jsonArr = [];
     for(var i =0; i < this.state.cosmosPlotEntries.length; i++){
       jsonArr.push(this.state.cosmosPlotEntries[i].to_json());
     }
     var config={
-      name:'test',
-      description: 'desc',
-      author: 'me',
+      name:info.name,
+      description: info.desc,
+      author: info.author,
       created: new Date(),
       edited: new Date(),
       json: jsonArr
     }
     console.log("SAVE CLICKED")
-    socket.emit("save config", config);
+    socket.emit("save plot_config", config);
+  }
+  updateDBconfig(info){
+    var jsonArr = [];
+    for(var i =0; i < this.state.cosmosPlotEntries.length; i++){
+      jsonArr.push(this.state.cosmosPlotEntries[i].to_json());
+    }
+    var msg = {
+      id: info.id,
+      data: {
+        name:info.name,
+        description: info.desc,
+        author: info.author,
+        edited: new Date(),
+        json: jsonArr
+      }
+    }
+    socket.emit("update plot_config", msg);
   }
 
   render() {
@@ -153,9 +170,10 @@ class DataPlot extends Component {
                       addPlot={this.onClickAddEntry.bind(this)}
                       selfDestruct={this.removeEntry.bind(this)}
                       updateValue={this.updateConfig.bind(this)}
-                      saveConfig={this.onClickSaveConfig.bind(this)}
+                      saveConfig={this.saveConfig.bind(this)}
                       updateAgentStatus={this.updateAgentStatus.bind(this)}
                       clearEntries={this.clearEntries.bind(this)}
+                      updateConfigDB={this.updateDBconfig.bind(this)}
                       />,
 
       plot_tab: <PlotTabContent

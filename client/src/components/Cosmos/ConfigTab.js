@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Icon, Modal ,Select} from 'antd';
+import { Button, Icon, Modal , Select, Form, Input} from 'antd';
 import ConfigSelectForm from './ConfigSelectForm'
 import PlotForm from './PlotForm'
 import JsonForm from './JsonForm'
@@ -22,11 +22,19 @@ class ConfigTab extends Component {
   constructor(props){
     super(props);
 
-    this.state = {};
+    this.state = {
+      view_modal:false,
+      info:{
+        name: '',
+        desc:'',
+        author:'',
+        id: 0
+      }
+    };
 
   }
   componentDidMount() {
-    console.log("entries",this.props.entries)
+    // console.log("entries",this.props.entries)
     socket.on('agent update list', (data) => { // subscribe to agent
       if (data) {
         var agents = this.props.entries;
@@ -43,44 +51,81 @@ class ConfigTab extends Component {
   componentWillUnmount(){
     socket.removeAllListeners('agent update list');
   }
-
-
+  openModal(){
+    this.setState({view_modal:true})
+  }
+  onSelectSource(val){
+    this.setState({info:{
+      name: '',
+      desc:'',
+      author:'',
+      id: 0
+    }});
+    this.props.onChangeConfigSource(val);
+  }
+  onSave(){
+    // this.props.saveConfig
+    var info= this.state.info;
+    this.props.saveConfig(info);
+    this.setState({view_modal:false});
+  }
+  onUpdate(){
+    var info= this.state.info;
+    this.props.updateConfigDB(info);
+    this.setState({view_modal:false});
+  }
+  onCancel(){
+    this.setState({view_modal:false});
+  }
+  loadConfig(config){
+    // info = { name: , desc: , author: }
+    // this.props.onChangeJson(jsonarr)
+    this.setState({
+      info:{
+        name:config.name,
+        desc: config.description,
+        author: config.author,
+        id:config._id }});
+    this.props.onChangeJson(config.json);
+  }
+  handleFieldChange(event){
+    var info=this.state.info;
+    info[event.target.id] = event.target.value
+    this.setState({info: info});
+  }
 
   render() {
     var entries = this.props.entries;
     var json_form;
     var save_config;
     var add_plot;
-    var config_select;
+    var db_select;
     var plot_forms=[];
     switch(this.props.currentConfigSource){
       case import_type.JSON:
         json_form = <JsonForm onChangeJson={this.props.onChangeJson} />
-        if(entries.length>0) {
-          add_plot = <Button type="default" onClick={this.props.addPlot}>
-                      <Icon type="plus"/> Add
-                    </Button>
-          save_config = <Button type="default" onClick={this.props.saveConfig}>
-                      <Icon type="save"/> Save Configurations
-                    </Button>
-        }
+
       break;
       case import_type.SAVED:
-        config_select = <ConfigSelectForm />
+        db_select = <ConfigSelectForm onSelect={this.loadConfig.bind(this)}/>
       break;
       case import_type.NEW:
         add_plot = <Button type="default" onClick={this.props.addPlot}>
                     <Icon type="plus"/> Add
                   </Button>
-        if(entries.length>0) {
-          save_config = <Button type="default" onClick={this.props.saveConfig}>
-                      <Icon type="save"/> Save Configurations
-                    </Button>
-        }
       break;
       default:
 
       break;
+
+    }
+    if(entries.length>0) {
+      add_plot = <Button type="default" onClick={this.props.addPlot}>
+                  <Icon type="plus"/> Add
+                </Button>
+      save_config = <Button type="default" onClick={this.openModal.bind(this)}>
+                  <Icon type="save"/> Save Configurations
+                </Button>
     }
     for(var i = 0; i < entries.length; i++){
       plot_forms.push(<PlotForm
@@ -91,12 +136,52 @@ class ConfigTab extends Component {
                   selfDestruct={this.props.selfDestruct}
                   updateValue={this.props.updateValue}/>);
     }
+    var modal =  <Modal
+              visible={this.state.view_modal}
+              title="Configuration Detail"
+              onCancel={this.handleCancel}
+              footer={[
+                <Button key="back" onClick={this.onCancel.bind(this)}>Cancel</Button>,
+                <Button key="save" type="primary" loading={this.state.loading} onClick={this.onSave.bind(this)}>
+                  Save As New Entry
+                </Button>,
+                <Button key="update" type="primary" loading={this.state.loading} onClick={this.onUpdate.bind(this)}>
+                  Update Entry
+                </Button>
+              ]}
+            >
+            <Form layout="vertical" >
+              <Form.Item label="Name">
+                <Input placeholder="Name"
+                  id="name"
+                  onChange={this.handleFieldChange.bind(this)}
+                  value={this.state.info.name}
+                />
+              </Form.Item>
+              <Form.Item label="Author">
+                <Input placeholder="Author"
+                  id="author"
+                  onChange={this.handleFieldChange.bind(this)}
+                  value={this.state.info.author}
+                />
+              </Form.Item>
+              <Form.Item label="Description">
+                <Input placeholder="Description"
+                  id="desc"
+                  onChange={this.handleFieldChange.bind(this)}
+                  value={this.state.info.desc}
+                />
+              </Form.Item>
+
+            </Form>
+            </Modal>
     return (
       <div>
+      {modal}
         <Select
           showSearch
           placeholder="Load Configuration From"
-          onChange={this.props.onChangeConfigSource}
+          onChange={this.onSelectSource.bind(this)}
           style={{width: '300px'}}
           value={this.props.currentConfigSource}
         >
@@ -106,7 +191,7 @@ class ConfigTab extends Component {
           <Option value={import_type.NEW}>New Configuration</Option>
         </Select>
         {json_form}
-        {config_select}
+        {db_select}
         {plot_forms}
         {add_plot}
         {save_config}

@@ -44,8 +44,15 @@ io.on('connection', function(client) {
         }
         // console.log(agents_to_log)
     });
-    client.on('save config',function(msg){
+    client.on('save plot_config',function(msg){
       new models.PlotConfigurations(msg).save((err) => { // this is where it is inserted to mongodb
+        if (err) {
+          console.log(err);
+        }
+      });
+    });
+    client.on('update plot_config',function(msg){
+      models.PlotConfigurations.findByIdAndUpdate(msg.id, msg.data, {new:true}, (err)=>{
         if (err) {
           console.log(err);
         }

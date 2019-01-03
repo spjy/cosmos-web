@@ -41,22 +41,26 @@ class ConfigSelectForm extends Component {
     // console.log(this.props)
     this.state = {
       config:[],
-      selection: -1
+      selection: -1,
     }
 
   }
   componentDidMount() {
-    fetch(`${cosmosInfo.socket}/api/plot_configurations`)
-    .then(response => response.json())
-    .then(data =>
-      this.setState({config:data.result})
-      // console.log(data.result)
-
-    );
+    this.updateTable();
   }
   preview(key){
     console.log("preview",key)
     this.setState({selection:key})
+    this.props.onSelect(this.state.config[key])
+  }
+  updateTable(){
+    fetch(`${cosmosInfo.socket}/api/plot_configurations`)
+    .then(response => response.json())
+    .then(data =>{
+      this.setState({config:data.result})
+      // console.log(data.result)
+    }
+    );
   }
   render() {
     var db_result = this.state.config;
@@ -73,12 +77,12 @@ class ConfigSelectForm extends Component {
       };
 
     }
+      return (
+        <div >
+          <Table columns={columns} dataSource={data} size="small"/>
+        </div>
+      );
 
-    return (
-      <div >
-        <Table columns={columns} dataSource={data} size="small"/>
-      </div>
-    );
   }
 
 }
