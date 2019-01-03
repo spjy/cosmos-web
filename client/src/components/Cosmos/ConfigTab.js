@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Icon, Modal , Select, Form, Input} from 'antd';
+import { Button, Icon, Modal , Select, Form, Input, Alert} from 'antd';
 import ConfigSelectForm from './ConfigSelectForm'
 import PlotForm from './PlotForm'
 import JsonForm from './JsonForm'
@@ -29,7 +29,8 @@ class ConfigTab extends Component {
         desc:'',
         author:'',
         id: 0
-      }
+      },
+      form_validated: true
     };
 
   }
@@ -63,16 +64,37 @@ class ConfigTab extends Component {
     }});
     this.props.onChangeConfigSource(val);
   }
+  validateForm(){
+    console.log("validating form")
+    var valid = true;
+    if(this.state.info.name.length <1 )  valid = false;
+    if(this.state.info.desc.length <1 ) valid = false;
+    if(this.state.info.author.length <1 ) valid = false;
+    this.setState({form_validated: valid})
+    console.log(valid)
+    return valid;
+  }
   onSave(){
-    // this.props.saveConfig
-    var info= this.state.info;
-    this.props.saveConfig(info);
-    this.setState({view_modal:false});
+    // TO DO: form validation
+    this.setState({loading:true});
+    if(this.validateForm()===true){
+      var info= this.state.info;
+      this.props.saveConfig(info);
+      this.setState({view_modal:false});
+    }
+    this.setState({loading:false});
+
   }
   onUpdate(){
-    var info= this.state.info;
-    this.props.updateConfigDB(info);
-    this.setState({view_modal:false});
+    this.setState({loading:true});
+    this.validateForm();
+    if(this.validateForm()===true){
+      var info= this.state.info;
+      this.props.updateConfigDB(info);
+      this.setState({view_modal:false});
+    }
+    this.setState({loading:false});
+
   }
   onCancel(){
     this.setState({view_modal:false});
@@ -92,6 +114,7 @@ class ConfigTab extends Component {
     var info=this.state.info;
     info[event.target.id] = event.target.value
     this.setState({info: info});
+
   }
 
   render() {
@@ -136,19 +159,25 @@ class ConfigTab extends Component {
                   selfDestruct={this.props.selfDestruct}
                   updateValue={this.props.updateValue}/>);
     }
+    var validation;
+    if(this.state.form_validated!==true){
+      validation=<Alert message="All fields required" type="warning" showIcon />
+    }
+    var modal_buttons = [  <Button key="back" onClick={this.onCancel.bind(this)}>Cancel</Button>,
+                <Button key="save" type="primary" loading={this.state.loading} onClick={this.onSave.bind(this)}>
+                  Save As New Entry
+                </Button>];
+    if(this.state.info.id !== 0){
+      modal_buttons.push(
+      <Button key="update" type="primary" loading={this.state.loading} onClick={this.onUpdate.bind(this)}>
+        Update Entry
+      </Button>);
+    }
     var modal =  <Modal
               visible={this.state.view_modal}
               title="Configuration Detail"
               onCancel={this.handleCancel}
-              footer={[
-                <Button key="back" onClick={this.onCancel.bind(this)}>Cancel</Button>,
-                <Button key="save" type="primary" loading={this.state.loading} onClick={this.onSave.bind(this)}>
-                  Save As New Entry
-                </Button>,
-                <Button key="update" type="primary" loading={this.state.loading} onClick={this.onUpdate.bind(this)}>
-                  Update Entry
-                </Button>
-              ]}
+              footer={modal_buttons}
             >
             <Form layout="vertical" >
               <Form.Item label="Name">
@@ -172,8 +201,9 @@ class ConfigTab extends Component {
                   value={this.state.info.desc}
                 />
               </Form.Item>
-
+              {validation}
             </Form>
+
             </Modal>
     return (
       <div>
