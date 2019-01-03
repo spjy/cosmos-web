@@ -38,7 +38,8 @@ class CosmosPlotLive extends Component {
   }
 
     componentDidMount() {
-
+      // tell the backend to start recording this agent's data
+      socket.emit('start record', this.props.info.agent);
       socket.on('agent subscribe '+this.props.info.agent, (data) => { // subscribe to agent
         if (data) {
 
@@ -57,6 +58,7 @@ class CosmosPlotLive extends Component {
         }
 
       });
+
     }
     componentDidUpdate(prevProps){
       if(this.props.info !== prevProps.info){
@@ -68,11 +70,15 @@ class CosmosPlotLive extends Component {
     componentWillUnmount() {
       var prevState = this.props.info.agent;
       socket.removeAllListeners('agent subscribe '+prevState);
+      socket.emit('end record', this.props.info.agent);
     }
 
     onClickRecord(){
-      console.log('record')
-      socket.emit('record', this.props.info.agent);
+      // console.log('record')
+      //
+      // socket.emit('start record', this.props.info.agent);
+      // this.setState({recording:true});
+
     }
     render() {
       var data = [];

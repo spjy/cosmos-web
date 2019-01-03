@@ -30,11 +30,18 @@ mongoose.connect(process.env.MONGO_URL, (err) => {
 var agents_to_log = []// agents to log data
 io.on('connection', function(client) {
     client.on('start record',function(msg){
-        console.log('START RECORDING', msg)
-        agents_to_log.push(msg);
+        var index = agents_to_log.indexOf(msg);
+        if (index === -1) {
+           agents_to_log.push(msg);
+        }
+        // console.log(agents_to_log)
     });
     client.on('end record',function(msg){
-        console.log('END RECORDING', msg)
+        var index = agents_to_log.indexOf(msg);
+        if (index === -1) {
+           agents_to_log.splice(index, 1);
+        }
+        // console.log(agents_to_log)
     });
 });
 // function updateAgentList(){
@@ -63,9 +70,9 @@ cosmosSocket.on('listening', () => {
 var agentListDB = [];
 /* MONGO SETUP */
 
-// var MongoClient = require('mongodb').MongoClient
-//       , assert = require('assert');
-// var mongo_url_cosmos = process.env.MONGO_URL;
+var MongoClient = require('mongodb').MongoClient
+      , assert = require('assert');
+var mongo_url_cosmos = process.env.MONGO_URL;
 // console.log("MONGO_URL:", mongo_url_cosmos);
 // updateAgentList();
 models.AgentList.find().distinct('agent_proc', function(err, docs){
@@ -214,7 +221,18 @@ cosmosSocket.on('message', function(message) {
     imuOmega[imuIndex] = obj.device_imu_omega_000;
     imuIndex++;
   }
-  // console.log(Array.isArray(agentListDB))
+  // Recording agent data to mongoDB
+  if(agents_to_log.indexOf(obj.agent_proc)>-1){
+      MongoClient.connect(mongo_url_cosmos,{ useNewUrlParser: true }, function(err, db) {
+        var dbo = db.db("cosmos");
+        var agent_db = dbo.collection('agent_'+obj.agent_proc);
+        var entry = obj;
+        entry['time']=new Date();
+        agent_db.insertOne(entry, function(err, res){
+          db.close();
+        });
+      });
+  }
   if(Array.from(agentListDB).indexOf(obj.agent_proc)>-1){ // agent exists in mongoDB 'agent_list' collection
     // update time stamp
     // console.log(agentListDB)
@@ -262,9 +280,6 @@ cosmosSocket.on('message', function(message) {
 
   }
 
-});
-io.on('record', (data) => { // subscribe to agent
-  console.log("RECORD requested", data)
 });
 
 setInterval(function(){
