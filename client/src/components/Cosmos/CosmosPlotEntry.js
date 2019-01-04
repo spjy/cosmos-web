@@ -44,7 +44,7 @@ class CosmosPlotEntry  {
     /* fetch the MongoDB entry in agent_list for this agent
       needs to be called after constructor
     */
-    console.log("setup_agent")
+    // console.log("setup_agent")
     return fetch(`${cosmosInfo.socket}/api/cosmos_agent/${this.agent}`)
       .then(response => response.json())
       .then(data =>
@@ -52,7 +52,7 @@ class CosmosPlotEntry  {
     );
   }
   update(info){
-    console.log("update", info)
+    // console.log("update", info)
     var vals = info.values;
     var jsonvals = [];
     for(var i =0; i < vals.length; i++){
@@ -70,7 +70,7 @@ class CosmosPlotEntry  {
 
   }
   fetch_agent_info(){
-    console.log("fetch_agent_info")
+    // console.log("fetch_agent_info")
     return fetch(`${cosmosInfo.socket}/api/cosmos_agent/${this.agent}`)
       .then(response => response.json())
       .then(data =>{
@@ -105,7 +105,7 @@ class CosmosPlotEntry  {
     /* callback function for fetch_agent_info,
      * info= MongoDB object for the agent specified by this.agent
      */
-     console.log("agent info",info)
+     // console.log("agent info",info)
      if(info){
        this.archive = true;
        this.structure = info.structure;
@@ -115,7 +115,7 @@ class CosmosPlotEntry  {
      }
      else {
        this.fill_no_info();
-       console.log("values",this.values)
+       // console.log("values",this.values)
      }
      this.live = false;
      return "done";
@@ -162,7 +162,7 @@ class CosmosPlotEntry  {
 
     }
     this.values = vals;
-    console.log("values",vals);
+    // console.log("values",vals);
   }
 
   // helper functions

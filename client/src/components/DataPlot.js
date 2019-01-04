@@ -151,7 +151,8 @@ class DataPlot extends Component {
       edited: new Date(),
       json: jsonArr
     }
-    console.log("SAVE CLICKED")
+    // console.log("SAVE CLICKED")
+    this.setState({db_info:info});
     socket.emit("save plot_config", config);
   }
   updateDBconfig(info){
@@ -169,6 +170,7 @@ class DataPlot extends Component {
         json: jsonArr
       }
     }
+    this.setState({db_info:info});
     socket.emit("update plot_config", msg);
   }
   dbSelected(info){

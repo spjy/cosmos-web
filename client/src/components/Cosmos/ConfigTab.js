@@ -60,13 +60,11 @@ class ConfigTab extends Component {
     this.props.onChangeConfigSource(val);
   }
   validateForm(){
-    console.log("validating form")
     var valid = true;
     if(this.state.info.name.length <1 )  valid = false;
     if(this.state.info.desc.length <1 ) valid = false;
     if(this.state.info.author.length <1 ) valid = false;
     this.setState({form_validated: valid})
-    console.log(valid)
     return valid;
   }
   onSave(){
@@ -130,7 +128,7 @@ class ConfigTab extends Component {
 
       break;
       case import_type.SAVED:
-        db_select = <ConfigSelectForm onSelect={this.loadConfig.bind(this)}/>
+        db_select = <ConfigSelectForm onSelect={this.loadConfig.bind(this)} id={this.state.info.id}/>
       break;
       case import_type.NEW:
         add_plot = <Button type="default" onClick={this.props.addPlot}>

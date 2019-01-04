@@ -129,8 +129,7 @@ class PlotForm extends Component {
     }
   }
   componentWillUnmount() {
-    var prevState = this.props.info.agent;
-    socket.removeAllListeners('agent update list'+prevState);
+    socket.removeAllListeners('agent update list');
   }
 
   agentSelected(value) {
