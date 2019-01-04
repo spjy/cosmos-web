@@ -56,6 +56,12 @@ class DataPlot extends Component {
         tab_key:'config_tab',
         config_source: import_type.NONE,
         cosmosPlotEntries:[],
+        db_info:{
+          name: '',
+          desc:'',
+          author:'',
+          id: 0
+        }
       };
 
 
@@ -73,7 +79,16 @@ class DataPlot extends Component {
     this.setState(state);
   }
   onChangeConfigSource(source){
-    this.setState({config_source:source, cosmosPlotEntries:[]});
+    this.setState({
+      config_source:source,
+      cosmosPlotEntries:[],
+      db_info:{
+        name: '',
+        desc:'',
+        author:'',
+        id: 0
+      }
+    });
 
   }
   updateAgentStatus(entries){
@@ -156,7 +171,9 @@ class DataPlot extends Component {
     }
     socket.emit("update plot_config", msg);
   }
-
+  dbSelected(info){
+    this.setState({db_info:info})
+  }
   render() {
 
     const contentList = {
@@ -174,6 +191,8 @@ class DataPlot extends Component {
                       updateAgentStatus={this.updateAgentStatus.bind(this)}
                       clearEntries={this.clearEntries.bind(this)}
                       updateConfigDB={this.updateDBconfig.bind(this)}
+                      info={this.state.db_info}
+                      dbSelected={this.dbSelected.bind(this)}
                       />,
 
       plot_tab: <PlotTabContent

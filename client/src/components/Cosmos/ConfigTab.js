@@ -24,12 +24,7 @@ class ConfigTab extends Component {
 
     this.state = {
       view_modal:false,
-      info:{
-        name: '',
-        desc:'',
-        author:'',
-        id: 0
-      },
+      info:this.props.info,
       form_validated: true
     };
 
@@ -109,6 +104,11 @@ class ConfigTab extends Component {
         author: config.author,
         id:config._id }});
     this.props.onChangeJson(config.json);
+    this.props.dbSelected({
+      name:config.name,
+      desc: config.description,
+      author: config.author,
+      id:config._id })
   }
   handleFieldChange(event){
     var info=this.state.info;

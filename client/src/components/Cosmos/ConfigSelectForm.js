@@ -65,7 +65,10 @@ class ConfigSelectForm extends Component {
   render() {
     var db_result = this.state.config;
     var data=[];
+
     for(var i = 0; i < db_result.length; i++){
+
+
       data[i]= {
         key: String(i),
         name: db_result[i].name,
@@ -75,6 +78,9 @@ class ConfigSelectForm extends Component {
         edited:db_result[i].edited,
         preview:<Button onClick={this.preview.bind(this, i)}>Preview</Button>
       };
+      if(i===this.state.selection){
+        data[i].preview=<Button disabled>See Below</Button>
+      }
 
     }
       return (

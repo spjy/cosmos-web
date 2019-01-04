@@ -226,6 +226,7 @@ render() {
                     <Input placeholder="Label"
                       id="xLabel"
                       onChange={this.handleFieldChange.bind(this)}
+                      value={this.props.info.xLabel}
                     style={form_style}/>
                   </Form.Item>
                 </Col>
@@ -234,6 +235,7 @@ render() {
                     <Input placeholder="Label"
                       id="yLabel"
                       onChange={this.handleFieldChange.bind(this)}
+                      value={this.props.info.yLabel}
                     style={form_style}/>
                   </Form.Item>
                 </Col>
