@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table , Button, Icon} from 'antd';
+import { Table , Button, Icon, Card} from 'antd';
 import cosmosInfo from './CosmosInfo'
 
 const columns = [{
@@ -87,14 +87,14 @@ class ConfigSelectForm extends Component {
     }
 
       return (
-        <div >
-        <Button type="default"
-          onClick={this.updateTable.bind(this)}
-          style={{margin:'10px'}}>
-          <Icon type="reload"/> Reload List
-        </Button>
-          <Table columns={columns} dataSource={data} size="small"/>
+        <div style={{margin:'10px'}}>
+          <Card
+            actions={[<a href="#" onClick={this.updateTable.bind(this)}><Icon type="reload"/> Refresh</a>,
 
+            ]}
+            >
+            <Table columns={columns} dataSource={data} size="small"/>
+          </Card>
         </div>
       );
 
