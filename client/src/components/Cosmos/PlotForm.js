@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Select, Badge, TreeSelect, Alert, Input , Row, Col ,Card } from 'antd';
+import { Form, Select, Badge, TreeSelect, Alert, Input , Row, Col ,Card , Icon} from 'antd';
 import cosmosInfo from './CosmosInfo'
 import io from 'socket.io-client';
 const socket = io(cosmosInfo.socket);
@@ -161,6 +161,11 @@ class PlotForm extends Component {
     // console.log("value:",event.target.value)
     this.props.updateValue({key:event.target.id, value: event.target.value, id: this.props.id});
   }
+  onClickDelete = (e) => {
+    e.preventDefault();
+    this.props.selfDestruct(this.props.id);
+    console.log('The link was clicked.');
+  };
 render() {
     //agent list
     const AgentOption = Select.Option;
@@ -208,7 +213,7 @@ render() {
     };
     return (
       <div style={{ padding: '0 1em' , margin: '20px' }}>
-        <Card>
+        <Card actions={[<a href="#" onClick={this.onClickDelete.bind(this)}><Icon type="delete"/></a>]}>
             <Form layout="vertical" onSubmit={this.handleSubmit.bind(this)}>
               <Row gutter={16}>
                 <Col span={8} >
