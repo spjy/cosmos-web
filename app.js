@@ -9,6 +9,7 @@ const io = require('socket.io').listen(server);
 const dgram = require('dgram');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const exec = require('child_process').exec;
 app.use(cors());
 
 const routes = require('./routes');
@@ -56,6 +57,19 @@ io.on('connection', function(client) {
         if (err) {
           console.log(err);
         }
+      });
+    });
+    client.on('cosmos_command',function(msg){
+      // console.log('command recvd: ', msg)
+      exec(msg.command, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`exec error: ${error}`);
+          return;
+        } else {
+          client.emit('cosmos_command_response', {output: stdout});
+        }
+        // console.log(`stdout: ${stdout}`);
+        // console.log(`stderr: ${stderr}`);
       });
     });
 });

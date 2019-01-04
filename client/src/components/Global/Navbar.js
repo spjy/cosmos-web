@@ -66,6 +66,11 @@ class Navbar extends Component {
               <Icon type="bars" />Agent List
             </Link>
           </Menu.Item>
+          <Menu.Item key="COSMOS Commands">
+            <Link to="/commands">
+              <Icon type="code" />COSMOS Commands
+            </Link>
+          </Menu.Item>
         </Menu.SubMenu>
 
       </Menu>
