@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table , Button} from 'antd';
+import { Table , Button, Icon} from 'antd';
 import cosmosInfo from './CosmosInfo'
 
 const columns = [{
@@ -49,7 +49,7 @@ class ConfigSelectForm extends Component {
     this.updateTable();
   }
   preview(key){
-    console.log("preview",key)
+    // console.log("preview",key)
     this.setState({selection:key})
     this.props.onSelect(this.state.config[key])
   }
@@ -58,7 +58,7 @@ class ConfigSelectForm extends Component {
     .then(response => response.json())
     .then(data =>{
       this.setState({config:data.result})
-      // console.log(data.result)
+      // console.log("table updated")
     }
     );
   }
@@ -81,11 +81,20 @@ class ConfigSelectForm extends Component {
       if(i===this.state.selection){
         data[i].preview=<Button disabled>See Below</Button>
       }
+      else if(db_result[i]._id===this.props.id){
+        data[i].preview=<Button disabled>See Below</Button>
+      }
 
     }
       return (
         <div >
+        <Button type="default"
+          onClick={this.updateTable.bind(this)}
+          style={{margin:'10px'}}>
+          <Icon type="reload"/> Reload List
+        </Button>
           <Table columns={columns} dataSource={data} size="small"/>
+
         </div>
       );
 
