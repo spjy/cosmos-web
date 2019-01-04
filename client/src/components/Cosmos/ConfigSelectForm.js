@@ -76,16 +76,16 @@ class ConfigSelectForm extends Component {
         author:db_result[i].author ,
         created:db_result[i].created ,
         edited:db_result[i].edited,
-        preview:<Button onClick={this.preview.bind(this, i)}>Preview</Button>
+        preview:<Button onClick={this.preview.bind(this, i)}>Open</Button>
       };
-      if(i===this.state.selection){
+      if(db_result[i]._id===this.props.id){
         data[i].preview=<Button disabled>See Below</Button>
       }
-      else if(db_result[i]._id===this.props.id){
+      else if(i===this.state.selection){
         data[i].preview=<Button disabled>See Below</Button>
       }
-
     }
+
       return (
         <div >
         <Button type="default"

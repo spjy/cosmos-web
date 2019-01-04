@@ -171,7 +171,7 @@ class ConfigTab extends Component {
         Update Entry
       </Button>);
     }
-    var modal =  <Modal
+    var save_modal =  <Modal
               visible={this.state.view_modal}
               title="Configuration Detail"
               onCancel={this.handleCancel}
@@ -205,7 +205,7 @@ class ConfigTab extends Component {
             </Modal>
     return (
       <div>
-      {modal}
+      {save_modal}
         <Select
           showSearch
           placeholder="Load Configuration From"
