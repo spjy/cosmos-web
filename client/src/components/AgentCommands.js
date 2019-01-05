@@ -7,11 +7,11 @@ const socket = io(cosmosInfo.socket);
 
 
 function commandText(text, id){
-  return (<p style={{whiteSpace:'pre-wrap', wordWrap:'break-word', color:'blue'}} key={String(id)}> <b>Command:</b> {text}</p>);
+  return (<p style={{whiteSpace:'pre-wrap', wordWrap:'break-word', color:'blue'}} key={String(id)}>{text}</p>);
 }
 function responseText(text, id){
 
-  return (<p style={{whiteSpace:'pre-wrap', wordWrap:'break-word'}} key={String(id)}> <b>Output:</b>{text}</p>);
+  return (<p style={{whiteSpace:'pre-wrap', wordWrap:'break-word'}} key={String(id)}>{text}</p>);
 }
 class AgentCommands extends Component {
   constructor(props){
@@ -42,9 +42,6 @@ class AgentCommands extends Component {
 
     socket.removeAllListeners('agent update list');
   }
-  // commandChange(event){
-  //   this.setState({command:event.target.value});
-  // }
 
   clearOutput(){
     this.setState({output:[]})
@@ -57,9 +54,6 @@ class AgentCommands extends Component {
   onSelectAgent(agent){
     this.setState({loading_commands:true, command_list:[], agent: agent, command: -1})
     var nodename = this.state.agent_list[agent][1]
-    console.log(nodename)
-    // clear commands list
-    // get list of commands for agents:
     socket.emit('list_agent_commands', {agent: agent, node: nodename});
     socket.on('list_agent_commands_response', (data) => { // listen for response
       if (data) {
@@ -96,16 +90,12 @@ class AgentCommands extends Component {
       }
       socket.removeAllListeners('cosmos_command_response');
     });
-    // this.clearOutput();
   }
-  copyOutput(){
 
-
-  }
 
   render() {
 
-
+    // Populate select box with agent_list
     const Option = Select.Option;
     var agent_names=[];
     var agent_list  = Object.keys(this.state.agent_list)
@@ -114,6 +104,7 @@ class AgentCommands extends Component {
     }
     var commandSelect, argsInput, commandDetail, executeButton;
     if(this.state.command_list.length>0){
+      // Populate select box with list of commands
       var command_list=[];
       for(var j = 0; j < this.state.command_list.length; j++){
         command_list.push(<Option key={j} value={j}> {this.state.command_list[j].command} </Option>);
@@ -125,17 +116,17 @@ class AgentCommands extends Component {
                             {command_list}
                           </Select>
                         </Form.Item>;
-      if(this.state.command!==-1){
+      if(this.state.command!==-1){ // don't render certain components if command isnt chosen
         argsInput =  <Form.Item label="Args">
           <Input onChange={this.onChangeArgs.bind(this)} value={this.state.args} placeholder="Enter Arguments"/>
         </Form.Item>;
-        commandDetail=<p key='3'style={{whiteSpace:'pre-wrap'}}> <b>Command Detail: <br/></b>{this.state.command_list[this.state.command].detail} </p>;
+        commandDetail=<p style={{whiteSpace:'pre-wrap'}}> <b>Command Detail: <br/></b>{this.state.command_list[this.state.command].detail} </p>;
 
-        if(this.state.loading_output){
-          executeButton = <Button key='4' type="primary" onClick={this.onSend.bind(this)} disabled><Icon type="loading" /></Button>
+        if(this.state.loading_output){ // disable button when a command is executing
+          executeButton = <Button type="primary" onClick={this.onSend.bind(this)} disabled><Icon type="loading" /></Button>
         }
         else {
-            executeButton = <Button key='4' type="primary" onClick={this.onSend.bind(this)}>Execute</Button>
+            executeButton = <Button type="primary" onClick={this.onSend.bind(this)}>Execute</Button>
         }
       }
 
@@ -163,10 +154,10 @@ class AgentCommands extends Component {
                     </Select>
                   </Form.Item>
                 </Col>
-                <Col span={8}  key='1'>
+                <Col span={8} >
                   {commandSelect}
                 </Col>
-                <Col span={8} key='2' >
+                <Col span={8} >
                   {argsInput}
                 </Col>
                 {commandDetail}
@@ -175,7 +166,7 @@ class AgentCommands extends Component {
 
             </Form>
             <br/>
-            <Card actions={[<a onClick={this.clearOutput.bind(this)}>Clear</a>]}>
+            <Card actions={[<a onClick={this.clearOutput.bind(this)}>Clear Output</a>]}>
               <div style={{ overflowY:'scroll', height:'500px'}}>
                 {this.state.output}
               </div>
@@ -187,11 +178,7 @@ class AgentCommands extends Component {
 
 
     );
-
-
-
   }
-
 }
 
 export default AgentCommands;
