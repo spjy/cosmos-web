@@ -77,18 +77,18 @@ class AgentCommands extends Component {
     var cmd = this.state.command_list[this.state.command].command+" "+this.state.args;
     var agent = this.state.agent;
     var nodename = this.state.agent_list[agent][1];
-    socket.emit('cosmos_command', {agent: agent, node: nodename, command: cmd});
+    socket.emit('agent_command', {agent: agent, node: nodename, command: cmd});
     var cmd_sent='agent '+nodename+' '+agent+' '+cmd;
     var output = this.state.output;
     output.push(commandText(cmd_sent, output.length));
     this.setState({loading_output:true, output:output});
-    socket.on('cosmos_command_response', (data) => { // listen for response
+    socket.on('agent_command_response', (data) => { // listen for response
       if (data) {
         var output = this.state.output;
         output.push(responseText(data.output, output.length));
         this.setState({output:output, loading_output:false})
       }
-      socket.removeAllListeners('cosmos_command_response');
+      socket.removeAllListeners('agent_command_response');
     });
   }
 

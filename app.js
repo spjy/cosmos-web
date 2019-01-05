@@ -78,7 +78,7 @@ io.on('connection', function(client) {
     });
     client.on('cosmos_command',function(msg){
       // console.log('command recvd: ', msg)
-      var cmd = 'agent '+msg.node+' '+msg.agent+' '+msg.command;
+      var cmd = msg.command;
       exec(cmd, (error, stdout, stderr) => {
         if (error) {
           console.error(`exec error: ${error}`);
@@ -101,6 +101,20 @@ io.on('connection', function(client) {
         } else {
 
           client.emit('list_agent_commands_response', {command_list: get_agent_command_list(stdout)});
+        }
+        // console.log(`stdout: ${stdout}`);
+        // console.log(`stderr: ${stderr}`);
+      });
+    });
+    client.on('agent_command',function(msg){
+      // console.log('command recvd: ', msg)
+      var cmd = 'agent '+msg.node+' '+msg.agent+' '+msg.command;
+      exec(cmd, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`exec error: ${error}`);
+          return;
+        } else {
+          client.emit('agent_command_response', {output: stdout});
         }
         // console.log(`stdout: ${stdout}`);
         // console.log(`stderr: ${stderr}`);
