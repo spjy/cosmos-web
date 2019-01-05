@@ -50,7 +50,7 @@ class AgentCommands extends Component {
     this.setState({output:[]})
   }
   clearAll(){
-    this.setState({output:'', agent:'', args: '', output:[], command_list:[], loading_output: false,
+    this.setState({agent:'', args: '', output:[], command_list:[], loading_output: false,
         loading_commands:false,});
   }
 
@@ -112,11 +112,11 @@ class AgentCommands extends Component {
     for(var i =0; i < agent_list.length; i++){
       agent_names.push(<Option key={i} value={agent_list[i]}> {agent_list[i]} </Option>);
     }
-    var commandSelect, argsInput, commandDetail, executeButton, output;
+    var commandSelect, argsInput, commandDetail, executeButton;
     if(this.state.command_list.length>0){
       var command_list=[];
-      for(var i = 0; i < this.state.command_list.length; i++){
-        command_list.push(<Option key={i} value={i}> {this.state.command_list[i].command} </Option>);
+      for(var j = 0; j < this.state.command_list.length; j++){
+        command_list.push(<Option key={j} value={j}> {this.state.command_list[j].command} </Option>);
       }
       commandSelect= <Form.Item label="Command">
                           <Select
@@ -125,18 +125,16 @@ class AgentCommands extends Component {
                             {command_list}
                           </Select>
                         </Form.Item>;
-      if(this.state.command!=-1){
+      if(this.state.command!==-1){
         argsInput =  <Form.Item label="Args">
           <Input onChange={this.onChangeArgs.bind(this)} value={this.state.args} placeholder="Enter Arguments"/>
         </Form.Item>;
         commandDetail=<p key='3'style={{whiteSpace:'pre-wrap'}}> <b>Command Detail: <br/></b>{this.state.command_list[this.state.command].detail} </p>;
 
         if(this.state.loading_output){
-          output=<Icon type="loading" />
           executeButton = <Button key='4' type="primary" onClick={this.onSend.bind(this)} disabled><Icon type="loading" /></Button>
         }
         else {
-          output = this.state.output;
             executeButton = <Button key='4' type="primary" onClick={this.onSend.bind(this)}>Execute</Button>
         }
       }
@@ -152,8 +150,8 @@ class AgentCommands extends Component {
 
 
           <Card title="Agent Commands"
-            extra={<a href="#" onClick={this.clearAll.bind(this)}>Clear</a>}
-            actions={[<a href="#" onClick={this.clearOutput.bind(this)}>Clear</a>]}>
+            extra={<a onClick={this.clearAll.bind(this)}>Clear</a>}
+            >
             <Form layout="vertical">
               <Row gutter={16}>
                 <Col span={8} >
@@ -177,7 +175,7 @@ class AgentCommands extends Component {
 
             </Form>
             <br/>
-            <Card >
+            <Card actions={[<a onClick={this.clearOutput.bind(this)}>Clear</a>]}>
               <div style={{ overflowY:'scroll', height:'500px'}}>
                 {this.state.output}
               </div>

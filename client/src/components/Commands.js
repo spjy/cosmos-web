@@ -70,7 +70,7 @@ class Commands extends Component {
           </Form>
 
           <Card title="Output"
-            extra={<a href="#" onClick={this.clearOutput.bind(this)}>Clear</a>}
+            extra={<a onClick={this.clearOutput.bind(this)}>Clear</a>}
             >
             <div >
               <p style={{whiteSpace:'pre-wrap'}}> {output}</p>

@@ -213,7 +213,7 @@ render() {
     };
     return (
       <div style={{ padding: '0 1em' , margin: '20px' }}>
-        <Card actions={[<a href="#" onClick={this.onClickDelete.bind(this)}><Icon type="delete"/></a>]}>
+        <Card actions={[<a  onClick={this.onClickDelete.bind(this)}><Icon type="delete"/></a>]}>
             <Form layout="vertical" onSubmit={this.handleSubmit.bind(this)}>
               <Row gutter={16}>
                 <Col span={8} >
