@@ -28,6 +28,23 @@ mongoose.connect(process.env.MONGO_URL, (err) => {
     console.log(err);
   }
 });
+
+function get_agent_command_list(str){
+  // console.log(str)
+  var list = [];
+  var commands = str.split('\n\n');
+  var cmd, fields;
+  for(var i=1; i < commands.length; i++){
+    cmd={ command: '', detail:''};
+    fields = commands[i].split('\n');
+    cmd.command= fields[0].trim().split(' ')[0];
+    cmd.detail = commands[i];
+
+
+    list.push(cmd);
+  }
+  return list;
+}
 var agents_to_log = []// agents to log data
 io.on('connection', function(client) {
   // handle requests from client
@@ -61,7 +78,8 @@ io.on('connection', function(client) {
     });
     client.on('cosmos_command',function(msg){
       // console.log('command recvd: ', msg)
-      exec(msg.command, (error, stdout, stderr) => {
+      var cmd = 'agent '+msg.node+' '+msg.agent+' '+msg.command;
+      exec(cmd, (error, stdout, stderr) => {
         if (error) {
           console.error(`exec error: ${error}`);
           return;
@@ -72,6 +90,23 @@ io.on('connection', function(client) {
         // console.log(`stderr: ${stderr}`);
       });
     });
+    client.on('list_agent_commands',function(msg){
+      // console.log('command recvd: ', msg)
+      var agent = msg.agent;
+      var node = msg.node;
+      exec('agent '+node+' '+agent, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`exec error: ${error}`);
+          return;
+        } else {
+
+          client.emit('list_agent_commands_response', {command_list: get_agent_command_list(stdout)});
+        }
+        // console.log(`stdout: ${stdout}`);
+        // console.log(`stderr: ${stderr}`);
+      });
+    });
+
 });
 // function updateAgentList(){
 //   MongoClient.connect(mongo_url_cosmos,{ useNewUrlParser: true }, function(err, db) {
