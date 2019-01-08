@@ -93,7 +93,7 @@ io.on('connection', function(client) {
 
       });
     });
-    client.on('list_agent_commands',function(msg){
+    client.on('list_agent_commands',function(msg, callback ){
       var agent = msg.agent;
       var node = msg.node;
       exec('agent '+node+' '+agent, (error, stdout, stderr) => {
@@ -101,27 +101,24 @@ io.on('connection', function(client) {
           console.error(`exec error: ${error}`);
           return;
         } else {
-
-          client.emit('list_agent_commands_response', {command_list: get_agent_command_list(stdout)});
+          callback({command_list: get_agent_command_list(stdout)})
         }
 
       });
     });
-    client.on('agent_command',function(msg){
-      // console.log('command recvd: ', msg)
+    client.on('agent_command',function(msg, callback){
       var cmd = 'agent '+msg.node+' '+msg.agent+' '+msg.command;
       exec(cmd, (error, stdout, stderr) => {
         if (error) {
           console.error(`exec error: ${error}`);
           return;
         } else {
-          client.emit('agent_command_response', {output: stdout});
+          callback({output: stdout})
         }
-        // console.log(`stdout: ${stdout}`);
-        // console.log(`stderr: ${stderr}`);
+
       });
     });
-    client.on('agent_dates', function (msg, fn) {
+    client.on('agent_dates', function (msg, callback) {
       console.log(msg)
       var agent = msg.agent;
       var data;
@@ -144,13 +141,13 @@ io.on('connection', function(client) {
                 db.close();
                 data = {valid:true, dates: dates}
                 console.log("sending", data)
-                fn(data);
+                callback(data);
               }
             });
           }
           else {
             data = {valid:false};
-            fn(data);
+            callback(data);
           }
         });
       });

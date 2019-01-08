@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Navbar from './Global/Navbar';
-import {  Button , Input , Card , Icon , Col, Row, Form, Select} from 'antd';
+import {  Button , Input , Card , Icon , Col, Row, Form, Select , notification} from 'antd';
 import io from 'socket.io-client';
 import cosmosInfo from './Cosmos/CosmosInfo'
 const socket = io(cosmosInfo.socket);
@@ -35,8 +35,6 @@ class AgentCommands extends Component {
           this.setState({agent_list:data})
         }
       });
-
-
   }
   componentWillUnmount(){
 
@@ -54,15 +52,19 @@ class AgentCommands extends Component {
   onSelectAgent(agent){
     this.setState({loading_commands:true, command_list:[], agent: agent, command: -1})
     var nodename = this.state.agent_list[agent][1]
-    socket.emit('list_agent_commands', {agent: agent, node: nodename});
-    socket.on('list_agent_commands_response', (data) => { // listen for response
-      if (data) {
-        // console.log(data.command_list)
-        this.setState({command_list:data.command_list, loading_commands:false});
-      }
-      socket.removeAllListeners('list_agent_commands_response'); // remove listener
-    });
+    // socket.emit('list_agent_commands', {agent: agent, node: nodename});
+    // socket.on('list_agent_commands_response', (data) => { // listen for response
+    //   if (data) {
+    //     // console.log(data.command_list)
+    //     this.setState({command_list:data.command_list, loading_commands:false});
+    //   }
+    //   socket.removeAllListeners('list_agent_commands_response'); // remove listener
+    // });
+    socket.emit('list_agent_commands', {agent: agent, node: nodename}, this.getAgentCommandsList.bind(this));
 
+  }
+  getAgentCommandsList(data){
+    this.setState({command_list:data.command_list, loading_commands:false});
   }
 
   onSelectCommand(val){
@@ -77,19 +79,18 @@ class AgentCommands extends Component {
     var cmd = this.state.command_list[this.state.command].command+" "+this.state.args;
     var agent = this.state.agent;
     var nodename = this.state.agent_list[agent][1];
-    socket.emit('agent_command', {agent: agent, node: nodename, command: cmd});
+    // socket.emit('agent_command', {agent: agent, node: nodename, command: cmd});
     var cmd_sent='agent '+nodename+' '+agent+' '+cmd;
     var output = this.state.output;
     output.push(commandText(cmd_sent, output.length));
     this.setState({loading_output:true, output:output});
-    socket.on('agent_command_response', (data) => { // listen for response
-      if (data) {
-        var output = this.state.output;
-        output.push(responseText(data.output, output.length));
-        this.setState({output:output, loading_output:false})
-      }
-      socket.removeAllListeners('agent_command_response');
-    });
+    socket.emit('agent_command', {agent: agent, node: nodename, command: cmd}, this.commandResponseReceived.bind(this));
+
+  }
+  commandResponseReceived(data){
+    var output = this.state.output;
+    output.push(responseText(data.output, output.length));
+    this.setState({output:output, loading_output:false})
   }
 
 
