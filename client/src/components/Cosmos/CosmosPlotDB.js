@@ -91,30 +91,35 @@ class CosmosPlotDB extends Component {
     disabledDate(current) {
       return current && (current > moment(this.state.dates.end).endOf('day') || current < moment(this.state.dates.start).startOf('day'));
     }
-
+    getQueryFields(){
+      var vals = this.props.info.values.structure;
+      var fields = [];
+      var field;
+      for(var i = 0; i < vals.length; i++){
+        field = vals[i][0]
+        for(var j=1; j < vals[i].length; j++){
+          field+="."+vals[i][j];
+        }
+        fields.push(field)
+      }
+      return fields;
+    }
 
     onDateChange(dates, dateStrings){
       // console.log('From: ', dates[0].startOf('day'), ', to: ', dates[1].endOf('day'));
       // console.log('From: ', dateStrings[0], ', to: ', dateStrings[1]);
-      var startDate = dates[0]._d;
-      var endDate = dates[1]._d;
+      var startDate = dates[0].startOf('day');
+      var endDate = dates[1].endOf('day');
 
       this.setState({plot_dates: {start: startDate, end:  endDate}})
-      socket.emit('get_agent_data',{agent: this.props.info.agent, startDate: startDate, endDate: endDate});
-      // socket.on('agent__'+this.props.info.agent, (data) => { // subscribe to agent
-      //   if (data) {
-      //     console.log(data.dates)
-      //     var startDate = new Date(data.dates.start)
-      //     var endDate = new Date(data.dates.end)
-      //   console.log(moment(startDate).format('lll')  , moment(endDate).format('lll')  );
-      //   console.log(moment(startDate).local(),moment(endDate).local())
-      //   if(data.valid===true){
-      //     this.setState({dates:{start:startDate, end: endDate}})
-      //   }
-      //
-      //   }
-      //     socket.emit('agent_dates_'+this.props.info.agent, this.props.info.agent);
-      // });
+
+      socket.emit('agent_query',{agent: this.props.info.agent, startDate: startDate, endDate: endDate, fields:this.getQueryFields()}, this.receivedPlotData.bind(this));
+
+    }
+    receivedPlotData(data){
+      console.log(data.length," results found")
+      console.log(data[0])
+      this.setState({data:data})
     }
 
     render() {
@@ -139,11 +144,6 @@ class CosmosPlotDB extends Component {
       }
       const date_form =     <RangePicker
         disabledDate={this.disabledDate.bind(this)}
-        // disabedTime={this.disabledTime.bind(this)}
-        // showTime={{
-        //   hideDisabledOptions: true,
-        //  defaultValue: [moment(default_time_start, 'HH:mm:ss'), moment(default_time_end, 'HH:mm:ss')]
-        // }}
         value={selected_dates}
         onChange={this.onDateChange.bind(this)}
         format="YYYY-MM-DD"
@@ -155,7 +155,7 @@ class CosmosPlotDB extends Component {
         Plots=
         <ResponsiveContainer width="100%" height={400}>
           <LineChart data={data}>
-            <XAxis dataKey="utc"  type = 'number' domain={['auto','auto']}>
+            <XAxis dataKey="agent_utc"  type = 'number' domain={['auto','auto']}>
               <Label value={this.props.info.xLabel} offset={0} position="insideBottom" />
             </XAxis>
             <YAxis domain={['auto','auto']} >

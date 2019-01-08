@@ -153,6 +153,36 @@ io.on('connection', function(client) {
       });
     });
 
+    client.on('agent_query', function (msg, callback) {
+      console.log(msg)
+      var agent = msg.agent;
+      var start = msg.startDate;
+      var end = msg.endDate;
+      var fields = msg.fields;
+
+      MongoClient.connect(mongo_url_cosmos,{ useNewUrlParser: true }, function(err, db) {
+        var dbo = db.db("cosmos");
+        var agent_db = dbo.collection('agent_'+agent);
+        var query = {time: { $gte:new Date(start), $lte:new Date(end)}};
+        var selector={ "agent_utc":true, "_id": false};
+        for(var i = 0; i < fields.length; i++){
+          selector[fields[i]] = true;
+        }
+        console.log("selector", selector)
+        // query ={}
+        agent_db.find(query,{projection: selector} ).toArray(function(err, result) {
+          if (err) throw err;
+          if(result.length >0 ){
+
+            callback(result);
+          }
+          else {
+            callback([]);
+          }
+        });
+      });
+    });
+
 });
 // function updateAgentList(){
 //   MongoClient.connect(mongo_url_cosmos,{ useNewUrlParser: true }, function(err, db) {
