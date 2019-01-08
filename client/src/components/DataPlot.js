@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Navbar from './Global/Navbar';
 import CosmosPlotEntry from './Cosmos/CosmosPlotEntry'
 import CosmosPlotLive from './Cosmos/CosmosPlotLive'
+import CosmosPlotDB from './Cosmos/CosmosPlotDB'
 import ConfigTab from './Cosmos/ConfigTab'
 import {  Card } from 'antd';
 import io from 'socket.io-client';
@@ -36,11 +37,21 @@ function PlotTabContent(props) {
   var plotentries = props.entries;
   var plot_contents=[];
   for(var i = 0; i < plotentries.length; i++){
-    plot_contents.push(<CosmosPlotLive
-                key={i}
-                id={i}
-                info={plotentries[i]}
-                />);
+    if(plotentries[i].live === true){
+      plot_contents.push(<CosmosPlotLive
+                  key={i}
+                  id={i}
+                  info={plotentries[i]}
+                  />);
+    }
+    else {
+      plot_contents.push(<CosmosPlotDB
+                  key={i}
+                  id={i}
+                  info={plotentries[i]}
+                  />);
+    }
+
   }
   return (
     <div>

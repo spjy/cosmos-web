@@ -28,6 +28,9 @@ mongoose.connect(process.env.MONGO_URL, (err) => {
     console.log(err);
   }
 });
+var MongoClient = require('mongodb').MongoClient
+      , assert = require('assert');
+var mongo_url_cosmos = process.env.MONGO_URL;
 
 function get_agent_command_list(str){
   // console.log(str)
@@ -47,6 +50,7 @@ function get_agent_command_list(str){
 }
 var agents_to_log = []// agents to log data
 io.on('connection', function(client) {
+
   // handle requests from client
     client.on('start record',function(msg){
         var index = agents_to_log.indexOf(msg);
@@ -86,12 +90,10 @@ io.on('connection', function(client) {
         } else {
           client.emit('cosmos_command_response', {output: stdout});
         }
-        // console.log(`stdout: ${stdout}`);
-        // console.log(`stderr: ${stderr}`);
+
       });
     });
     client.on('list_agent_commands',function(msg){
-      // console.log('command recvd: ', msg)
       var agent = msg.agent;
       var node = msg.node;
       exec('agent '+node+' '+agent, (error, stdout, stderr) => {
@@ -102,8 +104,7 @@ io.on('connection', function(client) {
 
           client.emit('list_agent_commands_response', {command_list: get_agent_command_list(stdout)});
         }
-        // console.log(`stdout: ${stdout}`);
-        // console.log(`stderr: ${stderr}`);
+
       });
     });
     client.on('agent_command',function(msg){
@@ -118,6 +119,40 @@ io.on('connection', function(client) {
         }
         // console.log(`stdout: ${stdout}`);
         // console.log(`stderr: ${stderr}`);
+      });
+    });
+    client.on('agent_dates', function (msg, fn) {
+      console.log(msg)
+      var agent = msg.agent;
+      var data;
+
+      MongoClient.connect(mongo_url_cosmos,{ useNewUrlParser: true }, function(err, db) {
+        var dbo = db.db("cosmos");
+        var agent_db = dbo.collection('agent_'+agent);
+        var dates={};
+
+        agent_db.find().sort({'time':1}).limit(1).toArray(function(err, result) {
+          if (err) throw err;
+          if(result.length >0 ){
+            console.log('earliest:',new Date(result[0].time));
+            dates.start = result[0].time;
+            agent_db.find().sort({'time':-1}).limit(1).toArray(function(err, result) {
+              if (err) throw err;
+              if(result.length >0 ){
+                console.log('latest:',result[0].time);
+                dates.end=result[0].time;
+                db.close();
+                data = {valid:true, dates: dates}
+                console.log("sending", data)
+                fn(data);
+              }
+            });
+          }
+          else {
+            data = {valid:false};
+            fn(data);
+          }
+        });
       });
     });
 
@@ -146,11 +181,8 @@ cosmosSocket.on('listening', () => {
 });
 
 var agentListDB = [];
-/* MONGO SETUP */
 
-var MongoClient = require('mongodb').MongoClient
-      , assert = require('assert');
-var mongo_url_cosmos = process.env.MONGO_URL;
+
 // console.log("MONGO_URL:", mongo_url_cosmos);
 // updateAgentList();
 models.AgentList.find().distinct('agent_proc', function(err, docs){
