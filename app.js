@@ -170,7 +170,7 @@ io.on('connection', function(client) {
         }
         console.log("selector", selector)
         // query ={}
-        agent_db.find(query,{projection: selector} ).toArray(function(err, result) {
+        agent_db.find(query,{projection: selector} ).sort({time:1}).toArray(function(err, result) {
           if (err) throw err;
           if(result.length >0 ){
 
