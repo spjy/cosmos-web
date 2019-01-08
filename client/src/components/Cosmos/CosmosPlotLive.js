@@ -79,6 +79,7 @@ class CosmosPlotLive extends Component {
       // socket.emit('start record', this.props.info.agent);
       // this.setState({recording:true});
 
+
     }
     render() {
       var data = [];
@@ -103,6 +104,8 @@ class CosmosPlotLive extends Component {
         legend.push(<div key={String(j)}><h4 style={color}>{labels[j]}</h4><p >{current_data[labels[j]]}</p></div>);
 
       }
+      var agent_title = "Agent "+this.props.info.agent;
+      var plot_title = "["+agent_title+"] "+this.props.info.plot_title
       if(data.length>0) {
         Plots=
         <Row >
@@ -121,7 +124,7 @@ class CosmosPlotLive extends Component {
               </ResponsiveContainer>
             </Col>
             <Col span={6} >
-            <Card>
+            <Card title={agent_title}>
               {legend}
             </Card>
             <Card>
@@ -138,7 +141,7 @@ class CosmosPlotLive extends Component {
         <div>
           <Card
             style={{ width: '100%' }}
-            title={this.props.info.plot_title}
+            title={plot_title}
           >
           {Plots}
           </Card>
