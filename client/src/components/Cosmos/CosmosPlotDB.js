@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
 import moment from 'moment';
-import { Card, Alert, Row, Col, Button , DatePicker} from 'antd';
+import { Card, Alert, Row, Col , DatePicker , Slider} from 'antd';
 import cosmosInfo from './CosmosInfo'
 import { LineChart, Line ,XAxis, YAxis, Tooltip, ResponsiveContainer, Label} from 'recharts';
 const colors=["#82ca9d", "#9ca4ed","#f4a742","#e81d0b","#ed9ce6"]
@@ -119,9 +119,8 @@ function mjd2cal(mjd){
       temp.doy = (temp.doy - date.second) * 1e6;
       date.nsecond = Math.floor(temp.doy + .5);
   }
-   console.log(date)
+   // console.log(date)
   return new Date(Date.UTC(date.year, date.month-1, date.dom, date.hour, date.minute, date.second));
-  // return new Date(String(date.year)+"-"+String(date.month)+"-"+String(date.dom)+"T"+String(date.hour)+":"+String(date.minute)+":"+String(date.second))
 }
 class CosmosPlotDB extends Component {
 /* Returns a select box filled with active agents */
@@ -136,6 +135,12 @@ class CosmosPlotDB extends Component {
         plot_dates:{
           start:null,
           end:null
+        },
+        slider:{
+          start:0,
+          end:1,
+          min:0,
+          max:1
         }
       };
   }
@@ -147,8 +152,8 @@ class CosmosPlotDB extends Component {
     setBoundaries(msg){
       var startDate = new Date(msg.dates.start)
       var endDate = new Date(msg.dates.end)
-      console.log(moment(startDate).format('lll')  , moment(endDate).format('lll')  );
-      console.log(moment(startDate).local(),moment(endDate).local())
+      // console.log(moment(startDate).format('lll')  , moment(endDate).format('lll')  );
+      // console.log(moment(startDate).local(),moment(endDate).local())
       if(msg.valid===true){
         this.setState({dates:{start:startDate, end: endDate}})
       }
@@ -193,15 +198,33 @@ class CosmosPlotDB extends Component {
 
     }
     receivedPlotData(data){
-      console.log(data.length," results found")
-      console.log(mjd2cal(data[0]["agent_utc"]))
-      console.log(mjd2cal(data[data.length-1]["agent_utc"]))
+      // console.log(data.length," results found")
+      // console.log(mjd2cal(data[0]["agent_utc"]))
+      // console.log(mjd2cal(data[data.length-1]["agent_utc"]))
       var vals = data;
       for(var i = 0; i < vals.length; i++){
         vals[i]["date"]= mjd2cal(vals[i]["agent_utc"]).getTime()
       }
-      console.log(vals[0])
-      this.setState({data:vals})
+      // console.log(vals[0])
+      var min, max;
+      min = mjd2cal(vals[0]["agent_utc"]).getTime();
+      max = mjd2cal(vals[data.length-1]["agent_utc"]).getTime();
+      // console.log(min, max)
+      this.setState({
+        data:vals,
+        slider:{
+          min:min,
+          max: max,
+          start:min,
+          end:max}
+        });
+    }
+    sliderChange(value){
+      var slider= this.state.slider;
+      slider.start=value[0];
+      slider.end = value[1];
+      // console.log(slider.start, slider.end)
+      this.setState({slider:slider})
     }
 
     render() {
@@ -232,11 +255,14 @@ class CosmosPlotDB extends Component {
 
       var agent_title = "Agent "+this.props.info.agent;
       var plot_title = "["+agent_title+"] "+this.props.info.plot_title
+      var plot_domain = ['auto','auto'];
+      plot_domain = [this.state.slider.start, this.state.slider.end]
+
       if(data.length>0) {
         Plots=
         <ResponsiveContainer width="100%" height={400}>
           <LineChart data={data}>
-            <XAxis dataKey="date"  type = 'number' domain={['auto','auto']}
+            <XAxis dataKey="date"  type = 'number' allowDataOverflow={true} domain={[this.state.slider.start, this.state.slider.end]}
             tickFormatter = {(unixTime) => moment(unixTime).format('YYYY-MM-DD hh:mm a')}>
               <Label value={this.props.info.xLabel} offset={0} position="insideBottom" />
             </XAxis>
@@ -261,7 +287,12 @@ class CosmosPlotDB extends Component {
 
           <Row >
           {date_form}
+          <Slider range value={plot_domain}
+            min={this.state.slider.min}
+            max={this.state.slider.max}
+            onChange={this.sliderChange.bind(this)} />
             <Col span={18} >
+
               {Plots}
               </Col>
               <Col span={6} >
