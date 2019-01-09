@@ -87,7 +87,8 @@ class PlotForm extends Component {
     }
       this.state = {
         agent_list:[],
-        data_selected:data_selected
+        data_selected:data_selected,
+        archive:false
       };
 
 
@@ -98,14 +99,16 @@ class PlotForm extends Component {
     fetch(`${cosmosInfo.socket}/api/agent_list`)
     .then(response => response.json())
     .then(data =>
-      this.setState({agent_list:data.result})
+      {
+        this.setState({agent_list:data.result})
+
+      }
     );
     socket.on('agent update list', (data) => { // subscribe to agent
         if (data) {
           var agents = this.state.agent_list;
           for(var i=0; i < agents.length; i++){
               if(data[agents[i].agent_proc]) {
-                // console.log( agents[i].agent_proc," live")
                 agents[i].live=true;
               } else {
                 agents[i].live=false;
@@ -114,7 +117,13 @@ class PlotForm extends Component {
           this.setState({agent_list:agents})
         }
       });
+      socket.emit('agent_dates', {agent: this.props.info.agent}, this.agentArchiveFound.bind(this));
   }
+  agentArchiveFound(data){
+    if(data.valid===true)
+      this.setState({archive:true})
+  }
+
 
   componentDidUpdate(prevProps){
     var data_selected =[];
@@ -139,8 +148,9 @@ class PlotForm extends Component {
         values: []
       });
     this.setState({
-      data_selected: []
+      data_selected: [], archive:false
     });
+    socket.emit('agent_dates', {agent: this.props.info.agent}, this.agentArchiveFound.bind(this));
 
   }
   dataSelected(value) {
@@ -171,25 +181,26 @@ render() {
     const AgentOption = Select.Option;
     var agent_names=[];
     var agent_list  = this.state.agent_list;
-    var badge;
+    var badge
     for(var i =0; i < agent_list.length; i++){
       badge="default"
-      if(agent_list[i].live===true) badge ="success"
+      if(agent_list[i].live===true) badge ="processing"
       agent_names.push(<AgentOption key={i} ><Badge status={badge} /> {agent_list[i].agent_proc} </AgentOption>);
     }
     var tree_data =[];
     var AgentStatus;
     var agent_status_msg;
     if(this.props.info.live){
-      // agent_status_msg=this.state.agent.agent_proc +" is Live";
       agent_status_msg=this.props.info.agent +" is Live";
       AgentStatus = <Alert message={agent_status_msg} type="success" showIcon />
-      tree_data = generate_treeselect_data(this.props.info.structure);
+    }
+    else if( this.state.archive){
+      agent_status_msg="Archive data available for agent "+this.props.info.agent ;
+      AgentStatus =  <Alert message={agent_status_msg} type="warning" showIcon />
     }
     else {
-      // agent_status_msg="There is no data for agent "+this.state.agent.agent_proc ;
-      agent_status_msg="There is no data for agent "+this.props.info.agent ;
-      AgentStatus =  <Alert message={agent_status_msg} type="warning" showIcon />
+      agent_status_msg="There is no data  for agent "+this.props.info.agent ;
+      AgentStatus =  <Alert message={agent_status_msg} type="error" showIcon />
     }
     tree_data = generate_treeselect_data(this.props.info.structure);
 

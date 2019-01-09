@@ -143,6 +143,7 @@ io.on('connection', function(client) {
                 console.log("sending", data)
                 callback(data);
               }
+              else callback({valid:false});
             });
           }
           else {

@@ -89,9 +89,7 @@ class ConfigSelectForm extends Component {
       return (
         <div style={{margin:'10px'}}>
           <Card
-            actions={[<a href="#" onClick={this.updateTable.bind(this)}><Icon type="reload"/> Refresh</a>,
-
-            ]}
+            actions={[<a href="#" onClick={this.updateTable.bind(this)}><Icon type="reload"/> Refresh</a>]}
             >
             <Table columns={columns} dataSource={data} size="small"/>
           </Card>

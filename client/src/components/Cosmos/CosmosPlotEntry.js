@@ -53,6 +53,7 @@ class CosmosPlotEntry  {
   }
   update(info){
     // console.log("update", info)
+    this.live = false;
     var vals = info.values;
     var jsonvals = [];
     for(var i =0; i < vals.length; i++){
