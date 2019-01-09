@@ -122,7 +122,7 @@ function mjd2cal(mjd){
    // console.log(date)
   return new Date(Date.UTC(date.year, date.month-1, date.dom, date.hour, date.minute, date.second));
 }
-function sliderConversion(val){
+function convertTimetoDate(val){
   return new Date(val).toLocaleString('en-US')
 }
 class CosmosPlotDB extends Component {
@@ -229,6 +229,11 @@ class CosmosPlotDB extends Component {
       // console.log(slider.start, slider.end)
       this.setState({slider:slider})
     }
+    plotTooltip(props){
+      // console.log(props);
+      var time = convertTimetoDate(props.label)
+      return <div> Time: {time}</div>
+    }
 
     render() {
       var data = [];
@@ -265,11 +270,11 @@ class CosmosPlotDB extends Component {
         Plots=
 
           <Col span={18} >
-            <Slider range value={plot_domain}
+                      <Slider range value={plot_domain}
               min={this.state.slider.min}
               max={this.state.slider.max}
               onChange={this.sliderChange.bind(this)}
-              tipFormatter={sliderConversion}/>
+              tipFormatter={convertTimetoDate}/>
               <ResponsiveContainer width="100%" height={400}>
                 <LineChart data={data}>
                   <XAxis dataKey="date"  type = 'number' allowDataOverflow={true} domain={[this.state.slider.start, this.state.slider.end]}
@@ -279,7 +284,7 @@ class CosmosPlotDB extends Component {
                   <YAxis domain={['auto','auto']} >
                     <Label value= {this.props.info.yLabel} angle={-90}   position="insideLeft" />
                   </YAxis>
-                  <Tooltip/>
+                  <Tooltip labelFormatter={(val) => { return convertTimetoDate(val)}}/>
                   {lines}
                 </LineChart>
                 </ResponsiveContainer>
@@ -295,9 +300,9 @@ class CosmosPlotDB extends Component {
             style={{ width: '100%' }}
             title={plot_title}
           >
-
+          <Row>{date_form}</Row>
           <Row gutter={16}>
-          {date_form}
+
           {Plots}
 
               <Col span={6} >
