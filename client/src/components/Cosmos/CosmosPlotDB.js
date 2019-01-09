@@ -122,6 +122,9 @@ function mjd2cal(mjd){
    // console.log(date)
   return new Date(Date.UTC(date.year, date.month-1, date.dom, date.hour, date.minute, date.second));
 }
+function sliderConversion(val){
+  return new Date(val).toLocaleString('en-US')
+}
 class CosmosPlotDB extends Component {
 /* Returns a select box filled with active agents */
   constructor(props){
@@ -260,22 +263,30 @@ class CosmosPlotDB extends Component {
 
       if(data.length>0) {
         Plots=
-        <ResponsiveContainer width="100%" height={400}>
-          <LineChart data={data}>
-            <XAxis dataKey="date"  type = 'number' allowDataOverflow={true} domain={[this.state.slider.start, this.state.slider.end]}
-            tickFormatter = {(unixTime) => moment(unixTime).format('YYYY-MM-DD hh:mm a')}>
-              <Label value={this.props.info.xLabel} offset={0} position="insideBottom" />
-            </XAxis>
-            <YAxis domain={['auto','auto']} >
-              <Label value= {this.props.info.yLabel} angle={-90}   position="insideLeft" />
-            </YAxis>
-            <Tooltip/>
-            {lines}
-          </LineChart>
-          </ResponsiveContainer>
+
+          <Col span={18} >
+            <Slider range value={plot_domain}
+              min={this.state.slider.min}
+              max={this.state.slider.max}
+              onChange={this.sliderChange.bind(this)}
+              tipFormatter={sliderConversion}/>
+              <ResponsiveContainer width="100%" height={400}>
+                <LineChart data={data}>
+                  <XAxis dataKey="date"  type = 'number' allowDataOverflow={true} domain={[this.state.slider.start, this.state.slider.end]}
+                  tickFormatter = {(unixTime) => moment(unixTime).format('YYYY-MM-DD hh:mm a')}>
+                    <Label value={this.props.info.xLabel} offset={0} position="insideBottom" />
+                  </XAxis>
+                  <YAxis domain={['auto','auto']} >
+                    <Label value= {this.props.info.yLabel} angle={-90}   position="insideLeft" />
+                  </YAxis>
+                  <Tooltip/>
+                  {lines}
+                </LineChart>
+                </ResponsiveContainer>
+          </Col>
 
       } else {
-        Plots = <Alert message="No data available" type="error" showIcon />
+        Plots = <Col span={18} ><Alert message="No data available" type="error" showIcon /></Col>
       }
 
       return (
@@ -285,16 +296,10 @@ class CosmosPlotDB extends Component {
             title={plot_title}
           >
 
-          <Row >
+          <Row gutter={16}>
           {date_form}
-          <Slider range value={plot_domain}
-            min={this.state.slider.min}
-            max={this.state.slider.max}
-            onChange={this.sliderChange.bind(this)} />
-            <Col span={18} >
+          {Plots}
 
-              {Plots}
-              </Col>
               <Col span={6} >
               <Card title={agent_title}>
 
