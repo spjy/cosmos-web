@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import Navbar from './Global/Navbar';
 import CosmosPlotEntry from './Cosmos/CosmosPlotEntry'
-import CosmosPlotLive from './Cosmos/CosmosPlotLive'
-import CosmosPlotDB from './Cosmos/CosmosPlotDB'
+import CosmosPlot from './Cosmos/CosmosPlot'
 import ConfigTab from './Cosmos/ConfigTab'
 import {  Card } from 'antd';
 import io from 'socket.io-client';
@@ -33,33 +32,6 @@ async function get_all_agent_info(cosmos_plot_entries){
   return;
 }
 
-function PlotTabContent(props) {
-  var plotentries = props.entries;
-  var plot_contents=[];
-  for(var i = 0; i < plotentries.length; i++){
-    if(plotentries[i].live === true){
-      plot_contents.push(<CosmosPlotLive
-                  key={i}
-                  id={i}
-                  info={plotentries[i]}
-                  />);
-    }
-    else {
-      plot_contents.push(<CosmosPlotDB
-                  key={i}
-                  id={i}
-                  info={plotentries[i]}
-                  />);
-    }
-
-  }
-  return (
-    <div>
-      {plot_contents}
-    </div>
-  );
-}
-
 class DataPlot extends Component {
   constructor(props){
     super(props);
@@ -77,11 +49,24 @@ class DataPlot extends Component {
 
 
   }
-  // componentDidMount() {
-  // }
-  // componentWillUnmount(){
-  //   socket.removeAllListeners('agent update list');
-  // }
+  componentDidMount() {
+    socket.on('agent update list', (data) => { // subscribe to agent
+      if (data) {
+        var agents = this.state.cosmosPlotEntries;
+        for(var i=0; i < agents.length; i++){
+            if(data[agents[i].agent]) {
+              agents[i].live=true;
+              // console.log(agents[i].agent,"live")
+            }
+
+        }
+        this.setState({cosmosPlotEntries:agents});
+      }
+    });
+  }
+  componentWillUnmount(){
+    socket.removeAllListeners('agent update list');
+  }
 
   onTabChange = (key, type) => {
     // console.log(key, type);
@@ -189,6 +174,15 @@ class DataPlot extends Component {
   }
   render() {
 
+    var plot_title, plot;
+
+    var plotentries = this.state.cosmosPlotEntries;
+    var plot_contents=[];
+    for(var i = 0; i < plotentries.length; i++){
+      plot_contents.push(
+        <CosmosPlot info={plotentries[i]} key= {i}/>
+      );
+    }
     const contentList = {
       config_tab:
         <ConfigTab
@@ -208,9 +202,8 @@ class DataPlot extends Component {
                       dbSelected={this.dbSelected.bind(this)}
                       />,
 
-      plot_tab: <PlotTabContent
-                    entries={this.state.cosmosPlotEntries}
-                    />
+      plot_tab: <div> {plot_contents}</div>
+
     };
 
 

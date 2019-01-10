@@ -31,21 +31,21 @@ class ConfigTab extends Component {
   }
   componentDidMount() {
     // console.log("entries",this.props.entries)
-    socket.on('agent update list', (data) => { // subscribe to agent
-      if (data) {
-        var agents = this.props.entries;
-        for(var i=0; i < this.props.entries.length; i++){
-            if(data[agents[i].agent]) {
-              agents[i].live=true;
-            }
-
-        }
-        this.props.updateAgentStatus(agents);
-      }
-    });
+    // socket.on('agent update list', (data) => { // subscribe to agent
+    //   if (data) {
+    //     var agents = this.props.entries;
+    //     for(var i=0; i < this.props.entries.length; i++){
+    //         if(data[agents[i].agent]) {
+    //           agents[i].live=true;
+    //         }
+    //
+    //     }
+    //     this.props.updateAgentStatus(agents);
+    //   }
+    // });
   }
   componentWillUnmount(){
-    socket.removeAllListeners('agent update list');
+    // socket.removeAllListeners('agent update list');
   }
   openModal(){
     this.setState({view_modal:true})
