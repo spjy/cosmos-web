@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { CSVLink } from "react-csv";
 import io from 'socket.io-client';
 import moment from 'moment';
 import { Card, Switch, DatePicker, Slider, Row, Col, Button, Icon, Badge, Tooltip} from 'antd';
@@ -30,10 +31,15 @@ function convertTimetoDate(val){
   return new Date(val).toLocaleString('en-US')
 }
 
+function DownloadCSV(props){
+  var data = props.getData();
+  return (<CSVLink data={data[1]} filename={"cosmos.csv"}>Download CSV</CSVLink>);
+}
 class CosmosPlot extends Component {
 /* Returns a select box filled with active agents */
   constructor(props){
     super(props);
+    console.log(this.props.info)
       this.state = {
         live_view:this.props.info.live,
         data: [],
@@ -92,14 +98,15 @@ class CosmosPlot extends Component {
       });
     }
     setBoundaries(msg){
-      var startDate = new Date(msg.dates.start)
-      var endDate = new Date(msg.dates.end)
-      // console.log(moment(startDate).format('lll')  , moment(endDate).format('lll')  );
-      // console.log(moment(startDate).local(),moment(endDate).local())
-      var a = this.state.archive;
-      a.date_boundaries.start=startDate;
-      a.date_boundaries.end=endDate
+
       if(msg.valid===true){
+        var startDate = new Date(msg.dates.start)
+        var endDate = new Date(msg.dates.end)
+        // console.log(moment(startDate).format('lll')  , moment(endDate).format('lll')  );
+        // console.log(moment(startDate).local(),moment(endDate).local())
+        var a = this.state.archive;
+        a.date_boundaries.start=startDate;
+        a.date_boundaries.end=endDate
         this.setState({archive:a})
       }
     }
@@ -191,6 +198,30 @@ class CosmosPlot extends Component {
       l.pause = false;
       this.setState({live:l})
     }
+    getCSV(){
+      var start = this.state.slider.start;
+      var end = this.state.slider.end;
+      var csv_data =[];
+      var csv_headers=[];
+      var data_src, data;
+      // for(var j=0; j < this.props.info.values.label.length; j++){
+      //   csv_headers.push({})
+      // }
+      if(this.state.live_view){
+        //use live_data
+        data_src = this.state.live_data;
+      }
+      else {
+        data_src = this.state.data;
+      }
+      for(var i=0; i < data_src.length; i++){
+        data=data_src[i]
+        if(data.date >= start && data.date <=end)
+          delete data.date;
+          csv_data.push(data)
+      }
+      return  [csv_headers, csv_data];
+    }
 
     render() {
       const legend = [];
@@ -241,6 +272,7 @@ class CosmosPlot extends Component {
         if(!this.props.info.live) {
           disable_switch=true;
         }
+        action = <DownloadCSV getData={this.getCSV.bind(this)}/>
       }
       if(slider_visible){
         plot_domain = [this.state.slider.start, this.state.slider.end]
