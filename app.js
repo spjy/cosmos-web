@@ -119,7 +119,7 @@ io.on('connection', function(client) {
       });
     });
     client.on('agent_dates', function (msg, callback) {
-      console.log(msg)
+      // console.log(msg)
       var agent = msg.agent;
       var data;
 
@@ -131,16 +131,16 @@ io.on('connection', function(client) {
         agent_db.find().sort({'time':1}).limit(1).toArray(function(err, result) {
           if (err) throw err;
           if(result.length >0 ){
-            console.log('earliest:',new Date(result[0].time));
+            // console.log('earliest:',new Date(result[0].time));
             dates.start = result[0].time;
             agent_db.find().sort({'time':-1}).limit(1).toArray(function(err, result) {
               if (err) throw err;
               if(result.length >0 ){
-                console.log('latest:',result[0].time);
+                // console.log('latest:',result[0].time);
                 dates.end=result[0].time;
                 db.close();
                 data = {valid:true, dates: dates}
-                console.log("sending", data)
+                // console.log("sending", data)
                 callback(data);
               }
               else callback({valid:false});
@@ -155,7 +155,7 @@ io.on('connection', function(client) {
     });
 
     client.on('agent_query', function (msg, callback) {
-      console.log(msg)
+      // console.log(msg)
       var agent = msg.agent;
       var start = msg.startDate;
       var end = msg.endDate;
@@ -169,7 +169,7 @@ io.on('connection', function(client) {
         for(var i = 0; i < fields.length; i++){
           selector[fields[i]] = true;
         }
-        console.log("selector", selector)
+        // console.log("selector", selector)
         // query ={}
         agent_db.find(query,{projection: selector} ).sort({time:1}).toArray(function(err, result) {
           if (err) throw err;
