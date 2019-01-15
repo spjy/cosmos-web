@@ -31,6 +31,7 @@ mongoose.connect(process.env.MONGO_URL, (err) => {
 var MongoClient = require('mongodb').MongoClient
       , assert = require('assert');
 var mongo_url_cosmos = process.env.MONGO_URL;
+console.log(process.env.MONGO_URL)
 
 function get_agent_command_list(str){
   // console.log(str)
@@ -101,7 +102,7 @@ io.on('connection', function(client) {
           console.error(`exec error: ${error}`);
           return;
         } else {
-          callback({command_list: get_agent_command_list(stdout)})
+          callback({})
         }
 
       });
@@ -169,7 +170,7 @@ io.on('connection', function(client) {
         for(var i = 0; i < fields.length; i++){
           selector[fields[i]] = true;
         }
-        // console.log("selector", selector)
+        console.log("selector", selector)
         // query ={}
         agent_db.find(query,{projection: selector} ).sort({time:1}).toArray(function(err, result) {
           if (err) throw err;
@@ -183,6 +184,36 @@ io.on('connection', function(client) {
         });
       });
     });
+
+    client.on('agent_resume_live_plot', function (msg, callback) {
+      // console.log(msg)
+      var agent = msg.agent;
+      var start = msg.resumeUTC;
+      var fields = msg.fields;
+
+      MongoClient.connect(mongo_url_cosmos,{ useNewUrlParser: true }, function(err, db) {
+        var dbo = db.db("cosmos");
+        var agent_db = dbo.collection('agent_'+agent);
+        var query = {agent_utc: { $gte:start}};
+        var selector={ "agent_utc":true, "_id": false};
+        for(var i = 0; i < fields.length; i++){
+          selector[fields[i]] = true;
+        }
+        console.log("selector", selector)
+        // query ={}
+        agent_db.find(query,{projection: selector} ).sort({time:1}).toArray(function(err, result) {
+          if (err) throw err;
+          if(result.length >0 ){
+
+            callback(result);
+          }
+          else {
+            callback([]);
+          }
+        });
+      });
+    });
+
 
 });
 // function updateAgentList(){
@@ -228,195 +259,210 @@ cosmosSocket.on('message', function(message) {
   obj = message.slice(3,message.length-1);
   let json_str = obj.toString('ascii');
   json_str = json_str.replace(/}{/g, ',')
-  obj = JSON.parse(json_str);
-  // console.log(obj)
-  io.emit('agent subscribe '+obj.agent_proc, obj);
-  if (obj.agent_node === 'me213ao') {
+  var valid = false;
+  try {
+    obj = JSON.parse(json_str);
+    valid=true
+  }
+  catch(e){
+    // obj = {};
+    // console.log(json_str+"]")
+      obj = JSON.parse(json_str+"}");
+    // obj  = JSON.parse(JSON.stringify(json_str));
 
-    if (obj.device_gps_geods_000) {
-      let latitude = obj.device_gps_geods_000.lat;
-      let longitude = obj.device_gps_geods_000.lon;
-      let altitude = obj.device_gps_geods_000.h;
-      let acceleration_x, acceleration_y, acceleration_z;
+  }
+  if(valid){
+      // console.log(obj)
+      io.emit('agent subscribe '+obj.agent_proc, obj);
+      if (obj.agent_node === 'me213ao') {
 
-      if (obj.device_imu_accel_000) {
-        acceleration_x = obj.device_imu_accel_000[0];
-        acceleration_y = obj.device_imu_accel_000[1];
-        acceleration_z = obj.device_imu_accel_000[2];
+        if (obj.device_gps_geods_000) {
+          let latitude = obj.device_gps_geods_000.lat;
+          let longitude = obj.device_gps_geods_000.lon;
+          let altitude = obj.device_gps_geods_000.h;
+          let acceleration_x, acceleration_y, acceleration_z;
+
+          if (obj.device_imu_accel_000) {
+            acceleration_x = obj.device_imu_accel_000[0];
+            acceleration_y = obj.device_imu_accel_000[1];
+            acceleration_z = obj.device_imu_accel_000[2];
+          }
+
+          io.emit('balloon path', {
+            satellite: 'me213ao',
+            latitude,
+            longitude,
+            altitude,
+            acceleration: [acceleration_x, acceleration_y, acceleration_z]
+          });
+
+          // new models.Path({
+          //   satellite: 'me213ao',
+          //   latitude,
+          //   longitude,
+          //   altitude,
+          // }).save(err => {
+          //  if (err) {
+          //    console.log(err);
+          //  }
+          //});
+        }
       }
 
-      io.emit('balloon path', {
-        satellite: 'me213ao',
-        latitude,
-        longitude,
-        altitude,
-        acceleration: [acceleration_x, acceleration_y, acceleration_z]
-      });
+      if (obj.agent_node === 'cubesat1') { // Check if node is the cubesat
+        if (obj.node_loc_pos_eci) { // If the position is defined
 
-      // new models.Path({
-      //   satellite: 'me213ao',
-      //   latitude,
-      //   longitude,
-      //   altitude,
-      // }).save(err => {
-      //  if (err) {
-      //    console.log(err);
-      //  }
-      //});
-    }
-  }
+          // Convert x, y, z coordinates from meters to kilometers
+          let satellite_position_x = obj.node_loc_pos_eci.pos[0] / 1000;
+          let satellite_position_y = obj.node_loc_pos_eci.pos[1] / 1000;
+          let satellite_position_z = obj.node_loc_pos_eci.pos[2] / 1000;
 
-  if (obj.agent_node === 'cubesat1') { // Check if node is the cubesat
-    if (obj.node_loc_pos_eci) { // If the position is defined
+          // console.log(satellite_position_x,
+          //   satellite_position_y,
+          //   satellite_position_z);
 
-      // Convert x, y, z coordinates from meters to kilometers
-      let satellite_position_x = obj.node_loc_pos_eci.pos[0] / 1000;
-      let satellite_position_y = obj.node_loc_pos_eci.pos[1] / 1000;
-      let satellite_position_z = obj.node_loc_pos_eci.pos[2] / 1000;
+          // Emit satellite position to client
+          io.emit('satellite orbit', {
+            satellite: 'cubesat1',
+            x: satellite_position_x,
+            y: satellite_position_y,
+            z: satellite_position_z,
+          });
 
-      // console.log(satellite_position_x,
-      //   satellite_position_y,
-      //   satellite_position_z);
-
-      // Emit satellite position to client
-      io.emit('satellite orbit', {
-        satellite: 'cubesat1',
-        x: satellite_position_x,
-        y: satellite_position_y,
-        z: satellite_position_z,
-      });
-
-      new models.Orbit({
-        satellite: 'cubesat1',
-        x: satellite_position_x,
-        y: satellite_position_y,
-        z: satellite_position_z,
-      }).save((err) => { // this is where it is inserted to mongodb
-        if (err) {
-          console.log(err);
-        }
-      });
-    }
-
-    // If quaternions are defined
-    if (obj.node_loc_att_icrf) {
-      // Get w, x, y, z components of quaternions
-      let satellite_orientation_w = obj.node_loc_att_icrf.pos.w;
-      let satellite_orientation_x = obj.node_loc_att_icrf.pos.d.x;
-      let satellite_orientation_y = obj.node_loc_att_icrf.pos.d.y;
-      let satellite_orientation_z = obj.node_loc_att_icrf.pos.d.z;
-
-      // console.log(satellite_orientation_w);
-      // console.log(satellite_orientation_x);
-      // console.log(satellite_orientation_y);
-      // console.log(satellite_orientation_z);
-
-      // Emit data to client
-      io.emit('satellite attitude', {
-        satellite: 'cubesat1',
-        x: satellite_orientation_x,
-        y: satellite_orientation_y,
-        z: satellite_orientation_z,
-        w: satellite_orientation_w,
-      });
-
-      new models.Attitude({
-        satellite: 'cubesat1',
-        x: satellite_orientation_x,
-        y: satellite_orientation_y,
-        z: satellite_orientation_z,
-        w: satellite_orientation_w,
-      }).save((err) => { // this is where it is inserted to mongodb
-        if (err) {
-          console.log(err);
-        }
-      });;
-
-    }
-
-    // 10.42.0.126
-  }
-
-  agent_utc = obj.agent_utc;
-
-  if (message.type === 'utf8') {
-    console.log('Received Message: ' + message.utf8Data);
-  } else if (message.type === 'binary') {
-    console.log('Received Binary Message of ' + message.binaryData.length + ' bytes');
-  }
-
-  // Maintain the list of agents
-  if (!(obj.agent_proc in agentListObj)) {
-    agentListObj[obj.agent_proc] = [obj.agent_utc, ' '+obj.agent_node, ' '+obj.agent_addr, ' '+obj.agent_port, ' '+obj.agent_bsz];
-
-  } else {
-    // Update the time stamp
-    agentListObj[obj.agent_proc][0] = obj.agent_utc;
-  }
-
-  // Collect the IMU Omega data from the ADCS agent
-  if (obj.agent_proc === 'adcs') {
-    imuOmega[imuIndex] = obj.device_imu_omega_000;
-    imuIndex++;
-  }
-  // Recording agent data to mongoDB
-  if(agents_to_log.indexOf(obj.agent_proc)>-1){
-      MongoClient.connect(mongo_url_cosmos,{ useNewUrlParser: true }, function(err, db) {
-        var dbo = db.db("cosmos");
-        var agent_db = dbo.collection('agent_'+obj.agent_proc);
-        var entry = obj;
-        entry['time']=new Date();
-        agent_db.insertOne(entry, function(err, res){
-          db.close();
-        });
-      });
-  }
-  if(Array.from(agentListDB).indexOf(obj.agent_proc)>-1){ // agent exists in mongoDB 'agent_list' collection
-    // update time stamp
-    // console.log(agentListDB)
-    models.AgentList.findOneAndUpdate(
-      {agent_proc:obj.agent_proc},  // find query
-      { $set: {agent_utc: obj.agent_utc}}, // update query
-      function (err, docs) { // callback
-      if(!err){
-        agentListDB = docs;
-      }else {throw err;}
-    });
-
-  }
-  else {
-
-    // update list and double check the list again
-    models.AgentList.find().distinct('agent_proc', function(err, docs){
-      if(!err){
-        agentListDB = docs;
-        if(Array.from(agentListDB).indexOf(obj.agent_proc)<=-1){
-          var data_struc = cosmosdb.agent_structure(obj);
-          new models.AgentList(
-            {
-              agent_proc: obj.agent_proc,
-              agent_addr:  obj.agent_addr,
-              agent_port: obj.agent_port,
-              agent_node: obj.agent_node,
-              agent_utc: obj.agent_utc,
-              structure: data_struc
-            },
-          ).save((err) => { // this is where it is inserted to mongodb
+          new models.Orbit({
+            satellite: 'cubesat1',
+            x: satellite_position_x,
+            y: satellite_position_y,
+            z: satellite_position_z,
+          }).save((err) => { // this is where it is inserted to mongodb
             if (err) {
               console.log(err);
-            } else {
-              models.AgentList.find().distinct('agent_proc', function(err, docs){
-                if(!err){
-                  agentListDB = docs;
-                }
-              });
             }
           });
         }
-      }
-    });
 
-  }
+        // If quaternions are defined
+        if (obj.node_loc_att_icrf) {
+          // Get w, x, y, z components of quaternions
+          let satellite_orientation_w = obj.node_loc_att_icrf.pos.w;
+          let satellite_orientation_x = obj.node_loc_att_icrf.pos.d.x;
+          let satellite_orientation_y = obj.node_loc_att_icrf.pos.d.y;
+          let satellite_orientation_z = obj.node_loc_att_icrf.pos.d.z;
+
+          // console.log(satellite_orientation_w);
+          // console.log(satellite_orientation_x);
+          // console.log(satellite_orientation_y);
+          // console.log(satellite_orientation_z);
+
+          // Emit data to client
+          io.emit('satellite attitude', {
+            satellite: 'cubesat1',
+            x: satellite_orientation_x,
+            y: satellite_orientation_y,
+            z: satellite_orientation_z,
+            w: satellite_orientation_w,
+          });
+
+          new models.Attitude({
+            satellite: 'cubesat1',
+            x: satellite_orientation_x,
+            y: satellite_orientation_y,
+            z: satellite_orientation_z,
+            w: satellite_orientation_w,
+          }).save((err) => { // this is where it is inserted to mongodb
+            if (err) {
+              console.log(err);
+            }
+          });;
+
+        }
+
+        // 10.42.0.126
+      }
+
+      agent_utc = obj.agent_utc;
+
+      if (message.type === 'utf8') {
+        console.log('Received Message: ' + message.utf8Data);
+      } else if (message.type === 'binary') {
+        console.log('Received Binary Message of ' + message.binaryData.length + ' bytes');
+      }
+
+      // Maintain the list of agents
+      if (!(obj.agent_proc in agentListObj)) {
+        agentListObj[obj.agent_proc] = [obj.agent_utc, ' '+obj.agent_node, ' '+obj.agent_addr, ' '+obj.agent_port, ' '+obj.agent_bsz];
+
+      } else {
+        // Update the time stamp
+        agentListObj[obj.agent_proc][0] = obj.agent_utc;
+      }
+
+      // Collect the IMU Omega data from the ADCS agent
+      if (obj.agent_proc === 'adcs') {
+        imuOmega[imuIndex] = obj.device_imu_omega_000;
+        imuIndex++;
+      }
+      // Recording agent data to mongoDB
+      if(agents_to_log.indexOf(obj.agent_proc)>-1){
+          MongoClient.connect(mongo_url_cosmos,{ useNewUrlParser: true }, function(err, db) {
+            var dbo = db.db("cosmos");
+            var agent_db = dbo.collection('agent_'+obj.agent_proc);
+            var entry = obj;
+            entry['time']=new Date();
+            agent_db.insertOne(entry, function(err, res){
+              db.close();
+            });
+          });
+      }
+      if(Array.from(agentListDB).indexOf(obj.agent_proc)>-1){ // agent exists in mongoDB 'agent_list' collection
+        // update time stamp
+        // console.log(agentListDB)
+        models.AgentList.findOneAndUpdate(
+          {agent_proc:obj.agent_proc},  // find query
+          { $set: {agent_utc: obj.agent_utc}}, // update query
+          function (err, docs) { // callback
+          if(!err){
+            agentListDB = docs;
+          }else {throw err;}
+        });
+
+      }
+      else {
+
+        // update list and double check the list again
+        models.AgentList.find().distinct('agent_proc', function(err, docs){
+          if(!err){
+            agentListDB = docs;
+            if(Array.from(agentListDB).indexOf(obj.agent_proc)<=-1){
+              var data_struc = cosmosdb.agent_structure(obj);
+              new models.AgentList(
+                {
+                  agent_proc: obj.agent_proc,
+                  agent_addr:  obj.agent_addr,
+                  agent_port: obj.agent_port,
+                  agent_node: obj.agent_node,
+                  agent_utc: obj.agent_utc,
+                  structure: data_struc
+                },
+              ).save((err) => { // this is where it is inserted to mongodb
+                if (err) {
+                  console.log(err);
+                } else {
+                  models.AgentList.find().distinct('agent_proc', function(err, docs){
+                    if(!err){
+                      agentListDB = docs;
+                    }
+                  });
+                }
+              });
+            }
+          }
+        });
+
+      }
+    }
+
+
 
 });
 

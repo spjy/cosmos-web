@@ -13,8 +13,7 @@ const { RangePicker } = DatePicker;
 function parse_live_data(data,fields){
   var values = {};
   var p, val;
-  values.utc=Number(data.agent_utc);
-  values["date"]= mjd2cal(Number(data.agent_utc)).getTime()
+  values.agent_utc=Number(data.agent_utc);
   for(var i = 0; i < fields.label.length; i++){
     p = fields.structure[i];
     val = data;
@@ -28,9 +27,12 @@ function parse_live_data(data,fields){
   return values;
 }
 function convertTimetoDate(val){
-  return new Date(val).toLocaleString('en-US')
+  return new Date(mjd2cal(val).getTime()).toLocaleString('en-US')
 }
 
+const scale = (num, in_min, in_max, out_min, out_max) => {
+  return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
 function DownloadCSV(props){
   var data = props.getData();
   return (<CSVLink data={data[1]} filename={"cosmos.csv"}>Download CSV</CSVLink>);
@@ -60,10 +62,11 @@ class CosmosPlot extends Component {
         },
         slider:{
           start:0,
-          end:1,
-          min:0,
-          max:1
-        }
+          end:1000
+        },
+
+        time_start:0,
+        time_end:1
       };
   }
 
@@ -77,10 +80,11 @@ class CosmosPlot extends Component {
 
     }
     startListening(){
+      console.log("startListening")
       socket.emit('start record', this.props.info.agent);
       socket.on('agent subscribe '+this.props.info.agent, (data) => { // subscribe to agent
         if (data) {
-
+          // console.log('update')
         var saved_data = this.state.live_data;
         var l = this.state.live;
         if(this.props.info.values.label.length>0){
@@ -90,6 +94,7 @@ class CosmosPlot extends Component {
           }
           saved_data = [...saved_data, data_entry]
           l.current_data = data_entry;
+          // console.log(saved_data)
           this.setState({live_data:saved_data, live: l});
         }
 
@@ -97,8 +102,11 @@ class CosmosPlot extends Component {
 
       });
     }
+    stopListening(){
+      socket.removeAllListeners('agent subscribe '+this.props.info.agent);
+    }
     setBoundaries(msg){
-
+      console.log("setBoundaries")
       if(msg.valid===true){
         var startDate = new Date(msg.dates.start)
         var endDate = new Date(msg.dates.end)
@@ -118,15 +126,24 @@ class CosmosPlot extends Component {
       socket.removeAllListeners('agent subscribe '+prevState);
       socket.emit('end record', this.props.info.agent);
     }
+
     onChangeView(val){
       if(val ){
-        if( this.state.live_data.length ===0){
+        if( this.state.live_data.length >0){
+          this.resumeLivePlot();
+        } else {
           this.startListening();
         }
+
       }
-      else if(this.state.archive.date_boundaries === null){
-        socket.emit('agent_dates', {agent: this.props.info.agent}, this.setBoundaries.bind(this));
+      else {
+        this.stopListening();
+        if(this.state.archive.date_boundaries.start === null){
+          // get date boundaries for calendar
+          socket.emit('agent_dates', {agent: this.props.info.agent}, this.setBoundaries.bind(this));
+        }
       }
+
       this.setState({live_view:val});
     }
 
@@ -147,10 +164,7 @@ class CosmosPlot extends Component {
       return fields;
     }
     sliderChange(value){
-      var slider= this.state.slider;
-      slider.start=value[0];
-      slider.end = value[1];
-      // console.log(slider.start, slider.end)
+      var slider= {start: value[0], end:value[1]};
       this.setState({slider:slider})
     }
     onDateChange(dates, dateStrings){
@@ -166,41 +180,53 @@ class CosmosPlot extends Component {
 
     }
     receivedPlotData(data){
-      var vals = data;
-      for(var i = 0; i < vals.length; i++){
-        vals[i]["date"]= mjd2cal(vals[i]["agent_utc"]).getTime()
-      }
+
       var min, max;
-      min = mjd2cal(vals[0]["agent_utc"]).getTime();
-      max = mjd2cal(vals[data.length-1]["agent_utc"]).getTime();
+      min = data[0]["agent_utc"]
+      max = data[data.length-1]["agent_utc"]
       this.setState({
-        data:vals,
-        slider:{
-          min:min,
-          max: max,
-          start:min,
-          end:max}
-        });
+        data:data,
+
+       slider:   {start: 0, end:data.length},
+        time_start:min,
+        time_end: max
+        },() => console.log(this.state));
     }
-    pauseLivePlot(){
-      var l = this.state.live;
-      l.pause = true;
-      this.setState({live:l,
-        slider:{
-          min:this.state.live_data[0]["date"],
-          max:this.state.live.current_data["date"],
-          start:this.state.live_data[0]["date"],
-          end: this.state.live.current_data["date"],
-        }})
-    }
-    resumeLivePlot(){
+    receivedLiveData(data){
+
+      console.log('received data: ', data)
+      var local_data = this.state.live_data;
+      var live_data = local_data.concat(data);
       var l = this.state.live;
       l.pause = false;
-      this.setState({live:l})
+      this.setState({live:l, live_data: live_data});
+      this.startListening();
+    }
+    pauseLivePlot(){
+      console.log(" paused at: ", this.state.live.current_data["agent_utc"])
+      this.stopListening();   // stop listening for new data
+      var l = this.state.live;
+      l.pause = true;
+        this.setState({live:l,
+          time_start: this.state.live_data[0]["agent_utc"],
+          time_end: this.state.live.current_data["agent_utc"],
+          slider:{
+            start:0,
+            end: this.state.live_data.length,
+          }})
+    }
+    resumeLivePlot(){
+      // fetch data since last live data  point
+      // callback: this.receivedLiveData()
+      console.log("fetch data from: ",  this.state.live.current_data["agent_utc"])
+      socket.emit('agent_resume_live_plot',
+          { agent: this.props.info.agent, resumeUTC: this.state.live.current_data["agent_utc"], fields:this.getQueryFields()},
+          this.receivedLiveData.bind(this));
+
     }
     getCSV(){
-      var start = this.state.slider.start;
-      var end = this.state.slider.end;
+      var start = this.scaleSlider(this.state.slider.start);
+      var end = this.scaleSlider(this.state.slider.end);
       var csv_data =[];
       var csv_headers=[];
       var data_src, data;
@@ -216,14 +242,23 @@ class CosmosPlot extends Component {
       }
       for(var i=0; i < data_src.length; i++){
         data=data_src[i]
-        if(data.date >= start && data.date <=end)
-          delete data.date;
+        if(data.agent_utc >= start && data.agent_utc <=end)
           csv_data.push(data)
       }
       return  [csv_headers, csv_data];
     }
+    scaleSlider(val){
+      if(this.state.live_view){
+        return convertTimetoDate(scale(val, 0,this.state.live_data.length, this.state.time_start, this.state.time_end));
+      }
+      else {
+        return convertTimetoDate(scale(val, 0,this.state.data.length, this.state.time_start, this.state.time_end));
+      }
+
+    }
 
     render() {
+      // console.log("live:", this.state.live_data.length)
       const legend = [];
       var selected_dates;
       var date_form, slider,plot_domain, action;
@@ -267,20 +302,29 @@ class CosmosPlot extends Component {
             onChange={this.onDateChange.bind(this)}
             format="YYYY-MM-DD"
           />
-        slider_visible = true;
+          if(data_source.length >0) {
+            slider_visible = true;
+            action = <DownloadCSV getData={this.getCSV.bind(this)}/>
+          }
+          else {
+            action = <p> Select Dates </p>
+          }
 
         if(!this.props.info.live) {
           disable_switch=true;
         }
-        action = <DownloadCSV getData={this.getCSV.bind(this)}/>
+
       }
       if(slider_visible){
-        plot_domain = [this.state.slider.start, this.state.slider.end]
+        plot_domain=[    scale(this.state.slider.start, 0,data_source.length, this.state.time_start, this.state.time_end),
+        scale(this.state.slider.end, 0,data_source.length, this.state.time_start, this.state.time_end)]
+
         slider = <Slider range value={[this.state.slider.start, this.state.slider.end]}
-            min={this.state.slider.min}
-            max={this.state.slider.max}
+            min={0}
+            max={data_source.length}
             onChange={this.sliderChange.bind(this)}
-            tipFormatter={convertTimetoDate}/>
+            tipFormatter={this.scaleSlider.bind(this)}
+            />
       }
 
       return (

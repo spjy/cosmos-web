@@ -54,7 +54,7 @@ class CosmosPlotEntry  {
   update(info){
     // console.log("update", info)
     this.live = false;
-    
+
     var vals = info.values;
     var jsonvals = [];
     for(var i =0; i < vals.length; i++){
@@ -95,6 +95,7 @@ class CosmosPlotEntry  {
     this.values={label:[], structure:[]};
     this.structure = [];
     for(var i=0; i < this.jsonvalues.length;i++){
+      // console.log(this.jsonvalues[i].data);
       this.values.label.push(this.jsonvalues[i].data);
       this.values.structure.push([this.jsonvalues[i].data])
       this.structure.push([this.jsonvalues[i].data]);
@@ -154,6 +155,7 @@ class CosmosPlotEntry  {
     /* populate values array from jsonvalues list*/
     var vals={label:[],structure:[]};
     var temp;
+    // console.log("jsonvalues:",this.jsonvalues)
     for(var i=0; i < this.jsonvalues.length; i++){
       temp = this.map_string(this.jsonvalues[i].data);
       for(var j=0; j< temp.length; j++){

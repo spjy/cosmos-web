@@ -109,7 +109,9 @@ class DataPlot extends Component {
     }
     get_all_agent_info(entries).then((result)=>{
       this.setState({cosmosPlotEntries:entries});
+      console.log(entries)
     });
+
 
   }
   removeEntry(index){
