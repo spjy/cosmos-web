@@ -9,10 +9,10 @@ import Live from './Global/Live';
 import ReplayForm from './Global/ReplayForm';
 import AttitudeInformation from './Attitude/AttitudeInformation';
 import AttitudeThreeD from './Attitude/AttitudeThreeD';
-
+import cosmosInfo from './Cosmos/CosmosInfo'
 import '../App.css';
 
-const socket = io('http://localhost:3001');
+const socket = io(cosmosInfo.socket);
 
 class Attitude extends Component {
 
@@ -53,7 +53,7 @@ class Attitude extends Component {
   onReplayFormSubmit(value) {
     const { selected, dateFrom, dateTo } = value;
 
-    fetch(`http://localhost:3001/api/replay/attitude/${selected}/${dateFrom}/to/${dateTo}`, {
+    fetch(`${cosmosInfo.socket}/api/replay/attitude/${selected}/${dateFrom}/to/${dateTo}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'

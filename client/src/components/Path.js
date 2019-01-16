@@ -10,7 +10,8 @@ import Live from './Global/Live';
 import Replay from './Global/Replay';
 import ReplayForm from './Global/ReplayForm';
 
-const socket = io('http://localhost:3001');
+import cosmosInfo from './Cosmos/CosmosInfo'
+const socket = io(cosmosInfo.socket);
 
 class Path extends Component {
 
@@ -35,7 +36,7 @@ class Path extends Component {
       if (this.state.replay.length === 0) { // check if there is replay going
         if (data) { // check if data exists
           console.log(data);
-          
+
           const { satellite, latitude, longitude, altitude, acceleration } = data;
 
           this.setState({
@@ -51,9 +52,9 @@ class Path extends Component {
 
           this.setState(prevState => ({
             path: [
-              ...this.state.path, 
+              ...this.state.path,
               [
-                { lat: prevState.currentCoord.latitude, lng: prevState.currentCoord.longitude }, 
+                { lat: prevState.currentCoord.latitude, lng: prevState.currentCoord.longitude },
                 { lat: latitude, lng: longitude }
               ]
             ],
@@ -66,7 +67,7 @@ class Path extends Component {
   onReplayFormSubmit(value) {
     const { selected, dateFrom, dateTo } = value;
 
-    fetch(`http://localhost:3001/api/replay/path/${selected}/${dateFrom}/to/${dateTo}`, {
+    fetch(`${cosmosInfo.socket}/api/replay/path/${selected}/${dateFrom}/to/${dateTo}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
