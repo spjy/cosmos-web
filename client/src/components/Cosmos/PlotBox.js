@@ -14,7 +14,7 @@ function convertTimetoDate(val){
 }
 class PlotBox extends Component {
 /* should inherit props={
-          info: CosmosPlotEntry,
+          info: CosmosWidgetConfig,
           plot_domain:[start, end]
           data=[{value: , utc: , date: }]
 
@@ -34,10 +34,11 @@ class PlotBox extends Component {
 
     render() {
       // console.log("plot_domain",this.props.plot_domain)
-      // if(this.props.data.length){
+      if(this.props.data.length){
+        // console.log(this.props.data)
       //   console.log(mjd2cal(this.props.data[0].agent_utc).getTime())
       //   console.log(moment(mjd2cal(this.props.data[0].agent_utc).getTime()).format('YYYY-MM-DD hh:mm a'))
-      // }
+      }
 
 
       var data = [];

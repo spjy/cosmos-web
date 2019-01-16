@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Navbar from './Global/Navbar';
-import CosmosPlotEntry from './Cosmos/CosmosPlotEntry'
+import CosmosWidgetConfig from './Cosmos/CosmosWidgetConfig'
 import CosmosPlot from './Cosmos/CosmosPlot'
 import ConfigTab from './Cosmos/ConfigTab'
 import {  Card } from 'antd';
@@ -38,7 +38,7 @@ class DataPlot extends Component {
       this.state = {
         tab_key:'config_tab',
         config_source: import_type.NONE,
-        cosmosPlotEntries:[],
+        widgets:[],
         db_info:{
           name: '',
           desc:'',
@@ -52,7 +52,7 @@ class DataPlot extends Component {
   componentDidMount() {
     socket.on('agent update list', (data) => { // subscribe to agent
       if (data) {
-        var agents = this.state.cosmosPlotEntries;
+        var agents = this.state.widgets;
         for(var i=0; i < agents.length; i++){
             if(data[agents[i].agent]) {
               agents[i].live=true;
@@ -60,7 +60,7 @@ class DataPlot extends Component {
             }
 
         }
-        this.setState({cosmosPlotEntries:agents});
+        this.setState({widgets:agents});
       }
     });
   }
@@ -77,7 +77,7 @@ class DataPlot extends Component {
   onChangeConfigSource(source){
     this.setState({
       config_source:source,
-      cosmosPlotEntries:[],
+      widgets:[],
       db_info:{
         name: '',
         desc:'',
@@ -89,26 +89,26 @@ class DataPlot extends Component {
   }
   updateAgentStatus(entries){
 
-    this.setState({cosmosPlotEntries:entries});
+    this.setState({widgets:entries});
   }
   clearEntries(){
-    this.setState({cosmosPlotEntries:[]});
+    this.setState({widgets:[]});
   }
   onClickAddEntry(){
-    var entry = new CosmosPlotEntry();
-    var entries = this.state.cosmosPlotEntries;
+    var entry = new CosmosWidgetConfig();
+    var entries = this.state.widgets;
     entries.push(entry);
-    this.setState({cosmosPlotEntries:entries});
+    this.setState({widgets:entries});
   }
 
   importJsonArray(jsonArr){
     // called from JsonForm when a file is selected
     var entries = [];
     for(var i=0; i < jsonArr.length; i++){
-      entries.push(new CosmosPlotEntry(jsonArr[i]));
+      entries.push(new CosmosWidgetConfig(jsonArr[i]));
     }
     get_all_agent_info(entries).then((result)=>{
-      this.setState({cosmosPlotEntries:entries});
+      this.setState({widgets:entries});
       console.log(entries)
     });
 
@@ -118,28 +118,28 @@ class DataPlot extends Component {
     /* called from PlotForm::onClickDelete()
      */
     var saved_state = this.state;
-    saved_state.cosmosPlotEntries.splice(index,1);
+    saved_state.widgets.splice(index,1);
     this.setState(saved_state);
   }
   updateEntry( new_vals){
     /* called from PlotForm::onClickSave()
       new_vals = {  id: ,  agent: ,  values:  }
      */
-    var entries = this.state.cosmosPlotEntries;
+    var entries = this.state.widgets;
     update_agent_info(entries[new_vals.id], new_vals).then((result)=>{
-      this.setState({cosmosPlotEntries:entries});
+      this.setState({widgets:entries});
     });
   }
   updateConfig(obj){
     var saved_state = this.state;
-    saved_state.cosmosPlotEntries[obj.id][obj.key] = obj.value;
+    saved_state.widgets[obj.id][obj.key] = obj.value;
     this.setState(saved_state);
   }
 
   saveConfig(info){
     var jsonArr = [];
-    for(var i =0; i < this.state.cosmosPlotEntries.length; i++){
-      jsonArr.push(this.state.cosmosPlotEntries[i].to_json());
+    for(var i =0; i < this.state.widgets.length; i++){
+      jsonArr.push(this.state.widgets[i].to_json());
     }
     var config={
       name:info.name,
@@ -155,8 +155,8 @@ class DataPlot extends Component {
   }
   updateDBconfig(info){
     var jsonArr = [];
-    for(var i =0; i < this.state.cosmosPlotEntries.length; i++){
-      jsonArr.push(this.state.cosmosPlotEntries[i].to_json());
+    for(var i =0; i < this.state.widgets.length; i++){
+      jsonArr.push(this.state.widgets[i].to_json());
     }
     var msg = {
       id: info.id,
@@ -176,9 +176,7 @@ class DataPlot extends Component {
   }
   render() {
 
-    var plot_title, plot;
-
-    var plotentries = this.state.cosmosPlotEntries;
+    var plotentries = this.state.widgets;
     var plot_contents=[];
     for(var i = 0; i < plotentries.length; i++){
       plot_contents.push(
@@ -189,7 +187,7 @@ class DataPlot extends Component {
       config_tab:
         <ConfigTab
                       onChangeConfigSource={this.onChangeConfigSource.bind(this)}
-                      entries={this.state.cosmosPlotEntries}
+                      entries={this.state.widgets}
                       onChangeJson={this.importJsonArray.bind(this)}
                       updatePlotInfo={this.updateEntry.bind(this)}
                       currentConfigSource={this.state.config_source}

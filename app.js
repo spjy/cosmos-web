@@ -102,7 +102,8 @@ io.on('connection', function(client) {
           console.error(`exec error: ${error}`);
           return;
         } else {
-          callback({})
+          console.log(get_agent_command_list(stdout))
+          callback({command_list: get_agent_command_list(stdout)})
         }
 
       });
@@ -170,7 +171,7 @@ io.on('connection', function(client) {
         for(var i = 0; i < fields.length; i++){
           selector[fields[i]] = true;
         }
-        console.log("selector", selector)
+        // console.log("selector", selector)
         // query ={}
         agent_db.find(query,{projection: selector} ).sort({time:1}).toArray(function(err, result) {
           if (err) throw err;
@@ -199,7 +200,7 @@ io.on('connection', function(client) {
         for(var i = 0; i < fields.length; i++){
           selector[fields[i]] = true;
         }
-        console.log("selector", selector)
+        // console.log("selector", selector)
         // query ={}
         agent_db.find(query,{projection: selector} ).sort({time:1}).toArray(function(err, result) {
           if (err) throw err;

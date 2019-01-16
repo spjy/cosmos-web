@@ -41,7 +41,7 @@ class CosmosPlot extends Component {
 /* Returns a select box filled with active agents */
   constructor(props){
     super(props);
-    console.log(this.props.info)
+    // console.log(this.props.info)
       this.state = {
         live_view:this.props.info.live,
         data: [],
@@ -80,7 +80,7 @@ class CosmosPlot extends Component {
 
     }
     startListening(){
-      console.log("startListening")
+      // console.log("startListening")
       socket.emit('start record', this.props.info.agent);
       socket.on('agent subscribe '+this.props.info.agent, (data) => { // subscribe to agent
         if (data) {
@@ -106,7 +106,7 @@ class CosmosPlot extends Component {
       socket.removeAllListeners('agent subscribe '+this.props.info.agent);
     }
     setBoundaries(msg){
-      console.log("setBoundaries")
+      // console.log("setBoundaries")
       if(msg.valid===true){
         var startDate = new Date(msg.dates.start)
         var endDate = new Date(msg.dates.end)
@@ -180,21 +180,25 @@ class CosmosPlot extends Component {
 
     }
     receivedPlotData(data){
+      if(data.length > 0 ){
+        var min, max;
+        min = data[0]["agent_utc"]
+        max = data[data.length-1]["agent_utc"]
+        this.setState({
+          data:data,
 
-      var min, max;
-      min = data[0]["agent_utc"]
-      max = data[data.length-1]["agent_utc"]
-      this.setState({
-        data:data,
+         slider:   {start: 0, end:data.length},
+          time_start:min,
+          time_end: max
+          },() => console.log(this.state));
+      }else {
+        console.log("didnt get anything")
+      }
 
-       slider:   {start: 0, end:data.length},
-        time_start:min,
-        time_end: max
-        },() => console.log(this.state));
     }
     receivedLiveData(data){
 
-      console.log('received data: ', data)
+      // console.log('received data: ', data)
       var local_data = this.state.live_data;
       var live_data = local_data.concat(data);
       var l = this.state.live;
@@ -203,7 +207,7 @@ class CosmosPlot extends Component {
       this.startListening();
     }
     pauseLivePlot(){
-      console.log(" paused at: ", this.state.live.current_data["agent_utc"])
+      // console.log(" paused at: ", this.state.live.current_data["agent_utc"])
       this.stopListening();   // stop listening for new data
       var l = this.state.live;
       l.pause = true;
@@ -218,7 +222,7 @@ class CosmosPlot extends Component {
     resumeLivePlot(){
       // fetch data since last live data  point
       // callback: this.receivedLiveData()
-      console.log("fetch data from: ",  this.state.live.current_data["agent_utc"])
+      // console.log("fetch data from: ",  this.state.live.current_data["agent_utc"])
       socket.emit('agent_resume_live_plot',
           { agent: this.props.info.agent, resumeUTC: this.state.live.current_data["agent_utc"], fields:this.getQueryFields()},
           this.receivedLiveData.bind(this));

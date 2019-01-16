@@ -64,6 +64,7 @@ class AgentCommands extends Component {
 
   }
   getAgentCommandsList(data){
+    console.log(data)
     this.setState({command_list:data.command_list, loading_commands:false});
   }
 

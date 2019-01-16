@@ -1,6 +1,6 @@
 import cosmosInfo from './CosmosInfo'
 
-class CosmosPlotEntry  {
+class CosmosWidgetConfig  {
 
 
   constructor(jsonObj){
@@ -29,7 +29,7 @@ class CosmosPlotEntry  {
       this.xLabel = "";
       this.yLabel = "";
       this.yRange = 10;
-      this.xRange = 3600;
+      this.xRange = 100;
       this.visible = true;
       this.values={label:[],structure:[]};
       this.jsonvalues=[];
@@ -201,4 +201,4 @@ class CosmosPlotEntry  {
 }
 
 
-export default CosmosPlotEntry;
+export default CosmosWidgetConfig;
