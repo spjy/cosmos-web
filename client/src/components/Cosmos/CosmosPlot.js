@@ -229,8 +229,8 @@ class CosmosPlot extends Component {
 
     }
     getCSV(){
-      var start = this.scaleSlider(this.state.slider.start);
-      var end = this.scaleSlider(this.state.slider.end);
+      var start =scale(this.state.slider.start, 0,this.state.live_data.length, this.state.time_start, this.state.time_end)
+      var end = scale(this.state.slider.end, 0,this.state.live_data.length, this.state.time_start, this.state.time_end)
       var csv_data =[];
       var csv_headers=[];
       var data_src, data;
@@ -265,7 +265,7 @@ class CosmosPlot extends Component {
       // console.log("live:", this.state.live_data.length)
       const legend = [];
       var selected_dates;
-      var date_form, slider,plot_domain, action;
+      var date_form, slider,plot_domain, action, csv_form;
       var disable_switch = false;
       var slider_visible = false;
       var data_source;
@@ -288,9 +288,11 @@ class CosmosPlot extends Component {
           slider_visible=true;
 
           action = <Button type="default" onClick={this.resumeLivePlot.bind(this)}> Resume </Button>
+          csv_form = <DownloadCSV getData={this.getCSV.bind(this)}/>
         }
         else {
           action = <Button type="default" onClick={this.pauseLivePlot.bind(this)}> Pause </Button>
+          csv_form = <p> Pause Plot to export as CSV </p>
         }
         if(!this.props.info.archive) disable_switch=true;
       }
@@ -308,10 +310,10 @@ class CosmosPlot extends Component {
           />
           if(data_source.length >0) {
             slider_visible = true;
-            action = <DownloadCSV getData={this.getCSV.bind(this)}/>
+            csv_form = <DownloadCSV getData={this.getCSV.bind(this)}/>
           }
           else {
-            action = <p> Select Dates </p>
+            csv_form = <p> Select Dates </p>
           }
 
         if(!this.props.info.live) {
@@ -353,6 +355,7 @@ class CosmosPlot extends Component {
             <Card title={this.props.info.agent}>
               {legend}
               {action}
+              {csv_form}
             </Card>
             </Col>
           </Row>
