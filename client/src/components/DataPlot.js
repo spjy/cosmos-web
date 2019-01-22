@@ -2,18 +2,15 @@ import React, { Component } from 'react';
 import Navbar from './Global/Navbar';
 import CosmosWidgetConfig from './Cosmos/CosmosWidgetConfig'
 import CosmosPlot from './Cosmos/CosmosPlot'
-import ConfigTab from './Cosmos/ConfigTab'
+import ConfigTab ,{import_type} from './Cosmos/ConfigTab'
 import {  Card } from 'antd';
 import io from 'socket.io-client';
 import cosmosInfo from './Cosmos/CosmosInfo'
+import { get_all_agent_info , update_agent_info} from './Cosmos/CosmosPlotLibs'
+
 const socket = io(cosmosInfo.socket);
 
-const import_type = {
-  NONE: 0,
-  JSON: 1,
-  SAVED: 2,
-  NEW:3
-};
+
 const tabList = [{
   key: 'config_tab',
   tab: 'Configure',
@@ -21,16 +18,6 @@ const tabList = [{
   key: 'plot_tab',
   tab: 'Plot',
 }];
-async function update_agent_info(cosmos_plot_entry, info){
-  await cosmos_plot_entry.update(info);
-
-}
-async function get_all_agent_info(cosmos_plot_entries){
-  for(var i =0; i < cosmos_plot_entries.length; i++){
-    await cosmos_plot_entries[i].setup_agent();
-  }
-  return;
-}
 
 class DataPlot extends Component {
   constructor(props){

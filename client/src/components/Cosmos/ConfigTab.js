@@ -9,7 +9,7 @@ import cosmosInfo from './CosmosInfo'
 const socket = io(cosmosInfo.socket);
 
 
-const import_type = {
+export const import_type = {
   NONE: 0,
   JSON: 1,
   SAVED: 2,
