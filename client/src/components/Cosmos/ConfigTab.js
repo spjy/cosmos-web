@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Icon, Modal , Select, Form, Input, Alert} from 'antd';
+import { Button, Icon, Modal , Select, Form, Input, Alert , Card} from 'antd';
 import ConfigSelectForm from './ConfigSelectForm'
 import PlotForm from './PlotForm'
 import JsonForm from './JsonForm'
@@ -115,6 +115,7 @@ class ConfigTab extends Component {
 
   }
 
+
   render() {
     var entries = this.props.entries;
     var json_form;
@@ -149,13 +150,13 @@ class ConfigTab extends Component {
                 </Button>
     }
     for(var i = 0; i < entries.length; i++){
-      plot_forms.push(<PlotForm
+      plot_forms.push(<Card key={i} actions={[<a  onClick={this.props.selfDestruct.bind(i)}><Icon type="delete"/></a>]}>
+          <PlotForm
                   key={i}
                   id={i}
                   info={entries[i]}
                   updateInfo={this.props.updatePlotInfo}
-                  selfDestruct={this.props.selfDestruct}
-                  updateValue={this.props.updateValue}/>);
+                  updateValue={this.props.updateValue}/>  </Card>);
     }
     var validation;
     if(this.state.form_validated!==true){

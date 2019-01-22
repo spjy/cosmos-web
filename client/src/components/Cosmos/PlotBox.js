@@ -33,12 +33,7 @@ class PlotBox extends Component {
     }
 
     render() {
-      // console.log("plot_domain",this.props.plot_domain)
-      if(this.props.data.length){
-        // console.log(this.props.data)
-      //   console.log(mjd2cal(this.props.data[0].agent_utc).getTime())
-      //   console.log(moment(mjd2cal(this.props.data[0].agent_utc).getTime()).format('YYYY-MM-DD hh:mm a'))
-      }
+
 
 
       var data = [];
