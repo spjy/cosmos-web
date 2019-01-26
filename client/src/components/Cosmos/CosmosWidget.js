@@ -51,7 +51,7 @@ class CosmosWidget extends Component {
       this.setState({data:<p style={{whiteSpace:'pre-wrap', wordWrap:'break-word'}} >{data.output}</p>})
     }
     render() {
-      // console.log(this.props.config.type===widget_type.LIVE_PLOT);
+
       var content;
       if(this.state.ready){
         switch(this.props.config.type){
@@ -70,7 +70,8 @@ class CosmosWidget extends Component {
           break;
           case(widgetType.COSMOS_DATA):
             if(this.props.info.agent)
-              content = <div>{"[ " +this.props.info.agent+" ]: " +this.props.info.values.label[0]}<br/> {String(this.props.data[this.props.info.values.label[0]])}</div>
+              content = <div>{"[ " +this.props.info.agent+" ]: "
+                +this.props.config.data_name[0]}<br/> {String(this.props.data[this.props.config.data_name[0]])}</div>
           break;
           default:
 

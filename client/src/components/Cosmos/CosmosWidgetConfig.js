@@ -177,7 +177,8 @@ class CosmosWidgetConfig  {
 
     }
     this.values = vals;
-    // console.log("values",vals);
+ // console.log("values",vals);
+ //        console.log(this.jsonvalues)
   }
 
   // helper functions
