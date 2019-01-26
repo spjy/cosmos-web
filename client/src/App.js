@@ -10,7 +10,6 @@ import DataPlot from './components/DataPlot';
 import CosmosTools from './components/CosmosTools';
 import Commands from './components/Commands';
 import AgentCommands from './components/AgentCommands';
-import AgentList from './components/Cosmos/AgentList';
 
 const App = ({}) => (
   <div>
@@ -22,7 +21,6 @@ const App = ({}) => (
         <Route exact path="/plot" component={Plot} />
         <Route exact path="/path" component={Path} />
         <Route exact path="/dataplot" component={DataPlot} />
-        <Route exact path="/agentlist" component={AgentList} />
         <Route exact path="/commands" component={Commands} />
         <Route exact path="/agentcommands" component={AgentCommands} />
         <Route exact path="/cosmostools" component={CosmosTools} />

@@ -61,11 +61,6 @@ class Navbar extends Component {
               <Icon type="line-chart" />Data Plot
             </Link>
           </Menu.Item>
-          <Menu.Item key="COSMOS Agents">
-            <Link to="/agentlist">
-              <Icon type="bars" />Agent List
-            </Link>
-          </Menu.Item>
           <Menu.Item key="COSMOS Commands">
             <Link to="/commands">
               <Icon type="code" />COSMOS Commands
@@ -78,7 +73,7 @@ class Navbar extends Component {
           </Menu.Item>
           <Menu.Item key="Cosmos Tools">
             <Link to="/cosmostools">
-              <Icon type="tool" />Cosmos Utility
+              <Icon type="tool" />Cosmos Tools
             </Link>
           </Menu.Item>
         </Menu.SubMenu>

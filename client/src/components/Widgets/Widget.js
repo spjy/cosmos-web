@@ -4,6 +4,7 @@ import { Card,  Button, Icon, Modal, Popover, Layout, Table, Alert} from 'antd';
 import PlotWidget from './PlotWidget'
 import WidgetForm from './WidgetForm'
 import cosmosInfo from './../Cosmos/CosmosInfo'
+import AgentList from './../Cosmos/AgentList'
 import {utc2date} from './../Cosmos/Libs'
 const socket = io(cosmosInfo.socket);
 const ButtonGroup = Button.Group;
@@ -15,7 +16,8 @@ export const widgetType = {
   NONE: 0,
   LIVE_PLOT: 1,
   AGENT_COMMAND: 2,
-  COSMOS_DATA:3
+  COSMOS_DATA:3,
+  AGENT_LIST:4
 };
 class Widget extends Component {
 /* props={
@@ -93,13 +95,18 @@ class Widget extends Component {
   }
   validateForm(){
     var valid = true;
-    if(this.state.form.agent==="") valid= false;
+
     if(this.state.form.widget_type===widgetType.NONE) valid= false;
     if(this.state.form.widget_type===widgetType.AGENT_COMMAND){
       if( this.state.form.command[0]==="")valid= false;
+      if(this.state.form.agent==="") valid= false;
     }
-    else {
+    else if(this.state.form.widget_type===widgetType.COSMOS_DATA||
+      this.state.form.widget_type===widgetType.LIVE_PLOT
+    )
+     {
       if(this.state.form.data_name.length<1) valid= false;
+      if(this.state.form.agent==="") valid= false;
     }
     this.setState({form_valid:valid})
     return valid;
@@ -150,6 +157,9 @@ class Widget extends Component {
             content = <Table columns={table_cols} dataSource={table_data} size="small"  pagination={false}/>
           }
 
+        break;
+        case(widgetType.AGENT_LIST):
+          content=<AgentList />
         break;
         default:
 

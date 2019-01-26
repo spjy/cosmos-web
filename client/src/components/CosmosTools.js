@@ -58,7 +58,8 @@ class CosmosTools extends Component {
   updateWidget(e){
     var widgets = this.state.widgets;
     widgets[e.id]=e.form;
-    if(e.form.widget_type !== widgetType.AGENT_COMMAND){
+    if(e.form.widget_type === widgetType.LIVE_PLOT ||
+    e.form.widget_type === widgetType.COSMOS_DATA){
       var agent= this.state.agents[e.form.agent];
       // console.log("agent",e.form.data_name)
       widgets[e.id].values=agent.info.get_data_structure(e.form.data_name);

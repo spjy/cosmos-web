@@ -127,7 +127,7 @@ render() {
 
     }
     const form_style={};
-    var agentSelect= <Select
+    var agentSelect= <Form.Item label="Agent" key="agent"><Select
                       showSearch
                       value={this.props.info.agent}
                       onChange={this.agentSelected.bind(this)}
@@ -135,13 +135,10 @@ render() {
                     >
                       {agent_names}
                     </Select>
+                  </Form.Item>;
     var form_items =[];
-    if(this.props.info.widget_type!== widgetType.NONE)
-    {
-      form_items= [<Form.Item label="Agent" key="agentname">
-                    {agentSelect}
-                  </Form.Item>];
-    }
+
+
     const tree_props = {
       treeData: this.state.data_list,
       value: this.props.info.data_name,
@@ -156,6 +153,7 @@ var command_detail;
     if(this.props.info.agent !== "" ){
       switch(this.props.info.widget_type){
         case(widgetType.LIVE_PLOT):
+          form_items.push(agentSelect);
           form_items.push(<Form.Item label="DataSet" key="dataname">
                 <TreeSelect style={{minWidth: '200px'}} {... tree_props}>
                 </TreeSelect>
@@ -184,6 +182,7 @@ var command_detail;
 
         break;
         case(widgetType.COSMOS_DATA):
+          form_items.push(agentSelect);
           form_items.push(<Form.Item label="DataSet" key="dataname">
                 <TreeSelect style={{minWidth: '200px'}} {... tree_props}>
                 </TreeSelect>
@@ -191,6 +190,7 @@ var command_detail;
         break;
         case(widgetType.AGENT_COMMAND):
           var command_list=[];
+          form_items.push(agentSelect);
           form_items.push(<Form.Item label="Command Label" key="title">
                 <Input placeholder="Command Label"
                   id="title"
@@ -242,6 +242,7 @@ var command_detail;
               <Option value={widgetType.LIVE_PLOT}>Live Plot</Option>
               <Option value={widgetType.COSMOS_DATA}>Data Box</Option>
               <Option value={widgetType.AGENT_COMMAND}>Command</Option>
+              <Option value={widgetType.AGENT_LIST}>Agent List</Option>
             </Select>
             <Form layout="inline" >
               {form_items}
