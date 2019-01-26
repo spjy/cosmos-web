@@ -3,7 +3,6 @@ import io from 'socket.io-client';
 import { Card,  Button, Icon, Modal, Popover, Layout, Table, Alert} from 'antd';
 import PlotWidget from './PlotWidget'
 import WidgetForm from './WidgetForm'
-// import CosmosWidgetConfig from './CosmosWidgetConfig'
 import cosmosInfo from './../Cosmos/CosmosInfo'
 import {utc2date} from './../Cosmos/Libs'
 const socket = io(cosmosInfo.socket);
@@ -91,7 +90,6 @@ class Widget extends Component {
     if(this.state.form.widget_type===widgetType.NONE) valid= false;
     if(this.state.form.data_name.length<1) valid= false;
     this.setState({form_valid:valid})
-    console.log("validdtae form", valid);
     return valid;
   }
     // onClickCommand(){
@@ -133,7 +131,6 @@ class Widget extends Component {
                 value: this.props.data[this.props.info.values.label[i]],
                 time: utc2date(this.props.data.agent_utc)})
             }
-            console.log(table_data)
             content = <Table columns={table_cols} dataSource={table_data} size="small"  pagination={false}/>
           }
 
@@ -154,6 +151,7 @@ class Widget extends Component {
       border:'1px solid #e1e6ef',
       background: '#fff',
       padding:'10px' ,
+      margin:"10px",
       borderRadius: "10px"
     }
 

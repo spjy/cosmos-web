@@ -2,16 +2,13 @@ import React, { Component } from 'react';
 import io from 'socket.io-client';
 import moment from 'moment';
 import {  Alert} from 'antd';
-import { mjd2cal } from './../Cosmos/Libs'
+import { utc2date , convertTimetoDate, mjd2cal} from './../Cosmos/Libs'
 import cosmosInfo from './../Cosmos/CosmosInfo'
 import { LineChart, Line ,XAxis, YAxis, Tooltip, ResponsiveContainer, Label} from 'recharts';
 const colors=["#82ca9d", "#9ca4ed","#f4a742","#e81d0b","#ed9ce6"]
 const socket = io(cosmosInfo.socket);
 
 
-function convertTimetoDate(val){
-  return new Date(val).toLocaleString('en-US')
-}
 class PlotWidget extends Component {
 /* should inherit props={
           info: CosmosWidgetConfig,
@@ -65,7 +62,7 @@ class PlotWidget extends Component {
               <YAxis domain={['auto','auto']} >
                 <Label value= {this.props.info.plot_labels[1]} angle={-90}   position="insideLeft" />
               </YAxis>
-              <Tooltip labelFormatter={(val) => { return convertTimetoDate(mjd2cal(val).getTime())}}/>
+              <Tooltip labelFormatter={(val) => { return utc2date(val)}}/>
               {lines}
             </LineChart>
           </ResponsiveContainer>

@@ -3,7 +3,7 @@ import { Form, Select, Badge, TreeSelect, Alert, Input } from 'antd';
 import cosmosInfo from './../Cosmos/CosmosInfo'
 import {plot_form_datalist} from './../Cosmos/Libs'
 import {  setup_agent } from './../Cosmos/CosmosPlotLibs'
-import CosmosAgent from './../Cosmos/CosmosAgent'
+import CosmosAgent from './CosmosAgent'
 import io from 'socket.io-client';
 import {widgetType} from './Widget'
 const socket = io(cosmosInfo.socket);
@@ -78,8 +78,6 @@ class WidgetForm extends Component {
 
   }
   dataSelected(value) {
-
-    console.log("dataname", value)
     this.props.updateForm({key:"data_name", value:value});
   }
 

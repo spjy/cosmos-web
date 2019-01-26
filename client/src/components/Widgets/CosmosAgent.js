@@ -1,4 +1,4 @@
-import cosmosInfo from './CosmosInfo'
+import cosmosInfo from './../Cosmos/CosmosInfo'
 
 class CosmosAgent  {
 
@@ -16,10 +16,7 @@ class CosmosAgent  {
   }
 
   setup_agent (){
-    /* fetch the MongoDB entry in agent_list for this agent
-      needs to be called after constructor
-    */
-    // console.log("setup_agent")
+
     return fetch(`${cosmosInfo.socket}/api/cosmos_agent/${this.agent}`)
       .then(response => response.json())
       .then(data =>
@@ -27,10 +24,7 @@ class CosmosAgent  {
     );
   }
   agent_info_received(info){
-    /* callback function for fetch_agent_info,
-     * info= MongoDB object for the agent specified by this.agent
-     */
-     // console.log("agent info",info)
+
      if(info){
        this.archive = true;
        this.structure = info.structure;
@@ -64,26 +58,10 @@ class CosmosAgent  {
       }
     );
   }
-  // fill_no_info(){
-  //   this.archive = false;
-  //   this.values={label:[], structure:[]};
-  //   this.structure = [];
-  //   for(var i=0; i < this.jsonvalues.length;i++){
-  //     // console.log(this.jsonvalues[i].data);
-  //     this.values.label.push(this.jsonvalues[i].data);
-  //     this.values.structure.push([this.jsonvalues[i].data])
-  //     this.structure.push([this.jsonvalues[i].data]);
-  //     this.map.push({
-  //       string: this.jsonvalues[i].data,
-  //      values: [String(i)]});
-  //   }
-  // }
+
 
   generate_structure_map(){
-    /* generate a map of string to values in this.structure
-     * handles the nested objects of the CosmosAgent data
-     * Ex: "node_loc_pos_eci" maps to all nested values, but each can also be addressed individually
-     */
+
     var structure = this.structure;
     var map = [];
     var str;
