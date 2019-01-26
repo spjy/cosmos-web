@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
-import { Card,  Button, Icon, Modal, Popover, Layout, Table} from 'antd';
+import { Card,  Button, Icon, Modal, Popover, Layout, Table, Alert} from 'antd';
 import PlotWidget from './PlotWidget'
 import WidgetForm from './WidgetForm'
 // import CosmosWidgetConfig from './CosmosWidgetConfig'
 import cosmosInfo from './../Cosmos/CosmosInfo'
+import {utc2date} from './../Cosmos/Libs'
 const socket = io(cosmosInfo.socket);
 const ButtonGroup = Button.Group;
 const {
@@ -35,7 +36,8 @@ class Widget extends Component {
         view_form:true,
         data:[],
         form:{},
-        prevData:{}
+        prevData:{},
+        form_valid:true
       };
   }
   componentWillMount() {
@@ -58,8 +60,10 @@ class Widget extends Component {
   }
   onSaveForm(){
     var form = this.state.form;
-    this.props.updateWidget({form:form, id:this.props.id});
-    this.setState({view_form:false})
+    if(this.validateForm()) {
+      this.props.updateWidget({form:form, id:this.props.id});
+      this.setState({view_form:false})
+    }
   }
   hideModal(){
     this.setState({view_form:false, form: this.props.info})
@@ -81,6 +85,15 @@ class Widget extends Component {
   openModal(){
     this.setState({view_form:true})
   }
+  validateForm(){
+    var valid = true;
+    if(this.state.form.agent==="") valid= false;
+    if(this.state.form.widget_type===widgetType.NONE) valid= false;
+    if(this.state.form.data_name.length<1) valid= false;
+    this.setState({form_valid:valid})
+    console.log("validdtae form", valid);
+    return valid;
+  }
     // onClickCommand(){
     //   socket.emit('agent_command',
     //     {agent: this.props.info.command.agent, node: this.props.info.command.node, command: this.props.info.command },
@@ -94,7 +107,7 @@ class Widget extends Component {
     var content, table_data;
     // const table_cols = []
 
-    const table_cols = [{title:"Name", dataIndex:"dataname"},{title:"Value", dataIndex:"value"}]
+    const table_cols = [{title:"Name", dataIndex:"dataname"},{title:"Value", dataIndex:"value"}, {title:"Time", dataIndex:"time"}]
     // console.log("widget.data", this.state.data, this.props.data)
     if(!this.state.view_form){
       switch(this.props.info.widget_type){
@@ -115,7 +128,10 @@ class Widget extends Component {
           if(this.props.info.agent){
             table_data=[];
             for(var i=0; i < this.props.info.values.label.length; i++){
-              table_data.push({key:i, dataname: this.props.info.values.label[i], value: this.props.data[this.props.info.values.label[i]]})
+              table_data.push({key:i,
+                dataname: this.props.info.values.label[i],
+                value: this.props.data[this.props.info.values.label[i]],
+                time: utc2date(this.props.data.agent_utc)})
             }
             console.log(table_data)
             content = <Table columns={table_cols} dataSource={table_data} size="small"  pagination={false}/>
@@ -127,6 +143,8 @@ class Widget extends Component {
         break;
       }
     }
+    var form_validation;
+    if(!this.state.form_valid) form_validation= <Alert message="Incomplete" type="warning" showIcon />;
     const widget_actions=( <ButtonGroup size="small">
       <Button  onClick={this.openModal.bind(this)}><Icon type="setting"/></Button>
       <Button  onClick={this.props.selfDestruct.bind(this.props.id)}><Icon type="delete"/></Button>
@@ -151,6 +169,7 @@ class Widget extends Component {
             updateForm={this.updateForm.bind(this)}
             newAgent={this.props.newAgent}
             structure={this.props.agentStructure}/>
+            { form_validation}
         </Modal>
         <Content>
           <div style={{margin:"10px"}}> <p style={{display:"inline"}}><b>{this.props.info.agent}</b></p>

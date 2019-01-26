@@ -113,6 +113,12 @@ export function mjd2cal(mjd){
    // console.log(date)
   return new Date(Date.UTC(date.year, date.month-1, date.dom, date.hour, date.minute, date.second));
 }
+export function convertTimetoDate(val){
+  return new Date(val).toLocaleString('en-US')
+}
+export function utc2date(utc){
+  return convertTimetoDate(mjd2cal(utc).getTime())
+}
 export function plot_form_datalist(structure){
   // console.log("plot_form_datalist", structure)
   var tree_data = [];
