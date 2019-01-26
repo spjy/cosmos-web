@@ -81,18 +81,6 @@ class Widget extends Component {
   openModal(){
     this.setState({view_form:true})
   }
-  // getDerivedStateFromProps(props, state) {
-  //   if (props.data.agent_utc !== state.prevData.agent_utc) {
-  //     console.log(props.data)
-  //     var data = state.data;
-  //     data=[...data, props.data]
-  //     return {
-  //       prevData: props.data,
-  //       data: data
-  //     };
-  //   }
-  //   return null;
-  // }
     // onClickCommand(){
     //   socket.emit('agent_command',
     //     {agent: this.props.info.command.agent, node: this.props.info.command.node, command: this.props.info.command },
@@ -104,7 +92,9 @@ class Widget extends Component {
   render() {
 
     var content, table_data;
-    const table_cols = [{title:"Name", dataIndex:"dataname"},{title:"Value", dataIndes:"value"}]
+    // const table_cols = []
+
+    const table_cols = [{title:"Name", dataIndex:"dataname"},{title:"Value", dataIndex:"value"}]
     // console.log("widget.data", this.state.data, this.props.data)
     if(!this.state.view_form){
       switch(this.props.info.widget_type){
@@ -123,11 +113,14 @@ class Widget extends Component {
         break;
         case(widgetType.COSMOS_DATA):
           if(this.props.info.agent){
-            table_data=
-            content = <Table columns={table_cols} dataSource={table_data} size="small" />
+            table_data=[];
+            for(var i=0; i < this.props.info.values.label.length; i++){
+              table_data.push({key:i, dataname: this.props.info.values.label[i], value: this.props.data[this.props.info.values.label[i]]})
+            }
+            console.log(table_data)
+            content = <Table columns={table_cols} dataSource={table_data} size="small"  pagination={false}/>
           }
-            content = <div>{"[ " +this.props.info.agent+" ]: "
-              +this.props.info.data_name[0]}<br/> {String(this.props.data[this.props.info.data_name[0]])}</div>
+
         break;
         default:
 
@@ -160,7 +153,7 @@ class Widget extends Component {
             structure={this.props.agentStructure}/>
         </Modal>
         <Content>
-          <div> <p style={{display:"inline"}}><b>{this.props.info.agent}</b></p>
+          <div style={{margin:"10px"}}> <p style={{display:"inline"}}><b>{this.props.info.agent}</b></p>
           <ButtonGroup size="small" style={{display:"inline", float:"right"}}>
             <Button  onClick={this.openModal.bind(this)}><Icon type="setting"/></Button>
             <Button  onClick={this.props.selfDestruct.bind(this.props.id)}><Icon type="delete"/></Button>
