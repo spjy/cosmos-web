@@ -3,8 +3,8 @@ import Navbar from './Global/Navbar';
 import {  Card , Button , Modal , Icon , Select, Alert} from 'antd';
 import io from 'socket.io-client';
 import cosmosInfo from './Cosmos/CosmosInfo'
-import CosmosAgent from './Widgets/CosmosAgent'
-import Widget from './Widgets/Widget'
+import CosmosAgent  from './Widgets/CosmosAgent'
+import Widget , {widgetType}from './Widgets/Widget'
 import CosmosWidgetInfo from './Widgets/CosmosWidgetInfo'
 import { parse_live_data , setup_agent } from './Cosmos/CosmosPlotLibs'
 const socket = io(cosmosInfo.socket);
@@ -58,12 +58,14 @@ class CosmosTools extends Component {
   updateWidget(e){
     var widgets = this.state.widgets;
     widgets[e.id]=e.form;
-    var agent= this.state.agents[e.form.agent];
-    // console.log("agent",e.form.data_name)
-    widgets[e.id].values=agent.info.get_data_structure(e.form.data_name);
-    // console.log("update widget" ,widgets)
-    this.setState ({widgets:widgets})
-    this.startListening(e.form.agent);
+    if(e.form.widget_type !== widgetType.AGENT_COMMAND){
+      var agent= this.state.agents[e.form.agent];
+      // console.log("agent",e.form.data_name)
+      widgets[e.id].values=agent.info.get_data_structure(e.form.data_name);
+      // console.log("update widget" ,widgets)
+      this.setState ({widgets:widgets})
+      this.startListening(e.form.agent);
+    }
 
   }
   removeWidget(index){

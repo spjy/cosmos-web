@@ -36,25 +36,32 @@ class Widget extends Component {
         data:[],
         form:{},
         prevData:{},
-        form_valid:true
+        form_valid:true,
+        node:""
       };
   }
   componentWillMount() {
     this.setState({form: this.props.info});
   }
   updateForm(e){
-    // console.log(e)
     var form=this.state.form;
-    if(e.key==="xLabel"){
-      form.plot_labels[0]= e.value;
+    switch(e.key) {
+      case ("xLabel"):
+        form.plot_labels[0]= e.value;
+      break;
+      case ("yLabel"):
+        form.plot_labels[1]= e.value;
+      break;
+      case ("command0"):
+        form.command[0]= e.value;
+      break;
+      case ("args"):
+        form.command[1]= e.value;
+      break;
+      default:
+        form[e.key]=e.value;
+      break;
     }
-    else if(e.key==="yLabel"){
-      form.plot_labels[1]= e.value;
-    }
-    else {
-      form[e.key]=e.value;
-    }
-
     this.setState({form:form})
   }
   onSaveForm(){
@@ -88,18 +95,27 @@ class Widget extends Component {
     var valid = true;
     if(this.state.form.agent==="") valid= false;
     if(this.state.form.widget_type===widgetType.NONE) valid= false;
-    if(this.state.form.data_name.length<1) valid= false;
+    if(this.state.form.widget_type===widgetType.AGENT_COMMAND){
+      if( this.state.form.command[0]==="")valid= false;
+    }
+    else {
+      if(this.state.form.data_name.length<1) valid= false;
+    }
     this.setState({form_valid:valid})
     return valid;
   }
-    // onClickCommand(){
-    //   socket.emit('agent_command',
-    //     {agent: this.props.info.command.agent, node: this.props.info.command.node, command: this.props.info.command },
-    //     this.commandResponseReceived.bind(this));
-    // }
-    // commandResponseReceived(data){
-    //   this.setState({data:<p style={{whiteSpace:'pre-wrap', wordWrap:'break-word'}} >{data.output}</p>})
-    // }
+  setNode(nodename){
+    this.setState({node:nodename});
+  }
+  onClickCommand(){
+    this.setState({data:<Icon type="loading" />});
+    socket.emit('agent_command',
+      {agent: this.props.info.agent, node: this.state.node, command: this.props.info.command[0]+" "+this.props.info.command[0] },
+      this.commandResponseReceived.bind(this));
+  }
+  commandResponseReceived(data){
+    this.setState({data:<p style={{whiteSpace:'pre-wrap', wordWrap:'break-word'}} >{data.output}</p>})
+  }
   render() {
 
     var content, table_data;
@@ -115,12 +131,12 @@ class Widget extends Component {
             // console.log(this.state.info)
         break;
         case(widgetType.AGENT_COMMAND):
-          // content =<div>
-          //   <Button onClick={this.onClickCommand.bind(this)}>{this.props.info.command.title}</Button>
-          //   <div style={{ overflowY:'scroll', height:'200px'}}>
-          //     {this.state.data}
-          //   </div>
-          // </div>
+          content =<div>
+            <Button onClick={this.onClickCommand.bind(this)}>{this.props.info.title}</Button>
+            <div style={{ overflowY:'scroll', height:'200px'}}>
+              {this.state.data}
+            </div>
+          </div>
         break;
         case(widgetType.COSMOS_DATA):
           if(this.props.info.agent){
@@ -166,6 +182,7 @@ class Widget extends Component {
           <WidgetForm info={this.state.form}
             updateForm={this.updateForm.bind(this)}
             newAgent={this.props.newAgent}
+            setNode={this.setNode.bind(this)}
             structure={this.props.agentStructure}/>
             { form_validation}
         </Modal>

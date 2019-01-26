@@ -15,8 +15,8 @@ class WidgetForm extends Component {
       this.state = {
         agent_list:[],
         data_list:[],
-        archive:false
-            };
+        command_list: []
+        };
 
 
   }
@@ -44,38 +44,49 @@ class WidgetForm extends Component {
           this.setState({agent_list:agents})
         }
       });
-      socket.emit('agent_dates', {agent: this.props.info.agent}, this.agentArchiveFound.bind(this));
   }
-  agentArchiveFound(data){
-    if(data.valid===true)
-      this.setState({archive:true})
-  }
+
 
   componentWillUnmount() {
     socket.removeAllListeners('agent update list');
   }
 
   agentSelected(value) {
-
     var agent_name = this.state.agent_list[value].agent_proc
     this.props.updateForm({key:"agent", value: agent_name});
-    var structure = this.props.structure(agent_name);
-    if(structure){
-        var tree_data = plot_form_datalist(structure);
-        this.setState({data_list:tree_data})
-    }
-    else {
-       var new_agent = new CosmosAgent({agent:agent_name});
-      setup_agent(new_agent).then((result)=>{
-        var tree_data = plot_form_datalist(new_agent.structure);
-        this.setState({data_list:tree_data})
-        // console.log(":")
-        this.props.newAgent(new_agent);
-        // console.log("setup agent", new_agent.agent)
-      });
-    }
+    if(this.props.info.widget_type === widgetType.COSMOS_DATA ||
+      this.props.info.widget_type === widgetType.LIVE_PLOT){
 
+        var structure = this.props.structure(agent_name);
+        if(structure){
+            var tree_data = plot_form_datalist(structure);
+            this.setState({data_list:tree_data})
+        }
+        else {
+           var new_agent = new CosmosAgent({agent:agent_name});
+          setup_agent(new_agent).then((result)=>{
+            var tree_data = plot_form_datalist(new_agent.structure);
+            this.setState({data_list:tree_data})
+            // console.log(":")
+            this.props.newAgent(new_agent);
+            // console.log("setup agent", new_agent.agent)
+          });
+        }
+      }
+      else if(this.props.info.widget_type === widgetType.AGENT_COMMAND){
+        // get command list
+        this.setState({loading_commands:true, command_list:[]})
+        var nodename = this.state.agent_list[value].agent_node;
+        console.log("node", nodename)
+        this.props.setNode(nodename);
+        socket.emit('list_agent_commands', {agent: agent_name, node: nodename}, this.getAgentCommandsList.bind(this));
 
+      }
+
+  }
+  getAgentCommandsList(data){
+    console.log(data)
+    this.setState({command_list:data.command_list, loading_commands:false});
   }
   dataSelected(value) {
     this.props.updateForm({key:"data_name", value:value});
@@ -87,6 +98,19 @@ class WidgetForm extends Component {
   selectWidgetType(value){
     this.props.updateForm({key:"widget_type", value: value});
   }
+  commandSelected(val){
+    console.log("command", val);
+    this.props.updateForm({key:"command0", value: val});
+  }
+  getCommandDetail(command_str){
+    var cmd;
+    for(var i = 0; i < this.state.command_list.length; i++){
+      cmd = this.state.command_list[i];
+      if(cmd.command === command_str){
+        return cmd.detail;
+      }
+    }
+  }
 
 render() {
     //agent list
@@ -96,14 +120,12 @@ render() {
     var badge;
     for(var i =0; i < agent_list.length; i++){
       badge="default"
-      if(agent_list[i].live===true) badge ="processing"
-      agent_names.push(<AgentOption key={i} ><Badge status={badge} /> {agent_list[i].agent_proc} </AgentOption>);
+      if(agent_list[i].live===true) {
+        badge ="processing"
+        agent_names.push(<AgentOption key={i} ><Badge status={badge} /> {agent_list[i].agent_proc} </AgentOption>);
+      }
+
     }
-    // var tree_data =[];
-    var AgentStatus;
-    var agent_status_msg;
-
-
     const form_style={};
     var agentSelect= <Select
                       showSearch
@@ -113,7 +135,13 @@ render() {
                     >
                       {agent_names}
                     </Select>
-
+    var form_items =[];
+    if(this.props.info.widget_type!== widgetType.NONE)
+    {
+      form_items= [<Form.Item label="Agent" key="agentname">
+                    {agentSelect}
+                  </Form.Item>];
+    }
     const tree_props = {
       treeData: this.state.data_list,
       value: this.props.info.data_name,
@@ -122,41 +150,87 @@ render() {
       showCheckedStrategy:TreeSelect.SHOW_PARENT,
       searchPlaceholder:'Select',
     };
-    var form_items = [];
-    if(this.props.info.widget_type===widgetType.LIVE_PLOT || this.props.info.widget_type===widgetType.COSMOS_DATA){
-      form_items = [ <Form.Item label="Agent" key="agentname">
-                  {agentSelect}
-                </Form.Item>
-                ,
-                <Form.Item label="DataSet" key="dataname">
-                    <TreeSelect style={{minWidth: '200px'}} {... tree_props}>
-                    </TreeSelect>
-                </Form.Item>
-                ,
-                <Form.Item label="Title" key="title">
-                  <Input placeholder="Title"
-                    id="title"
+
+
+var command_detail;
+    if(this.props.info.agent !== "" ){
+      switch(this.props.info.widget_type){
+        case(widgetType.LIVE_PLOT):
+          form_items.push(<Form.Item label="DataSet" key="dataname">
+                <TreeSelect style={{minWidth: '200px'}} {... tree_props}>
+                </TreeSelect>
+            </Form.Item>);
+          form_items.push(<Form.Item label="Title" key="title">
+                <Input placeholder="Title"
+                  id="title"
+                  onChange={this.handleFieldChange.bind(this)}
+                  value={this.props.info.title}
+                style={form_style}/>
+              </Form.Item>);
+          form_items.push(<Form.Item label="X-Axis Label" key="xLabel">
+                <Input placeholder="Label"
+                  id="xLabel"
+                  onChange={this.handleFieldChange.bind(this)}
+                  value={this.props.info.plot_labels[0]}
+                style={form_style}/>
+              </Form.Item>);
+          form_items.push(<Form.Item label="Y-Axis Label" key="yLabel">
+              <Input placeholder="Label"
+                id="yLabel"
+                onChange={this.handleFieldChange.bind(this)}
+                value={this.props.info.plot_labels[1]}
+              style={form_style}/>
+            </Form.Item>);
+
+        break;
+        case(widgetType.COSMOS_DATA):
+          form_items.push(<Form.Item label="DataSet" key="dataname">
+                <TreeSelect style={{minWidth: '200px'}} {... tree_props}>
+                </TreeSelect>
+            </Form.Item>);
+        break;
+        case(widgetType.AGENT_COMMAND):
+          var command_list=[];
+          form_items.push(<Form.Item label="Command Label" key="title">
+                <Input placeholder="Command Label"
+                  id="title"
+                  onChange={this.handleFieldChange.bind(this)}
+                  value={this.props.info.title}
+                style={form_style}/>
+              </Form.Item>);
+          for(var j = 0; j < this.state.command_list.length; j++){
+            command_list.push(<Option key={j} value={this.state.command_list[j].command}> {this.state.command_list[j].command} </Option>);
+          }
+
+          form_items.push(<Form.Item label="Command" key="command">
+                        <Select
+                            showSearch
+                            id="command0"
+                            value={this.props.info.command[0]}
+                            onChange={this.commandSelected.bind(this)}
+                            style={{minWidth: '200px'}}
+                          >
+                            {command_list}
+                          </Select>
+                        </Form.Item>)
+            if(this.props.info.command[0]!== "") {
+              command_detail=<p style={{whiteSpace:'pre-wrap'}}> <b>Command Detail: <br/></b>{this.getCommandDetail(this.props.info.command[0])} </p>;
+              form_items.push(<Form.Item label="Args" key="args">
+                  <Input placeholder="args"
+                    id="args"
                     onChange={this.handleFieldChange.bind(this)}
-                    value={this.props.info.title}
+                    value={this.props.info.command[1]}
                   style={form_style}/>
-                </Form.Item>
-                ,
-                <Form.Item label="X-Axis Label" key="xLabel">
-                  <Input placeholder="Label"
-                    id="xLabel"
-                    onChange={this.handleFieldChange.bind(this)}
-                    value={this.props.info.plot_labels[0]}
-                  style={form_style}/>
-                </Form.Item>
-                ,
-                <Form.Item label="Y-Axis Label" key="yLabel">
-                  <Input placeholder="Label"
-                    id="yLabel"
-                    onChange={this.handleFieldChange.bind(this)}
-                    value={this.props.info.plot_labels[1]}
-                  style={form_style}/>
-                </Form.Item> ]
+                </Form.Item>)
+            }
+            console.log(this.props.info.command)
+
+        break;
+        default:
+        break;
+      }
     }
+
 
 
     return (
@@ -167,11 +241,12 @@ render() {
               <Option value={widgetType.NONE}>Select Widget Type</Option>
               <Option value={widgetType.LIVE_PLOT}>Live Plot</Option>
               <Option value={widgetType.COSMOS_DATA}>Data Box</Option>
+              <Option value={widgetType.AGENT_COMMAND}>Command</Option>
             </Select>
             <Form layout="inline" >
               {form_items}
+              {command_detail}
             </Form>
-            {AgentStatus}
 
       </div>
     );
