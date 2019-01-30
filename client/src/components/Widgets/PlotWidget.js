@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
 import moment from 'moment';
-import {  Alert} from 'antd';
+import {  Alert , Row, Col , Button } from 'antd';
 import { utc2date , convertTimetoDate, mjd2cal} from './../Cosmos/Libs'
 import cosmosInfo from './../Cosmos/CosmosInfo'
 import { LineChart, Line ,XAxis, YAxis, Tooltip, ResponsiveContainer, Label} from 'recharts';
@@ -50,22 +50,29 @@ class PlotWidget extends Component {
         }
         Plots=
         <div>
-          <h4 style={{textAlign:'center'}}> {this.props.info.title} </h4>
-          <ResponsiveContainer width="100%" height={400}>
+        <Row gutter={16}>
+          <Col span={18} >
+            <h4 style={{textAlign:'center'}}> {this.props.info.title} </h4>
+            <ResponsiveContainer width="100%" height={400}>
 
-            <LineChart data={data}>
-              <XAxis dataKey="agent_utc"  type = 'number' allowDataOverflow={true} domain={this.props.plot_domain}
-              tickFormatter = {(unixTime) => moment(mjd2cal(unixTime).getTime()).format('YYYY-MM-DD hh:mm a')}>
-              >
-                <Label value={this.props.info.plot_labels[0]} offset={0} position="insideBottom" />
-              </XAxis>
-              <YAxis domain={['auto','auto']} >
-                <Label value= {this.props.info.plot_labels[1]} angle={-90}   position="insideLeft" />
-              </YAxis>
-              <Tooltip labelFormatter={(val) => { return utc2date(val)}}/>
-              {lines}
-            </LineChart>
-          </ResponsiveContainer>
+              <LineChart data={data}>
+                <XAxis dataKey="agent_utc"  type = 'number' allowDataOverflow={true} domain={this.props.plot_domain}
+                tickFormatter = {(unixTime) => moment(mjd2cal(unixTime).getTime()).format('YYYY-MM-DD hh:mm a')}>
+                >
+                  <Label value={this.props.info.plot_labels[0]} offset={0} position="insideBottom" />
+                </XAxis>
+                <YAxis domain={['auto','auto']} >
+                  <Label value= {this.props.info.plot_labels[1]} angle={-90}   position="insideLeft" />
+                </YAxis>
+                <Tooltip labelFormatter={(val) => { return utc2date(val)}}/>
+                {lines}
+              </LineChart>
+            </ResponsiveContainer>
+          </Col>
+          <Col span={6} >
+            <Button>Pause</Button>
+          </Col>
+        </Row>
         </div>
 
       } else {

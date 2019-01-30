@@ -242,7 +242,7 @@ render() {
                 value={this.props.info.widget_type}>
               <Option value={widgetType.NONE}>Select Widget Type</Option>
               <Option value={widgetType.LIVE_PLOT}>Live Plot</Option>
-              <Option value={widgetType.COSMOS_DATA}>Data Box</Option>
+              <Option value={widgetType.COSMOS_DATA}>Data Table</Option>
               <Option value={widgetType.AGENT_COMMAND}>Command</Option>
               <Option value={widgetType.AGENT_LIST}>Agent List</Option>
             </Select>
