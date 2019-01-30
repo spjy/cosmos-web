@@ -18,7 +18,6 @@ class WidgetForm extends Component {
         command_list: []
         };
 
-
   }
 
 
@@ -136,7 +135,6 @@ render() {
                       {agent_names}
                     </Select>
                   </Form.Item>;
-    var form_items =[];
 
 
     const tree_props = {
@@ -148,12 +146,14 @@ render() {
       searchPlaceholder:'Select',
     };
 
-
-var command_detail;
-    if(this.props.info.agent !== "" ){
-      switch(this.props.info.widget_type){
-        case(widgetType.LIVE_PLOT):
-          form_items.push(agentSelect);
+    var form_items =[];
+    var command_detail;
+    // if(this.props.info.agent !== "" ){
+    // }
+    switch(this.props.info.widget_type){
+      case(widgetType.LIVE_PLOT):
+        form_items.push(agentSelect);
+        if(this.props.info.agent !== "" ){
           form_items.push(<Form.Item label="DataSet" key="dataname">
                 <TreeSelect style={{minWidth: '200px'}} {... tree_props}>
                 </TreeSelect>
@@ -179,18 +179,22 @@ var command_detail;
                 value={this.props.info.plot_labels[1]}
               style={form_style}/>
             </Form.Item>);
+        }
 
-        break;
-        case(widgetType.COSMOS_DATA):
-          form_items.push(agentSelect);
+      break;
+      case(widgetType.COSMOS_DATA):
+        form_items.push(agentSelect);
+        if(this.props.info.agent !== "" ){
           form_items.push(<Form.Item label="DataSet" key="dataname">
                 <TreeSelect style={{minWidth: '200px'}} {... tree_props}>
                 </TreeSelect>
             </Form.Item>);
-        break;
-        case(widgetType.AGENT_COMMAND):
-          var command_list=[];
-          form_items.push(agentSelect);
+        }
+      break;
+      case(widgetType.AGENT_COMMAND):
+        var command_list=[];
+        form_items.push(agentSelect);
+        if(this.props.info.agent !== "" ){
           form_items.push(<Form.Item label="Command Label" key="title">
                 <Input placeholder="Command Label"
                   id="title"
@@ -223,12 +227,10 @@ var command_detail;
                   style={form_style}/>
                 </Form.Item>)
             }
-            console.log(this.props.info.command)
-
-        break;
-        default:
-        break;
-      }
+        }
+      break;
+      default:
+      break;
     }
 
 
