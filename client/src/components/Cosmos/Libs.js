@@ -113,3 +113,81 @@ export function mjd2cal(mjd){
    // console.log(date)
   return new Date(Date.UTC(date.year, date.month-1, date.dom, date.hour, date.minute, date.second));
 }
+export function convertTimetoDate(val){
+  return new Date(val).toLocaleString('en-US')
+}
+export function utc2date(utc){
+  return convertTimetoDate(mjd2cal(utc).getTime())
+}
+export function plot_form_datalist(structure){
+  // console.log("plot_form_datalist", structure)
+  var tree_data = [];
+  for(var i =0; i < structure.length; i++){
+    var entry = structure[i];
+    var parent=tree_data;
+    var title = '';
+    for(var j=0; j < entry.length; j++){
+      var index;
+      var child_index;
+
+      if(j === 0){ // first level, find in tree_data
+        title=entry[0];
+        index = tree_data.findIndex(x => x.title === title);
+        if(index >= 0){ // found at first level
+          // set parent as tree_data[index]
+          parent = tree_data[index];
+        }
+        else { // add to tree_data
+          if(j===entry.length-1){ // add to tree_data without chidlren []
+            tree_data.push({
+              title:title,
+              value:title,
+              key:title
+            });
+            parent = null;
+          }
+          else {// add to tree_data with children , set added entry as parent
+            child_index =tree_data.push({
+              title:title,
+              value:title,
+              key:title,
+              children:[]
+            });
+            parent = tree_data[child_index-1]
+          }
+        }
+      }
+      else { // find in parent.children
+        title +='_'+entry[j];
+        index = parent.children.findIndex(x => x.title === title);
+
+        if(index >= 0){ // found, set parent as parent.children[index]
+          parent = parent.children[index];
+        }
+        else { // not found, add entry
+          // console.log('looking for',title, "in", parent.children,"given", index)
+          if(j===entry.length-1){ // add to parent.children without chidlren []
+            parent.children.push({
+              title:title,
+              value:title,
+              key:title
+            });
+            parent = null;
+          }
+          else {// add to parent.children with children , set added entry as parent
+            child_index =parent.children.push({
+              title:title,
+              value:title,
+              key:title,
+
+              children:[]
+            })
+            parent = parent.children[child_index-1]
+          }
+        }
+      }
+    }
+  }
+  // console.log('tree',tree_data)
+  return tree_data;
+}

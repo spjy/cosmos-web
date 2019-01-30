@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Select, Badge, TreeSelect, Alert, Input , Row, Col ,Card , Icon} from 'antd';
+import { Form, Select, Badge, TreeSelect, Alert, Input } from 'antd';
 import cosmosInfo from './CosmosInfo'
 import io from 'socket.io-client';
 const socket = io(cosmosInfo.socket);
@@ -171,11 +171,7 @@ class PlotForm extends Component {
     // console.log("value:",event.target.value)
     this.props.updateValue({key:event.target.id, value: event.target.value, id: this.props.id});
   }
-  onClickDelete = (e) => {
-    e.preventDefault();
-    this.props.selfDestruct(this.props.id);
-    console.log('The link was clicked.');
-  };
+
 render() {
     //agent list
     const AgentOption = Select.Option;
@@ -198,18 +194,20 @@ render() {
       agent_status_msg="Archive data available for agent "+this.props.info.agent ;
       AgentStatus =  <Alert message={agent_status_msg} type="warning" showIcon />
     }
-    else {
+    else if(this.props.info.agent!==""){
       agent_status_msg="There is no data  for agent "+this.props.info.agent ;
       AgentStatus =  <Alert message={agent_status_msg} type="error" showIcon />
     }
     tree_data = generate_treeselect_data(this.props.info.structure);
 
-    const form_style = {width: '300px'}
+    // const form_style = {width: '300px'}
+
+    const form_style={};
     var agentSelect= <Select
                       showSearch
                       value={this.props.info.agent}
                       onChange={this.agentSelected.bind(this)}
-                      style={form_style}
+                      style={{minWidth: '200px'}}
                     >
                       {agent_names}
                     </Select>
@@ -224,10 +222,17 @@ render() {
     };
     return (
       <div style={{ padding: '0 1em' , margin: '20px' }}>
-        <Card actions={[<a  onClick={this.onClickDelete.bind(this)}><Icon type="delete"/></a>]}>
-            <Form layout="vertical" onSubmit={this.handleSubmit.bind(this)}>
-              <Row gutter={16}>
-                <Col span={8} >
+
+            <Form layout="inline" >
+                  <Form.Item label="Agent">
+                  {agentSelect}
+                 </Form.Item>
+                  <Form.Item label="DataSet">
+                    <TreeSelect style={{minWidth: '200px'}} {... tree_props}>
+                    </TreeSelect>
+                  </Form.Item>
+            </Form>
+            <Form layout="inline" >
                   <Form.Item label="Plot Title">
                     <Input placeholder="Title"
                       id="plot_title"
@@ -235,8 +240,7 @@ render() {
                       value={this.props.info.plot_title}
                     style={form_style}/>
                   </Form.Item>
-                </Col>
-                <Col span={8}  >
+
                   <Form.Item label="X-Axis Label">
                     <Input placeholder="Label"
                       id="xLabel"
@@ -244,8 +248,7 @@ render() {
                       value={this.props.info.xLabel}
                     style={form_style}/>
                   </Form.Item>
-                </Col>
-                <Col span={8} >
+
                   <Form.Item label="Y-Axis Label">
                     <Input placeholder="Label"
                       id="yLabel"
@@ -253,29 +256,9 @@ render() {
                       value={this.props.info.yLabel}
                     style={form_style}/>
                   </Form.Item>
-                </Col>
-              </Row>
-              <Row gutter={16}>
-                <Col span={8} >
-                  <Form.Item label="Agent">
-                  {agentSelect}
-                  </Form.Item>
-                </Col>
-                <Col span={8}  >
-                  <Form.Item label="DataSet">
-                    <TreeSelect style={{width: '300px'}} {... tree_props}>
-                    </TreeSelect>
-                  </Form.Item>
-                </Col>
-                <Col span={8}  >
-                </Col>
-              </Row>
-
-
-
             </Form>
             {AgentStatus}
-        </Card>
+
       </div>
     );
   }

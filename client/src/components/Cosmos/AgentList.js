@@ -92,8 +92,6 @@ class AgentList extends Component {
       }
       return (
         <div>
-          <Navbar current="agentlist" />
-          <br/>
           <Table
             columns={columns}
             dataSource={data}

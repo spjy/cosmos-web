@@ -71,6 +71,17 @@ class CosmosWidgetConfig  {
 
 
   }
+  addvalue(json_name){
+    var new_name = true;
+    for(var i=0; i <this.jsonvalues.length; i++){
+      if(this.jsonvalues[i].data===json_name) new_name = false;
+    }
+    if(new_name){
+        this.jsonvalues.push({data: json_name})
+        this.generate_values();
+      }
+
+  }
   fetch_agent_info(){
     // console.log("fetch_agent_info")
     return fetch(`${cosmosInfo.socket}/api/cosmos_agent/${this.agent}`)
@@ -166,7 +177,8 @@ class CosmosWidgetConfig  {
 
     }
     this.values = vals;
-    // console.log("values",vals);
+ // console.log("values",vals);
+ //        console.log(this.jsonvalues)
   }
 
   // helper functions

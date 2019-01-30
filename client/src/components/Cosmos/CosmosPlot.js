@@ -6,26 +6,12 @@ import { Card, Switch, DatePicker, Slider, Row, Col, Button, Icon, Badge, Toolti
 import cosmosInfo from './CosmosInfo'
 import { mjd2cal } from './Libs'
 import PlotBox from './PlotBox'
+import { parse_live_data } from './CosmosPlotLibs'
+
 const socket = io(cosmosInfo.socket);
 const colors=["#82ca9d", "#9ca4ed","#f4a742","#e81d0b","#ed9ce6"]
 const { RangePicker } = DatePicker;
 
-function parse_live_data(data,fields){
-  var values = {};
-  var p, val;
-  values.agent_utc=Number(data.agent_utc);
-  for(var i = 0; i < fields.label.length; i++){
-    p = fields.structure[i];
-    val = data;
-    for(var j = 0; j <p.length; j++ ){
-      val=val[p[j]];
-    }
-
-    values[fields.label[i]]=Number(val);
-  }
-
-  return values;
-}
 function convertTimetoDate(val){
   return new Date(mjd2cal(val).getTime()).toLocaleString('en-US')
 }
