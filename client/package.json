@@ -9,6 +9,8 @@
     "babylonjs": "^3.2.0-alpha10",
     "babylonjs-loaders": "^3.1.0-alpha3.7",
     "bizcharts": "^3.1.4-beta.3",
+    "dotenv": "^6.2.0",
+    "env-cmd": "^8.0.2",
     "moment": "^2.22.0",
     "react": "^16.2.0",
     "react-charts": "^2.0.0-alpha.12",
