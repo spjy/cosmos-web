@@ -31,7 +31,7 @@ mongoose.connect(process.env.MONGO_URL, (err) => {
 var MongoClient = require('mongodb').MongoClient
       , assert = require('assert');
 var mongo_url_cosmos = process.env.MONGO_URL;
-console.log(process.env.MONGO_URL)
+// console.log(process.env.MONGO_URL)
 
 function get_agent_command_list(str){
   // console.log(str)
@@ -267,8 +267,16 @@ cosmosSocket.on('message', function(message) {
   }
   catch(e){
     // obj = {};
-    // console.log(json_str+"]")
+    try {
       obj = JSON.parse(json_str+"}");
+      valid=true
+      // console.log(json_str+"}")
+    }
+    catch(e){
+      // console.log(json_str)
+//
+    }
+      // obj = JSON.parse(json_str+"}");
     // obj  = JSON.parse(JSON.stringify(json_str));
 
   }
@@ -392,7 +400,7 @@ cosmosSocket.on('message', function(message) {
       // Maintain the list of agents
       if (!(obj.agent_proc in agentListObj)) {
         agentListObj[obj.agent_proc] = [obj.agent_utc, ' '+obj.agent_node, ' '+obj.agent_addr, ' '+obj.agent_port, ' '+obj.agent_bsz];
-
+        console.log("new agent",obj.agent_proc)
       } else {
         // Update the time stamp
         agentListObj[obj.agent_proc][0] = obj.agent_utc;
@@ -474,7 +482,6 @@ setInterval(function(){
 
 }, 5000);
 const port_io = 3001;
-// const hostname_io = '192.168.150.23';
 const hostname_env = process.env.SATELLITE_IP;
 server.listen(port_io, hostname_env, () => {
   console.log(`Server running at http://${hostname_env}:${port_io}/`);
