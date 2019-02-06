@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
-import { Card,  Button, Icon, Modal, Popover, Layout, Table, Alert} from 'antd';
+import { Card,  Button, Icon, Modal, Popover, Layout, Table, Alert, Col, Row} from 'antd';
 import PlotWidget from './PlotWidget'
 import WidgetForm from './WidgetForm'
 import cosmosInfo from './../Cosmos/CosmosInfo'
@@ -137,9 +137,20 @@ class Widget extends Component {
     if(!this.state.view_form){
       switch(this.props.info.widget_type){
         case(widgetType.LIVE_PLOT):
-        // if(this.state.info)
-            content = <PlotWidget info={this.props.info} plot_domain={['auto, auto']} data={this.state.data}/>
-            // console.log(this.state.info)
+            table_data=[];
+            for(var i=0; i < this.props.info.values.label.length; i++){
+              table_data.push({key:i,
+                dataname: this.props.info.values.label[i],
+                value: this.props.data[this.props.info.values.label[i]]});
+            }
+            content =   <Row gutter={16}>
+                <Col span={16} >
+                  <PlotWidget info={this.props.info} plot_domain={['auto, auto']} data={this.state.data}/>
+                  </Col>
+                  <Col span={8} >
+                    <Table columns={[{title:"Name", dataIndex:"dataname"},{title:"Value", dataIndex:"value"}]} dataSource={table_data} size="small"  pagination={false}/>
+                  </Col>
+                </Row>
         break;
         case(widgetType.AGENT_COMMAND):
           content =<div>

@@ -50,8 +50,7 @@ class PlotWidget extends Component {
         }
         Plots=
         <div>
-        <Row gutter={16}>
-          <Col span={18} >
+
             <h4 style={{textAlign:'center'}}> {this.props.info.title} </h4>
             <ResponsiveContainer width="100%" height={400}>
 
@@ -68,11 +67,7 @@ class PlotWidget extends Component {
                 {lines}
               </LineChart>
             </ResponsiveContainer>
-          </Col>
-          <Col span={6} >
-            <Button>Pause</Button>
-          </Col>
-        </Row>
+
         </div>
 
       } else {
