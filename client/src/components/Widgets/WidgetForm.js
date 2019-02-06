@@ -145,7 +145,10 @@ render() {
       showCheckedStrategy:TreeSelect.SHOW_PARENT,
       searchPlaceholder:'Select',
     };
-
+    var dataSelect =<Form.Item label="DataSet" key="dataname">
+          <TreeSelect style={{minWidth: '300px'}} {... tree_props}>
+          </TreeSelect>
+      </Form.Item>;
     var form_items =[];
     var command_detail;
     // if(this.props.info.agent !== "" ){
@@ -154,10 +157,7 @@ render() {
       case(widgetType.LIVE_PLOT):
         form_items.push(agentSelect);
         if(this.props.info.agent !== "" ){
-          form_items.push(<Form.Item label="DataSet" key="dataname">
-                <TreeSelect style={{minWidth: '200px'}} {... tree_props}>
-                </TreeSelect>
-            </Form.Item>);
+          form_items.push(dataSelect);
           form_items.push(<Form.Item label="Title" key="title">
                 <Input placeholder="Title"
                   id="title"
@@ -185,10 +185,7 @@ render() {
       case(widgetType.COSMOS_DATA):
         form_items.push(agentSelect);
         if(this.props.info.agent !== "" ){
-          form_items.push(<Form.Item label="DataSet" key="dataname">
-                <TreeSelect style={{minWidth: '200px'}} {... tree_props}>
-                </TreeSelect>
-            </Form.Item>);
+          form_items.push(dataSelect);
         }
       break;
       case(widgetType.AGENT_COMMAND):
