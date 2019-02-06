@@ -15,7 +15,7 @@ COSMOS Web is an app that visualizes live orbit and attitude data using a 3D ren
 cd cosmos
 git clone https://github.com/kaseyhagi/cosmos-web.git source/tools/cosmos-web
 ```
-2. In `/`, rename `.env.example` to `.env`. Replace `SATELLITE_IP` with the IP of the propagator or socket.
+2. In `/`, rename `.env.example` to `.env`. Replace `SATELLITE_IP` with the IP of the propagator or socket.  
 3. Install dependencies
 ```
 cd source/tools/cosmos-web
@@ -45,7 +45,7 @@ cp .env.example .env
 cd ../
 npm run-script dev
 ```
-2. Run client in `cosmos-web/client`
+2. Run client in `cosmos-web/client`  
 In a new Terminal:
 ```
 cd ~/cosmos/source/tools/cosmos-web/client
@@ -59,8 +59,8 @@ npm start
 ```
 
 ### Optional: run as your own local server ###
-Make changes to `.env` in `cosmos-web/`
-Replace the value for `SATELLITE_IP` with your IP address
-Make changes to `.env` in `cosmos-web/client/`
-Replace the value for `REACT_APP_SATELLITE_IP` with your IP address
-Restart client and server 
+Make changes to `.env` in `cosmos-web/`  
+Replace the value for `SATELLITE_IP` with your IP address  
+Make changes to `.env` in `cosmos-web/client/`  
+Replace the value for `REACT_APP_SATELLITE_IP` with your IP address  
+Restart client and server
