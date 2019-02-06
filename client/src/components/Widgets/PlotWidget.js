@@ -19,7 +19,6 @@ class PlotWidget extends Component {
 */
   constructor(props){
     super(props);
-    console.log(props)
       this.state = {
       };
   }
@@ -50,11 +49,10 @@ class PlotWidget extends Component {
               />)
         }
         start_time =data[data.length-1].agent_utc - (this.props.info.xRange/1440);
-        plot_domain=[start_time, data[data.length-1].agent_utc];
+        plot_domain=['auto','auto'];
         if(data[0].agent_utc < start_time){
           plot_domain=[start_time, data[data.length-1].agent_utc];
         }
-        else plot_domain=['auto','auto']
         Plots=
         <div>
 
