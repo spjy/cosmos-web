@@ -15,7 +15,7 @@ class CosmosWidgetInfo  {
     this.title = obj.title ? obj.title: "";
     this.data_name = obj.data_name ? obj.data_name : [];
     this.plot_labels = obj.plot_labels? obj.plot_labels : ["",""];
-    this.plot_range = obj.plot_range? obj.plot_range : [100,100];
+    this.xRange = obj.xRange? obj.xRange : 60;
     this.command = obj.command ? obj.command: ["",""];
     this.values={};
   }

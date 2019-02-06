@@ -11,7 +11,7 @@ const socket = io(cosmosInfo.socket);
 
 class PlotWidget extends Component {
 /* should inherit props={
-          info: CosmosWidgetConfig,
+          info: CosmosWidgetInfo,
           plot_domain:[start, end]
           data=[{value: , utc: , date: }]
 
@@ -35,7 +35,8 @@ class PlotWidget extends Component {
 
       var data = [];
       data = this.props.data;
-
+      var plot_domain;
+      var start_time;
       if(data.length>0) {
         var lines=[];
         var Plots;
@@ -48,6 +49,12 @@ class PlotWidget extends Component {
               animationDuration={1}
               />)
         }
+        start_time =data[data.length-1].agent_utc - (this.props.info.xRange/1440);
+        plot_domain=[start_time, data[data.length-1].agent_utc];
+        if(data[0].agent_utc < start_time){
+          plot_domain=[start_time, data[data.length-1].agent_utc];
+        }
+        else plot_domain=['auto','auto']
         Plots=
         <div>
 
@@ -55,7 +62,7 @@ class PlotWidget extends Component {
             <ResponsiveContainer width="100%" height={400}>
 
               <LineChart data={data}>
-                <XAxis dataKey="agent_utc"  type = 'number' allowDataOverflow={true} domain={this.props.plot_domain}
+                <XAxis dataKey="agent_utc"  type = 'number' allowDataOverflow={true} domain={plot_domain}
                 tickFormatter = {(unixTime) => moment(mjd2cal(unixTime).getTime()).format('YYYY-MM-DD hh:mm a')}>
                 >
                   <Label value={this.props.info.plot_labels[0]} offset={0} position="insideBottom" />

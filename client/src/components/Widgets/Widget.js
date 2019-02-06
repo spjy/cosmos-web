@@ -7,6 +7,7 @@ import cosmosInfo from './../Cosmos/CosmosInfo'
 import AgentList from './../Cosmos/AgentList'
 import {utc2date} from './../Cosmos/Libs'
 const socket = io(cosmosInfo.socket);
+const colors=["#82ca9d", "#9ca4ed","#f4a742","#e81d0b","#ed9ce6"]
 const ButtonGroup = Button.Group;
 const {
   Header, Content, Footer, Sider,
@@ -20,16 +21,6 @@ export const widgetType = {
   AGENT_LIST:4
 };
 class Widget extends Component {
-/* props={
-  agent: CosmosAgent(),
-  widget_type: widgetType,
-  title: String,
-  data_name : [ "device_imu_omega_000", "device_gps_geods_000"],
-  data_key: {}
-  plot_labels: ["xlabel", "ylabel"],
-  plot_range: [Number(xRange), Number(yRange)],
-  command_string: "status"
-} */
 
   constructor(props){
     super(props);
@@ -107,7 +98,9 @@ class Widget extends Component {
      {
       if(this.state.form.data_name.length<1) valid= false;
       if(this.state.form.agent==="") valid= false;
+      if(this.state.form.xRange <= 0) valid = false;
     }
+
     this.setState({form_valid:valid})
     return valid;
   }
@@ -140,7 +133,7 @@ class Widget extends Component {
             table_data=[];
             for(var i=0; i < this.props.info.values.label.length; i++){
               table_data.push({key:i,
-                dataname: this.props.info.values.label[i],
+                dataname: <p style={{color:colors[i]}}>{this.props.info.values.label[i]}</p>,
                 value: this.props.data[this.props.info.values.label[i]]});
             }
             content =   <Row gutter={16}>
