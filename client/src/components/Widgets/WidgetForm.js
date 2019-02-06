@@ -179,6 +179,13 @@ render() {
                 value={this.props.info.plot_labels[1]}
               style={form_style}/>
             </Form.Item>);
+            form_items.push(<Form.Item label="Time Range (minutes)" key="xRange">
+                <Input placeholder="Time Range (minutes)"
+                  id="xRange"
+                  onChange={this.handleFieldChange.bind(this)}
+                  value={this.props.info.xRange}
+                style={form_style}/>
+              </Form.Item>);
         }
 
       break;

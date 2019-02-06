@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
-import { Card,  Button, Icon, Modal, Popover, Layout, Table, Alert} from 'antd';
+import { Card,  Button, Icon, Modal, Popover, Layout, Table, Alert, Col, Row} from 'antd';
 import PlotWidget from './PlotWidget'
 import WidgetForm from './WidgetForm'
 import cosmosInfo from './../Cosmos/CosmosInfo'
 import AgentList from './../Cosmos/AgentList'
 import {utc2date} from './../Cosmos/Libs'
 const socket = io(cosmosInfo.socket);
+const colors=["#82ca9d", "#9ca4ed","#f4a742","#e81d0b","#ed9ce6"]
 const ButtonGroup = Button.Group;
 const {
   Header, Content, Footer, Sider,
@@ -20,16 +21,6 @@ export const widgetType = {
   AGENT_LIST:4
 };
 class Widget extends Component {
-/* props={
-  agent: CosmosAgent(),
-  widget_type: widgetType,
-  title: String,
-  data_name : [ "device_imu_omega_000", "device_gps_geods_000"],
-  data_key: {}
-  plot_labels: ["xlabel", "ylabel"],
-  plot_range: [Number(xRange), Number(yRange)],
-  command_string: "status"
-} */
 
   constructor(props){
     super(props);
@@ -107,7 +98,9 @@ class Widget extends Component {
      {
       if(this.state.form.data_name.length<1) valid= false;
       if(this.state.form.agent==="") valid= false;
+      if(this.state.form.xRange <= 0) valid = false;
     }
+
     this.setState({form_valid:valid})
     return valid;
   }
@@ -137,9 +130,20 @@ class Widget extends Component {
     if(!this.state.view_form){
       switch(this.props.info.widget_type){
         case(widgetType.LIVE_PLOT):
-        // if(this.state.info)
-            content = <PlotWidget info={this.props.info} plot_domain={['auto, auto']} data={this.state.data}/>
-            // console.log(this.state.info)
+            table_data=[];
+            for(var i=0; i < this.props.info.values.label.length; i++){
+              table_data.push({key:i,
+                dataname: <p style={{color:colors[i]}}>{this.props.info.values.label[i]}</p>,
+                value: this.props.data[this.props.info.values.label[i]]});
+            }
+            content =   <Row gutter={16}>
+                <Col span={16} >
+                  <PlotWidget info={this.props.info} plot_domain={['auto, auto']} data={this.state.data}/>
+                  </Col>
+                  <Col span={8} >
+                    <Table columns={[{title:"Name", dataIndex:"dataname"},{title:"Value", dataIndex:"value"}]} dataSource={table_data} size="small"  pagination={false}/>
+                  </Col>
+                </Row>
         break;
         case(widgetType.AGENT_COMMAND):
           content =<div>
