@@ -133,7 +133,7 @@ class Widget extends Component {
             table_data=[];
             for(var i=0; i < this.props.info.values.label.length; i++){
               table_data.push({key:i,
-                dataname: <p style={{color:colors[i]}}>{this.props.info.values.label[i]}</p>,
+                dataname: <p style={{color:colors[i%colors.length]}}>{this.props.info.values.label[i]}</p>,
                 value: this.props.data[this.props.info.values.label[i]]});
             }
             content =   <Row gutter={16}>
