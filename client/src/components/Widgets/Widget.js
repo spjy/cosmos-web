@@ -120,6 +120,10 @@ class Widget extends Component {
       {agent: this.props.info.agent, node: this.state.node, command: this.props.info.command[0]+" "+this.props.info.command[0] },
       this.commandResponseReceived.bind(this));
   }
+  selfDestruct(){
+    this.props.selfDestruct({id:
+      this.props.id});
+  }
   commandResponseReceived(data){
     this.setState({data:<p style={{whiteSpace:'pre-wrap', wordWrap:'break-word'}} >{data.output}</p>})
   }
@@ -168,10 +172,6 @@ class Widget extends Component {
     }
     var form_validation;
     if(!this.state.form_valid) form_validation= <Alert message="Incomplete" type="warning" showIcon />;
-    const widget_actions=( <ButtonGroup size="small">
-      <Button  onClick={this.openModal.bind(this)}><Icon type="setting"/></Button>
-      <Button  onClick={this.props.selfDestruct.bind(this.props.id)}><Icon type="delete"/></Button>
-    </ButtonGroup>);
 
     const widget_style ={
       border:'1px solid #e1e6ef',
@@ -200,7 +200,7 @@ class Widget extends Component {
           <div style={{margin:"10px"}}> <p style={{display:"inline"}}><b>{this.props.info.agent}</b></p>
           <ButtonGroup size="small" style={{display:"inline", float:"right"}}>
             <Button  onClick={this.openModal.bind(this)}><Icon type="setting"/></Button>
-            <Button  onClick={this.props.selfDestruct.bind(this.props.id)}><Icon type="delete"/></Button>
+            <Button  onClick={this.selfDestruct.bind(this)}><Icon type="delete"/></Button>
           </ButtonGroup>
           </div>
           {content}

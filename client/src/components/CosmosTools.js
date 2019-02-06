@@ -71,8 +71,7 @@ class CosmosTools extends Component {
   }
   removeWidget(index){
     var widgets = this.state.widgets;
-    // console.log("remove",widgets[index])
-    widgets.splice(index,1);
+    widgets.splice(index.id,1);
     this.setState({widgets:widgets});
 
   }
