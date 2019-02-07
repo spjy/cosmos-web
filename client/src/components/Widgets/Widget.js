@@ -126,7 +126,7 @@ class Widget extends Component {
 
     var content, table_data;
     // const table_cols = []
-
+    var widgetTitle = '['+this.props.info.node+']' +this.props.info.agent;
     const table_cols = [{title:"Name", dataIndex:"dataname"},{title:"Value", dataIndex:"value"}, {title:"Time", dataIndex:"time"}]
     // console.log("widget.data", this.state.data, this.props.data)
     if(!this.state.view_form){
@@ -174,6 +174,7 @@ class Widget extends Component {
         break;
         case(widgetType.AGENT_LIST):
           content=<AgentList />
+          widgetTitle="COSMOS Agents";
         break;
         default:
 
@@ -191,6 +192,7 @@ class Widget extends Component {
       borderRadius: "10px"
     }
 
+
     return(
       <Layout style={widget_style}>
         <Modal
@@ -207,7 +209,7 @@ class Widget extends Component {
             { form_validation}
         </Modal>
         <Content>
-          <div style={{margin:"10px"}}> <p style={{display:"inline"}}><b>[{this.props.info.node}] {this.props.info.agent}</b></p>
+          <div style={{margin:"10px"}}> <p style={{display:"inline"}}><b>{widgetTitle}</b></p>
           <ButtonGroup size="small" style={{display:"inline", float:"right"}}>
             <Button  onClick={this.openModal.bind(this)}><Icon type="setting"/></Button>
             <Button  onClick={this.selfDestruct.bind(this)}><Icon type="delete"/></Button>
