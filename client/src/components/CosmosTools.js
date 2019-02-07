@@ -67,6 +67,11 @@ class CosmosTools extends Component {
       this.setState ({widgets:widgets})
       this.startListening(e.form.agent);
     }
+    else if(e.form.widget_type === widgetType.ARCHIVE_PLOT){
+      var agent= this.state.agents[e.form.agent];
+      widgets[e.id].values=agent.info.get_data_structure(e.form.data_name);
+      this.setState ({widgets:widgets})
+    }
 
   }
   removeWidget(index){

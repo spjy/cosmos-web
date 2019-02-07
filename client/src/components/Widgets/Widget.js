@@ -148,14 +148,8 @@ class Widget extends Component {
                 </Row>
         break;
         case(widgetType.ARCHIVE_PLOT):
+            content =  <ArchivePlotWidget info={this.props.info} />;
 
-            content =   <Row gutter={16}>
-                <Col span={16} >
-                  <ArchivePlotWidget info={this.props.info} plot_domain={['auto, auto']} data={this.state.data}/>
-                  </Col>
-                  <Col span={8} >
-                  </Col>
-                </Row>
         break;
         case(widgetType.AGENT_COMMAND):
           content =<div>

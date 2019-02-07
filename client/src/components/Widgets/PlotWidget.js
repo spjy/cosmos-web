@@ -58,6 +58,7 @@ class PlotWidget extends Component {
 
           if(this.state.fix_slider){
             plot_domain=[start_time, end_time];
+            // data=data.splice()
             slider = <Slider value={end_time}
               min={0}
               max={data.length-1}
