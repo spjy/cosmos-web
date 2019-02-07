@@ -117,7 +117,7 @@ class PlotForm extends Component {
           this.setState({agent_list:agents})
         }
       });
-      socket.emit('agent_dates', {agent: this.props.info.agent}, this.agentArchiveFound.bind(this));
+      socket.emit('agent_dates', {agent: this.props.info.agent, node: this.props.info.node}, this.agentArchiveFound.bind(this));
   }
   agentArchiveFound(data){
     if(data.valid===true)
@@ -150,7 +150,7 @@ class PlotForm extends Component {
     this.setState({
       data_selected: [], archive:false
     });
-    socket.emit('agent_dates', {agent: this.props.info.agent}, this.agentArchiveFound.bind(this));
+    socket.emit('agent_dates', {agent: this.props.info.agent, node: this.props.info.node}, this.agentArchiveFound.bind(this));
 
   }
   dataSelected(value) {

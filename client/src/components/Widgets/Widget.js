@@ -207,7 +207,7 @@ class Widget extends Component {
             { form_validation}
         </Modal>
         <Content>
-          <div style={{margin:"10px"}}> <p style={{display:"inline"}}><b>{this.props.info.agent}</b></p>
+          <div style={{margin:"10px"}}> <p style={{display:"inline"}}><b>[{this.props.info.node}] {this.props.info.agent}</b></p>
           <ButtonGroup size="small" style={{display:"inline", float:"right"}}>
             <Button  onClick={this.openModal.bind(this)}><Icon type="setting"/></Button>
             <Button  onClick={this.selfDestruct.bind(this)}><Icon type="delete"/></Button>

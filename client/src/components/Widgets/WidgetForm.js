@@ -42,6 +42,7 @@ class WidgetForm extends Component {
           }
           this.setState({agent_list:agents})
         }
+
       });
   }
 
@@ -51,12 +52,18 @@ class WidgetForm extends Component {
   }
 
   agentSelected(value) {
-    var agent_name = this.state.agent_list[value].agent_proc
+    var agent_name = this.state.agent_list[value].agent_proc;
+    var node_name = this.state.agent_list[value].agent_node;
+    console.log(node_name);
     this.props.updateForm({key:"agent", value: agent_name});
+    this.props.updateForm({key:"node", value: node_name});
     if(this.props.info.widget_type === widgetType.COSMOS_DATA ||
-      this.props.info.widget_type === widgetType.LIVE_PLOT){
+      this.props.info.widget_type === widgetType.LIVE_PLOT ||
+      this.props.info.widget_type === widgetType.ARCHIVE_PLOT
+    ){
 
         var structure = this.props.structure(agent_name);
+        console.log(structure)
         if(structure){
             var tree_data = plot_form_datalist(structure);
             this.setState({data_list:tree_data})
@@ -75,10 +82,10 @@ class WidgetForm extends Component {
       else if(this.props.info.widget_type === widgetType.AGENT_COMMAND){
         // get command list
         this.setState({loading_commands:true, command_list:[]})
-        var nodename = this.state.agent_list[value].agent_node;
-        console.log("node", nodename)
-        this.props.setNode(nodename);
-        socket.emit('list_agent_commands', {agent: agent_name, node: nodename}, this.getAgentCommandsList.bind(this));
+        // var nodename = this.state.agent_list[value].agent_node;
+        // console.log("node", nodename)
+        this.props.setNode(node_name);
+        socket.emit('list_agent_commands', {agent: agent_name, node: node_name}, this.getAgentCommandsList.bind(this));
 
       }
 

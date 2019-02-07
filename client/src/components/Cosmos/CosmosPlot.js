@@ -61,7 +61,7 @@ class CosmosPlot extends Component {
         this.startListening();
       }
       if(this.props.info.archive){
-        socket.emit('agent_dates', {agent: this.props.info.agent}, this.setBoundaries.bind(this));
+        socket.emit('agent_dates', {agent: this.props.info.agent, node: this.props.info.node}, this.setBoundaries.bind(this));
       }
 
     }
@@ -126,7 +126,7 @@ class CosmosPlot extends Component {
         this.stopListening();
         if(this.state.archive.date_boundaries.start === null){
           // get date boundaries for calendar
-          socket.emit('agent_dates', {agent: this.props.info.agent}, this.setBoundaries.bind(this));
+          socket.emit('agent_dates', {agent: this.props.info.agent, node: this.props.info.node }, this.setBoundaries.bind(this));
         }
       }
 
@@ -162,7 +162,9 @@ class CosmosPlot extends Component {
       a.date_picker.end = endDate;
       this.setState({archive:a})
 
-      socket.emit('agent_query',{agent: this.props.info.agent, startDate: startDate, endDate: endDate, fields:this.getQueryFields()}, this.receivedPlotData.bind(this));
+      socket.emit('agent_query',{
+        agent: this.props.info.agent, startDate: startDate, endDate: endDate, fields:this.getQueryFields(), node: this.props.info.node},
+        this.receivedPlotData.bind(this));
 
     }
     receivedPlotData(data){
@@ -210,7 +212,11 @@ class CosmosPlot extends Component {
       // callback: this.receivedLiveData()
       // console.log("fetch data from: ",  this.state.live.current_data["agent_utc"])
       socket.emit('agent_resume_live_plot',
-          { agent: this.props.info.agent, resumeUTC: this.state.live.current_data["agent_utc"], fields:this.getQueryFields()},
+          { agent: this.props.info.agent,
+            resumeUTC: this.state.live.current_data["agent_utc"],
+            fields:this.getQueryFields(),
+            node: this.props.info.node
+          },
           this.receivedLiveData.bind(this));
 
     }
