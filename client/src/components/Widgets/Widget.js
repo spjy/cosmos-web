@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import io from 'socket.io-client';
 import { Card,  Button, Icon, Modal, Popover, Layout, Table, Alert, Col, Row} from 'antd';
 import PlotWidget from './PlotWidget'
+import ArchivePlotWidget from './ArchivePlotWidget'
 import WidgetForm from './WidgetForm'
 import cosmosInfo from './../Cosmos/CosmosInfo'
 import AgentList from './../Cosmos/AgentList'
@@ -18,7 +19,8 @@ export const widgetType = {
   LIVE_PLOT: 1,
   AGENT_COMMAND: 2,
   COSMOS_DATA:3,
-  AGENT_LIST:4
+  AGENT_LIST:4,
+  ARCHIVE_PLOT:5
 };
 class Widget extends Component {
 
@@ -142,6 +144,16 @@ class Widget extends Component {
                   </Col>
                   <Col span={8} >
                     <Table columns={[{title:"Name", dataIndex:"dataname"},{title:"Value", dataIndex:"value"}]} dataSource={table_data} size="small"  pagination={false}/>
+                  </Col>
+                </Row>
+        break;
+        case(widgetType.ARCHIVE_PLOT):
+
+            content =   <Row gutter={16}>
+                <Col span={16} >
+                  <ArchivePlotWidget info={this.props.info} plot_domain={['auto, auto']} data={this.state.data}/>
+                  </Col>
+                  <Col span={8} >
                   </Col>
                 </Row>
         break;

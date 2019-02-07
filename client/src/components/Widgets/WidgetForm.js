@@ -122,6 +122,9 @@ render() {
       if(agent_list[i].live===true) {
         badge ="processing"
         agent_names.push(<AgentOption key={i} ><Badge status={badge} /> {agent_list[i].agent_proc} </AgentOption>);
+      }else if (this.props.info.widget_type===widgetType.ARCHIVE_PLOT){
+        badge ="default"
+        agent_names.push(<AgentOption key={i} ><Badge status={badge} /> {agent_list[i].agent_proc} </AgentOption>);
       }
 
     }
@@ -155,6 +158,41 @@ render() {
     // }
     switch(this.props.info.widget_type){
       case(widgetType.LIVE_PLOT):
+        form_items.push(agentSelect);
+        if(this.props.info.agent !== "" ){
+          form_items.push(dataSelect);
+          form_items.push(<Form.Item label="Title" key="title">
+                <Input placeholder="Title"
+                  id="title"
+                  onChange={this.handleFieldChange.bind(this)}
+                  value={this.props.info.title}
+                style={form_style}/>
+              </Form.Item>);
+          form_items.push(<Form.Item label="X-Axis Label" key="xLabel">
+                <Input placeholder="Label"
+                  id="xLabel"
+                  onChange={this.handleFieldChange.bind(this)}
+                  value={this.props.info.plot_labels[0]}
+                style={form_style}/>
+              </Form.Item>);
+          form_items.push(<Form.Item label="Y-Axis Label" key="yLabel">
+              <Input placeholder="Label"
+                id="yLabel"
+                onChange={this.handleFieldChange.bind(this)}
+                value={this.props.info.plot_labels[1]}
+              style={form_style}/>
+            </Form.Item>);
+            form_items.push(<Form.Item label="Time Range (minutes)" key="xRange">
+                <Input placeholder="Time Range (minutes)"
+                  id="xRange"
+                  onChange={this.handleFieldChange.bind(this)}
+                  value={this.props.info.xRange}
+                style={form_style}/>
+              </Form.Item>);
+        }
+
+      break;
+      case(widgetType.ARCHIVE_PLOT):
         form_items.push(agentSelect);
         if(this.props.info.agent !== "" ){
           form_items.push(dataSelect);
@@ -249,6 +287,7 @@ render() {
               <Option value={widgetType.COSMOS_DATA}>Data Table</Option>
               <Option value={widgetType.AGENT_COMMAND}>Command</Option>
               <Option value={widgetType.AGENT_LIST}>Agent List</Option>
+              <Option value={widgetType.ARCHIVE_PLOT}>Historical Plot</Option>
             </Select>
             <Form layout="inline" >
               {form_items}
