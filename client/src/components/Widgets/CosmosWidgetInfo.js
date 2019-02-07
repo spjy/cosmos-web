@@ -11,6 +11,7 @@ class CosmosWidgetInfo  {
 
   constructor(obj){
     this.agent = obj.agent ? obj.agent : "";
+    this.node = obj.node ? obj.node : "";
     this.widget_type = obj.widget_type ? obj.widget_type : widgetType.NONE;
     this.title = obj.title ? obj.title: "";
     this.data_name = obj.data_name ? obj.data_name : [];

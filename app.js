@@ -123,11 +123,13 @@ io.on('connection', function(client) {
     client.on('agent_dates', function (msg, callback) {
       // console.log(msg)
       var agent = msg.agent;
+      var node = msg.node;
       var data;
 
       MongoClient.connect(mongo_url_cosmos,{ useNewUrlParser: true }, function(err, db) {
         var dbo = db.db("cosmos");
-        var agent_db = dbo.collection('agent_'+agent);
+        // var agent_db = dbo.collection('agent_'+agent);
+        var agent_db = dbo.collection(node+'_'+agent);
         var dates={};
 
         agent_db.find().sort({'time':1}).limit(1).toArray(function(err, result) {
@@ -159,13 +161,15 @@ io.on('connection', function(client) {
     client.on('agent_query', function (msg, callback) {
       // console.log(msg)
       var agent = msg.agent;
+      var node = msg.node;
       var start = msg.startDate;
       var end = msg.endDate;
       var fields = msg.fields;
 
       MongoClient.connect(mongo_url_cosmos,{ useNewUrlParser: true }, function(err, db) {
         var dbo = db.db("cosmos");
-        var agent_db = dbo.collection('agent_'+agent);
+        // var agent_db = dbo.collection('agent_'+agent);
+        var agent_db = dbo.collection(node+'_'+agent);
         var query = {time: { $gte:new Date(start), $lte:new Date(end)}};
         var selector={ "agent_utc":true, "_id": false};
         for(var i = 0; i < fields.length; i++){
@@ -173,7 +177,9 @@ io.on('connection', function(client) {
         }
         // console.log("selector", selector)
         // query ={}
-        agent_db.find(query,{projection: selector} ).sort({time:1}).toArray(function(err, result) {
+        // agent_db.find(query,{projection: selector} ).sort({time:1}).toArray(function(err, result) {
+
+        agent_db.find(query,{projection: selector} ).toArray(function(err, result) {
           if (err) throw err;
           if(result.length >0 ){
 
@@ -189,12 +195,14 @@ io.on('connection', function(client) {
     client.on('agent_resume_live_plot', function (msg, callback) {
       // console.log(msg)
       var agent = msg.agent;
+      var node = msg.node;
       var start = msg.resumeUTC;
       var fields = msg.fields;
 
       MongoClient.connect(mongo_url_cosmos,{ useNewUrlParser: true }, function(err, db) {
         var dbo = db.db("cosmos");
-        var agent_db = dbo.collection('agent_'+agent);
+        // var agent_db = dbo.collection('agent_'+agent);
+        var agent_db = dbo.collection(node+'_'+agent);
         var query = {agent_utc: { $gte:start}};
         var selector={ "agent_utc":true, "_id": false};
         for(var i = 0; i < fields.length; i++){
@@ -415,7 +423,7 @@ cosmosSocket.on('message', function(message) {
       if(agents_to_log.indexOf(obj.agent_proc)>-1){
           MongoClient.connect(mongo_url_cosmos,{ useNewUrlParser: true }, function(err, db) {
             var dbo = db.db("cosmos");
-            var agent_db = dbo.collection('agent_'+obj.agent_proc);
+            var agent_db = dbo.collection(obj.agent_node+'_'+obj.agent_proc);
             var entry = obj;
             entry['time']=new Date();
             agent_db.insertOne(entry, function(err, res){

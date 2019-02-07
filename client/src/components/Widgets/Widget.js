@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import io from 'socket.io-client';
 import { Card,  Button, Icon, Modal, Popover, Layout, Table, Alert, Col, Row} from 'antd';
 import PlotWidget from './PlotWidget'
+import ArchivePlotWidget from './ArchivePlotWidget'
 import WidgetForm from './WidgetForm'
 import cosmosInfo from './../Cosmos/CosmosInfo'
 import AgentList from './../Cosmos/AgentList'
@@ -18,7 +19,8 @@ export const widgetType = {
   LIVE_PLOT: 1,
   AGENT_COMMAND: 2,
   COSMOS_DATA:3,
-  AGENT_LIST:4
+  AGENT_LIST:4,
+  ARCHIVE_PLOT:5
 };
 class Widget extends Component {
 
@@ -124,7 +126,7 @@ class Widget extends Component {
 
     var content, table_data;
     // const table_cols = []
-
+    var widgetTitle = '['+this.props.info.node+']' +this.props.info.agent;
     const table_cols = [{title:"Name", dataIndex:"dataname"},{title:"Value", dataIndex:"value"}, {title:"Time", dataIndex:"time"}]
     // console.log("widget.data", this.state.data, this.props.data)
     if(!this.state.view_form){
@@ -133,7 +135,7 @@ class Widget extends Component {
             table_data=[];
             for(var i=0; i < this.props.info.values.label.length; i++){
               table_data.push({key:i,
-                dataname: <p style={{color:colors[i]}}>{this.props.info.values.label[i]}</p>,
+                dataname: <p style={{color:colors[i%colors.length]}}>{this.props.info.values.label[i]}</p>,
                 value: this.props.data[this.props.info.values.label[i]]});
             }
             content =   <Row gutter={16}>
@@ -144,6 +146,10 @@ class Widget extends Component {
                     <Table columns={[{title:"Name", dataIndex:"dataname"},{title:"Value", dataIndex:"value"}]} dataSource={table_data} size="small"  pagination={false}/>
                   </Col>
                 </Row>
+        break;
+        case(widgetType.ARCHIVE_PLOT):
+            content =  <ArchivePlotWidget info={this.props.info} />;
+
         break;
         case(widgetType.AGENT_COMMAND):
           content =<div>
@@ -168,6 +174,7 @@ class Widget extends Component {
         break;
         case(widgetType.AGENT_LIST):
           content=<AgentList />
+          widgetTitle="COSMOS Agents";
         break;
         default:
 
@@ -185,6 +192,7 @@ class Widget extends Component {
       borderRadius: "10px"
     }
 
+
     return(
       <Layout style={widget_style}>
         <Modal
@@ -201,7 +209,7 @@ class Widget extends Component {
             { form_validation}
         </Modal>
         <Content>
-          <div style={{margin:"10px"}}> <p style={{display:"inline"}}><b>{this.props.info.agent}</b></p>
+          <div style={{margin:"10px"}}> <p style={{display:"inline"}}><b>{widgetTitle}</b></p>
           <ButtonGroup size="small" style={{display:"inline", float:"right"}}>
             <Button  onClick={this.openModal.bind(this)}><Icon type="setting"/></Button>
             <Button  onClick={this.selfDestruct.bind(this)}><Icon type="delete"/></Button>
