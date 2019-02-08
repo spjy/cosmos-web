@@ -135,13 +135,7 @@ class CosmosTools extends Component {
       return agents[agent_name].info.structure;
     }
     else {
-      // var new_agent = new CosmosAgent({agent:agent_name});
-      // setup_agent(new_agent).then((result)=>{
-      //   var tree_data = plot_form_datalist(new_agent.structure);
-      //   agents[agent_name]={info:new_agent, data:{}};
-      //   this.setState({agents:agents});
-      //   return tree_data;
-      // });
+
       return;
     }
   }
@@ -150,10 +144,7 @@ class CosmosTools extends Component {
     var agent_list = this.state.agents;
     var agent_name = cosmosAgent.agent;
     agent_list[agent_name] = {info:cosmosAgent, data:{}};
-    // console.log(agent_name)
-    // console.log(agent_list)
     this.setState({agents:agent_list});
-    // console.log("adding new agent")
   }
 
 
@@ -161,7 +152,6 @@ class CosmosTools extends Component {
     //set this.state.widgets = config
     // setup agents
     // set configForm modal visible false
-    // console.log(config);
     this.setState({
       db_info:{name:config.name,
         description:config.description,
@@ -172,45 +162,6 @@ class CosmosTools extends Component {
         description:config.description,
         author:config.author},
       widgets:config.widgets
-    },() => {
-      // var widgets=config.widgets;
-      // var agent_list = this.state.agents;
-      // for(var i =0; i < widgets.length; i ++){
-      //   if(widgets[i].agent!==''){
-      //
-      //   }
-      //   else {
-      //     var new_agent = new CosmosAgent({agent:widgets[i].agent});
-      //     setup_agent(new_agent).then((result)=>{
-      //         agent_list[widgets[i].agent]={info:new_agent, data:{}};
-      //         if(widgets[i].widget_type === widgetTyee.LIVE_PLOT ||
-      //           widgets[i].widget_type === widgetTyee.COSMOS_DATA){
-      //
-      //         }
-      //         else if(widgets[i].widget_type === widgetType.ARCHIVE_PLOT){
-      //           widgets[i].values=new_agent.info.get_data_structure(widgets[i].data_name);
-      //         }
-      //         // this.updateWidget({form:widgets[i], id:i});
-      //       });
-      //   }
-      //   // if(widgets[i].agent!==''){
-      //   //   if(this.state.agents[widgets[i].agent]){
-      //   //     this.updateWidget({form:widgets[i], id:i});
-      //   //
-      //     // }
-      //   //   else {
-      //   //    var new_agent = new CosmosAgent({agent:widgets[i].agent});
-      //   //    setup_agent(new_agent).then((result)=>{
-      //   //       this.newAgent(new_agent);
-      //   //       this.updateWidget({form:widgets[i], id:i});
-      //   //     });
-      //   //   }
-      //     var w = new CosmosWidgetInfo(widgets[i])
-      //     widgets.push(w)
-      //     this.setState({widgets:widgets})
-      //
-      //
-      // }
     });
 
   }

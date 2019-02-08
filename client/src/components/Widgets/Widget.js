@@ -77,6 +77,7 @@ class Widget extends Component {
     }
   }
   hideModal(){
+    
     this.setState({view_form:false, form: this.props.info})
   }
   componentDidUpdate(prevProps){
