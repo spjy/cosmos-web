@@ -11,12 +11,11 @@ class CosmosAgent  {
     this.archive = false;
     this.map=[];
     this.structure=[];
-    this.values={};
+    this.values={label:[],structure:[]};
     this.datanames=[];
   }
 
   setup_agent (){
-
     return fetch(`${cosmosInfo.socket}/api/cosmos_agent/${this.agent}`)
       .then(response => response.json())
       .then(data =>

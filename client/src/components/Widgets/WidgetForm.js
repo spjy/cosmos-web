@@ -44,6 +44,30 @@ class WidgetForm extends Component {
         }
 
       });
+    if(this.props.info.agent!==""){
+      var agent_name = this.props.info.agent;
+      if(this.props.info.widget_type === widgetType.COSMOS_DATA ||
+        this.props.info.widget_type === widgetType.LIVE_PLOT ||
+        this.props.info.widget_type === widgetType.ARCHIVE_PLOT
+      ){
+          var structure = this.props.structure(agent_name);
+          // console.log(structure)
+          if(structure){
+              var tree_data = plot_form_datalist(structure);
+              this.setState({data_list:tree_data})
+          }
+          else {
+             var new_agent = new CosmosAgent({agent:agent_name});
+            setup_agent(new_agent).then((result)=>{
+              var tree_data = plot_form_datalist(new_agent.structure);
+              this.setState({data_list:tree_data})
+              // console.log(":")
+              this.props.newAgent(new_agent);
+              // console.log("setup agent", new_agent.agent)
+            });
+          }
+        }
+    }
   }
 
 
@@ -54,7 +78,7 @@ class WidgetForm extends Component {
   agentSelected(value) {
     var agent_name = this.state.agent_list[value].agent_proc;
     var node_name = this.state.agent_list[value].agent_node;
-    console.log(node_name);
+    // console.log(node_name);
     this.props.updateForm({key:"agent", value: agent_name});
     this.props.updateForm({key:"node", value: node_name});
     if(this.props.info.widget_type === widgetType.COSMOS_DATA ||
@@ -63,12 +87,13 @@ class WidgetForm extends Component {
     ){
 
         var structure = this.props.structure(agent_name);
-        console.log(structure)
+        // console.log(structure)
         if(structure){
             var tree_data = plot_form_datalist(structure);
             this.setState({data_list:tree_data})
         }
         else {
+          // console.log("no structure ")
            var new_agent = new CosmosAgent({agent:agent_name});
           setup_agent(new_agent).then((result)=>{
             var tree_data = plot_form_datalist(new_agent.structure);
@@ -91,7 +116,7 @@ class WidgetForm extends Component {
 
   }
   getAgentCommandsList(data){
-    console.log(data)
+    // console.log(data)
     this.setState({command_list:data.command_list, loading_commands:false});
   }
   dataSelected(value) {

@@ -68,6 +68,7 @@ io.on('connection', function(client) {
         // console.log(agents_to_log)
     });
     client.on('save plot_config',function(msg){
+
       new models.PlotConfigurations(msg).save((err) => { // this is where it is inserted to mongodb
         if (err) {
           console.log(err);
@@ -76,6 +77,40 @@ io.on('connection', function(client) {
     });
     client.on('update plot_config',function(msg){
       models.PlotConfigurations.findByIdAndUpdate(msg.id, msg.data, {new:true}, (err)=>{
+        if (err) {
+          console.log(err);
+        }
+      });
+    });
+    client.on('list_widget_config',function(msg, callback ){
+      MongoClient.connect(mongo_url_cosmos,{ useNewUrlParser: true }, function(err, db) {
+        var dbo = db.db("cosmos");
+        var agent_db = dbo.collection('widget_configurations');
+
+        agent_db.find({} ).toArray(function(err, result) {
+          if (err) throw err;
+          if(result.length >0 ){
+
+            callback(result);
+          }
+          else {
+            callback(["nothing"]);
+          }
+        });
+      });
+    });
+    client.on('save widget_config',function(msg, callback){
+      new models.WidgetConfigurations(msg).save((err,i) => { // this is where it is inserted to mongodb
+        if (err) {
+          console.log(err);
+        }else {
+          callback({"id":i.id})
+        }
+
+      });
+    });
+    client.on('update widget_config',function(msg){
+      models.WidgetConfigurations.findByIdAndUpdate(msg.id, msg.data, {new:true}, (err)=>{
         if (err) {
           console.log(err);
         }
@@ -222,6 +257,8 @@ io.on('connection', function(client) {
         });
       });
     });
+
+
 
 
 });

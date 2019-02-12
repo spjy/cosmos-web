@@ -4,6 +4,8 @@ import { Card,  Button, Icon, Modal, Popover, Layout, Table, Alert, Col, Row} fr
 import PlotWidget from './PlotWidget'
 import ArchivePlotWidget from './ArchivePlotWidget'
 import WidgetForm from './WidgetForm'
+import {  setup_agent } from './../Cosmos/CosmosPlotLibs'
+import CosmosAgent from './CosmosAgent'
 import cosmosInfo from './../Cosmos/CosmosInfo'
 import AgentList from './../Cosmos/AgentList'
 import {utc2date} from './../Cosmos/Libs'
@@ -25,9 +27,11 @@ export const widgetType = {
 class Widget extends Component {
 
   constructor(props){
+    var viewform = false;
+    if(props.info.widget_type=== widgetType.NONE) viewform=true;
     super(props);
       this.state = {
-        view_form:true,
+        view_form:viewform,
         data:[],
         form:{},
         prevData:{},
@@ -37,10 +41,16 @@ class Widget extends Component {
   }
   componentWillMount() {
     this.setState({form: this.props.info});
+    // if(this.props.info.form.values==={}){
+      this.props.updateWidget({form:this.props.info, id:this.props.id});
+    // }
+
   }
   updateForm(e){
     var form=this.state.form;
     switch(e.key) {
+      case ("agent"):
+        form.agent= e.value;
       case ("xLabel"):
         form.plot_labels[0]= e.value;
       break;
@@ -67,6 +77,7 @@ class Widget extends Component {
     }
   }
   hideModal(){
+    
     this.setState({view_form:false, form: this.props.info})
   }
   componentDidUpdate(prevProps){
