@@ -4,10 +4,10 @@ import {  Card , Button ,Form, Input,  Modal , Icon , Select, Alert} from 'antd'
 import {plot_form_datalist} from './Cosmos/Libs'
 import io from 'socket.io-client';
 import cosmosInfo from './Cosmos/CosmosInfo'
-import CosmosAgent  from './Widgets/CosmosAgent'
-import Widget , {widgetType}from './Widgets/Widget'
-import CosmosWidgetInfo from './Widgets/CosmosWidgetInfo'
-import ConfigForm from './Widgets/ConfigForm'
+import CosmosAgent  from './WidgetComponents/CosmosAgent'
+import Widget , {widgetType}from './WidgetComponents/Widget'
+import CosmosWidgetInfo from './WidgetComponents/CosmosWidgetInfo'
+import ConfigForm from './WidgetComponents/ConfigForm'
 import { parse_live_data , setup_agent } from './Cosmos/CosmosPlotLibs'
 const socket = io(cosmosInfo.socket);
 

@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
 import { Card,  Button, Icon, Modal, Popover, Layout, Table, Alert, Col, Row} from 'antd';
-import PlotWidget from './PlotWidget'
-import ArchivePlotWidget from './ArchivePlotWidget'
+import PlotWidget from './../Widgets/PlotWidget'
+import ArchivePlotWidget from './../Widgets/ArchivePlotWidget'
 import WidgetForm from './WidgetForm'
 import {  setup_agent } from './../Cosmos/CosmosPlotLibs'
 import CosmosAgent from './CosmosAgent'
 import cosmosInfo from './../Cosmos/CosmosInfo'
-import AgentList from './../Cosmos/AgentList'
+import AgentList from './../Widgets/AgentList'
 import {utc2date} from './../Cosmos/Libs'
 const socket = io(cosmosInfo.socket);
 const colors=["#82ca9d", "#9ca4ed","#f4a742","#e81d0b","#ed9ce6"]
@@ -77,7 +77,7 @@ class Widget extends Component {
     }
   }
   hideModal(){
-    
+
     this.setState({view_form:false, form: this.props.info})
   }
   componentDidUpdate(prevProps){
