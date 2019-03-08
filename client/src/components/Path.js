@@ -37,13 +37,7 @@ class Path extends Component {
         if (data) { // check if data exists
           console.log(data);
 
-          const {
-            satellite,
-            latitude,
-            longitude,
-            altitude,
-            acceleration,
-          } = data;
+          const { satellite, latitude, longitude, altitude, acceleration } = data;
 
           this.setState({
             live: true,
@@ -60,15 +54,9 @@ class Path extends Component {
             path: [
               ...this.state.path,
               [
-                {
-                  lat: prevState.currentCoord.latitude,
-                  lng: prevState.currentCoord.longitude,
-                },
-                {
-                  lat: latitude,
-                  lng: longitude,
-                },
-              ], client/src/components/Path.js
+                { lat: prevState.currentCoord.latitude, lng: prevState.currentCoord.longitude },
+                { lat: latitude, lng: longitude }
+              ]
             ],
           }));
         }
@@ -77,13 +65,9 @@ class Path extends Component {
   }
 
   onReplayFormSubmit(value) {
-    const {
-      selected,
-      dateFrom,
-      dateTo
-    } = value;
+    const { selected, dateFrom, dateTo } = value;
 
-    fetch(`http://localhost:3001/api/replay/path/${selected}/${dateFrom}/to/${dateTo}`, {
+    fetch(`${cosmosInfo.socket}/api/replay/path/${selected}/${dateFrom}/to/${dateTo}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -118,7 +102,9 @@ class Path extends Component {
     });
   }
 
-  onReplayChange(value) {}
+  onReplayChange(value) {
+
+  }
 
   render() {
     return (
@@ -170,9 +156,7 @@ class Path extends Component {
 
         <br />
 
-        <ReplayForm
-          onReplayFormSubmit={this.onReplayFormSubmit.bind(this)}
-        />
+        <ReplayForm onReplayFormSubmit={this.onReplayFormSubmit.bind(this)} />
       </div>
     );
   }
