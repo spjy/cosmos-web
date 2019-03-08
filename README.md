@@ -12,7 +12,7 @@ COSMOS Web is a JavaScript application built using Node.js for the application p
 
 1. Clone the repository
 2. In `/`, rename `.env.example` to `.env`. Replace `SATELLITE_IP` with the IP of the propagator or socket.
-3. Install dependencies in `/` and `/client`: 
+3. Install dependencies in `/` and `/client`:
 ```
 $ npm install
 ```
@@ -67,11 +67,11 @@ server/
 ### Client
 The client is composed of the React.js frontend.
 
-1. `/public` contains static assets. 
+1. `/public` contains static assets.
 2. `/src` contains the React.js source.
 
-Inside `/src` the root contains the main application. 
-- `index.js` contains React.js instance. 
+Inside `/src` the root contains the main application.
+- `index.js` contains React.js instance.
 - `App.js` contains the React Router routes. Import the page layouts in here.
 
 Inside `/src/components` the root contains the page layouts. Each page contains a corresponding folder where you can find the components unique to that page.
@@ -108,7 +108,7 @@ The primary framework used on the frontend is React.js, a JavaScript library to 
 ### Server
 The primary framework being used for the server is Express.js, a web application framework used to build APIs.
 
-1. **Express.js** is a server framework for Node.js 
+1. **Express.js** is a server framework for Node.js
 2. **MongoDB** is a NoSQL database to store incoming data for data replay.
 3. **Mongoose** is a object relational mapper for MongoDB built for Node.js. This is used to apply methods (such as querying and filtering) on MongoDB
 4. **socket.io** is used for web socket communication for real time data updates.
