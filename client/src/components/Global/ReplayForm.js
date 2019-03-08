@@ -7,14 +7,19 @@ class ReplayForm extends Component {
     selected: '',
     dateFrom: '',
     dateTo: '',
-  }
+  };
 
   datePicker(date, dateString) {
-    this.setState({ dateFrom: dateString[0], dateTo: dateString[1] })
+    this.setState({
+      dateFrom: dateString[0],
+      dateTo: dateString[1]
+    })
   }
 
   selected(value, option) {
-    this.setState({ selected: value });
+    this.setState({
+      selected: value
+    });
   }
 
   submit(e) {
@@ -23,16 +28,29 @@ class ReplayForm extends Component {
       selected: this.state.selected,
       dateFrom: this.state.dateFrom,
       dateTo: this.state.dateTo,
-    })
+    });
   }
 
   render() {
     return (
-      <div style={{ padding: '0 1em' }}>
-        <div style={{ background: '#ECECEC', padding: '10px' }}>
-          <Card title="Replay" bordered={false} style={{ width: '100%' }}>
-            <Form layout="horizontal" onSubmit={this.submit.bind(this)}>
-              <Form.Item label="Satellite">
+      <div
+        style={{ padding: '0 1em' }}
+      >
+        <div 
+          style={{ background: '#ECECEC', padding: '10px' }}
+        >
+          <Card 
+            title="Replay" 
+            bordered={false} 
+            style={{ width: '100%' }}
+          >
+            <Form 
+              layout="horizontal" 
+              onSubmit={this.submit.bind(this)}
+            >
+              <Form.Item 
+                label="Satellite"
+              >
                 <Select
                   showSearch
                   placeholder="Select"
@@ -41,10 +59,22 @@ class ReplayForm extends Component {
                   <Select.Option value="cubesat1">cubesat1</Select.Option>
                 </Select>
               </Form.Item>
-              <Form.Item label="Date range">
-                <DatePicker.RangePicker onChange={this.datePicker.bind(this)} showTime format="YYYY-MM-DDTHH:mm:ssZ" />
+
+              <Form.Item
+                label="Date range"
+              >
+                <DatePicker.RangePicker
+                  onChange={this.datePicker.bind(this)}
+                  showTime
+                  format="YYYY-MM-DDTHH:mm:ssZ"
+                />
               </Form.Item>
-              <Button type="primary" htmlType="submit" className="login-form-button">
+              
+              <Button
+                type="primary"
+                htmlType="submit"
+                className="login-form-button"
+              >
                 Replay
               </Button>
             </Form>
@@ -53,7 +83,6 @@ class ReplayForm extends Component {
       </div>
     );
   }
-
 }
 
 export default ReplayForm;

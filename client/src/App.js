@@ -11,7 +11,7 @@ import CosmosTools from './components/CosmosTools';
 import Commands from './components/Commands';
 import AgentCommands from './components/AgentCommands';
 
-const App = ({}) => (
+const App = () => (
   <div>
     <Router>
       <Switch>

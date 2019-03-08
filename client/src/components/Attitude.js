@@ -27,7 +27,7 @@ class Attitude extends Component {
       w: 0,
       x: 0,
       y: 0,
-      z: 0
+      z: 0,
     },
   };
 
@@ -42,7 +42,7 @@ class Attitude extends Component {
               w: data.w,
               x: data.x,
               y: data.y,
-              z: data.z
+              z: data.z,
             }
           });
         }
@@ -61,7 +61,6 @@ class Attitude extends Component {
       //credentials: 'same-origin',
     }).then((response) => {
       response.json().then((data) => {
-        console.log(data);
         if (data && data.length > 0) {
           this.setState({
             live: false,
@@ -71,8 +70,12 @@ class Attitude extends Component {
             currentCoord: data[0],
             satellite: data[0].satellite,
           });
+
           this.refs.replay.startSlider(); // initialize function from replay component
-          this.setState({ playable: false });
+
+          this.setState({
+            playable: false
+          });
         }
       });
     }).catch(err => {
@@ -85,11 +88,16 @@ class Attitude extends Component {
   }
 
   datePicker(date, dateString) {
-    this.setState({ dateFrom: dateString[0], dateTo: dateString[1] })
+    this.setState({
+      dateFrom: dateString[0],
+      dateTo: dateString[1],
+    });
   }
 
   selectSatellite(value, option) {
-    this.setState({ satelliteSelected: value });
+    this.setState({
+      satelliteSelected: value,
+    });
   }
 
   onReplayChange(value) {
