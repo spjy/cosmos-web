@@ -10,7 +10,8 @@ import Live from './Global/Live';
 import Replay from './Global/Replay';
 import ReplayForm from './Global/ReplayForm';
 
-const socket = io('http://localhost:3001');
+import cosmosInfo from './Cosmos/CosmosInfo'
+const socket = io(cosmosInfo.socket);
 
 class Path extends Component {
 
@@ -35,7 +36,7 @@ class Path extends Component {
       if (this.state.replay.length === 0) { // check if there is replay going
         if (data) { // check if data exists
           console.log(data);
-          
+
           const {
             satellite,
             latitude,
@@ -57,17 +58,17 @@ class Path extends Component {
 
           this.setState(prevState => ({
             path: [
-              ...this.state.path, 
+              ...this.state.path,
               [
                 {
                   lat: prevState.currentCoord.latitude,
                   lng: prevState.currentCoord.longitude,
-                }, 
+                },
                 {
                   lat: latitude,
                   lng: longitude,
                 },
-              ],
+              ], client/src/components/Path.js
             ],
           }));
         }
