@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
 import { Card,  Button, Icon, Modal, Popover, Layout, Table, Alert, Col, Row} from 'antd';
-import PlotWidget from './PlotWidget'
-import ArchivePlotWidget from './ArchivePlotWidget'
+import PlotWidget from './../Widgets/PlotWidget'
+import ArchivePlotWidget from './../Widgets/ArchivePlotWidget'
 import WidgetForm from './WidgetForm'
 import {  setup_agent } from './../Cosmos/CosmosPlotLibs'
 import CosmosAgent from './CosmosAgent'
 import cosmosInfo from './../Cosmos/CosmosInfo'
-import AgentList from './../Cosmos/AgentList'
+import OrbitWidget from './../Widgets/OrbitWidget'
+import AgentList from './../Widgets/AgentList'
 import {utc2date} from './../Cosmos/Libs'
 const socket = io(cosmosInfo.socket);
 const colors=["#82ca9d", "#9ca4ed","#f4a742","#e81d0b","#ed9ce6"]
@@ -22,7 +23,9 @@ export const widgetType = {
   AGENT_COMMAND: 2,
   COSMOS_DATA:3,
   AGENT_LIST:4,
-  ARCHIVE_PLOT:5
+  ARCHIVE_PLOT:5,
+  ORBIT:6
+
 };
 class Widget extends Component {
 
@@ -41,9 +44,7 @@ class Widget extends Component {
   }
   componentWillMount() {
     this.setState({form: this.props.info});
-    // if(this.props.info.form.values==={}){
-      this.props.updateWidget({form:this.props.info, id:this.props.id});
-    // }
+    this.props.updateWidget({form:this.props.info, id:this.props.id});
 
   }
   updateForm(e){
@@ -77,19 +78,16 @@ class Widget extends Component {
     }
   }
   hideModal(){
-    
+
     this.setState({view_form:false, form: this.props.info})
   }
   componentDidUpdate(prevProps){
 
     if(prevProps.data.agent_utc!== this.props.data.agent_utc){
       if(this.props.info.widget_type===widgetType.LIVE_PLOT){
-        // console.log(this.props.data)
         var data= this.state.data;
         var new_data = this.props.data;
         data=[...data,new_data]
-        // data[data.length]= new_data
-
         this.setState({data:data})
       }
     }
@@ -186,6 +184,10 @@ class Widget extends Component {
         case(widgetType.AGENT_LIST):
           content=<AgentList />
           widgetTitle="COSMOS Agents";
+        break;
+        case(widgetType.ORBIT):
+          content=<OrbitWidget />
+          widgetTitle="Orbit";
         break;
         default:
 
