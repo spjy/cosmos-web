@@ -305,27 +305,29 @@ cosmosSocket.on('message', function(message) {
   obj = message.slice(3,message.length-1);
   let json_str = obj.toString('ascii');
   json_str = json_str.replace(/}{/g, ',')
-  var valid = false;
-  try {
-    obj = JSON.parse(json_str);
-    valid=true
-  }
-  catch(e){
-    // obj = {};
+  var valid_agent = false;
+  if(!json_str.endsWith('[NOK]') && !json_str.endsWith('[OK]')  ){
     try {
-      obj = JSON.parse(json_str+"}");
-      valid=true
-      // console.log(json_str+"}")
+      obj = JSON.parse(json_str);
+      if(obj.agent_proc && obj.agent_addr && obj.agent_port && obj.agent_node && obj.agent_utc && obj.agent_bprd)
+        valid_agent=true;
     }
     catch(e){
-      // console.log(json_str)
-//
-    }
-      // obj = JSON.parse(json_str+"}");
-    // obj  = JSON.parse(JSON.stringify(json_str));
+      try {
+        obj = JSON.parse(json_str+"}");
+        if(obj.agent_proc && obj.agent_addr && obj.agent_port && obj.agent_node && obj.agent_utc && obj.agent_bprd)
+          valid_agent=true;
+      }
+      catch(e){
+
+      }
+  }
+
+
+
 
   }
-  if(valid){
+  if(valid_agent){
       // console.log(obj)
       io.emit('agent subscribe '+obj.agent_proc, obj);
       if (obj.agent_node === 'me213ao') {
@@ -496,6 +498,7 @@ cosmosSocket.on('message', function(message) {
                   agent_port: obj.agent_port,
                   agent_node: obj.agent_node,
                   agent_utc: obj.agent_utc,
+                  agent_bprd: obj.agent_bprd,
                   structure: data_struc
                 },
               ).save((err) => { // this is where it is inserted to mongodb

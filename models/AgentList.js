@@ -21,6 +21,10 @@ const schema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  agent_bprd: {
+    type: Number,
+    required: true,
+  },
 
   structure: {
     type: Array,
