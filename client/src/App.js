@@ -9,7 +9,7 @@ import Path from './components/Path';
 import CosmosTools from './components/CosmosTools';
 
 
-const App = ({}) => (
+const App = () => (
   <div>
     <Router>
       <Switch>

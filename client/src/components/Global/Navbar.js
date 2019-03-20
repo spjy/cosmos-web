@@ -7,7 +7,7 @@ import { Menu, Icon } from 'antd';
 class Navbar extends Component {
   state = {
     current: this.props.current
-  }
+  };
 
   // handleClick = (e) => {
   //   this.setState({
@@ -27,29 +27,50 @@ class Navbar extends Component {
             <Icon type="global" />COSMOS Web
           </Link>
         </Menu.Item>
-        <Menu.SubMenu title={<span><Icon type="rocket" />Satellite</span>}>
-          <Menu.ItemGroup title="Applications">
-            <Menu.Item key="orbit">
-              <Link to="/orbit">
+        <Menu.SubMenu 
+          title={<span><Icon type="rocket" />Satellite</span>}
+        >
+          <Menu.ItemGroup 
+            title="Applications"
+          >
+            <Menu.Item 
+              key="orbit"
+            >
+              <Link
+                to="/orbit"
+              >
                 <Icon type="sync" />Orbit
               </Link>
             </Menu.Item>
-            <Menu.Item key="attitude">
-              <Link to="/attitude">
+            <Menu.Item
+              key="attitude"
+            >
+              <Link
+                to="/attitude"
+              >
                 <Icon type="swap-right" />Attitude
               </Link>
             </Menu.Item>
-            <Menu.Item key="plot">
-              <Link to="/plot">
+            <Menu.Item
+              key="plot"
+            >
+              <Link 
+                to="/plot"
+              >
                 <Icon type="line-chart" />Plot
               </Link>
             </Menu.Item>
           </Menu.ItemGroup>
         </Menu.SubMenu>
-        <Menu.SubMenu title={<span><Icon type="cloud" />Balloon</span>}>
-          <Menu.ItemGroup title="Applications">
-            <Menu.Item key="path">
-              <Link to="/path">
+        <Menu.SubMenu 
+          title={<span><Icon type="cloud" />Balloon</span>}>
+          <Menu.ItemGroup
+            title="Applications">
+            <Menu.Item
+              key="path">
+              <Link
+                to="/path"
+              >
                 <Icon type="rollback" />Path
               </Link>
             </Menu.Item>

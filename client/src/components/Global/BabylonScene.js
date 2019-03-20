@@ -40,7 +40,7 @@ class ThreeD extends Component {
       window.addEventListener('resize', this.onResizeWindow);
     }
 
-    componentWillUnmount () {
+    componentWillUnmount() {
       window.removeEventListener('resize', this.onResizeWindow);
     }
 

@@ -27,7 +27,7 @@ class Orbit extends Component {
     currentCoord: {
       x: 0,
       y: 0,
-      z: 0
+      z: 0,
     },
   };
 
@@ -35,7 +35,9 @@ class Orbit extends Component {
     socket.on('satellite orbit', (data) => { // check if there is a live orbit
       if (this.state.replay.length === 0) { // check if there is replay going
         if (data) { // check if data exists
-          const { satellite, x, y, z } = data;
+          const {
+            satellite, x, y, z
+          } = data;
 
           this.setState({
             live: true,
@@ -43,8 +45,8 @@ class Orbit extends Component {
             currentCoord: {
               x: x,
               y: y,
-              z: z
-            }
+              z: z,
+            },
           });
         }
       }
@@ -56,7 +58,11 @@ class Orbit extends Component {
   }
 
   onReplayFormSubmit(value) {
-    const { selected, dateFrom, dateTo } = value;
+    const {
+      selected,
+      dateFrom,
+      dateTo
+    } = value;
 
     fetch(`${cosmosInfo.socket}/api/replay/orbit/${selected}/${dateFrom}/to/${dateTo}`, {
       method: 'GET',
@@ -65,8 +71,6 @@ class Orbit extends Component {
       },
     }).then((response) => {
       response.json().then((data) => {
-        console.log(data);
-
         if (data && data.length > 0) {
           this.setState({
             live: false,
@@ -85,13 +89,21 @@ class Orbit extends Component {
         message: 'Error',
         description: 'An error occurred.'
       })
-      console.log(err)
+      console.log(err);
     });
   }
 
   render() {
 
-    const { currentCoord, replay, satellite, playable, max, slider, live } = this.state;
+    const {
+      currentCoord,
+      replay,
+      satellite,
+      playable,
+      max,
+      slider,
+      live,
+    } = this.state;
 
     return (
       <div>
