@@ -320,6 +320,7 @@ render() {
               <Option value={widgetType.AGENT_COMMAND}>Command</Option>
               <Option value={widgetType.AGENT_LIST}>Agent List</Option>
               <Option value={widgetType.ARCHIVE_PLOT}>Historical Plot</Option>
+              <Option value={widgetType.ORBIT}>Orbit</Option>
             </Select>
             <Form layout="inline" >
               {form_items}

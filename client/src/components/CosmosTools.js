@@ -12,7 +12,9 @@ import { parse_live_data , setup_agent } from './Cosmos/CosmosPlotLibs'
 const socket = io(cosmosInfo.socket);
 
 
-
+/* This component renders the entire 'Cosmos Tools'page including widgets
+ - this component monitors COSMOS Agent data, and passes relevant data to each widget (does not store history, only one at a time )
+*/
 class CosmosTools extends Component {
   constructor(props){
     super(props);
