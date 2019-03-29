@@ -265,13 +265,7 @@ class CosmosTools extends Component {
         selfDestruct={this.removeWidget.bind(this)}
         agentStructure ={this.agentStructure.bind(this)}/>)
     }
-    var saveButton;
-    if(this.state.widgets.length>0){
-      //only show "Save Widgets" button when there is at least one widget
-      saveButton=<Button type="default" onClick={this.showSaveModal.bind(this)}>
-            <Icon type="save"/> Save Widgets
-          </Button>
-    }
+
     /* Modal form elements */
     var validation;
     if(!this.state.form_validated){
@@ -284,16 +278,6 @@ class CosmosTools extends Component {
       <Button key="update" type="primary"  onClick={this.onClickSaveUpdate.bind(this)}>
         Update Entry
       </Button>);
-    }
-    var configForm;
-    if(this.state.show_config_form){
-      configForm = <ConfigForm
-        onSelect={this.loadConfiguration.bind(this)}
-        hide={this.hideConfigForm.bind(this)}/>
-    }
-    var load_widgets_button;
-    if(this.state.widgets.length===0){
-      load_widgets_button=<Button type="default" onClick={this.showConfigForm.bind(this)}> Load Widgets </Button>
     }
 
 
@@ -332,15 +316,18 @@ class CosmosTools extends Component {
             </Form.Item>
             {validation}
           </Form>
-
           </Modal>
-          {configForm}
+          {this.state.show_config_form && <ConfigForm
+            onSelect={this.loadConfiguration.bind(this)}
+            hide={this.hideConfigForm.bind(this)}/>}
           <Card size="small" style={{ width: '100%' }} >
-            {load_widgets_button}
+            {this.state.widgets.length===0 && <Button type="default" onClick={this.showConfigForm.bind(this)}> Load Widgets </Button>}
 
               {widget}
             <Button type="default" onClick={this.onClickAddWidget.bind(this)}><Icon type="plus"/> New Widget </Button>
-            {saveButton}
+            {this.state.widgets.length>0 && <Button type="default" onClick={this.showSaveModal.bind(this)}>
+                  <Icon type="save"/> Save Widgets
+                </Button>}
           </Card>
 
           </div>
