@@ -7,6 +7,7 @@ import Attitude from './components/Attitude';
 import Plot from './components/Plot';
 import Path from './components/Path';
 import CosmosTools from './components/CosmosTools';
+import CosmosToolsPage from './components/CosmosToolsPage';
 
 
 const App = () => (
@@ -19,6 +20,7 @@ const App = () => (
         <Route exact path="/plot" component={Plot} />
         <Route exact path="/path" component={Path} />
         <Route exact path="/cosmostools" component={CosmosTools} />
+        <Route exact path="/cosmostoolspage" component={CosmosToolsPage} />
       </Switch>
     </Router>
   </div>
