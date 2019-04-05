@@ -1,18 +1,30 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Slider, Icon, Row, Col, Alert, Popconfirm } from 'antd';
+import {
+  Slider, Icon, Row, Col, Alert, Popconfirm
+} from 'antd';
 import moment from 'moment';
 
 class Replay extends Component {
+  stopSlider() {
+    clearTimeout(this.slider); // stop timeout
 
-  startSlider() {
-    if (this.props.playable) {
-      this.props.onReplayChange({
-        playable: false // Prevent users from starting multiple intervals
-      });
+    this.props.onReplayChange({ // allow replay to be played
+      playable: true
+    });
+  }
 
-      this.sliderIncrement();
-    }
+  onSliderChange(value) {
+    this.props.onReplayChange({ // change value of slider
+      slider: value
+    });
+  }
+
+  onConfirmLiveView() {
+    this.props.onReplayChange({
+      live: true,
+      replay: []
+    }); // change to live view
   }
 
   sliderIncrement() {
@@ -21,13 +33,16 @@ class Replay extends Component {
       if (this.props.slider < this.props.max) { // Check if slider reached maximum value
         let date1;
 
-        if (this.props.slider === this.props.max - 1) { // Prevent from going above the maximum value
+        // Prevent from going above the maximum value
+        if (this.props.slider === this.props.max - 1) {
           date1 = 0;
         } else {
-          date1 = -(moment(this.props.replay[this.props.slider + 1].createdAt)); // get date one, convert to positive
+          // get date one, convert to positive
+          date1 = -(moment(this.props.replay[this.props.slider + 1].createdAt));
         }
 
-        let date2 = -(moment(this.props.replay[this.props.slider].createdAt)); // get date two, convert to positive
+        // get date two, convert to positive
+        const date2 = -(moment(this.props.replay[this.props.slider].createdAt));
 
         delay = moment(date1).diff(moment(date2)); // find difference between two dates
 
@@ -40,30 +55,18 @@ class Replay extends Component {
       } else {
         this.stopSlider(); // If so, clear interval
       }
-    }
-
+    };
     setTimeout(this.delay, delay);
   }
 
-  stopSlider() {
-    clearTimeout(this.slider); // stop timeout
+  startSlider() {
+    if (this.props.playable) {
+      this.props.onReplayChange({
+        playable: false // Prevent users from starting multiple intervals
+      });
 
-    this.props.onReplayChange({ // allow replay to be played
-      playable: true,
-    });
-  }
-
-  onSliderChange(value) {
-    this.props.onReplayChange({ // change value of slider
-      slider: value,
-    });
-  }
-
-  onConfirmLiveView() {
-    this.props.onReplayChange({
-      live: true,
-      replay: [],
-    }); // change to live view
+      this.sliderIncrement();
+    }
   }
 
   componentWillUnmount() {
@@ -71,33 +74,39 @@ class Replay extends Component {
   }
 
   render() {
-
-    const { type, satellite, slider, max } = this.props;
+    const {
+      type, satellite, slider, max
+    } = this.props;
 
     return (
       <div style={{ padding: '1em' }}>
         <Alert
-          message={
+          message={(
             <div>
               Replay
               <Popconfirm
                 title="Switch to live view?"
                 okText="Yes"
                 cancelText="No"
-                onConfirm={this.onConfirmLiveView.bind(this)}>
+                onConfirm={this.onConfirmLiveView.bind(this)}
+              >
                 <a>
                   <Icon
-                    style={{ paddingLeft: "0.5em" }}
+                    style={{ paddingLeft: '0.5em' }}
                     type="swap"
                   />
                 </a>
               </Popconfirm>
             </div>
-          }
+          )}
           type="warning"
-          description={
+          description={(
             <div>
-              You are viewing a replay {type} of <strong>{satellite}</strong>.
+              You are viewing a replay
+              {type}
+              of
+              <strong>{satellite}</strong>
+              .
               <Row>
                 <Col
                   sm={2}
@@ -126,18 +135,19 @@ class Replay extends Component {
                   <Slider
                     defaultValue={0}
                     value={slider || 0}
-                    min={0} max={max}
+                    min={0}
+                    max={max}
                     marks={{
                       0: '0',
                       [max / 2]: max / 2,
-                      [max]: max,
+                      [max]: max
                     }}
                     onChange={this.onSliderChange.bind(this)}
                   />
                 </Col>
               </Row>
             </div>
-          }
+          )}
           showIcon
         />
       </div>
@@ -151,7 +161,7 @@ Replay.propTypes = {
   satellite: PropTypes.string.isRequired,
   max: PropTypes.number.isRequired,
   slider: PropTypes.number.isRequired,
-  onReplayChange: PropTypes.func.isRequired,
+  onReplayChange: PropTypes.func.isRequired
 };
 
 export default Replay;

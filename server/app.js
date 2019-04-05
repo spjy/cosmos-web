@@ -302,6 +302,7 @@ let imuOmega = {};
 let imuIndex = 0;
 let sentImuIndex = 0;
 cosmosSocket.on('message', function(message) {
+  console.log(message)
   obj = message.slice(3,message.length-1);
   let json_str = obj.toString('ascii');
   json_str = json_str.replace(/}{/g, ',')

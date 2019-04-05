@@ -6,7 +6,6 @@ import $ from 'jquery';
 import '../../FlightIndicator/js/jquery.flightindicators.js';
 
 class DroneData extends Component {
-
   componentDidMount() {
     setTimeout(() => {
       var first_attitude = $.flightIndicator('#first_attitude', 'attitude', {size:350, roll:8, pitch:3, showBox : true});
@@ -22,9 +21,9 @@ class DroneData extends Component {
 
     const data = [{
       key: '1',
-      velocity: velocity,
-      acceleration: acceleration,
-      altitude: altitude,
+      velocity,
+      acceleration,
+      altitude
     }];
 
     return (

@@ -7,41 +7,43 @@ const columns = [
     title: 'Satellite',
     dataIndex: 'satellite',
     key: 'satellite',
-    width: '12%',
+    width: '12%'
   },
   {
     title: 'w',
     dataIndex: 'w',
     key: 'w',
-    width: '22%',
+    width: '22%'
   },
   {
     title: 'x',
     dataIndex: 'x',
     key: 'x',
-    width: '22%',
+    width: '22%'
   },
   {
     title: 'y',
     dataIndex: 'y',
     key: 'y',
-    width: '22%',
+    width: '22%'
   },
   {
     title: 'z',
     dataIndex: 'z',
-    key: 'z',
+    key: 'z'
   }
 ];
 
-const AttitudeInformation = ({ satellite, w, x, y , z}) => {
+const AttitudeInformation = ({
+  satellite, w, x, y, z
+}) => {
   const data = [{
     key: '1',
-    satellite: satellite,
-    w: w,
-    x: x,
-    y: y,
-    z: z,
+    satellite,
+    w,
+    x,
+    y,
+    z
   }];
 
   return (

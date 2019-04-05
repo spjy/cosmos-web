@@ -5,9 +5,13 @@ import PropTypes from 'prop-types';
 import { Menu, Icon } from 'antd';
 
 class Navbar extends Component {
-  state = {
-    current: this.props.current
-  };
+  constructor() {
+    super();
+
+    this.state = {
+      current: this.props.current
+    };
+  }
 
   // handleClick = (e) => {
   //   this.setState({
@@ -19,27 +23,34 @@ class Navbar extends Component {
     return (
       <Menu
         onClick={this.handleClick}
-        selectedKeys={[this.state.current]}
+        selectedKeys={[this.props.current]}
         mode="horizontal"
       >
         <Menu.Item key="home">
           <Link to="/">
-            <Icon type="global" />COSMOS Web
+            <Icon type="global" />
+            COSMOS Web
           </Link>
         </Menu.Item>
-        <Menu.SubMenu 
-          title={<span><Icon type="rocket" />Satellite</span>}
+        <Menu.SubMenu
+          title={(
+            <span>
+              <Icon type="rocket" />
+              Satellite
+            </span>
+          )}
         >
-          <Menu.ItemGroup 
+          <Menu.ItemGroup
             title="Applications"
           >
-            <Menu.Item 
+            <Menu.Item
               key="orbit"
             >
               <Link
                 to="/orbit"
               >
-                <Icon type="sync" />Orbit
+                <Icon type="sync" />
+                Orbit
               </Link>
             </Menu.Item>
             <Menu.Item
@@ -48,38 +59,50 @@ class Navbar extends Component {
               <Link
                 to="/attitude"
               >
-                <Icon type="swap-right" />Attitude
+                <Icon type="swap-right" />
+                Attitude
               </Link>
             </Menu.Item>
             <Menu.Item
               key="plot"
             >
-              <Link 
+              <Link
                 to="/plot"
               >
-                <Icon type="line-chart" />Plot
+                <Icon type="line-chart" />
+                Plot
               </Link>
             </Menu.Item>
           </Menu.ItemGroup>
         </Menu.SubMenu>
-        <Menu.SubMenu 
-          title={<span><Icon type="cloud" />Balloon</span>}>
+        <Menu.SubMenu
+          title={(
+            <span>
+              <Icon type="cloud" />
+              Balloon
+            </span>
+          )}
+        >
           <Menu.ItemGroup
-            title="Applications">
+            title="Applications"
+          >
             <Menu.Item
-              key="path">
+              key="path"
+            >
               <Link
                 to="/path"
               >
-                <Icon type="rollback" />Path
+                <Icon type="rollback" />
+                Path
               </Link>
             </Menu.Item>
           </Menu.ItemGroup>
         </Menu.SubMenu>
         <Menu.Item key="tools">
-            <Link to="/cosmostools">
-              <Icon type="tool" />Tools
-            </Link>
+          <Link to="/cosmostools">
+            <Icon type="tool" />
+            Tools
+          </Link>
         </Menu.Item>
 
       </Menu>

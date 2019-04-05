@@ -15,7 +15,7 @@ class ThreeD extends Component {
       }
     }
 
-    componentDidMount () {
+    componentDidMount() {
       this.engine = new BABYLON.Engine(
           this.canvas,
           true,

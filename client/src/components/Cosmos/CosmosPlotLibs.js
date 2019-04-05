@@ -1,4 +1,4 @@
-export function parse_live_data(data,fields){
+export function parse_live_data(data, fields) {
   var values = {};
   var p, val;
   values.agent_utc=Number(data.agent_utc);
@@ -14,17 +14,16 @@ export function parse_live_data(data,fields){
 
   return values;
 }
-export async function update_agent_info(cosmos_widget_config, info){
+export async function update_agent_info(cosmos_widget_config, info) {
   await cosmos_widget_config.update(info);
-
 }
-export async function get_all_agent_info(cosmos_widgets){
-  for(var i =0; i < cosmos_widgets.length; i++){
+
+export async function get_all_agent_info(cosmos_widgets) {
+  for (let i = 0; i < cosmos_widgets.length; i++) {
     await cosmos_widgets[i].setup_agent();
   }
-  return;
 }
-export async function setup_agent(agent){
+
+export async function setup_agent(agent) {
   await agent.setup_agent();
-  return;
 }
