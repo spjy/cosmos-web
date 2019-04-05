@@ -26,5 +26,4 @@ export async function get_all_agent_info(cosmos_widgets){
 }
 export async function setup_agent(agent){
   await agent.setup_agent();
-  return;
 }

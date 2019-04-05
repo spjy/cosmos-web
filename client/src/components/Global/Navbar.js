@@ -27,13 +27,13 @@ class Navbar extends Component {
             <Icon type="global" />COSMOS Web
           </Link>
         </Menu.Item>
-        <Menu.SubMenu 
+        <Menu.SubMenu
           title={<span><Icon type="rocket" />Satellite</span>}
         >
-          <Menu.ItemGroup 
+          <Menu.ItemGroup
             title="Applications"
           >
-            <Menu.Item 
+            <Menu.Item
               key="orbit"
             >
               <Link
@@ -54,7 +54,7 @@ class Navbar extends Component {
             <Menu.Item
               key="plot"
             >
-              <Link 
+              <Link
                 to="/plot"
               >
                 <Icon type="line-chart" />Plot
@@ -62,7 +62,7 @@ class Navbar extends Component {
             </Menu.Item>
           </Menu.ItemGroup>
         </Menu.SubMenu>
-        <Menu.SubMenu 
+        <Menu.SubMenu
           title={<span><Icon type="cloud" />Balloon</span>}>
           <Menu.ItemGroup
             title="Applications">
@@ -76,12 +76,22 @@ class Navbar extends Component {
             </Menu.Item>
           </Menu.ItemGroup>
         </Menu.SubMenu>
-        <Menu.Item key="tools">
-            <Link to="/cosmostools">
-              <Icon type="tool" />Tools
-            </Link>
-        </Menu.Item>
-
+        <Menu.SubMenu
+          title={<span><Icon type="tool" />Cosmos Tools</span>}>
+          <Menu.ItemGroup
+            title="Applications">
+            <Menu.Item key="cosmostools">
+                <Link to="/cosmostools">
+                  <Icon type="tool" />Tools
+                </Link>
+            </Menu.Item>
+            <Menu.Item key="cosmostoolspage">
+                <Link to="/cosmostoolspage">
+                  <Icon type="tool" />New Widgets
+                </Link>
+            </Menu.Item>
+          </Menu.ItemGroup>
+        </Menu.SubMenu>
       </Menu>
     );
   }
