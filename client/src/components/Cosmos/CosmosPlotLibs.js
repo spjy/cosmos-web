@@ -1,15 +1,16 @@
 export function parse_live_data(data, fields) {
-  var values = {};
-  var p, val;
-  values.agent_utc=Number(data.agent_utc);
-  for(var i = 0; i < fields.label.length; i++){
+  const values = {};
+  let p;
+  let val;
+  values.agent_utc = Number(data.agent_utc);
+  for (let i = 0; i < fields.label.length; i++) {
     p = fields.structure[i];
     val = data;
-    for(var j = 0; j <p.length; j++ ){
-      val=val[p[j]];
+    for (let j = 0; j < p.length; j++) {
+      val = val[p[j]];
     }
 
-    values[fields.label[i]]=Number(val);
+    values[fields.label[i]] = Number(val);
   }
 
   return values;

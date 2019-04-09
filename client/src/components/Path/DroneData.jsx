@@ -28,16 +28,16 @@ class DroneData extends Component {
 
     return (
       <div style={{ padding: '1em' }}>
-        <span id="first_attitude"></span>
+        <span id="first_attitude" />
       </div>
     );
   }
 }
 
 DroneData.propTypes = {
-  velocity: PropTypes.number,
-  acceleration: PropTypes.number,
-  altitude: PropTypes.number,
-}
+  velocity: PropTypes.number.isRequired,
+  acceleration: PropTypes.number.isRequired,
+  altitude: PropTypes.number.isRequired
+};
 
 export default DroneData;

@@ -6,18 +6,8 @@ import {
 import moment from 'moment';
 
 class Replay extends Component {
-  stopSlider() {
-    clearTimeout(this.slider); // stop timeout
-
-    this.props.onReplayChange({ // allow replay to be played
-      playable: true
-    });
-  }
-
-  onSliderChange(value) {
-    this.props.onReplayChange({ // change value of slider
-      slider: value
-    });
+  componentWillUnmount() {
+    this.stopSlider(); // stop slider
   }
 
   onConfirmLiveView() {
@@ -26,6 +16,21 @@ class Replay extends Component {
       replay: []
     }); // change to live view
   }
+
+  onSliderChange(value) {
+    this.props.onReplayChange({ // change value of slider
+      slider: value
+    });
+  }
+
+  stopSlider() {
+    clearTimeout(this.slider); // stop timeout
+
+    this.props.onReplayChange({ // allow replay to be played
+      playable: true
+    });
+  }
+
 
   sliderIncrement() {
     let delay = 1000;
@@ -67,10 +72,6 @@ class Replay extends Component {
 
       this.sliderIncrement();
     }
-  }
-
-  componentWillUnmount() {
-    this.stopSlider(); // stop slider
   }
 
   render() {

@@ -28,6 +28,7 @@ class WidgetForm extends Component {
       .then((data) => {
         this.setState({ agent_list: data.result });
       });
+
     socket.on('agent update list', (data) => { // subscribe to agent
       if (data) {
         const agents = this.state.agent_list;
@@ -41,6 +42,7 @@ class WidgetForm extends Component {
         this.setState({ agent_list: agents });
       }
     });
+    
     if (this.props.info.agent !== '') {
       let agent_name = this.props.info.agent;
       if (this.props.info.widget_type === widgetType.COSMOS_DATA

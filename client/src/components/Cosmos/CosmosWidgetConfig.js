@@ -59,7 +59,7 @@ class CosmosWidgetConfig {
     const vals = info.values;
     const jsonvals = [];
     for (var i = 0; i < vals.length; i++) {
-      jsonvals.push({data: vals[i]})
+      jsonvals.push({ data: vals[i] })
     }
     this.jsonvalues = jsonvals;
     if (info.agent !== this.agent) {
@@ -72,7 +72,7 @@ class CosmosWidgetConfig {
 
   addvalue(json_name) {
     let new_name = true;
-    for (var i = 0; i < this.jsonvalues.length; i++) {
+    for (let i = 0; i < this.jsonvalues.length; i++) {
       if (this.jsonvalues[i].data === json_name) {
         new_name = false
       }
@@ -90,20 +90,17 @@ class CosmosWidgetConfig {
     // console.log("fetch_agent_info")
     return fetch(`${cosmosInfo.socket}/api/cosmos_agent/${this.agent}`)
       .then(response => response.json())
-      .then(data => {
+      .then((data) => {
         // console.log(data)
         var info = data.result[0];
-        if(info){
+        if (info) {
           this.structure = info.structure;
           this.generate_structure_map();
           this.generate_values();
-        }
-        else {
+        } else {
           this.fill_no_info();
         }
-
-      }
-    );
+      });
   }
 
   fill_no_info() {
@@ -149,10 +146,10 @@ class CosmosWidgetConfig {
     var map = [];
     var str;
     var index;
-    for (var i = 0; i < structure.length; i++) {
-      for (var j = 0; j < structure[i].length; j++) {
+    for (let i = 0; i < structure.length; i++) {
+      for (let j = 0; j < structure[i].length; j++) {
         if (j === 0) str = structure[i][j];
-        else str += "_" + structure[i][j];
+        else str += '_' + structure[i][j];
         index = map.findIndex(x => x.string === str)
         if (index >= 0) {
           map[index].values.push(String(i));
@@ -169,38 +166,38 @@ class CosmosWidgetConfig {
 
   generate_values() {
     /* populate values array from jsonvalues list*/
-    var vals = { label: [], structure: [] };
-    var temp;
+    const vals = { label: [], structure: [] };
+    let temp;
     // console.log("jsonvalues:",this.jsonvalues)
-    for(var i=0; i < this.jsonvalues.length; i++){
+    for (let i = 0; i < this.jsonvalues.length; i++) {
       temp = this.map_string(this.jsonvalues[i].data);
-      for (var j = 0; j < temp.length; j++) {
+      for (let j = 0; j < temp.length; j++) {
         vals.label.push(this.list_to_string(this.structure[temp[j]]));
         vals.structure.push(this.structure[temp[j]]);
-
       }
-
     }
+
     this.values = vals;
- // console.log("values",vals);
- //        console.log(this.jsonvalues)
   }
 
   // helper functions
   list_to_string(l) {
-    var str = l[0];
-    for(var i = 1; i < l.length; i++){
-      str += "_" + l[i];
+    const str = l[0];
+    for (let i = 1; i < l.length; i++) {
+      str += '_' + l[i];
     }
+
     return str;
   }
 
   map_string(value_string) {
-    var ind = this.map.findIndex(x => x.string === value_string);
-    if(ind >= 0){
+    const ind = this.map.findIndex(x => x.string === value_string);
+
+    if (ind >= 0) {
       return this.map[ind].values;
     }
-    else return [];
+
+    return [];
   }
 
   to_json() {
@@ -214,7 +211,7 @@ class CosmosWidgetConfig {
       xRange:  this.xRange,
       visible: this.visible,
       values: this.jsonvalues
-    }
+    };
   }
 }
 

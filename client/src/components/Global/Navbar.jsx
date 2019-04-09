@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-
 import { Menu, Icon } from 'antd';
 
 class Navbar extends Component {
@@ -112,6 +111,6 @@ class Navbar extends Component {
 
 Navbar.propTypes = {
   current: PropTypes.string
-}
+};
 
 export default Navbar;

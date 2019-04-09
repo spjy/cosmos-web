@@ -59,11 +59,11 @@ const AttitudeInformation = ({
 };
 
 AttitudeInformation.propTypes = {
-  satellite: PropTypes.string,
-  w: PropTypes.number,
-  x: PropTypes.number,
-  y: PropTypes.number,
-  z: PropTypes.number,
+  satellite: PropTypes.string.isRequired,
+  w: PropTypes.number.isRequired,
+  x: PropTypes.number.isRequired,
+  y: PropTypes.number.isRequired,
+  z: PropTypes.number.isRequired
 };
 
 export default AttitudeInformation;

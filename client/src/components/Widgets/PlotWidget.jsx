@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import io from 'socket.io-client';
 import moment from 'moment';
 import {
- Alert, Row, Col, Button,Slider 
+  Alert, Row, Col, Button, Slider
 } from 'antd';
-import { LineChart, Line ,XAxis, YAxis, Tooltip, ResponsiveContainer, Label} from 'recharts';
-import { utc2date , convertTimetoDate, mjd2cal} from './../Cosmos/Libs'
-import cosmosInfo from './../Cosmos/CosmosInfo'
+import {
+  LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Label
+} from 'recharts';
+import { utc2date, convertTimetoDate, mjd2cal} from '../Cosmos/Libs';
+import cosmosInfo from '../Cosmos/CosmosInfo';
 const colors = ['#82ca9d', '#9ca4ed', '#f4a742', '#e81d0b', '#ed9ce6'];
 const socket = io(cosmosInfo.socket);
 
@@ -71,7 +73,8 @@ class PlotWidget extends Component {
         } else {
           plot_domain = [data[this.state.slider].agent_utc - (this.props.info.xRange / 1440), data[this.state.slider].agent_utc];
           slider = (
-            <Slider value={this.state.slider}
+            <Slider
+              value={this.state.slider}
               min={0}
               max={data.length-1}
               onChange={this.sliderChange.bind(this)}
@@ -80,35 +83,35 @@ class PlotWidget extends Component {
           );
         }
       }
-      Plots =
+      Plots = (
         <div>
-
-          <h4 style={{ textAlign: 'center' }}> 
+          <h4 style={{ textAlign: 'center' }}>
             {' '}
             {this.props.info.title}
             {' '}
           </h4>
           <ResponsiveContainer width="100%" height={400}>
-              <LineChart data={data}>
-                <XAxis
-                  dataKey="agent_utc"
-                  type = 'number'
-                  allowDataOverflow={true}
-                  domain={plot_domain}
-                  tickFormatter ={unixTime => moment(mjd2cal(unixTime).getTime()).format('YYYY-MM-DD hh:mm a')}
-                >
-                >
-                  <Label value={this.props.info.plot_labels[0]} offset={0} position="insideBottom" />
-                </XAxis>
-                <YAxis domain={['auto', 'auto']}>
-                  <Label value={this.props.info.plot_labels[1]} angle={-90} position="insideLeft" />
-                </YAxis>
-                <Tooltip labelFormatter={(val) => utc2date(val)} />
-                {lines}
-              </LineChart>
-            </ResponsiveContainer>
+            <LineChart data={data}>
+              <XAxis
+                dataKey="agent_utc"
+                type='number'
+                allowDataOverflow
+                domain={plot_domain}
+                tickFormatter={unixTime => moment(mjd2cal(unixTime).getTime()).format('YYYY-MM-DD hh:mm a')}
+              >
+              >
+                <Label value={this.props.info.plot_labels[0]} offset={0} position="insideBottom" />
+              </XAxis>
+              <YAxis domain={['auto', 'auto']}>
+                <Label value={this.props.info.plot_labels[1]} angle={-90} position="insideLeft" />
+              </YAxis>
+              <Tooltip labelFormatter={(val) => utc2date(val)} />
+              {lines}
+            </LineChart>
+          </ResponsiveContainer>
           {slider}
-        </div>;
+        </div>
+      );
     } else {
       Plots = <Alert message="No data available" type="error" showIcon />;
     }

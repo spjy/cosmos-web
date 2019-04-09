@@ -33,6 +33,22 @@ class ArchivePlotWidget extends Component {
     socket.emit('agent_dates', { agent: this.props.info.agent, node: this.props.info.node }, this.setBoundaries.bind(this));
   }
 
+  onDateChange(dates, dateStrings) {
+    let startDate = dates[0].startOf('day');
+    let endDate = dates[1].endOf('day');
+
+    this.setState({ date_start: startDate, date_end: endDate });
+
+    socket.emit('agent_query', {
+      agent: this.props.info.agent,
+      node: this.props.info.node,
+      startDate,
+      endDate,
+      fields: this.getQueryFields() 
+    },
+    this.receivedPlotData.bind(this));
+  }
+
   setBoundaries(msg) {
     if (msg.valid === true) {
       let startDate = new Date(msg.dates.start);
@@ -42,22 +58,6 @@ class ArchivePlotWidget extends Component {
       boundaries.end = endDate;
       this.setState({ boundary: boundaries });
     }
-  }
-
-  onDateChange(dates, dateStrings) {
-    let startDate = dates[0].startOf('day');
-    let endDate = dates[1].endOf('day');
-
-    this.setState({ date_start: startDate, date_end: endDate });
-
-    socket.emit('agent_query', { 
-      agent: this.props.info.agent,
-      node: this.props.info.node,
-      startDate,
-      endDate,
-      fields: this.getQueryFields() 
-},
-    this.receivedPlotData.bind(this));
   }
 
   getQueryFields() {
