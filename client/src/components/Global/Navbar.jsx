@@ -24,12 +24,16 @@ class Navbar extends Component {
           </Link>
         </Menu.Item>
         <Menu.SubMenu
+<<<<<<< HEAD:client/src/components/Global/Navbar.jsx
           title={(
             <span>
               <Icon type="rocket" />
               Satellite
             </span>
           )}
+=======
+          title={<span><Icon type="rocket" />Satellite</span>}
+>>>>>>> master:client/src/components/Global/Navbar.js
         >
           <Menu.ItemGroup
             title="Applications"
@@ -67,6 +71,7 @@ class Navbar extends Component {
           </Menu.ItemGroup>
         </Menu.SubMenu>
         <Menu.SubMenu
+<<<<<<< HEAD:client/src/components/Global/Navbar.jsx
           title={(
             <span>
               <Icon type="cloud" />
@@ -74,6 +79,9 @@ class Navbar extends Component {
             </span>
           )}
         >
+=======
+          title={<span><Icon type="cloud" />Balloon</span>}>
+>>>>>>> master:client/src/components/Global/Navbar.js
           <Menu.ItemGroup
             title="Applications"
           >
@@ -89,6 +97,7 @@ class Navbar extends Component {
             </Menu.Item>
           </Menu.ItemGroup>
         </Menu.SubMenu>
+<<<<<<< HEAD:client/src/components/Global/Navbar.jsx
         <Menu.Item key="tools">
           <Link to="/cosmostools">
             <Icon type="tool" />
@@ -96,6 +105,24 @@ class Navbar extends Component {
           </Link>
         </Menu.Item>
 
+=======
+        <Menu.SubMenu
+          title={<span><Icon type="tool" />Cosmos Tools</span>}>
+          <Menu.ItemGroup
+            title="Applications">
+            <Menu.Item key="cosmostools">
+                <Link to="/cosmostools">
+                  <Icon type="tool" />Tools
+                </Link>
+            </Menu.Item>
+            <Menu.Item key="cosmostoolspage">
+                <Link to="/cosmostoolspage">
+                  <Icon type="tool" />New Widgets
+                </Link>
+            </Menu.Item>
+          </Menu.ItemGroup>
+        </Menu.SubMenu>
+>>>>>>> master:client/src/components/Global/Navbar.js
       </Menu>
     );
   }

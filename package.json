@@ -4,7 +4,11 @@
   "description": "This repository is for the cosmos web app.",
   "main": "app.js",
   "scripts": {
+<<<<<<< HEAD
     "start": "nodemon ./server/app.js"
+=======
+    "start": "nodemon server/app.js"
+>>>>>>> master
   },
   "repository": {
     "type": "git",
@@ -32,7 +36,11 @@
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
+<<<<<<< HEAD
     "eslint": "^5.16.0",
+=======
+    "eslint": "^5.15.3",
+>>>>>>> master
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.1",
