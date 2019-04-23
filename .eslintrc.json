@@ -3,6 +3,6 @@
     "rules": {
         "comma-dangle": ["warn", "never"],
         "eol-last": ["warn", "always"],
-        "react/destructuring-assignment": ["enabled", "always", { "ignoreClassFields": "boolean" }]
+        "react/destructuring-assignment": [0, "always", { "ignoreClassFields": "boolean" }]
     }
 }

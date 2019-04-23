@@ -4,7 +4,6 @@ import {
 } from 'antd';
 import io from 'socket.io-client';
 import Navbar from './Global/Navbar';
-import { plot_form_datalist } from './Cosmos/Libs';
 import { parse_live_data, setup_agent } from './Cosmos/CosmosPlotLibs';
 import cosmosInfo from './Cosmos/CosmosInfo';
 import CosmosAgent from './WidgetComponents/CosmosAgent';

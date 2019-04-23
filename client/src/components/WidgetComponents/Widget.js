@@ -6,8 +6,6 @@ import {
 import PlotWidget from '../Widgets/PlotWidget';
 import ArchivePlotWidget from '../Widgets/ArchivePlotWidget';
 import WidgetForm from './WidgetForm';
-import { setup_agent } from '../Cosmos/CosmosPlotLibs';
-import CosmosAgent from './CosmosAgent';
 import cosmosInfo from '../Cosmos/CosmosInfo';
 import OrbitWidget from '../Widgets/OrbitWidget';
 import AgentList from '../Widgets/AgentList';

@@ -4,14 +4,6 @@ import PropTypes from 'prop-types';
 import { Menu, Icon } from 'antd';
 
 class Navbar extends Component {
-  constructor() {
-    super();
-
-    this.state = {
-      current: this.props.current
-    };
-  }
-
   // handleClick = (e) => {
   //   this.setState({
   //     current: e.key,

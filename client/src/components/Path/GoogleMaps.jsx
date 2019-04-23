@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {
   withScriptjs, withGoogleMap, GoogleMap, Polyline, Marker
@@ -39,7 +39,7 @@ const GoogleMaps = ({ path, position }) => (
 
 GoogleMaps.propTypes = {
   path: PropTypes.arrayOf.isRequired,
-  positon: PropTypes.object.isRequired,
+  positon: PropTypes.object.isRequired
 };
 
 export default withScriptjs(withGoogleMap(GoogleMaps));

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Form, Select, Badge, TreeSelect, Alert, Input
+  Form, Select, Badge, TreeSelect, Input
 } from 'antd';
 import io from 'socket.io-client';
 import cosmosInfo from './../Cosmos/CosmosInfo';

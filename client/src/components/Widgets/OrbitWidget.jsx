@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
-import moment from 'moment';
-import { Alert, Row, Col, Button, Slider} from 'antd';
+import { Row, Col } from 'antd';
 import cosmosInfo from '../Cosmos/CosmosInfo'
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Label} from 'recharts';
 import { notification } from 'antd';
 import 'whatwg-fetch';
 import OrbitInformation from '../Orbit/OrbitInformation';
@@ -105,6 +103,7 @@ class OrbitWidget extends Component {
               replay={replay}
             />
           </Col>
+          
           <Col span={8} >
               <OrbitInformation
                 satellite={satellite}

@@ -2,15 +2,14 @@ import React, { Component } from 'react';
 import io from 'socket.io-client';
 import moment from 'moment';
 import {
-  Alert, Row, Col, Button, Slider
+  Alert, Slider
 } from 'antd';
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Label
 } from 'recharts';
-import { utc2date, convertTimetoDate, mjd2cal} from '../Cosmos/Libs';
+import { utc2date, mjd2cal} from '../Cosmos/Libs';
 import cosmosInfo from '../Cosmos/CosmosInfo';
 const colors = ['#82ca9d', '#9ca4ed', '#f4a742', '#e81d0b', '#ed9ce6'];
-const socket = io(cosmosInfo.socket);
 
 const scale = (num, in_min, in_max, out_min, out_max) => (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 class PlotWidget extends Component {

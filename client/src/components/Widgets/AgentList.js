@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Table, Badge } from 'antd';
-import Navbar from './../Global/Navbar';
 import io from 'socket.io-client';
 import cosmosInfo from './../Cosmos/CosmosInfo'
 const socket = io(cosmosInfo.socket);
