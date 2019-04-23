@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { notification } from 'antd';
-import 'whatwg-fetch'
+import 'whatwg-fetch';
 import io from 'socket.io-client';
 
 import Navbar from './Global/Navbar';
@@ -9,27 +9,29 @@ import Live from './Global/Live';
 import ReplayForm from './Global/ReplayForm';
 import OrbitInformation from './Orbit/OrbitInformation';
 import OrbitThreeD from './Orbit/OrbitThreeD';
-
+import cosmosInfo from './Cosmos/CosmosInfo';
 import '../App.css';
 
-import cosmosInfo from './Cosmos/CosmosInfo'
 const socket = io(cosmosInfo.socket);
 
 class Orbit extends Component {
+  constructor() {
+    super();
 
-  state = {
-    live: false,
-    satellite: '--',
-    max: 500,
-    slider: 0,
-    playable: false,
-    replay: [],
-    currentCoord: {
-      x: 0,
-      y: 0,
-      z: 0,
-    },
-  };
+    this.state = {
+      live: false,
+      satellite: '--',
+      max: 500,
+      slider: 0,
+      playable: false,
+      replay: [],
+      currentCoord: {
+        x: 0,
+        y: 0,
+        z: 0
+      }
+    };
+  }
 
   componentDidMount() {
     socket.on('satellite orbit', (data) => { // check if there is a live orbit
@@ -41,11 +43,11 @@ class Orbit extends Component {
 
           this.setState({
             live: true,
-            satellite: satellite,
+            satellite,
             currentCoord: {
-              x: x,
-              y: y,
-              z: z,
+              x,
+              y,
+              z
             },
           });
         }
@@ -84,17 +86,17 @@ class Orbit extends Component {
           this.setState({ playable: false });
         }
       });
-    }).catch(err => {
+    }).catch((err) => {
       notification.error({
         message: 'Error',
         description: 'An error occurred.'
-      })
+      });
+
       console.log(err);
     });
   }
 
   render() {
-
     const {
       currentCoord,
       replay,
@@ -102,7 +104,7 @@ class Orbit extends Component {
       playable,
       max,
       slider,
-      live,
+      live
     } = this.state;
 
     return (
@@ -124,12 +126,13 @@ class Orbit extends Component {
         />
 
         {live
-          ?
+          ? (
             <Live
               type="orbit"
               satellite={satellite}
             />
-          :
+          )
+          : (
             <Replay
               type="orbit"
               playable={playable}
@@ -140,6 +143,7 @@ class Orbit extends Component {
               onReplayChange={this.onReplayChange.bind(this)}
               ref="replay"
             />
+          )
         }
 
         <br />

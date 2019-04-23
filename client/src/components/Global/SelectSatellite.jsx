@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import { Form, Select } from 'antd';
 
 class SelectSatellite extends Component {
-
   render() {
     return (
       <div>
@@ -22,7 +22,7 @@ class SelectSatellite extends Component {
               >
                 cubesat1
               </Select.Option>
-              
+
               <Select.Option
                 value="neutron1"
               >
@@ -34,7 +34,6 @@ class SelectSatellite extends Component {
       </div>
     );
   }
-
 }
 
 export default SelectSatellite;

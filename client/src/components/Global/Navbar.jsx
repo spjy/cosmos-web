@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-
 import { Menu, Icon } from 'antd';
 
 class Navbar extends Component {
-  state = {
-    current: this.props.current
-  };
-
   // handleClick = (e) => {
   //   this.setState({
   //     current: e.key,
@@ -19,16 +14,26 @@ class Navbar extends Component {
     return (
       <Menu
         onClick={this.handleClick}
-        selectedKeys={[this.state.current]}
+        selectedKeys={[this.props.current]}
         mode="horizontal"
       >
         <Menu.Item key="home">
           <Link to="/">
-            <Icon type="global" />COSMOS Web
+            <Icon type="global" />
+            COSMOS Web
           </Link>
         </Menu.Item>
         <Menu.SubMenu
+<<<<<<< HEAD:client/src/components/Global/Navbar.jsx
+          title={(
+            <span>
+              <Icon type="rocket" />
+              Satellite
+            </span>
+          )}
+=======
           title={<span><Icon type="rocket" />Satellite</span>}
+>>>>>>> master:client/src/components/Global/Navbar.js
         >
           <Menu.ItemGroup
             title="Applications"
@@ -39,7 +44,8 @@ class Navbar extends Component {
               <Link
                 to="/orbit"
               >
-                <Icon type="sync" />Orbit
+                <Icon type="sync" />
+                Orbit
               </Link>
             </Menu.Item>
             <Menu.Item
@@ -48,7 +54,8 @@ class Navbar extends Component {
               <Link
                 to="/attitude"
               >
-                <Icon type="swap-right" />Attitude
+                <Icon type="swap-right" />
+                Attitude
               </Link>
             </Menu.Item>
             <Menu.Item
@@ -57,25 +64,48 @@ class Navbar extends Component {
               <Link
                 to="/plot"
               >
-                <Icon type="line-chart" />Plot
+                <Icon type="line-chart" />
+                Plot
               </Link>
             </Menu.Item>
           </Menu.ItemGroup>
         </Menu.SubMenu>
         <Menu.SubMenu
+<<<<<<< HEAD:client/src/components/Global/Navbar.jsx
+          title={(
+            <span>
+              <Icon type="cloud" />
+              Balloon
+            </span>
+          )}
+        >
+=======
           title={<span><Icon type="cloud" />Balloon</span>}>
+>>>>>>> master:client/src/components/Global/Navbar.js
           <Menu.ItemGroup
-            title="Applications">
+            title="Applications"
+          >
             <Menu.Item
-              key="path">
+              key="path"
+            >
               <Link
                 to="/path"
               >
-                <Icon type="rollback" />Path
+                <Icon type="rollback" />
+                Path
               </Link>
             </Menu.Item>
           </Menu.ItemGroup>
         </Menu.SubMenu>
+<<<<<<< HEAD:client/src/components/Global/Navbar.jsx
+        <Menu.Item key="tools">
+          <Link to="/cosmostools">
+            <Icon type="tool" />
+            Tools
+          </Link>
+        </Menu.Item>
+
+=======
         <Menu.SubMenu
           title={<span><Icon type="tool" />Cosmos Tools</span>}>
           <Menu.ItemGroup
@@ -92,6 +122,7 @@ class Navbar extends Component {
             </Menu.Item>
           </Menu.ItemGroup>
         </Menu.SubMenu>
+>>>>>>> master:client/src/components/Global/Navbar.js
       </Menu>
     );
   }
@@ -99,6 +130,6 @@ class Navbar extends Component {
 
 Navbar.propTypes = {
   current: PropTypes.string
-}
+};
 
 export default Navbar;

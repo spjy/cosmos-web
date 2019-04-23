@@ -1,19 +1,24 @@
 import React, { Component } from 'react';
-import { Card, Form, Select, Button, DatePicker } from 'antd';
+import {
+  Card, Form, Select, Button, DatePicker
+} from 'antd';
 
 class ReplayForm extends Component {
+  constructor() {
+    super();
 
-  state = {
-    selected: '',
-    dateFrom: '',
-    dateTo: '',
-  };
+    this.state = {
+      selected: '',
+      dateFrom: '',
+      dateTo: ''
+    };
+  }
 
   datePicker(date, dateString) {
     this.setState({
       dateFrom: dateString[0],
       dateTo: dateString[1]
-    })
+    });
   }
 
   selected(value, option) {
@@ -36,19 +41,19 @@ class ReplayForm extends Component {
       <div
         style={{ padding: '0 1em' }}
       >
-        <div 
+        <div
           style={{ background: '#ECECEC', padding: '10px' }}
         >
-          <Card 
-            title="Replay" 
-            bordered={false} 
+          <Card
+            title="Replay"
+            bordered={false}
             style={{ width: '100%' }}
           >
-            <Form 
-              layout="horizontal" 
+            <Form
+              layout="horizontal"
               onSubmit={this.submit.bind(this)}
             >
-              <Form.Item 
+              <Form.Item
                 label="Satellite"
               >
                 <Select
@@ -69,7 +74,7 @@ class ReplayForm extends Component {
                   format="YYYY-MM-DDTHH:mm:ssZ"
                 />
               </Form.Item>
-              
+
               <Button
                 type="primary"
                 htmlType="submit"

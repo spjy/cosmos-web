@@ -9,27 +9,30 @@ import BalloonInformation from './Path/BalloonInformation';
 import Live from './Global/Live';
 import Replay from './Global/Replay';
 import ReplayForm from './Global/ReplayForm';
+import cosmosInfo from './Cosmos/CosmosInfo';
 
-import cosmosInfo from './Cosmos/CosmosInfo'
 const socket = io(cosmosInfo.socket);
 
 class Path extends Component {
+  constructor() {
+    super();
 
-  state = {
-    live: false,
-    satellite: '--',
-    max: 500,
-    slider: 0,
-    playable: false,
-    replay: [],
-    path: [[]],
-    currentCoord: {
-      latitude: 0,
-      longitude: 0,
-      altitude: 0,
-      acceleration: [0,0,0],
-    },
-  };
+    this.state = {
+      live: false,
+      satellite: '--',
+      max: 500,
+      slider: 0,
+      playable: false,
+      replay: [],
+      path: [[]],
+      currentCoord: {
+        latitude: 0,
+        longitude: 0,
+        altitude: 0,
+        acceleration: [0,0,0],
+      },
+    };
+  }
 
   componentDidMount() {
     socket.on('balloon path', (data) => { // check if there is a live orbit
@@ -41,12 +44,12 @@ class Path extends Component {
 
           this.setState({
             live: true,
-            satellite: satellite,
+            satellite,
             currentCoord: {
-              latitude: latitude,
-              longitude: longitude,
-              altitude: altitude,
-              acceleration: acceleration,
+              latitude,
+              longitude,
+              altitude,
+              acceleration
             }
           });
 
@@ -57,7 +60,7 @@ class Path extends Component {
                 { lat: prevState.currentCoord.latitude, lng: prevState.currentCoord.longitude },
                 { lat: latitude, lng: longitude }
               ]
-            ],
+            ]
           }));
         }
       }
@@ -86,27 +89,37 @@ class Path extends Component {
           this.refs.replay.startSlider(); // initialize function from replay component
           this.setState({ playable: false });
         }
-      }).catch(err => {
+      }).catch((err) => {
         notification.error({
           message: 'Error',
           description: 'An error occurred.'
-        })
+        });
         console.log(err);
       });
-    }).catch(err => {
+    }).catch((err) => {
       notification.error({
         message: 'Error',
         description: 'An error occurred.'
-      })
+      });
       console.log(err);
     });
   }
 
   onReplayChange(value) {
-
   }
 
   render() {
+    const {
+      path,
+      currentCoord,
+      satellite,
+      playable,
+      max,
+      slider,
+      replay,
+      live
+    } = this.state;
+
     return (
       <div>
         <Navbar
@@ -115,43 +128,45 @@ class Path extends Component {
 
         <GoogleMaps
           googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyBv6j0uD6J2xfPGI_gR-0aYH7qLhrxCR8s&v=3.exp&libraries=geometry,drawing,places"
-          loadingElement={<div style={{ height: `80bh` }} />}
-          containerElement={<div style={{ height: `72vh` }} />}
-          mapElement={<div style={{ height: `72vh` }} />}
-          path={this.state.path}
+          loadingElement={<div style={{ height: '80bh' }} />}
+          containerElement={<div style={{ height: '72vh' }} />}
+          mapElement={<div style={{ height: '72vh' }} />}
+          path={path}
           position={[
-            {lat: this.state.currentCoord.latitude, lng: this.state.currentCoord.longitude}
+            { lat: currentCoord.latitude, lng: currentCoord.longitude }
           ]}
         />
 
         <BalloonInformation
-          acceleration={this.state.currentCoord.acceleration}
-          altitude={this.state.currentCoord.altitude}
+          acceleration={currentCoord.acceleration}
+          altitude={currentCoord.altitude}
         />
 
         <PathInformation
-          satellite={"Balloon"}
-          latitude={this.state.currentCoord.latitude}
-          longitude={this.state.currentCoord.longitude}
+          satellite="Balloon"
+          latitude={currentCoord.latitude}
+          longitude={currentCoord.longitude}
         />
 
-        {this.state.live
-          ?
+        {live
+          ? (
             <Live
               type="orbit"
-              satellite={this.state.satellite}
+              satellite={satellite}
             />
-          :
+          )
+          : (
             <Replay
               type="orbit"
-              playable={this.state.playable}
-              satellite={this.state.satellite}
-              max={this.state.max}
-              slider={this.state.slider}
-              replay={this.state.replay}
+              playable={playable}
+              satellite={satellite}
+              max={max}
+              slider={slider}
+              replay={replay}
               onReplayChange={this.onReplayChange.bind(this)}
               ref="replay"
             />
+          )
         }
 
         <br />

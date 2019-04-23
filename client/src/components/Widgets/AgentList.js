@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Table, Badge } from 'antd';
-import Navbar from './../Global/Navbar';
 import io from 'socket.io-client';
 import cosmosInfo from './../Cosmos/CosmosInfo'
 const socket = io(cosmosInfo.socket);
@@ -40,7 +39,7 @@ const columns = [{
 class AgentList extends Component {
 /* Returns a table element of all agents, which gets updated every five seconds */
     state = {
-      agents:[]
+      agents: []
     };
 
     componentDidMount() {
@@ -55,7 +54,7 @@ class AgentList extends Component {
         if (data) {
           // console.log(data)
           var agents = this.state.agents;
-          for(var i=0; i < agents.length; i++){
+          for(var i = 0; i < agents.length; i++){
               if(data[agents[i].agent_proc]) {
                 // console.log( agents[i].agent_proc," live")
                 agents[i].live=true;

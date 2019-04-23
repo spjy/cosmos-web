@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { notification } from 'antd';
-import 'whatwg-fetch'
+import 'whatwg-fetch';
 import io from 'socket.io-client';
 
 import Navbar from './Global/Navbar';
@@ -9,27 +9,30 @@ import Live from './Global/Live';
 import ReplayForm from './Global/ReplayForm';
 import AttitudeInformation from './Attitude/AttitudeInformation';
 import AttitudeThreeD from './Attitude/AttitudeThreeD';
-import cosmosInfo from './Cosmos/CosmosInfo'
+import cosmosInfo from './Cosmos/CosmosInfo';
 import '../App.css';
 
 const socket = io(cosmosInfo.socket);
 
 class Attitude extends Component {
+  constructor() {
+    super();
 
-  state = {
-    live: false,
-    satellite: '--',
-    max: 500,
-    slider: 0,
-    playable: false,
-    replay: [],
-    currentCoord: {
-      w: 0,
-      x: 0,
-      y: 0,
-      z: 0,
-    },
-  };
+    this.state = {
+      live: false,
+      satellite: '--',
+      max: 500,
+      slider: 0,
+      playable: false,
+      replay: [],
+      currentCoord: {
+        w: 0,
+        x: 0,
+        y: 0,
+        z: 0
+      }
+    };
+  }
 
   componentDidMount() {
     socket.on('satellite attitude', (data) => {
@@ -42,7 +45,7 @@ class Attitude extends Component {
               w: data.w,
               x: data.x,
               y: data.y,
-              z: data.z,
+              z: data.z
             }
           });
         }
@@ -57,7 +60,7 @@ class Attitude extends Component {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
-      },
+      }
       //credentials: 'same-origin',
     }).then((response) => {
       response.json().then((data) => {
@@ -78,25 +81,26 @@ class Attitude extends Component {
           });
         }
       });
-    }).catch(err => {
+    }).catch((err) => {
       notification.error({
         message: 'Error',
         description: 'An error occurred.'
-      })
-      console.log(err)
+      });
+
+      console.log(err);
     });
   }
 
   datePicker(date, dateString) {
     this.setState({
       dateFrom: dateString[0],
-      dateTo: dateString[1],
+      dateTo: dateString[1]
     });
   }
 
   selectSatellite(value, option) {
     this.setState({
-      satelliteSelected: value,
+      satelliteSelected: value
     });
   }
 
@@ -105,6 +109,10 @@ class Attitude extends Component {
   }
 
   render() {
+    const {
+      currentCoord, satellite, playable, max, slider, replay, live
+    } = this.state;
+
     return (
       <div>
         <Navbar
@@ -112,34 +120,39 @@ class Attitude extends Component {
         />
 
         <AttitudeThreeD
-          data={this.state.currentCoord}
+          data={currentCoord}
         />
 
         <AttitudeInformation
-          satellite={this.state.satellite}
-          w={this.state.currentCoord.w}
-          x={this.state.currentCoord.x}
-          y={this.state.currentCoord.y}
-          z={this.state.currentCoord.z}
+          satellite={satellite}
+          w={currentCoord.w}
+          x={currentCoord.x}
+          y={currentCoord.y}
+          z={currentCoord.z}
         />
 
-        {this.state.live
-        ?
-          <Live
-            type="attitude"
-            satellite={this.state.satellite}
-          />
-        :
-          <Replay
-            type="attitude"
-            playable={this.state.playable}
-            satellite={this.state.satellite}
-            max={this.state.max}
-            slider={this.state.slider}
-            replay={this.state.replay}
-            onReplayChange={this.onReplayChange.bind(this)}
-            ref="replay"
-          />
+        {
+          live
+            ?
+            (
+              <Live
+                type="attitude"
+                satellite={satellite}
+              />
+            )
+            :
+            (
+              <Replay
+                type="attitude"
+                playable={playable}
+                satellite={satellite}
+                max={max}
+                slider={slider}
+                replay={replay}
+                onReplayChange={this.onReplayChange.bind(this)}
+                ref="replay"
+              />
+            )
         }
 
         <br />
