@@ -13,8 +13,8 @@ class Example extends Component {
     super(props);
       this.state = {
         show_form: false,
-        data : [],
-        form : {},
+        data: [],
+        form: {},
         form_valid: true
       };
   }

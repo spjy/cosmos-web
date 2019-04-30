@@ -1,10 +1,7 @@
 import cosmosInfo from './../Cosmos/CosmosInfo'
 
 class CosmosAgent  {
-
-
   constructor(jsonObj){
-
     this.agent = jsonObj.agent ? jsonObj.agent : "";
     this.node = jsonObj.node ? jsonObj.node : "";
     this.live = false;
@@ -22,6 +19,7 @@ class CosmosAgent  {
         this.agent_info_received(data.result[0])
     );
   }
+
   async async_setup_agent(){
     return await fetch(`${cosmosInfo.socket}/api/cosmos_agent/${this.agent}`)
       .then(response => response.json())
@@ -29,6 +27,7 @@ class CosmosAgent  {
         this.agent_info_received(data.result[0])
     )
   }
+
   agent_info_received(info){
 
      if(info){
@@ -46,7 +45,7 @@ class CosmosAgent  {
      return "done";
   }
 
-  fetch_agent_info(){
+  fetch_agent_info() {
     return fetch(`${cosmosInfo.socket}/api/cosmos_agent/${this.agent}`)
       .then(response => response.json())
       .then(data =>{
@@ -65,8 +64,7 @@ class CosmosAgent  {
   }
 
 
-  generate_structure_map(){
-
+  generate_structure_map() {
     var structure = this.structure;
     var map = [];
     var str;
@@ -88,8 +86,8 @@ class CosmosAgent  {
       }
     }
     this.map = map;
-
   }
+
   get_data_structure(data_names){
     var vals={label:[],structure:[]};
     var temp;
@@ -105,8 +103,8 @@ class CosmosAgent  {
     }
     // console.log("agent", this.agent, vals)
     return vals;
-
   }
+
   addvalue(json_name){
     var new_name = true;
     for(var i=0; i <this.datanames.length; i++){
@@ -116,9 +114,9 @@ class CosmosAgent  {
         this.datanames.push(json_name)
         this.generate_values();
       }
-
   }
-  generate_values(){
+
+  generate_values() {
     /* populate values array from jsonvalues list*/
     var vals={label:[],structure:[]};
     var temp;
@@ -128,32 +126,26 @@ class CosmosAgent  {
       for(var j=0; j< temp.length; j++){
         vals.label.push(this.list_to_string(this.structure[temp[j]]));
         vals.structure.push(this.structure[temp[j]]);
-
       }
-
     }
     this.values = vals;
- // console.log("values",vals);
- //        console.log(this.jsonvalues)
   }
   // helper functions
-  list_to_string(l){
+  list_to_string(l) {
     var str =l[0];
     for(var i=1;i<l.length;i++){
       str+="_"+l[i];
     }
     return str;
   }
-  map_string(value_string){
-    var ind = this.map.findIndex(x=>x.string === value_string);
-    if( ind >=0){
+
+  map_string(value_string) {
+    var ind = this.map.findIndex(x => x.string === value_string);
+    if(ind >=0) {
       return this.map[ind].values;
     }
     else return [];
   }
-
-
 }
-
 
 export default CosmosAgent;

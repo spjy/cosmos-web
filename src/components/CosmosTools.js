@@ -16,7 +16,7 @@ const socket = io(cosmosInfo.socket);
  - this component monitors COSMOS Agent data, and passes relevant data to each widget (does not store history, only one at a time )
 */
 class CosmosTools extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
       this.state = {
         agents: {},
@@ -32,13 +32,13 @@ class CosmosTools extends Component {
           description:"",
           author:""}
       };
-
-
   }
+
   componentDidMount() {
 
   }
-  componentWillUnmount(){
+
+  componentWillUnmount() {
     var agents = Object.keys(this.state.agents);
     for(var i=0; i< agents.length; i++){
       socket.removeAllListeners('agent subscribe '+agents[i]);
@@ -46,7 +46,7 @@ class CosmosTools extends Component {
     }
   }
 
-  onClickAddWidget(){
+  onClickAddWidget() {
     var widgets = this.state.widgets;
     var w = new CosmosWidgetInfo({})
     widgets.push(w)
@@ -54,7 +54,7 @@ class CosmosTools extends Component {
 
   }
 
-  startListening(agentname){
+  startListening(agentname) {
     // console.log("listening ",agentname)
     socket.emit('start record', agentname);
     socket.on('agent subscribe '+agentname, (data) => { // subscribe to agent
@@ -69,7 +69,8 @@ class CosmosTools extends Component {
       }
     });
   }
-  updateWidget(e){
+
+  updateWidget(e) {
     // console.log("CosmosTools:updateWidget");
     var widgets = this.state.widgets;
     widgets[e.id]=e.form;
@@ -109,10 +110,10 @@ class CosmosTools extends Component {
 
   }
 
-  removeWidget(index){
+  removeWidget(index) {
     var widgets = this.state.widgets;
     widgets.splice(index.id,1);
-    if(widgets.length===0){
+    if (widgets.length === 0) {
       this.setState({widgets:widgets,
         db_info:{name:"",
           description:"",
@@ -124,14 +125,13 @@ class CosmosTools extends Component {
           author:""}
         });
 
-    }
-    else {
-      this.setState({widgets:widgets});
+    } else {
+      this.setState({ widgets:widgets });
     }
 
 
   }
-  agentStructure(agent_name){
+  agentStructure(agent_name) {
     var agents=this.state.agents;
     if(agents[agent_name]){
       return agents[agent_name].info.structure;
@@ -141,7 +141,7 @@ class CosmosTools extends Component {
       return;
     }
   }
-  newAgent(cosmosAgent){
+  newAgent(cosmosAgent) {
     // console.log("cosmostools newAgent", cosmosAgent.agent)
     var agent_list = this.state.agents;
     var agent_name = cosmosAgent.agent;
@@ -150,59 +150,69 @@ class CosmosTools extends Component {
   }
 
 
-  loadConfiguration(config){
+  loadConfiguration(config) {
     //set this.state.widgets = config
     // setup agents
     // set configForm modal visible false
     this.setState({
-      db_info:{name:config.name,
-        description:config.description,
-        author:config.author,
-        id: config._id},
-      save_form:{
+      db_info: {
         name:config.name,
         description:config.description,
-        author:config.author},
+        author:config.author,
+        id: config._id
+      },
+      save_form: {
+        name:config.name,
+        description:config.description,
+        author:config.author
+      },
       widgets:config.widgets
     });
-
   }
-  showConfigForm(){
+
+  showConfigForm() {
     this.setState({show_config_form:true});
   }
-  hideConfigForm(){
+  hideConfigForm() {
     this.setState({show_config_form:false});
   }
   /* functions for Modal Form*/
-  handleFieldChange(event){
+  handleFieldChange(event) {
     var info=this.state.save_form;
     info[event.target.id] = event.target.value
     this.setState({save_form: info});
   }
-  showSaveModal(){
+  showSaveModal() {
     this.setState({show_save_modal:true, form_validated:true});
   }
-  cancelSave(){
-    var form_values={
-      name:this.state.db_info.name,
-      description:this.state.db_info.description,
-      author:this.state.db_info.author};
-    this.setState({show_save_modal:false, save_form:form_values});
+  cancelSave() {
+    var form_values = {
+      name: this.state.db_info.name,
+      description: this.state.db_info.description,
+      author: this.state.db_info.author
+    };
 
+    this.setState({
+      show_save_modal: false,
+      save_form:form_values
+    });
   }
-  validateForm(){
+  validateForm() {
     var valid = true;
     // console.log("validating", this.state.save_form)
-    if(this.state.save_form.name==="") valid=false;
-    else if(this.state.save_form.description==="") valid=false;
-    else if(this.state.save_form.author==="") valid=false;
-    this.setState({form_validated:valid});
+    if (this.state.save_form.name === "") valid = false;
+    else if (this.state.save_form.description === "") valid = false;
+    else if (this.state.save_form.author === "") valid = false;
+    this.setState({
+      form_validated:valid
+    });
+
     return valid;
   }
-  onClickSaveUpdate(){ // "update" button in Save modal
-    if(this.validateForm()){
+  onClickSaveUpdate() { // "update" button in Save modal
+    if (this.validateForm()) {
 
-      const msg ={
+      const msg = {
         id:this.state.db_info.id,
         data :{
           name:this.state.save_form.name,
@@ -219,13 +229,16 @@ class CosmosTools extends Component {
           author:this.state.save_form.author,
           id: this.state.db_info.id
       };
-      this.setState({db_info:db,show_save_modal:false });
+      this.setState({
+        db_info:db,show_save_modal:false
+      });
     }
 
   }
-  onClickSaveNew(){ //  "save new" button in save modal
-    if(this.validateForm()){
-      const data ={
+
+  onClickSaveNew() { //  "save new" button in save modal
+    if (this.validateForm()) {
+      const data = {
         name:this.state.save_form.name,
         description: this.state.save_form.description,
         author:this.state.save_form.author,
@@ -234,10 +247,10 @@ class CosmosTools extends Component {
         widgets: this.state.widgets
       };
       socket.emit('save widget_config', data, this.saveCallback.bind(this));
-
     }
   }
-  saveCallback(msg){
+
+  saveCallback(msg) {
     // console.log("callback msg", msg.id)
     var db = {
       name: this.state.save_form.name,
@@ -249,11 +262,11 @@ class CosmosTools extends Component {
   }
 
   render() {
-    var widget=[];
-    var data={};
-    for(var i=0; i<this.state.widgets.length; i++){
-      if(this.state.agents[this.state.widgets[i].agent]) {
-        data =this.state.agents[this.state.widgets[i].agent].data
+    var widget = [];
+    var data = {};
+    for(var i = 0; i < this.state.widgets.length; i++) {
+      if (this.state.agents[this.state.widgets[i].agent]) {
+        data = this.state.agents[this.state.widgets[i].agent].data
         // console.log("data", data)
         // console.log("widget", this.state.widgets[i])
       }
@@ -268,7 +281,7 @@ class CosmosTools extends Component {
 
     /* Modal form elements */
     var validation;
-    if(!this.state.form_validated){
+    if (!this.state.form_validated) {
       validation=<Alert message="All fields required" type="warning" showIcon />
     }
     var modal_buttons = [  <Button key="back" onClick={this.cancelSave.bind(this)}>Cancel</Button>,
@@ -280,9 +293,7 @@ class CosmosTools extends Component {
       </Button>);
     }
 
-
     return (
-
       <div>
         <Navbar current="cosmostools" />
         <div >
@@ -321,25 +332,17 @@ class CosmosTools extends Component {
             onSelect={this.loadConfiguration.bind(this)}
             hide={this.hideConfigForm.bind(this)}/>}
           <Card size="small" style={{ width: '100%' }} >
-            {this.state.widgets.length===0 && <Button type="default" onClick={this.showConfigForm.bind(this)}> Load Widgets </Button>}
-
+            {this.state.widgets.length === 0 && <Button type="default" onClick={this.showConfigForm.bind(this)}> Load Widgets </Button>}
               {widget}
             <Button type="default" onClick={this.onClickAddWidget.bind(this)}><Icon type="plus"/> New Widget </Button>
             {this.state.widgets.length>0 && <Button type="default" onClick={this.showSaveModal.bind(this)}>
                   <Icon type="save"/> Save Widgets
                 </Button>}
           </Card>
-
           </div>
       </div>
-
-
     );
-
-
-
   }
-
 }
 
 export default CosmosTools;

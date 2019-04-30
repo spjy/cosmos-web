@@ -19,13 +19,13 @@ class PlotWidget extends Component {
     const info = props.info;
     super(props);
       this.state = {
-        slider:0,
-        fix_slider:true,
+        slider: 0,
+        fix_slider: true,
         show_form: false,
-        data : [],
+        data: [],
         form_valid: true, // validation
         datanameslist: [],
-        prevDataNames:[],
+        prevDataNames: [],
         form: {          // keeps track of form changes
           agent: '',
           node: '',
@@ -37,32 +37,30 @@ class PlotWidget extends Component {
       };
 
   }
-  componentDidUpdate(prevProps){ // save incoming data to state
-
-    if(prevProps.data.agent_utc!== this.props.data.agent_utc){
+  componentDidUpdate(prevProps) { // save incoming data to state
+    if (prevProps.data.agent_utc !== this.props.data.agent_utc) {
         var data= this.state.data;
         var new_data = this.props.data;
         data=[...data,new_data]
         this.setState({data:data})
-
     }
   }
 
   sliderChange(value){
     var fix = false;
-    if(value===this.props.data.length-1){
-      fix=true;
+    if(value === this.props.data.length - 1){
+      fix = true;
     }
     this.setState({slider:value, fix_slider:fix});
   }
 
-  scaleSlider(val){
+  scaleSlider(val) {
     return utc2date(this.props.data[val].agent_utc);
   }
-  openForm(){
+  openForm() {
     this.setState({
       show_form:true,
-      form :{
+      form: {
         agent: this.props.info.agent,
         node: this.props.info.node,
         data_name: this.props.info.data_name,
@@ -76,11 +74,13 @@ class PlotWidget extends Component {
   closeForm(){
     this.setState({show_form:false});
   }
+
   // form functions
   initializeAgent(agent){
     // console.log("setup form")
     this.selectAgent(agent);
   }
+
   selectAgent (value) {
     // console.log('selectAgent')
     const agent_name = value.agent.agent_proc;
@@ -91,7 +91,7 @@ class PlotWidget extends Component {
 
     if(agentDataStructure){
       const tree_data = plot_form_datalist(agentDataStructure);
-      if(form.agent !== agent_name && form.agent!== ''){ // empty dataset selected if agent changes
+      if(form.agent !== agent_name && form.agent !== ''){ // empty dataset selected if agent changes
         form.data_name = [];
       }
       if(agent_name !== this.props.info.agent && form.agent == this.props.info.agent){
@@ -103,21 +103,22 @@ class PlotWidget extends Component {
 
       this.setState({form:form, datanameslist: tree_data });
     }
-
   }
+
   selectDataName (value) {
     var form = this.state.form;
     form.data_name = value;
     this.setState({form:form})
   }
+
   handleFieldChange=(e)=> {
     var form = this.state.form;
     switch(e.target.id){
       case 'xLabel':
-        form.plot_labels[0]=e.target.value;
+        form.plot_labels[0] = e.target.value;
         break;
       case 'yLabel':
-        form.plot_labels[1]=e.target.value;
+        form.plot_labels[1] = e.target.value;
         break;
       default:
         form[e.target.id] = e.target.value;
@@ -128,26 +129,27 @@ class PlotWidget extends Component {
     e.preventDefault();
 
   }
-  onOK(){
+  onOK() {
     var valid = true;
     // validate form here
-    if(this.state.form.agent ==='') valid = false;
-    if(this.state.form.data_name.length <1) valid = false;
+    if (this.state.form.agent ==='') valid = false;
+    if (this.state.form.data_name.length <1) valid = false;
 
-    if(valid){
-
+    if(valid) {
       this.props.updateInfo(this.props.id,this.state.form);
       this.closeForm();
-    } else { this.setState({form_valid:false})}
+    } else { 
+      this.setState({form_valid:false})
+    }
 
   }
-  onCancel (){
-
-    if(this.state.form.agent !== this.props.info.agent ){
+  onCancel() {
+    if (this.state.form.agent !== this.props.info.agent) {
       const prevDataNames = this.state.prevDataNames;
       this.setState({datanameslist: prevDataNames })
     }
-    this.setState({ form:{
+    this.setState({ 
+      form: {
         agent: this.props.info.agent,
         node: this.props.info.node,
         data_name: this.props.info.data_name,
@@ -159,9 +161,8 @@ class PlotWidget extends Component {
     });
     // this.closeForm();
   }
+
   render() {
-
-
     var data = [];
     data = this.state.data;
 
@@ -291,14 +292,14 @@ class PlotWidget extends Component {
         {Plots}
       </CosmosWidget>
     );
-
-
   }
 }
+
 PlotWidget.propTypes = {
   id: PropTypes.number.isRequired,
   info: PropTypes.instanceOf(CosmosWidgetInfo).isRequired,
   selfDestruct: PropTypes.func.isRequired,
   updateInfo: PropTypes.func.isRequired
 }
+
 export default PlotWidget;

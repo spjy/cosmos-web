@@ -18,16 +18,18 @@ class CosmosToolsPage extends Component {
   getWidgetInfo(){
     var widgets = [];
     widgets.push(new CosmosWidgetInfo({
-      agent:'post527',
-      node:'node-arduino',
+      agent: 'post527',
+      node: 'node-arduino',
       widgetClass: 'PlotWidget',
       title: 'Post 527',
-      xRange:10,
-      data_name:['device_tsen_temp_001']
+      xRange: 10,
+      data_name: ['device_tsen_temp_001']
     }));
+
     widgets.push(new CosmosWidgetInfo({
       widgetClass: 'AgentListWidget'
     }));
+
     widgets.push(new CosmosWidgetInfo({
       widgetClass: 'Example'
     }));
@@ -37,14 +39,14 @@ class CosmosToolsPage extends Component {
   }
 
   render() {
-    const imports={
+    const imports = {
       'PlotWidget': require('./CosmosWidgets/PlotWidget').default,
       'AgentListWidget': require('./CosmosWidgets/AgentList').default,
       'Example': require('./CosmosWidgets/Example').default
     }
     const widgets = this.getWidgetInfo();
+    
     return (
-
       <div>
         <Navbar current="cosmostools" />
           <div >
@@ -53,17 +55,10 @@ class CosmosToolsPage extends Component {
               widgets={widgets}
               imports={imports}
               />
-
           </div>
       </div>
-
-
     );
-
-
-
   }
-
 }
 
 export default CosmosToolsPage;

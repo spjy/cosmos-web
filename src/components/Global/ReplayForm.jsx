@@ -32,7 +32,7 @@ class ReplayForm extends Component {
     this.props.onReplayFormSubmit({
       selected: this.state.selected,
       dateFrom: this.state.dateFrom,
-      dateTo: this.state.dateTo,
+      dateTo: this.state.dateTo
     });
   }
 

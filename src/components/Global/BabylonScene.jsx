@@ -54,7 +54,6 @@ class ThreeD extends Component {
     return (
       <canvas id="scene" ref={this.onCanvasLoaded}></canvas>
     );
-
   }
 }
 

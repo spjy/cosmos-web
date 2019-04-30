@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {
   withScriptjs, withGoogleMap, GoogleMap, Polyline, Marker
-} from "react-google-maps";
+} from 'react-google-maps';
 
 const GoogleMaps = ({ path, position }) => (
   <GoogleMap

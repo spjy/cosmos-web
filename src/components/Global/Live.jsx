@@ -9,8 +9,11 @@ const Live = ({ type, satellite }) => (
       type="success"
       description={(
         <div>
-          You are viewing the live {type} of&nbsp;
-          <strong>{satellite}</strong>.
+          You are viewing the live&nbsp;
+          {type}
+          &nbsp;of&nbsp;
+          <strong>{satellite}</strong>
+          .
         </div>
       )}
       showIcon

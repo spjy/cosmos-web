@@ -90,18 +90,27 @@ class Navbar extends Component {
           </Menu.ItemGroup>
         </Menu.SubMenu>
         <Menu.SubMenu
-          title={<span><Icon type="tool" />Cosmos Tools</span>}>
+          title={(
+            <span>
+              <Icon type="tool" />
+              &nbsp;Cosmos Tools
+            </span>
+          )}
+        >
           <Menu.ItemGroup
-            title="Applications">
+            title="Applications"
+          >
             <Menu.Item key="cosmostools">
-                <Link to="/cosmostools">
-                  <Icon type="tool" />Tools
-                </Link>
+              <Link to="/cosmostools">
+                <Icon type="tool" />
+                &nbsp;Tools
+              </Link>
             </Menu.Item>
             <Menu.Item key="cosmostoolspage">
-                <Link to="/cosmostoolspage">
-                  <Icon type="tool" />New Widgets
-                </Link>
+              <Link to="/cosmostoolspage">
+                <Icon type="tool" />
+                &nbsp;New Widgets
+              </Link>
             </Menu.Item>
           </Menu.ItemGroup>
         </Menu.SubMenu>

@@ -38,8 +38,6 @@ class Plot extends Component {
       value: 'temperature'
     });
 
-    console.log(dv);
-
     const cols = {
       month: {
         range: [0, 1]

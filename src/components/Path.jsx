@@ -38,9 +38,9 @@ class Path extends Component {
     socket.on('balloon path', (data) => { // check if there is a live orbit
       if (this.state.replay.length === 0) { // check if there is replay going
         if (data) { // check if data exists
-          console.log(data);
-
-          const { satellite, latitude, longitude, altitude, acceleration } = data;
+          const {
+            satellite, latitude, longitude, altitude, acceleration
+          } = data;
 
           this.setState({
             live: true,

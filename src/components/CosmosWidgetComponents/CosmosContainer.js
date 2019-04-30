@@ -54,14 +54,14 @@ class CosmosContainer extends Component {
       }
     }
   }
-  componentWillUnmount(){
+  componentWillUnmount() {
     var agents = Object.keys(this.state.agents);
     for(var i=0; i< agents.length; i++){
       socket.removeAllListeners('agent subscribe '+agents[i]);
       socket.emit('end record', agents[i]);
     }
   }
-  startListening(agentname){
+  startListening(agentname) {
     socket.emit('start record', agentname);
     socket.on('agent subscribe '+agentname, (data) => { // subscribe to agent
       if (data) {
@@ -75,7 +75,7 @@ class CosmosContainer extends Component {
       }
     });
   }
-  removeWidget(index){
+  removeWidget(index) {
     var widgets = this.state.widgets;
     widgets.splice(index.id,1);
     this.setState({widgets:widgets});
@@ -93,7 +93,7 @@ class CosmosContainer extends Component {
     // console.log(widgets[index])
     this.setState({widgets:widgets});
   }
-  agentStructure(agent_name){
+  agentStructure(agent_name) {
     var agents=this.state.agents;
     if(agents[agent_name]){
       return agents[agent_name].info.structure;
@@ -102,7 +102,7 @@ class CosmosContainer extends Component {
       return;
     }
   }
-  newAgent(cosmosAgent){
+  newAgent(cosmosAgent) {
     // console.log("cosmostools newAgent", cosmosAgent.agent)
     var agent_list = this.state.agents;
     var agent_name = cosmosAgent.agent;
@@ -117,12 +117,12 @@ class CosmosContainer extends Component {
     var WidgetComponent;
     var widgetType;
     for(var i=0; i<this.state.widgets.length; i++){
-      if(this.state.agents[this.state.widgets[i].agent]) {
+      if (this.state.agents[this.state.widgets[i].agent]) {
         data =this.state.agents[this.state.widgets[i].agent].data
       }
       widgetType = this.state.widgets[i].widgetClass;
       WidgetComponent = this.props.imports[widgetType];
-      if(WidgetComponent){
+      if (WidgetComponent) {
         widgets.push(
           <WidgetComponent
             key={i}
