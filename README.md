@@ -18,3 +18,15 @@ git clone https://github.com/spjy/cosmos-web.git
 cd cosmos-web
 npm install
 ```
+
+Modify the .env file to have the correct variables.
+
+```
+REACT_APP_SATELLITE_IP=localhost # IP of the COSMOS Web Server
+```
+
+## Running
+
+```
+npm start
+```
