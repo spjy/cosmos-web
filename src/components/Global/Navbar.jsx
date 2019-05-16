@@ -106,12 +106,6 @@ class Navbar extends Component {
                 &nbsp;Tools
               </Link>
             </Menu.Item>
-            <Menu.Item key="cosmostoolspage">
-              <Link to="/cosmostoolspage">
-                <Icon type="tool" />
-                &nbsp;New Widgets
-              </Link>
-            </Menu.Item>
           </Menu.ItemGroup>
         </Menu.SubMenu>
       </Menu>
