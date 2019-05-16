@@ -297,7 +297,7 @@ class PlotWidget extends Component {
 
 PlotWidget.propTypes = {
   id: PropTypes.number.isRequired,
-  info: PropTypes.instanceOf(CosmosWidgetInfo).isRequired,
+  info: PropTypes.object.isRequired,
   selfDestruct: PropTypes.func.isRequired,
   updateInfo: PropTypes.func.isRequired
 }

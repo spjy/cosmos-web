@@ -66,7 +66,7 @@ class Example extends Component {
 }
 Example.propTypes = {
   id: PropTypes.number.isRequired,
-  info: PropTypes.instanceOf(CosmosWidgetInfo).isRequired,
+  info: PropTypes.object.isRequired,
   selfDestruct: PropTypes.func.isRequired,
   updateInfo: PropTypes.func.isRequired
 }
