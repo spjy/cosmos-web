@@ -15,6 +15,23 @@ export function parse_live_data(data, fields) {
 
   return values;
 }
+export function parseLiveData(data, fields) {
+  const values = {};
+  let p;
+  let val;
+  values.agent_utc = Number(data.agent_utc);
+  for (let i = 0; i < fields.label.length; i++) {
+    p = fields.structure[i];
+    val = data;
+    for (let j = 0; j < p.length; j++) {
+      val = val[p[j]];
+    }
+
+    values[fields.label[i]] = Number(val);
+  }
+
+  return values;
+}
 export async function update_agent_info(cosmos_widget_config, info) {
   await cosmos_widget_config.update(info);
 }

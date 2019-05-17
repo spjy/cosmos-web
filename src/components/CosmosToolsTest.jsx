@@ -12,7 +12,7 @@ function getWidgetInfo() {
       title: 'Propagator',
       xRange: 10,
       data_name: ['node_loc_pos_eci_vel'],
-      plot_labels: ['', '']
+      plot_labels: ['', ''],
     },
     {
       widgetClass: 'AgentListWidget'
@@ -29,14 +29,12 @@ class CosmosToolsPage extends Component {
     this.state = {};
   }
 
-
-
   render() {
     const imports = {
       'PlotWidget': require('./CosmosWidgets/PlotWidget').default,
       'AgentListWidget': require('./CosmosWidgets/AgentList').default,
       'Example': require('./CosmosWidgets/Example').default
-    }
+    };
     const widgets = getWidgetInfo();
 
     return (

@@ -1,56 +1,57 @@
 import React, { Component } from 'react';
-import moment from 'moment';
 import PropTypes from 'prop-types';
-import {  Alert, Modal, Form } from 'antd';
+import { Modal, Form, Alert } from 'antd';
 
-import CosmosWidget from './../CosmosWidgetComponents/CosmosWidget'
-import CosmosWidgetInfo from './../CosmosWidgetComponents/CosmosWidgetInfo'
-
+import CosmosWidget from '../CosmosWidgetComponents/CosmosWidget';
 
 class Example extends Component {
-
-  constructor(props){
+  constructor(props) {
     super(props);
-      this.state = {
-        show_form: false,
-        data: [],
-        form: {},
-        form_valid: true
-      };
+    this.state = {
+      show_form: false,
+      form: {},
+      form_valid: true
+    };
   }
-  openForm(){
-    this.setState({show_form:true});
-  }
-  closeForm(){
-    this.setState({show_form:false});
-  }
-  onOK(){
-    var valid = true;
+
+  onOK = () => {
+    const valid = true;
     // do form validation here
-    if(valid){
+    if (valid) {
       this.props.updateInfo(this.props.id, this.state.form);
       this.closeForm();
     }
   }
-  onCancel (){
+
+  openForm = () => {
+    this.setState({ show_form: true });
+  }
+
+  closeForm = () => {
+    this.setState({ show_form: false });
+  }
+
+
+  onCancel = () => {
     var form = this.props.info; // reset form values without saving
-    this.setState({form:form});
+    this.setState({ form });
     this.closeForm();
   }
+
   render() {
     return (
       <CosmosWidget
-        id = {this.props.id}
-        title = {'Example Widget'}
-        mod = {this.props.mod}
-        selfDestruct = {this.props.selfDestruct}
-        editWidget = {this.openForm.bind(this)}
+        id={this.props.id}
+        title={'Example Widget'}
+        mod={this.props.mod}
+        selfDestruct={this.props.selfDestruct}
+        editWidget={this.openForm}
       >
         <Modal
         visible={ this.state.show_form }
         title="Widget Settings"
         onOk={this.onOK.bind(this)}
-        onCancel={this.onCancel.bind(this)}
+        onCancel={this.onCancel}
         >
           <Form layout="inline" >
               Insert form here
@@ -60,13 +61,12 @@ class Example extends Component {
         Insert Widget Content Here
       </CosmosWidget>
     );
-
-
   }
 }
+
 Example.propTypes = {
   id: PropTypes.number.isRequired,
-  info: PropTypes.object.isRequired,
+  info: PropTypes.shape({ widgetClass: PropTypes.string.isRequired }).isRequired,
   selfDestruct: PropTypes.func.isRequired,
   updateInfo: PropTypes.func.isRequired
 }

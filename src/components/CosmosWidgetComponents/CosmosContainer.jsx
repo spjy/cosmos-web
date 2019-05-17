@@ -3,7 +3,7 @@ import { Card } from 'antd';
 import PropTypes from 'prop-types';
 import io from 'socket.io-client';
 import CosmosAgent from './CosmosAgent';
-import { parse_live_data , setup_agent } from '../Cosmos/CosmosPlotLibs';
+import { parseLiveData } from '../Cosmos/CosmosPlotLibs';
 import cosmosInfo from '../Cosmos/CosmosInfo';
 
 const socket = io(cosmosInfo.socket);
@@ -70,7 +70,6 @@ class CosmosContainer extends Component {
   }
 
   updateWidget = (index, info) => {
-    // console.log('updateWdiget', index, info)
     const { widgets } = this.state;
     // update agent values that need to be tracked
     const changes = Object.keys(info);
@@ -89,7 +88,7 @@ class CosmosContainer extends Component {
         let e;
         const { agents } = this.state;
         if (agents[agentname].info.values.label.length > 0) {
-          e = parse_live_data(data, agents[agentname].info.values);
+          e = parseLiveData(data, agents[agentname].info.values);
           agents[agentname].data = e;
           this.setState({ agents });
         }
@@ -111,7 +110,8 @@ class CosmosContainer extends Component {
     let WidgetComponent;
     let widgetType;
     for (let i = 0; i < this.state.widgets.length; i += 1) {
-      if (this.state.agents[this.state.widgets[i].agent]) {
+      if (this.state.agents[this.state.widgets[i].agent] &&
+        this.state.widgets[i].data_name) {
         data = this.state.agents[this.state.widgets[i].agent].data;
       }
       widgetType = this.state.widgets[i].widgetClass;
@@ -143,7 +143,7 @@ class CosmosContainer extends Component {
 
 CosmosContainer.propTypes = {
   widgets: PropTypes.arrayOf(PropTypes.object).isRequired,
-  imports: PropTypes.objectOf(PropTypes.object),
+  imports: PropTypes.shape({}),
   mod: PropTypes.bool // true: widgets can be modified
 };
 
