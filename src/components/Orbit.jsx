@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { notification } from 'antd';
 import 'whatwg-fetch';
-import io from 'socket.io-client';
 
 import Navbar from './Global/Navbar';
 import Replay from './Global/Replay';
@@ -12,7 +11,7 @@ import OrbitThreeD from './Orbit/OrbitThreeD';
 import cosmosInfo from './Cosmos/CosmosInfo';
 import '../App.css';
 
-const socket = io(cosmosInfo.socket);
+// const socket = io(cosmosInfo.socket);
 
 class Orbit extends Component {
   constructor() {
@@ -34,25 +33,49 @@ class Orbit extends Component {
   }
 
   componentDidMount() {
-    socket.on('satellite orbit', (data) => { // check if there is a live orbit
+    // socket.on('satellite orbit', (data) => { // check if there is a live orbit
+    //   if (this.state.replay.length === 0) { // check if there is replay going
+    //     if (data) { // check if data exists
+    //       const {
+    //         satellite, x, y, z
+    //       } = data;
+
+    //       this.setState({
+    //         live: true,
+    //         satellite,
+    //         currentCoord: {
+    //           x,
+    //           y,
+    //           z
+    //         },
+    //       });
+    //     }
+    //   }
+    // });
+
+    const socket = new WebSocket(`ws://localhost:8080/live/neutron1`);
+
+    socket.onmessage = (data) => {
       if (this.state.replay.length === 0) { // check if there is replay going
         if (data) { // check if data exists
-          const {
-            satellite, x, y, z
-          } = data;
+          if (data.node_loc_pos_eci) {
+            const json = JSON.parse(data);
 
-          this.setState({
-            live: true,
-            satellite,
-            currentCoord: {
-              x,
-              y,
-              z
-            },
-          });
+            const [x, y, z] = json.node_loc_pos_eci.pos;
+
+            this.setState({
+              live: true,
+              satellite: 'neutron1',
+              currentCoord: {
+                x,
+                y,
+                z
+              }
+            });
+          }
         }
       }
-    });
+    };
   }
 
   onReplayChange(value) {
