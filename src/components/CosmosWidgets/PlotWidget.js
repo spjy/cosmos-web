@@ -14,8 +14,7 @@ const scale = (num, in_min, in_max, out_min, out_max) => {
   return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 class PlotWidget extends Component {
-
-  constructor(props){
+  constructor(props) {
     const info = props.info;
     super(props);
       this.state = {
@@ -35,8 +34,8 @@ class PlotWidget extends Component {
           title: ''
         }
       };
-
   }
+  
   componentDidUpdate(prevProps){ // save incoming data to state
 
     if(prevProps.data.agent_utc!== this.props.data.agent_utc){

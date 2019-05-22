@@ -42,7 +42,7 @@ const columns = [{
 class AgentList extends Component {
 /* Returns a table element of all agents, which gets updated every five seconds */
     state = {
-      agents:[]
+      agents: []
     };
 
   componentDidMount() {

@@ -16,7 +16,7 @@ const socket = io(cosmosInfo.socket);
  - this component monitors COSMOS Agent data, and passes relevant data to each widget (does not store history, only one at a time )
 */
 class CosmosTools extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
       this.state = {
         agents: {},
@@ -249,10 +249,10 @@ class CosmosTools extends Component {
   }
 
   render() {
-    var widget=[];
-    var data={};
-    for(var i=0; i<this.state.widgets.length; i++){
-      if(this.state.agents[this.state.widgets[i].agent]) {
+    var widget = [];
+    var data = {};
+    for (var i = 0; i < this.state.widgets.length; i++) {
+      if (this.state.agents[this.state.widgets[i].agent]) {
         data =this.state.agents[this.state.widgets[i].agent].data
         // console.log("data", data)
         // console.log("widget", this.state.widgets[i])
@@ -268,21 +268,19 @@ class CosmosTools extends Component {
 
     /* Modal form elements */
     var validation;
-    if(!this.state.form_validated){
-      validation=<Alert message="All fields required" type="warning" showIcon />
+    if (!this.state.form_validated) {
+      validation = <Alert message="All fields required" type="warning" showIcon />
     }
-    var modal_buttons = [  <Button key="back" onClick={this.cancelSave.bind(this)}>Cancel</Button>,
+    var modal_buttons = [<Button key="back" onClick={this.cancelSave.bind(this)}>Cancel</Button>,
       <Button key="save" type="primary" onClick={this.onClickSaveNew.bind(this)}>Save As New Entry</Button>];
-    if(this.state.db_info.id !== -1){
+    if (this.state.db_info.id !== -1) {
       modal_buttons.push(
       <Button key="update" type="primary"  onClick={this.onClickSaveUpdate.bind(this)}>
         Update Entry
       </Button>);
     }
 
-
     return (
-
       <div>
         <Navbar current="cosmostools" />
         <div >
@@ -332,14 +330,8 @@ class CosmosTools extends Component {
 
           </div>
       </div>
-
-
     );
-
-
-
   }
-
 }
 
 export default CosmosTools;

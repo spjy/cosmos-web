@@ -7,15 +7,12 @@ import CosmosWidgetInfo from './CosmosWidgetComponents/CosmosWidgetInfo'
 
 
 class CosmosToolsPage extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
-      this.state = {
-
-      };
-
-
+    this.state = {};
   }
-  getWidgetInfo(){
+
+  getWidgetInfo() {
     var widgets = [];
     widgets.push(new CosmosWidgetInfo({
       agent:'post527',
@@ -33,37 +30,29 @@ class CosmosToolsPage extends Component {
     }));
     // console.log(widgets);
     return widgets;
-
   }
 
   render() {
-    const imports={
-      'PlotWidget': require('./CosmosWidgets/PlotWidget').default,
-      'AgentListWidget': require('./CosmosWidgets/AgentList').default,
-      'Example': require('./CosmosWidgets/Example').default
-    }
+    const imports = {
+      PlotWidget: require('./CosmosWidgets/PlotWidget').default,
+      AgentListWidget: require('./CosmosWidgets/AgentList').default,
+      Example: require('./CosmosWidgets/Example').default
+    };
     const widgets = this.getWidgetInfo();
-    return (
 
+    return (
       <div>
         <Navbar current="cosmostools" />
-          <div >
+          <div>
             <CosmosContainer
-              mod={true}
+              mod
               widgets={widgets}
               imports={imports}
-              />
-
+            />
           </div>
       </div>
-
-
     );
-
-
-
   }
-
 }
 
 export default CosmosToolsPage;

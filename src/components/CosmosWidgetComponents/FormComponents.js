@@ -11,12 +11,13 @@ const Option = Select.Option;
 export class AgentSelect extends Component {
   /*  This component renders the Form Input for selecting an agent
   */
-  constructor(props){
+  constructor(props) {
     super(props);
       this.state = {
         agent_list:[]
         };
   }
+
   componentDidMount() { // called as component is rendered
     /* get list of all agents in database, save to state.agent_list */
     fetch(`${cosmosInfo.socket}/api/agent_list`)
@@ -50,35 +51,40 @@ export class AgentSelect extends Component {
 
       });
   }
-  componentWillUnmount(){
+
+  componentWillUnmount() {
     socket.removeAllListeners('agent update list');
   }
-  onChange(val){
-    console.log("agent changed", val)
-    this.props.onChange({ agent: this.state.agent_list[val]});
+
+  onChange(val) {
+    console.log('agent changed', val);
+    this.props.onChange({
+      agent: this.state.agent_list[val]
+    });
   }
+
   render() {
     const AgentOption = Select.Option;
     var agentOptions = [];
     var badge;
-    for(var i =0; i < this.state.agent_list.length; i++){
-      badge="default"
-      if(this.state.agent_list[i].live===true) {
-        badge ="processing"
+    for (var i = 0; i < this.state.agent_list.length; i++) {
+      badge = 'default';
+      if (this.state.agent_list[i].live === true) {
+        badge = 'processing';
         agentOptions.push(<AgentOption key={i} ><Badge status={badge} /> {this.state.agent_list[i].agent_proc} </AgentOption>);
       } else {
-        badge ="default"
+        badge = 'default';
         agentOptions.push(<AgentOption key={i} ><Badge status={badge} /> {this.state.agent_list[i].agent_proc} </AgentOption>);
       }
-
     }
+
     return (
       <Form.Item label="Agent" key="agent">
         <Select
-            showSearch
-            value={this.props.agent}
-            onChange={this.onChange.bind(this)}
-            style={{minWidth: '200px'}}
+          showSearch
+          value={this.props.agent}
+          onChange={this.onChange.bind(this)}
+          style={{minWidth: '200px'}}
         >
           {agentOptions}
         </Select>
@@ -111,23 +117,24 @@ export class DataNameSelect extends Component {
     );
   }
 }
+
 DataNameSelect.propTypes = {
-  allNames : PropTypes.array.isRequired, // list of all names to display as options
-  value : PropTypes.array,                  // selected value to show as 'checked'
-  onChange : PropTypes.func.isRequired,  // function called when selection changes
-}
+  allNames: PropTypes.array.isRequired, // list of all names to display as options
+  value: PropTypes.array, // selected value to show as 'checked'
+  onChange: PropTypes.func.isRequired, // function called when selection changes
+};
 
 class AgentCommandSelect extends Component {
   /*  This component renders the Form Input for selecting a datanames specific to an agent
   */
 
   render() {
-    const form_style={};
-    var command_list=[];
-    for(var j = 0; j < this.state.command_list.length; j++){
+    const form_style = {};
+    var command_list = [];
+    for (var j = 0; j < this.state.command_list.length; j++) {
       command_list.push(<Option key={j} value={this.props.commandList[j].command}> {this.props.commandList[j].command} </Option>);
     }
-    return ([
+    return([
       <Form.Item label="Command Label" key="title">
             <Input placeholder="Command Label"
               id="title"
@@ -153,7 +160,6 @@ class AgentCommandSelect extends Component {
               value={this.props.cmd1}
             style={form_style}/>
         </Form.Item>]
-
     );
     // { this.props.cmd0 !== '' &&
     //       <p style={{whiteSpace:'pre-wrap'}}>
@@ -161,11 +167,12 @@ class AgentCommandSelect extends Component {
     //       {this.props.cmdDetail} </p>}]
   }
 }
+
 AgentCommandSelect.propTypes = {
-  onChange : PropTypes.func.isRequired,
-  cmdLabel : PropTypes.string.isRequired,
-  commandList : PropTypes.array.isRequired,
-  cmd0 : PropTypes.string.isRequired,
-  cmd1 : PropTypes.string.isRequired,
-  cmdDetail : PropTypes.string
-}
+  onChange: PropTypes.func.isRequired,
+  cmdLabel: PropTypes.string.isRequired,
+  commandList: PropTypes.array.isRequired,
+  cmd0: PropTypes.string.isRequired,
+  cmd1: PropTypes.string.isRequired,
+  cmdDetail: PropTypes.string
+};
