@@ -34,15 +34,15 @@ class CosmosContainer extends Component {
         if (agents[agentName]) { // add json names to track
           if (widgets[i].data_name) {
             widgets[i].values = this.state.agents[agentName].info
-              .get_data_structure(widgets[i].data_name);
+              .getDataStructure(widgets[i].data_name);
             this.startListening(agentName);
           }
         } else {
           agents[agentName] = { info: new CosmosAgent({ agent: agentName }), data: {} };
-          agents[agentName].info.async_setup_agent()
+          agents[agentName].info.asyncSetup()
             .then(() => {
               if (widgets[i].data_name) {
-                widgets[i].values = agents[agentName].info.get_data_structure(widgets[i].data_name);
+                widgets[i].values = agents[agentName].info.getDataStructure(widgets[i].data_name);
                 this.startListening(agentName);
               }
             });
@@ -106,13 +106,13 @@ class CosmosContainer extends Component {
 
   render() {
     const widgets = [];
-    let data = {};
+    let widgetData = {};
     let WidgetComponent;
     let widgetType;
     for (let i = 0; i < this.state.widgets.length; i += 1) {
-      if (this.state.agents[this.state.widgets[i].agent] &&
-        this.state.widgets[i].data_name) {
-        data = this.state.agents[this.state.widgets[i].agent].data;
+      if (this.state.agents[this.state.widgets[i].agent]
+        && this.state.widgets[i].data_name) {
+        widgetData = this.state.agents[this.state.widgets[i].agent].data;
       }
       widgetType = this.state.widgets[i].widgetClass;
       WidgetComponent = this.props.imports[widgetType];
@@ -122,7 +122,7 @@ class CosmosContainer extends Component {
             key={i}
             id={i}
             info={this.state.widgets[i]}
-            data={data}
+            data={widgetData}
             mod={this.props.mod}
             selfDestruct={this.removeWidget}
             updateInfo={this.updateWidget}
