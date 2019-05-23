@@ -10,7 +10,7 @@ import {
 import CosmosWidget from '../CosmosWidgetComponents/CosmosWidget';
 import { AgentSelect, DataNameSelect } from '../CosmosWidgetComponents/FormComponents';
 import {
-  utc2date, mjd2cal, plot_form_datalist
+  utc2date, mjd2cal
 } from '../Cosmos/Libs';
 
 const colors = ['#82ca9d', '#9ca4ed', '#f4a742', '#e81d0b', '#ed9ce6'];
@@ -19,13 +19,15 @@ class PlotWidget extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      slider: 0,
-      fix_slider: true,
+      // slider: 0,
+      // fix_slider: true,
       show_form: false,
       data: [],
       form_valid: true, // validation
-      datanameslist: [],
-      prevDataNames: [],
+      // datanameslist: [],
+      jsonStructure: [],
+      prevJsonStructure: [],
+      // prevDataNames: [],
       form: { // keeps track of form changes
         agent: '',
         node: '',
@@ -62,8 +64,7 @@ class PlotWidget extends Component {
 
   onCancel = () => {
     if (this.state.form.agent !== this.props.info.agent) {
-      const { prevDataNames } = this.state;
-      this.setState({ datanameslist: prevDataNames });
+      this.setState(prevState => ({ jsonStructure: prevState.prevJsonStructure }));
     }
     this.setState({
       form: {
@@ -87,6 +88,9 @@ class PlotWidget extends Component {
       case 'yLabel':
         form.plot_labels[1] = e.target.value;
         break;
+      case 'xRange':
+        form.xRange = Number(e.target.value);
+        break;
       default:
         form[e.target.id] = e.target.value;
         break;
@@ -99,22 +103,20 @@ class PlotWidget extends Component {
   selectAgent = (value) => {
     const agentName = value.agent.agent_proc;
     const nodeName = value.agent.agent_node;
-    const agentDataStructure = value.agent.structure;
+    const { structure } = value.agent;
     const { form } = this.state;
 
-    if (agentDataStructure) {
-      const treeForm = plot_form_datalist(agentDataStructure);
-      if (form.agent !== agentName && form.agent !== '') { // empty dataset selected if agent changes
-        form.data_name = [];
-      }
-      if (agentName !== this.props.info.agent && form.agent === this.props.info.agent) {
-        this.setState(prevState => ({ prevDataNames: prevState.datanameslist }));
-      }
-      form.agent = agentName;
-      form.node = nodeName;
 
-      this.setState({ form, datanameslist: treeForm });
+    if (form.agent !== agentName && form.agent !== '') { // empty dataset selected if agent changes
+      form.data_name = [];
     }
+    if (agentName !== this.props.info.agent && form.agent === this.props.info.agent) {
+      this.setState(prevState => ({ prevJsonStructure: prevState.jsonStructure }));
+    }
+    form.agent = agentName;
+    form.node = nodeName;
+
+    this.setState({ form, jsonStructure: structure });
   }
 
   openForm = () => {
@@ -157,13 +159,13 @@ class PlotWidget extends Component {
     this.setState({ data });
   }
 
-  sliderChange(value) {
-    let fix = false;
-    if (value === this.props.data.length - 1) {
-      fix = true;
-    }
-    this.setState({ slider: value, fix_slider: fix });
-  }
+  // sliderChange(value) {
+  //   let fix = false;
+  //   if (value === this.props.data.length - 1) {
+  //     fix = true;
+  //   }
+  //   this.setState({ slider: value, fix_slider: fix });
+  // }
 
   scaleSlider(val) {
     return utc2date(this.props.data[val].agent_utc);
@@ -176,6 +178,7 @@ class PlotWidget extends Component {
 
   render() {
     const { data } = this.state;
+    // console.log(this.props.info.values)
     let Plots;
     let plotDomain;
     // let startTime;
@@ -249,7 +252,7 @@ class PlotWidget extends Component {
         </div>
       );
     } else {
-      Plots = <Alert message="No data available" type="error" showIcon />
+      Plots = <Alert message="No data available" type="error" showIcon />;
     }
 
     const formStyle = {};
@@ -276,7 +279,7 @@ class PlotWidget extends Component {
             <DataNameSelect
               value={this.state.form.data_name}
               onChange={this.selectDataName}
-              allNames={this.state.datanameslist}
+              structure={this.state.jsonStructure}
             />
             <Form.Item label="Title" key="title">
               <Input
@@ -325,10 +328,26 @@ class PlotWidget extends Component {
 
 PlotWidget.propTypes = {
   id: PropTypes.number.isRequired,
-  info: PropTypes.shape({ widgetClass: PropTypes.string.isRequired }).isRequired,
+  info: PropTypes.shape({
+    widgetClass: PropTypes.string.isRequired,
+    agent: PropTypes.string,
+    node: PropTypes.string,
+    plot_labels: PropTypes.arrayOf(PropTypes.string),
+    xRange: PropTypes.number,
+    title: PropTypes.string,
+    data_name: PropTypes.arrayOf(PropTypes.string),
+    values: PropTypes.shape({
+      label: PropTypes.arrayOf(PropTypes.string),
+      structure: PropTypes.arrayOf(
+        PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number]))
+      )
+    })
+  }).isRequired,
+  data: PropTypes.shape({
+    agent_utc: PropTypes.number
+  }),
   selfDestruct: PropTypes.func.isRequired,
   updateInfo: PropTypes.func.isRequired,
-  data: PropTypes.shape({}),
   mod: PropTypes.bool
 };
 

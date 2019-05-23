@@ -33,7 +33,7 @@ class Example extends Component {
 
 
   onCancel = () => {
-    var form = this.props.info; // reset form values without saving
+    const form = this.props.info; // reset form values without saving
     this.setState({ form });
     this.closeForm();
   }
@@ -42,21 +42,21 @@ class Example extends Component {
     return (
       <CosmosWidget
         id={this.props.id}
-        title={'Example Widget'}
+        title="Example Widget"
         mod={this.props.mod}
         selfDestruct={this.props.selfDestruct}
         editWidget={this.openForm}
       >
         <Modal
-        visible={ this.state.show_form }
-        title="Widget Settings"
-        onOk={this.onOK.bind(this)}
-        onCancel={this.onCancel}
+          visible={this.state.show_form}
+          title="Widget Settings"
+          onOk={this.onOK}
+          onCancel={this.onCancel}
         >
-          <Form layout="inline" >
+          <Form layout="inline">
               Insert form here
           </Form>
-          {!this.state.form_valid &&  <Alert message="Incomplete" type="warning" showIcon />}
+          {!this.state.form_valid && <Alert message="Incomplete" type="warning" showIcon />}
         </Modal>
         Insert Widget Content Here
       </CosmosWidget>
@@ -66,8 +66,11 @@ class Example extends Component {
 
 Example.propTypes = {
   id: PropTypes.number.isRequired,
-  info: PropTypes.shape({ widgetClass: PropTypes.string.isRequired }).isRequired,
+  info: PropTypes.shape({
+    widgetClass: PropTypes.string.isRequired
+  }).isRequired,
   selfDestruct: PropTypes.func.isRequired,
-  updateInfo: PropTypes.func.isRequired
-}
+  updateInfo: PropTypes.func.isRequired,
+  mod: PropTypes.bool.isRequired
+};
 export default Example;
