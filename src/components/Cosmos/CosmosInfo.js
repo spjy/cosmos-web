@@ -1,5 +1,5 @@
 const cosmosInfo = {
-  hostname: process.env.REACT_APP_SATELLITE_IP,
+  hostname: 'localhost',
   socket: `http://${process.env.REACT_APP_SATELLITE_IP}:3001`
 };
 
