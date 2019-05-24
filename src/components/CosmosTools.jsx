@@ -40,8 +40,8 @@ class CosmosTools extends Component {
   }
 
   componentWillUnmount() {
-    let agents = Object.keys(this.state.agents);
-    for (let i = 0; i < agents.length; i++) {
+    const agents = Object.keys(this.state.agents);
+    for (let i = 0; i < agents.length; i += 1) {
       socket.removeAllListeners(`agent subscribe ${agents[i]}`);
       socket.emit('end record', agents[i]);
     }
@@ -151,11 +151,11 @@ class CosmosTools extends Component {
     // setup agents
     // set configForm modal visible false
     this.setState({
-      db_info: { 
+      db_info: {
         name: config.name,
         description: config.description,
         author: config.author,
-        id: config._id 
+        id: config._id
       },
       save_form: {
         name: config.name,
@@ -255,7 +255,7 @@ class CosmosTools extends Component {
   render() {
     let widget = [];
     let data = {};
-    for (let i = 0; i < this.state.widgets.length; i++) {
+    for (let i = 0; i < this.state.widgets.length; i += 1) {
       if (this.state.agents[this.state.widgets[i].agent]) {
         data = this.state.agents[this.state.widgets[i].agent].data;
         // console.log("data", data)
@@ -269,7 +269,7 @@ class CosmosTools extends Component {
         newAgent={this.newAgent.bind(this)}
         updateWidget={this.updateWidget.bind(this)}
         selfDestruct={this.removeWidget.bind(this)}
-        agentStructure={this.agentStructure.bind(this)} 
+        agentStructure={this.agentStructure.bind(this)}
       />);
     }
     let saveButton;

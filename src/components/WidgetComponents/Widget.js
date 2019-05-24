@@ -10,7 +10,7 @@ import cosmosInfo from '../Cosmos/CosmosInfo';
 import OrbitWidget from '../Widgets/OrbitWidget';
 import AgentList from '../Widgets/AgentList';
 import { utc2date } from '../Cosmos/Libs';
-;
+
 const socket = io(cosmosInfo.socket);
 const colors = ['#82ca9d', '#9ca4ed', '#f4a742', '#e81d0b', '#ed9ce6'];
 const ButtonGroup = Button.Group;
@@ -126,7 +126,7 @@ class Widget extends Component {
   onClickCommand() {
     this.setState({ data: <Icon type="loading" /> });
     socket.emit('agent_command',
-      { agent: this.props.info.agent, node: this.state.node, command: `${this.props.info.command[0]} ${this.props.info.command[0]}` },
+      { agent: this.props.info.agent, node: this.state.node, command: `${this.props.info.command[0]} ${this.props.info.command[1]}` },
       this.commandResponseReceived.bind(this));
   }
 
@@ -155,7 +155,7 @@ class Widget extends Component {
             table_data.push({
               key: i,
               dataname: <p style={{ color: colors[i % colors.length] }}>{this.props.info.values.label[i]}</p>,
-              value: this.props.data[this.props.info.values.label[i]] 
+              value: this.props.data[this.props.info.values.label[i]]
             });
           }
           content = (
@@ -191,7 +191,7 @@ class Widget extends Component {
                 key: i,
                 dataname: this.props.info.values.label[i],
                 value: this.props.data[this.props.info.values.label[i]],
-                time: utc2date(this.props.data.agent_utc) 
+                time: utc2date(this.props.data.agent_utc)
               });
             }
             content = <Table columns={table_cols} dataSource={table_data} size="small" pagination={false} />;
@@ -236,7 +236,7 @@ class Widget extends Component {
             updateForm={this.updateForm.bind(this)}
             newAgent={this.props.newAgent}
             setNode={this.setNode.bind(this)}
-            structure={this.props.agentStructure} 
+            structure={this.props.agentStructure}
           />
           { form_validation}
         </Modal>
