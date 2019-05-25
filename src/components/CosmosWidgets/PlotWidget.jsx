@@ -23,11 +23,9 @@ class PlotWidget extends Component {
       // fix_slider: true,
       show_form: false,
       data: [],
-      form_valid: true, // validation
-      // datanameslist: [],
+      form_valid: true,
       jsonStructure: [],
       prevJsonStructure: [],
-      // prevDataNames: [],
       form: { // keeps track of form changes
         agent: '',
         node: '',
@@ -80,6 +78,7 @@ class PlotWidget extends Component {
   }
 
   handleFieldChange = (e) => {
+    // handle form changes
     const { form } = this.state;
     switch (e.target.id) {
       case 'xLabel':
@@ -101,6 +100,7 @@ class PlotWidget extends Component {
   }
 
   selectAgent = (value) => {
+    // onchange function for AgentSelect
     const agentName = value.agent.agent_proc;
     const nodeName = value.agent.agent_node;
     const { structure } = value.agent;
@@ -151,7 +151,7 @@ class PlotWidget extends Component {
     if (this.props.info.xRange) {
       let i = 0;
       const startTime = newData.agent_utc - (this.props.info.xRange / 1440);
-      while (i < this.state.data.length && data[i] < startTime) {
+      while (i < this.state.data.length && data[i].agent_utc < startTime) {
         i += 1;
       }
       if (i > 0) data = data.slice(i);
