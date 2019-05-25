@@ -3,7 +3,6 @@ import Navbar from './Global/Navbar';
 import CosmosContainer from './CosmosWidgetComponents/CosmosContainer'
 
 function getWidgetInfo() {
-
   return [
     {
       agent: 'propagator_simple',
@@ -19,6 +18,13 @@ function getWidgetInfo() {
     },
     {
       widgetClass: 'Example'
+    },
+    {
+      agent: 'post527',
+      node: 'node-arduino',
+      widgetClass: 'AgentCommands',
+      request: 'request_blink',
+      arguments: ['1']
     }
   ];
 }
@@ -31,9 +37,10 @@ class CosmosToolsPage extends Component {
 
   render() {
     const imports = {
-      'PlotWidget': require('./CosmosWidgets/PlotWidget').default,
-      'AgentListWidget': require('./CosmosWidgets/AgentList').default,
-      'Example': require('./CosmosWidgets/Example').default
+      PlotWidget: require('./CosmosWidgets/PlotWidget').default,
+      AgentListWidget: require('./CosmosWidgets/AgentList').default,
+      Example: require('./CosmosWidgets/Example').default,
+      AgentCommands: require('./CosmosWidgets/AgentCommands').default
     };
     const widgets = getWidgetInfo();
 
