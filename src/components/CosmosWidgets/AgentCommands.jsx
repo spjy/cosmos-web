@@ -135,7 +135,7 @@ class AgentCommands extends Component {
                 ></Select>
               </Form.Item>
               <Form.Item>
-                <Button type="primary">{command}</Button>
+                <Button>{command}</Button>
               </Form.Item>
             </Form>
             {this.state[command]}
