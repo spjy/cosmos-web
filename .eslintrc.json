@@ -1,5 +1,10 @@
 {
+    "parser": "babel-eslint",
     "extends": "airbnb",
+    "env": {
+        "browser": true,
+        "node": true
+    },
     "rules": {
         "comma-dangle": ["warn", "never"],
         "eol-last": ["warn", "always"],
