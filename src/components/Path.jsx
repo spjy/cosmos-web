@@ -29,8 +29,8 @@ class Path extends Component {
         latitude: 0,
         longitude: 0,
         altitude: 0,
-        acceleration: [0,0,0],
-      },
+        acceleration: [0, 0, 0]
+      }
     };
   }
 
@@ -105,9 +105,6 @@ class Path extends Component {
     });
   }
 
-  onReplayChange(value) {
-  }
-
   render() {
     const {
       path,
@@ -163,7 +160,7 @@ class Path extends Component {
               max={max}
               slider={slider}
               replay={replay}
-              onReplayChange={this.onReplayChange.bind(this)}
+              onReplayChange={() => this.onReplayChange}
               ref="replay"
             />
           )
@@ -171,11 +168,10 @@ class Path extends Component {
 
         <br />
 
-        <ReplayForm onReplayFormSubmit={this.onReplayFormSubmit.bind(this)} />
+        <ReplayForm onReplayFormSubmit={() => this.onReplayFormSubmit} />
       </div>
     );
   }
-
 }
 
 export default Path;

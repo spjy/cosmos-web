@@ -43,76 +43,89 @@ const columns = [{
 
 class AgentList extends Component {
 /* Returns a table element of all agents, which gets updated every five seconds */
-    state = {
+  constructor() {
+    super();
+
+    this.state = {
       agents: []
     };
+  }
 
-    componentDidMount() {
-      fetch(`${cosmosInfo.socket}/api/agent_list`)
-        .then(response => response.json())
-        .then(data => this.setState({
+  componentDidMount() {
+    fetch(`${cosmosInfo.socket}/api/agent_list`)
+      .then(response => response.json())
+      .then((data) => {
+        this.setState({
           agents: data.result
-        }));
-      socket.on('agent update list', (data) => { // subscribe to agent
-        if (data) {
-          // console.log(data)
-          const { agents } = this.state;
-          for (let i = 0; i < agents.length; i += 1) {
-            if (data[agents[i].agent_proc]) {
-              // console.log( agents[i].agent_proc," live")
-              agents[i].live = true;
-            } else {
-              agents[i].live = false;
-            }
-          }
-          this.setState({ agents });
-        }
+        });
       });
-    }
 
-    componentWillUnmount() {
-      socket.removeAllListeners('agent update list');
-    }
+    socket.on('agent update list', (data) => { // subscribe to agent
+      if (data) {
+        const { agents } = this.state;
 
-    render() {
-      const agentList = this.state.agents;
-      // console.log(this.state.agents)
-      // var keys = Object.keys(agent_list);
-      const data = [];
-      for (let i = 0; i < agentList.length; i += 1) {
-        let status = <Badge status="default" />;
-        if (agentList[i].live === true) {
-          status = <Badge status="success" />;
-        }
-        data[i] = {
-          key: String(i),
-          agent_proc: String(agentList[i].agent_proc),
-          agent_node: agentList[i].agent_node,
-          agent_addr: agentList[i].agent_addr,
-          agent_port: agentList[i].agent_port,
-          agent_utc: agentList[i].agent_utc,
-          status
-        };
+        agents.forEach((agent, i) => {
+          if (data[agents[i].agent_proc]) {
+            // console.log( agents[i].agent_proc," live")
+            agents[i].live = true;
+          } else {
+            agents[i].live = false;
+          }
+        });
+
+        this.setState({ agents });
       }
-      return (
-        <CosmosWidget
-          id={this.props.id}
-          title="Agents"
-          mod={false}
-          selfDestruct={this.props.selfDestruct}
-        >
-          <Table
-            columns={columns}
-            dataSource={data}
-            size="small"
-            pagination={false}
-          />
-        </CosmosWidget>
-      );
-    }
+    });
+  }
+
+  componentWillUnmount() {
+    socket.removeAllListeners('agent update list');
+  }
+
+  render() {
+    const { agents } = this.state;
+    // var keys = Object.keys(agent_list);
+    const data = [];
+
+    agents.forEach((agent, i) => {
+      let status = <Badge status="default" />;
+
+      if (agent.live === true) {
+        status = <Badge status="success" />;
+      }
+
+      data[i] = {
+        key: String(i),
+        agent_proc: String(agent.agent_proc),
+        agent_node: agent.agent_node,
+        agent_addr: agent.agent_addr,
+        agent_port: agent.agent_port,
+        agent_utc: agent.agent_utc,
+        status
+      };
+    });
+
+    return (
+      <CosmosWidget
+        id={this.props.id}
+        title="Agents"
+        mod={false}
+        selfDestruct={this.props.selfDestruct}
+      >
+        <Table
+          columns={columns}
+          dataSource={data}
+          size="small"
+          pagination={false}
+        />
+      </CosmosWidget>
+    );
+  }
 }
+
 AgentList.propTypes = {
   id: PropTypes.number.isRequired,
   selfDestruct: PropTypes.func.isRequired
 };
+
 export default AgentList;

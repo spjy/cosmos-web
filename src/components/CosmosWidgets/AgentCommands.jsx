@@ -9,16 +9,6 @@ import CosmosWidget from '../CosmosWidgetComponents/CosmosWidget';
 import cosmosInfo from '../Cosmos/CosmosInfo';
 const socket = io(cosmosInfo.socket);
 
-/*
-Forms
-
-1. Can select agent node and name. Drop down for available agents. If has 'add_request' commands, have them here
-2. Get the list of add_request commands
-3. Loop through them and be able to add buttons for them.
-
-
-*/
-
 class AgentCommands extends Component {
   constructor(props) {
     super(props);
