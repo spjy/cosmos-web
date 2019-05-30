@@ -90,7 +90,6 @@ class Plot extends Component {
       </div>
     );
   }
-
 }
 
 export default Plot;

@@ -91,11 +91,8 @@ class Attitude extends Component {
     });
   }
 
-  datePicker(date, dateString) {
-    this.setState({
-      dateFrom: dateString[0],
-      dateTo: dateString[1]
-    });
+  onReplayChange(value) {
+    this.setState(value); // Set state from changes from replay component
   }
 
   selectSatellite(value, option) {
@@ -104,8 +101,11 @@ class Attitude extends Component {
     });
   }
 
-  onReplayChange(value) {
-    this.setState(value); // Set state from changes from replay component
+  datePicker(date, dateString) {
+    this.setState({
+      dateFrom: dateString[0],
+      dateTo: dateString[1]
+    });
   }
 
   render() {
@@ -133,15 +133,13 @@ class Attitude extends Component {
 
         {
           live
-            ?
-            (
+            ? (
               <Live
                 type="attitude"
                 satellite={satellite}
               />
             )
-            :
-            (
+            : (
               <Replay
                 type="attitude"
                 playable={playable}

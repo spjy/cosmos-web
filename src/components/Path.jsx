@@ -55,7 +55,7 @@ class Path extends Component {
 
           this.setState(prevState => ({
             path: [
-              ...this.state.path,
+              ...prevState.path,
               [
                 { lat: prevState.currentCoord.latitude, lng: prevState.currentCoord.longitude },
                 { lat: latitude, lng: longitude }

@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
   Card, Form, Select, Button, DatePicker
 } from 'antd';
 
 class ReplayForm extends Component {
+  static propTypes = {
+    onReplayFormSubmit: PropTypes.func.isRequired
+  }
+
   constructor() {
     super();
 
@@ -14,20 +19,25 @@ class ReplayForm extends Component {
     };
   }
 
-  datePicker(date, dateString) {
+  /**
+   * Handling the date picker values and storing them into state.
+   * @param {Date} date
+   * @param {string} dateString
+   */
+  handleDatePicker(date, dateString) {
     this.setState({
       dateFrom: dateString[0],
       dateTo: dateString[1]
     });
   }
 
-  selected(value, option) {
+  handleSelected(value, option) {
     this.setState({
       selected: value
     });
   }
 
-  submit(e) {
+  submitReplayForm(e) {
     e.preventDefault();
     this.props.onReplayFormSubmit({
       selected: this.state.selected,
@@ -51,7 +61,7 @@ class ReplayForm extends Component {
           >
             <Form
               layout="horizontal"
-              onSubmit={this.submit.bind(this)}
+              onSubmit={e => this.submitReplayForm(e)}
             >
               <Form.Item
                 label="Satellite"
@@ -59,7 +69,7 @@ class ReplayForm extends Component {
                 <Select
                   showSearch
                   placeholder="Select"
-                  onChange={this.selected.bind(this)}
+                  onChange={(value, option) => this.handleSelected(value, option)}
                 >
                   <Select.Option value="cubesat1">cubesat1</Select.Option>
                 </Select>
@@ -69,7 +79,7 @@ class ReplayForm extends Component {
                 label="Date range"
               >
                 <DatePicker.RangePicker
-                  onChange={this.datePicker.bind(this)}
+                  onChange={(date, dateString) => this.handleDatePicker(date, dateString)}
                   showTime
                   format="YYYY-MM-DDTHH:mm:ssZ"
                 />

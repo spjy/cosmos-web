@@ -6,6 +6,16 @@ import {
 import moment from 'moment';
 
 class Replay extends Component {
+  static propTypes = {
+    type: PropTypes.string.isRequired,
+    playable: PropTypes.bool.isRequired,
+    satellite: PropTypes.string.isRequired,
+    max: PropTypes.number.isRequired,
+    slider: PropTypes.number.isRequired,
+    onReplayChange: PropTypes.func.isRequired,
+    replay: PropTypes.arrayOf.object.isRequired
+  };
+
   componentWillUnmount() {
     this.stopSlider(); // stop slider
   }
@@ -30,7 +40,6 @@ class Replay extends Component {
       playable: true
     });
   }
-
 
   sliderIncrement() {
     let delay = 1000;
@@ -89,14 +98,12 @@ class Replay extends Component {
                 title="Switch to live view?"
                 okText="Yes"
                 cancelText="No"
-                onConfirm={this.onConfirmLiveView.bind(this)}
+                onConfirm={() => this.onConfirmLiveView()}
               >
-                <a>
-                  <Icon
-                    style={{ paddingLeft: '0.5em' }}
-                    type="swap"
-                  />
-                </a>
+                <Icon
+                  style={{ paddingLeft: '0.5em', cursor: 'pointer' }}
+                  type="swap"
+                />
               </Popconfirm>
             </div>
           )}
@@ -117,13 +124,13 @@ class Replay extends Component {
                   <Icon
                     className="media-buttons"
                     type="play-circle-o"
-                    onClick={this.startSlider.bind(this)}
+                    onClick={() => this.startSlider()}
                   />
                   &nbsp;
                   <Icon
                     className="media-buttons"
                     type="pause-circle-o"
-                    onClick={this.stopSlider.bind(this)}
+                    onClick={() => this.stopSlider()}
                   />
                   &nbsp;
                   {slider}
@@ -143,7 +150,7 @@ class Replay extends Component {
                       [max / 2]: max / 2,
                       [max]: max
                     }}
-                    onChange={this.onSliderChange.bind(this)}
+                    onChange={value => this.onSliderChange(value)}
                   />
                 </Col>
               </Row>
@@ -155,14 +162,5 @@ class Replay extends Component {
     );
   }
 }
-
-Replay.propTypes = {
-  type: PropTypes.string.isRequired,
-  playable: PropTypes.bool.isRequired,
-  satellite: PropTypes.string.isRequired,
-  max: PropTypes.number.isRequired,
-  slider: PropTypes.number.isRequired,
-  onReplayChange: PropTypes.func.isRequired
-};
 
 export default Replay;

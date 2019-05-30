@@ -22,7 +22,9 @@ const Live = ({ type, satellite }) => (
 );
 
 Live.propTypes = {
+  /** The type of live view, e.g. orbit or attitude. */
   type: PropTypes.string.isRequired,
+  /** The satellite that is being viewed. */
   satellite: PropTypes.string.isRequired
 };
 
