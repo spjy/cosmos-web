@@ -74,7 +74,7 @@ class Path extends Component {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
-      },
+      }
     }).then((response) => {
       response.json().then((data) => {
         if (data && data.length > 0) {
@@ -84,7 +84,7 @@ class Path extends Component {
             replay: data,
             max: data.length,
             currentCoord: data[0],
-            satellite: data[0].satellite,
+            satellite: data[0].satellite
           });
           this.refs.replay.startSlider(); // initialize function from replay component
           this.setState({ playable: false });

@@ -61,7 +61,7 @@ class Attitude extends Component {
       headers: {
         'Content-Type': 'application/json'
       }
-      //credentials: 'same-origin',
+      // credentials: 'same-origin',
     }).then((response) => {
       response.json().then((data) => {
         if (data && data.length > 0) {
@@ -71,7 +71,7 @@ class Attitude extends Component {
             replay: data,
             max: data.length,
             currentCoord: data[0],
-            satellite: data[0].satellite,
+            satellite: data[0].satellite
           });
 
           this.refs.replay.startSlider(); // initialize function from replay component
@@ -147,7 +147,7 @@ class Attitude extends Component {
                 max={max}
                 slider={slider}
                 replay={replay}
-                onReplayChange={this.onReplayChange.bind(this)}
+                onReplayChange={value => this.onReplayChange(value)}
                 ref="replay"
               />
             )
@@ -156,7 +156,7 @@ class Attitude extends Component {
         <br />
 
         <ReplayForm
-          onReplayFormSubmit={this.onReplayFormSubmit.bind(this)}
+          onReplayFormSubmit={value => this.onReplayFormSubmit(value)}
         />
       </div>
     );

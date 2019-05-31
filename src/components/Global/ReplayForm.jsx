@@ -31,12 +31,21 @@ class ReplayForm extends Component {
     });
   }
 
+  /**
+   * Handle the selected satellite.
+   * @param {string} value String value of the satellite.
+   * @param {*} option
+   */
   handleSelected(value, option) {
     this.setState({
       selected: value
     });
   }
 
+  /**
+   * Submission handler of the form.
+   * @param {Object} e Event object.
+   */
   submitReplayForm(e) {
     e.preventDefault();
     this.props.onReplayFormSubmit({

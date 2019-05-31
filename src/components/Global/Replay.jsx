@@ -13,26 +13,39 @@ class Replay extends Component {
     max: PropTypes.number.isRequired,
     slider: PropTypes.number.isRequired,
     onReplayChange: PropTypes.func.isRequired,
-    replay: PropTypes.arrayOf.object.isRequired
+    replay: PropTypes.arrayOf(PropTypes.object).isRequired
   };
 
+  /**
+   * Stop the slider when component unmounts.
+   */
   componentWillUnmount() {
-    this.stopSlider(); // stop slider
+    this.stopSlider();
   }
 
+  /**
+   * Change from replay to live view mode.
+   */
   onConfirmLiveView() {
     this.props.onReplayChange({
       live: true,
       replay: []
-    }); // change to live view
+    });
   }
 
+  /**
+   * Change the value of the slider (by sliding).
+   * @param {*} value The value of the slider.
+   */
   onSliderChange(value) {
     this.props.onReplayChange({ // change value of slider
       slider: value
     });
   }
 
+  /**
+   * Pause / stop the slider.
+   */
   stopSlider() {
     clearTimeout(this.slider); // stop timeout
 
@@ -41,6 +54,7 @@ class Replay extends Component {
     });
   }
 
+  /** Every second, increment the slider like playing a video. */
   sliderIncrement() {
     let delay = 1000;
     this.delay = () => {
@@ -73,6 +87,9 @@ class Replay extends Component {
     setTimeout(this.delay, delay);
   }
 
+  /**
+   * Start/replay the slider.
+   */
   startSlider() {
     if (this.props.playable) {
       this.props.onReplayChange({

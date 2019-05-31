@@ -182,7 +182,7 @@ class AttitudeThreeD extends Component {
     });
   }
 
-  componentWillUpdate = (nextProps, nextState) => {
+  componentWillUpdate = () => {
     if (typeof (this.updateSatelliteAttitude) === 'function') { // check if function is defined
       this.updateSatelliteAttitude();
     }

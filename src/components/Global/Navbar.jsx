@@ -5,6 +5,7 @@ import { Menu, Icon } from 'antd';
 
 class Navbar extends Component {
   static propTypes = {
+    /** Currently selected navigation bar item. */
     current: PropTypes.string.isRequired
   };
 
