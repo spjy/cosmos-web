@@ -5,39 +5,38 @@ import { Modal, Form, Alert } from 'antd';
 /**
  * The component containing the modal and form for setting settings for widgets.
  */
-class WidgetSettings extends Component {
-  /**
-   * On pressing the "OK" button at the footer of the modal, call the "submitForm"
-   * and "closeModal" prop methods in the parent component (the widget). This will get
-   * all off the form values, validate them and close the modal if everything is valid.
-   */
-  onOk() {
-    this.props.submitForm();
-    this.props.closeModal();
-  }
-
-  /**
-   * On pressing the "Cancel" button at the footer of the modal, close the modal.
-   */
-  onCancel() {
-    this.props.closeModal();
-  }
-
-  render() {
-    return (
-      <Modal
-        visible={this.props.visible}
-        title="Widget Settings"
-        onOk={() => this.onOk()}
-        onCancel={() => this.onCancel()}
-      >
-        <Form layout="inline">
-          {this.props.children}
-        </Form>
-        {!this.props.validForm ? <Alert message="Incomplete form." type="warning" showIcon /> : null}
-      </Modal>
-    );
-  }
+function WidgetSettings({
+  visible,
+  closeModal,
+  info,
+  children,
+  submitForm,
+  validForm
+}) {
+  return (
+    <Modal
+      visible={visible}
+      title="Widget Settings"
+      /**
+       * On pressing the "OK" button at the footer of the modal, call the "submitForm"
+       * and "closeModal" prop methods in the parent component (the widget). This will get
+       * all off the form values, validate them and close the modal if everything is valid.
+       */
+      onOk={() => {
+        submitForm();
+        closeModal();
+      }}
+      /**
+       * On pressing the "Cancel" button at the footer of the modal, close the modal.
+       */
+      onCancel={() => closeModal()}
+    >
+      <Form layout="inline">
+        {children}
+      </Form>
+      {!validForm ? <Alert message="Incomplete form." type="warning" showIcon /> : null}
+    </Modal>
+  );
 }
 
 WidgetSettings.propTypes = {
