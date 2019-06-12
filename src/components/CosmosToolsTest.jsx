@@ -30,6 +30,13 @@ function getWidgetInfo() {
     },
     {
       widgetClass: 'Example'
+    },
+    {
+      agent: 'post527',
+      node: 'node-arduino',
+      widgetClass: 'AgentCommands',
+      request: 'request_blink',
+      arguments: ['1']
     }
   ];
 }

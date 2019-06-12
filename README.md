@@ -30,3 +30,12 @@ REACT_APP_SATELLITE_IP=localhost # IP of the COSMOS Web Server
 ```
 npm start
 ```
+
+## Docker
+
+If you want to run COSMOS Web through Docker:
+
+```
+docker build . -t cosmos_web
+docker run 3000:3000 cosmos_web
+```

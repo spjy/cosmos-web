@@ -29,8 +29,8 @@ class Path extends Component {
         latitude: 0,
         longitude: 0,
         altitude: 0,
-        acceleration: [0,0,0],
-      },
+        acceleration: [0, 0, 0]
+      }
     };
   }
 
@@ -55,7 +55,7 @@ class Path extends Component {
 
           this.setState(prevState => ({
             path: [
-              ...this.state.path,
+              ...prevState.path,
               [
                 { lat: prevState.currentCoord.latitude, lng: prevState.currentCoord.longitude },
                 { lat: latitude, lng: longitude }
@@ -74,7 +74,7 @@ class Path extends Component {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
-      },
+      }
     }).then((response) => {
       response.json().then((data) => {
         if (data && data.length > 0) {
@@ -84,7 +84,7 @@ class Path extends Component {
             replay: data,
             max: data.length,
             currentCoord: data[0],
-            satellite: data[0].satellite,
+            satellite: data[0].satellite
           });
           this.refs.replay.startSlider(); // initialize function from replay component
           this.setState({ playable: false });
@@ -103,9 +103,6 @@ class Path extends Component {
       });
       console.log(err);
     });
-  }
-
-  onReplayChange(value) {
   }
 
   render() {
@@ -163,7 +160,7 @@ class Path extends Component {
               max={max}
               slider={slider}
               replay={replay}
-              onReplayChange={this.onReplayChange.bind(this)}
+              onReplayChange={() => this.onReplayChange}
               ref="replay"
             />
           )
@@ -171,11 +168,10 @@ class Path extends Component {
 
         <br />
 
-        <ReplayForm onReplayFormSubmit={this.onReplayFormSubmit.bind(this)} />
+        <ReplayForm onReplayFormSubmit={() => this.onReplayFormSubmit} />
       </div>
     );
   }
-
 }
 
 export default Path;

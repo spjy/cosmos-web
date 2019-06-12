@@ -64,4 +64,5 @@ CosmosWidget.defaultProps = {
   children: [],
   editWidget: () => {}
 };
+
 export default CosmosWidget;

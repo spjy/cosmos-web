@@ -1,58 +1,56 @@
 import React, { Component } from 'react';
 import * as BABYLON from 'babylonjs';
-//import satRotView from './scenes/satRotView';
-
 import '../../App.css';
+
 const scene = BABYLON.Scene;
 const engine = BABYLON.Engine;
 const canvas = HTMLCanvasElement;
 
 class ThreeD extends Component {
+  componentDidMount() {
+    this.engine = new BABYLON.Engine(
+      this.canvas,
+      true,
+      this.props.engineOptions,
+      this.props.adaptToDeviceRatio
+    );
 
-    onResizeWindow = () => {
-      if (this.engine) {
-        this.engine.resize();
-      }
+    let scene = new BABYLON.Scene(this.engine);
+    this.scene = scene;
+
+    if (typeof this.props.onSceneMount === 'function') {
+      this.props.onSceneMount({
+        scene,
+        engine: this.engine,
+        canvas: this.canvas
+      });
+    } else {
+      console.error('onSceneMount function not available');
     }
 
-    componentDidMount() {
-      this.engine = new BABYLON.Engine(
-          this.canvas,
-          true,
-          this.props.engineOptions,
-          this.props.adaptToDeviceRatio
-      );
+    // Resize the babylon engine when the window is resized
+    window.addEventListener('resize', this.onResizeWindow);
+  }
 
-      let scene = new BABYLON.Scene(this.engine);
-      this.scene = scene;
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.onResizeWindow);
+  }
 
-      if (typeof this.props.onSceneMount === 'function') {
-        this.props.onSceneMount({
-          scene,
-          engine: this.engine,
-          canvas: this.canvas
-        });
-      } else {
-        console.error('onSceneMount function not available');
-      }
-
-      // Resize the babylon engine when the window is resized
-      window.addEventListener('resize', this.onResizeWindow);
+  onResizeWindow = () => {
+    if (this.engine) {
+      this.engine.resize();
     }
+  }
 
-    componentWillUnmount() {
-      window.removeEventListener('resize', this.onResizeWindow);
+  onCanvasLoaded = (HTMLCanvasElement) => {
+    if (HTMLCanvasElement !== null) {
+      this.canvas = HTMLCanvasElement;
     }
-
-    onCanvasLoaded = (HTMLCanvasElement) => {
-      if (HTMLCanvasElement !== null) {
-        this.canvas = HTMLCanvasElement;
-      }
-    }
+  }
 
   render() {
     return (
-      <canvas id="scene" ref={this.onCanvasLoaded}></canvas>
+      <canvas id="scene" ref={this.onCanvasLoaded} />
     );
   }
 }

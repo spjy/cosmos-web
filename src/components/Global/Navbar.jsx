@@ -4,6 +4,11 @@ import PropTypes from 'prop-types';
 import { Menu, Icon } from 'antd';
 
 class Navbar extends Component {
+  static propTypes = {
+    /** Currently selected navigation bar item. */
+    current: PropTypes.string.isRequired
+  };
+
   // handleClick = (e) => {
   //   this.setState({
   //     current: e.key,
@@ -112,9 +117,5 @@ class Navbar extends Component {
     );
   }
 }
-
-Navbar.propTypes = {
-  current: PropTypes.string
-};
 
 export default Navbar;

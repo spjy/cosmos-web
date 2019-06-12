@@ -132,7 +132,7 @@ class CosmosContainer extends Component {
     }
     return (
       <div>
-        <Card size="small" style={{ width: '100%' }}>
+        <Card size="small" style={{ margin: '10px' }}>
           {widgets}
         </Card>
       </div>
