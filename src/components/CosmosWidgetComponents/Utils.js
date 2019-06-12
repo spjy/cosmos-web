@@ -101,3 +101,21 @@ export function convertTimetoDate(val) {
 export function utc2date(utc) {
   return convertTimetoDate(mjd2cal(utc).getTime());
 }
+
+export function parseLiveData(data, fields) {
+  const values = {};
+  let p;
+  let val;
+  values.agent_utc = Number(data.agent_utc);
+  for (let i = 0; i < fields.label.length; i += 1) {
+    p = fields.structure[i];
+    val = data;
+    for (let j = 0; j < p.length; j += 1) {
+      val = val[p[j]];
+    }
+
+    values[fields.label[i]] = Number(val);
+  }
+
+  return values;
+}
