@@ -51,7 +51,7 @@ WidgetSettings.propTypes = {
   children: PropTypes.node,
   /** The function to handle the submission of the form. */
   submitForm: PropTypes.func.isRequired,
-  /** The function to handle the determination of the validity of the form. */
+  /** Whether the form submitted is valid. */
   validForm: PropTypes.bool.isRequired
 };
 

@@ -26,8 +26,11 @@ function Example({
         visible={openSettings}
         /** Closes the modal. */
         closeModal={() => setOpenSettings(false)}
-        /** Handles form submission */
-        submitForm={() => updateInfo(id, form)}
+        /** Handles form submission; updates fields in CosmosToolsTest.jsx and clears form. */
+        submitForm={() => {
+          updateInfo(id, form);
+          setForm({});
+        }}
         updateInfo={updateInfo}
         validForm
       >
@@ -44,7 +47,7 @@ function Example({
 
       <CosmosWidget
         id={id}
-        title="Example Widget"
+        title="Agent CPU Test"
         mod={mod}
         selfDestruct={selfDestruct}
         editWidget={() => setOpenSettings(true)}
