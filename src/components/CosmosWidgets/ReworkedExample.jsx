@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Form, Input } from 'antd';
 
 import CosmosWidget from '../CosmosWidgetComponents/CosmosWidget';
-import WidgetSettings from './WidgetSettings';
+import WidgetSettings from '../CosmosWidgetComponents/WidgetSettings';
 
 /**
  * Example COSMOS Web widget.
