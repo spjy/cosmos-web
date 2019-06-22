@@ -201,8 +201,9 @@ DataNameSelect.propTypes = {
   onChange: PropTypes.func.isRequired
 };
 
+
 export function AgentCommandSelect(props) {
-  /*  This component renders the Form Input for selecting a datanames specific to an agent
+  /*  This component renders the Form Input for selecting a requests specific to an agent
   */
   const formStyle = {};
   const commandList = [];
@@ -213,44 +214,23 @@ export function AgentCommandSelect(props) {
       </Option>
     );
   }
-  return ([
-    <Form.Item label="Command Label" key="title">
-      <Input
-        placeholder="Command Label"
-        id="title"
-        onChange={this.props.onChange}
-        value={this.props.cmdLabel}
-        style={formStyle}
-      />
-    </Form.Item>,
+  return (
     <Form.Item label="Command" key="command">
       <Select
         showSearch
         id="command0"
-        value={this.props.cmd0}
-        onChange={this.onChange}
+        value={props.commandSelected}
+        onChange={props.onChange}
         style={{ minWidth: '200px' }}
       >
         {commandList}
       </Select>
-    </Form.Item>,
-    <Form.Item label="Args" key="args">
-      <Input
-        placeholder="args"
-        id="args"
-        onChange={this.props.onChange}
-        value={this.props.cmd1}
-        style={formStyle}
-      />
-    </Form.Item>]
+    </Form.Item>
   );
 }
 //
 AgentCommandSelect.propTypes = {
   onChange: PropTypes.func.isRequired,
-  cmdLabel: PropTypes.string.isRequired,
   commandList: PropTypes.arrayOf(PropTypes.object).isRequired,
-  cmd0: PropTypes.string.isRequired,
-  cmd1: PropTypes.string.isRequired,
-  cmdDetail: PropTypes.string
+  commandSelected: PropTypes.string.isRequired,
 };
