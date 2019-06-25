@@ -17,7 +17,7 @@ class Orbit extends Component {
 
     this.state = {
       live: false,
-      satellite: 'cubesat1',
+      satellite: 'neutron1_exec',
       max: 500,
       slider: 0,
       playable: false,
@@ -40,7 +40,7 @@ class Orbit extends Component {
 
         this.setState({
           live: true,
-          satellite: 'neutron1',
+          satellite: this.state.satellite,
           currentCoord: {
             x: x / 1000,
             y: y / 1000,

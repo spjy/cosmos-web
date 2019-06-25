@@ -44,9 +44,9 @@ WidgetSettings.propTypes = {
   visible: PropTypes.bool.isRequired,
   /** The function to handle the closing of the modal. */
   closeModal: PropTypes.func.isRequired,
-  info: PropTypes.shape({
-    widgetClass: PropTypes.string.isRequired
-  }).isRequired,
+  // info: PropTypes.shape({
+  //   widgetClass: PropTypes.string.isRequired
+  // }).isRequired,
   /** Children prop */
   children: PropTypes.node,
   /** The function to handle the submission of the form. */

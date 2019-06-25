@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { notification } from 'antd';
 import 'whatwg-fetch';
-import io from 'socket.io-client';
 
 import Navbar from './Global/Navbar';
 import Replay from './Global/Replay';
@@ -11,8 +10,6 @@ import AttitudeInformation from './Attitude/AttitudeInformation';
 import AttitudeThreeD from './Attitude/AttitudeThreeD';
 import cosmosInfo from './Cosmos/CosmosInfo';
 import '../App.css';
-
-const socket = io(cosmosInfo.socket);
 
 class Attitude extends Component {
   constructor() {
@@ -35,22 +32,25 @@ class Attitude extends Component {
   }
 
   componentDidMount() {
-    socket.on('satellite attitude', (data) => {
-      if (this.state.replay.length === 0) {
-        if (data) {
-          this.setState({
-            live: true,
-            satellite: data.satellite,
-            currentCoord: {
-              w: data.w,
-              x: data.x,
-              y: data.y,
-              z: data.z
-            }
-          });
-        }
+    const socket = new WebSocket(`ws://hsflpc23:8080/live/${this.state.satellite}`);
+
+    socket.onmessage = (data) => {
+      const json = JSON.parse(data.data);
+      if (Object.keys(json).includes('node_loc_att_icrf')) {
+        const { w, d: { x, y, z } } = json.node_loc_att_icrf.pos;
+
+        this.setState({
+          live: true,
+          satellite: this.state.satellite,
+          currentCoord: {
+            w,
+            x,
+            y,
+            z
+          }
+        });
       }
-    });
+    };
   }
 
   onReplayFormSubmit(value) {
