@@ -110,6 +110,12 @@ class Navbar extends Component {
                 <Icon type="tool" />
                 &nbsp;Tools
               </Link>
+              </Menu.Item>
+              <Menu.Item key="cosmostoolstest">
+                <Link to="/cosmostoolstest">
+                  <Icon type="tool" />
+                  &nbsp;Test
+                </Link>
             </Menu.Item>
           </Menu.ItemGroup>
         </Menu.SubMenu>

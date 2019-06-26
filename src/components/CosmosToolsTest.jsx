@@ -2,17 +2,23 @@ import React, { Component } from 'react';
 import Navbar from './Global/Navbar';
 import CosmosContainer from './CosmosWidgetComponents/CosmosContainer';
 
+const plotWidget = require('./CosmosWidgets/PlotWidget').default;
+const agentListWidget = require('./CosmosWidgets/AgentList').default;
+const dataTableWidget = require('./CosmosWidgets/LiveDataTable').default;
+const exampleWidget = require('./CosmosWidgets/Example').default;
+const agentRequestWidget = require('./CosmosWidgets/AgentRequest').default;
+
 function getWidgetInfo() {
   return [
-    {
-      agent: 'propagator_simple',
-      node: 'cubesat1',
-      widgetClass: 'PlotWidget',
-      title: 'Propagator',
-      xRange: 10,
-      data_name: ['node_loc_pos_eci_vel'],
-      plot_labels: ['', '']
-    },
+    // {
+    //   agent: 'propagator_simple',
+    //   node: 'cubesat1',
+    //   widgetClass: 'PlotWidget',
+    //   title: 'Propagator',
+    //   xRange: 10,
+    //   data_name: ['node_loc_pos_eci_vel'],
+    //   plot_labels: ['', '']
+    // },
     // {
     //   agent: 'propagator_simple',
     //   node: 'cubesat1',
@@ -22,8 +28,11 @@ function getWidgetInfo() {
     {
       agent: 'post527',
       node: 'node-arduino',
-      widgetClass: 'LiveDataTable',
-      data_name: ['device_tsen_temp_001']
+      widgetClass: 'PlotWidget',
+      data_name: ['device_tsen_temp_001'],
+      title: 'POST527 Temperature',
+      xRange: 10,
+      plot_labels: ['Time', 'F']
     },
     {
       widgetClass: 'AgentListWidget'
@@ -34,8 +43,9 @@ function getWidgetInfo() {
     {
       agent: 'post527',
       node: 'node-arduino',
-      widgetClass: 'AgentCommands',
+      widgetClass: 'AgentRequest',
       request: 'request_blink',
+      label: 'blink on',
       arguments: ['1']
     }
   ];
@@ -49,10 +59,11 @@ class CosmosToolsPage extends Component {
 
   render() {
     const imports = {
-      'PlotWidget': require('./CosmosWidgets/PlotWidget').default,
-      'AgentListWidget': require('./CosmosWidgets/AgentList').default,
-      'LiveDataTable': require('./CosmosWidgets/LiveDataTable').default,
-      'Example': require('./CosmosWidgets/Example').default
+      PlotWidget: plotWidget,
+      AgentListWidget: agentListWidget,
+      LiveDataTable: dataTableWidget,
+      Example: exampleWidget,
+      AgentRequest: agentRequestWidget
     };
     const widgets = getWidgetInfo();
 
