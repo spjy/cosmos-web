@@ -8,6 +8,7 @@ import Plot from './components/Plot';
 import Path from './components/Path';
 import CosmosTools from './components/CosmosTools';
 import CosmosToolsTest from './components/CosmosToolsTest';
+import LinkStarPingTest from './components/Neutron1/LinkStarPingTest';
 
 
 const App = () => (
@@ -21,6 +22,7 @@ const App = () => (
         <Route exact path="/path" component={Path} />
         <Route exact path="/cosmostools" component={CosmosTools} />
         <Route exact path="/cosmostoolstest" component={CosmosToolsTest} />
+        <Route exact path="/linkstar" component={LinkStarPingTest} />
       </Switch>
     </Router>
   </div>

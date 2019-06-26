@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Form, Alert, Select, Option, Button, Input } from 'antd';
+import {
+  Form, Alert, Select, Button, Modal
+} from 'antd';
 import io from 'socket.io-client';
 
-import { AgentSelect, DataNameSelect } from '../CosmosWidgetComponents/FormComponents';
+import { AgentSelect } from '../CosmosWidgetComponents/FormComponents';
 import CosmosWidget from '../CosmosWidgetComponents/CosmosWidget';
 
 import cosmosInfo from '../Cosmos/CosmosInfo';
+
 const socket = io(cosmosInfo.socket);
 
 class AgentCommands extends Component {
@@ -31,18 +34,10 @@ class AgentCommands extends Component {
     }
   }
 
-  openForm = () => {
-    this.setState({ show_form: true });
-  }
-
-  closeForm = () => {
-    this.setState({ show_form: false });
-  }
-
-  onCancel = () => {
-    const form = this.props.info; // reset form values without saving
-    this.setState({ form });
-    this.closeForm();
+  getAgentCommandsList(data) {
+    // console.log(data)
+    this.setState({ commandList: data.command_list, loadingCommands: false });
+    // console.log(data.command_list)
   }
 
   selectAgent = (value) => {
@@ -61,28 +56,37 @@ class AgentCommands extends Component {
     form.node = nodeName;
 
     socket.emit('list_agent_commands', {
-        agent: agentName, node: nodeName
+      agent: agentName, node: nodeName
     }, this.getAgentCommandsList.bind(this));
 
-    console.log(agentName, nodeName)
+    // console.log(agentName, nodeName)
 
     this.setState({ form, jsonStructure: structure, loadingCommands: true });
   }
 
-  getAgentCommandsList(data) {
-    // console.log(data)
-    this.setState({ commandList: data.command_list, loadingCommands: false });
-    console.log(data.command_list)
+  openForm = () => {
+    this.setState({ show_form: true });
+  }
+
+  closeForm = () => {
+    this.setState({ show_form: false });
+  }
+
+  onCancel = () => {
+    const form = this.props.info; // reset form values without saving
+    this.setState({ form });
+    this.closeForm();
+  }
+
+
+  commandResponseReceived(data) {
+    this.setState({ [data.command]: <p style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>{data.output}</p> });
   }
 
   handleCommandChange(command, value) {
     socket.emit('agent_command',
       { agent: this.props.info.agent, node: this.props.info.node, command: `${command} ${value.join(' ')}` },
       this.commandResponseReceived.bind(this));
-  }
-
-  commandResponseReceived(data) {
-    this.setState({ [data.command]: <p style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>{data.output}</p> });
   }
 
   render() {
@@ -109,8 +113,11 @@ class AgentCommands extends Component {
           </Form>
           {!this.state.form_valid && <Alert message="Incomplete" type="warning" showIcon />}
         </Modal>
-        Selected: [{this.props.info.node}] {this.props.info.agent}
-        
+        Selected: [
+        {this.props.info.node}
+        ]
+        {this.props.info.agent}
+
         {this.state.commandList.map(({ command }, i) => (
           <div key={i}>
             <Form
@@ -121,8 +128,8 @@ class AgentCommands extends Component {
                 <Select
                   mode="tags"
                   placeholder="Arguments"
-                  onChange={(value) => this.handleCommandChange(command, value)}
-                ></Select>
+                  onChange={value => this.handleCommandChange(command, value)}
+                />
               </Form.Item>
               <Form.Item>
                 <Button>{command}</Button>
@@ -142,7 +149,6 @@ AgentCommands.propTypes = {
     widgetClass: PropTypes.string.isRequired,
     agent: PropTypes.string.isRequired,
     node: PropTypes.string.isRequired,
-    widgetClass: PropTypes.string.isRequired,
     request: PropTypes.string.isRequired,
     arguments: PropTypes.arrayOf(PropTypes.string).isRequired
   }).isRequired,
