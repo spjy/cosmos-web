@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input } from 'antd';
+import { Form, Input, Button } from 'antd';
 
 import CosmosWidget from '../CosmosWidgetComponents/CosmosWidget';
-import WidgetSettings from '../CosmosWidgetComponents/WidgetSettings';
+import WidgetSettings from './WidgetSettings';
 
 /**
  * Example COSMOS Web widget.
@@ -35,24 +35,26 @@ function Example({
         validForm
       >
         {/* Insert form items here */}
-        <Form.Item label="Title" key="title">
+        {/* <Form.Item label="Title" key="title">
           <Input
             placeholder="Title"
             id="title"
             onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: value })}
             value={form.title}
           />
-        </Form.Item>
+        </Form.Item> */}
       </WidgetSettings>
 
       <CosmosWidget
         id={id}
-        title="Agent CPU Test"
+        title="Example Widget"
         mod={mod}
         selfDestruct={selfDestruct}
         editWidget={() => setOpenSettings(true)}
       >
-        {/* Insert card content here */}
+        <Button>
+          Get CPU Load
+        </Button>
       </CosmosWidget>
     </div>
   );

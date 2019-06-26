@@ -248,7 +248,7 @@ class OrbitThreeD extends Component {
     */
 
     // load in satellite obj file
-    BABYLON.SceneLoader.Load('/obj/', 'cubesat.obj', engine, (scene) => {});
+    BABYLON.SceneLoader.Load('/obj/', 'cubesat.obj', engine, () => {});
 
     assetsManager.addMeshTask('CUBESAT', '', '/obj/', 'cubesat.obj');
 

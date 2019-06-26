@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { notification } from 'antd';
 import 'whatwg-fetch';
-import io from 'socket.io-client';
 
 import Navbar from './Global/Navbar';
 import Replay from './Global/Replay';
@@ -12,15 +11,13 @@ import OrbitThreeD from './Orbit/OrbitThreeD';
 import cosmosInfo from './Cosmos/CosmosInfo';
 import '../App.css';
 
-const socket = io(cosmosInfo.socket);
-
 class Orbit extends Component {
   constructor() {
     super();
 
     this.state = {
       live: false,
-      satellite: '--',
+      satellite: 'neutron1_exec',
       max: 500,
       slider: 0,
       playable: false,
@@ -34,25 +31,24 @@ class Orbit extends Component {
   }
 
   componentDidMount() {
-    socket.on('satellite orbit', (data) => { // check if there is a live orbit
-      if (this.state.replay.length === 0) { // check if there is replay going
-        if (data) { // check if data exists
-          const {
-            satellite, x, y, z
-          } = data;
+    const socket = new WebSocket(`ws://hsflpc23:8080/live/${this.state.satellite}`);
 
-          this.setState({
-            live: true,
-            satellite,
-            currentCoord: {
-              x,
-              y,
-              z
-            },
-          });
-        }
+    socket.onmessage = (data) => {
+      const json = JSON.parse(data.data);
+      if (json.node_loc_pos_eci) {
+        const [x, y, z] = json.node_loc_pos_eci.pos;
+
+        this.setState({
+          live: true,
+          satellite: this.state.satellite,
+          currentCoord: {
+            x: x / 1000,
+            y: y / 1000,
+            z: z / 1000
+          }
+        });
       }
-    });
+    };
   }
 
   onReplayChange(value) {
@@ -70,7 +66,7 @@ class Orbit extends Component {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
-      },
+      }
     }).then((response) => {
       response.json().then((data) => {
         if (data && data.length > 0) {
@@ -80,7 +76,7 @@ class Orbit extends Component {
             replay: data,
             max: data.length,
             currentCoord: data[0],
-            satellite: data[0].satellite,
+            satellite: data[0].satellite
           });
           this.refs.replay.startSlider(); // initialize function from replay component
           this.setState({ playable: false });
@@ -140,7 +136,7 @@ class Orbit extends Component {
               max={max}
               slider={slider}
               replay={replay}
-              onReplayChange={this.onReplayChange.bind(this)}
+              onReplayChange={() => this.onReplayChange.bind(this)}
               ref="replay"
             />
           )
@@ -149,7 +145,7 @@ class Orbit extends Component {
         <br />
 
         <ReplayForm
-          onReplayFormSubmit={this.onReplayFormSubmit.bind(this)}
+          onReplayFormSubmit={() => this.onReplayFormSubmit.bind(this)}
         />
       </div>
     );
