@@ -26,6 +26,11 @@ class LiveDataTable extends Component {
     };
   }
 
+  componentDidMount() {
+    /* Open form if no agent is selected */
+    if (this.props.info.agent === '') this.setState({ show_form: true });
+  }
+
   onOK = () => {
     let valid = true;
     // validate form here
@@ -182,3 +187,16 @@ LiveDataTable.defaultProps = {
   data: {}
 };
 export default LiveDataTable;
+
+export function DefaultTable() {
+  return {
+    widgetClass: 'LiveDataTable',
+    agent: '',
+    node: '',
+    data_name: [],
+    values: {
+      label: [],
+      structure: []
+    }
+  };
+}

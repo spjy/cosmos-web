@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Form, Alert, Select, Option, Button, Input } from 'antd';
+import {
+  Form, Button, Input, Spin, Icon
+} from 'antd';
 import io from 'socket.io-client';
 
 import { AgentSelect, AgentCommandSelect } from '../CosmosWidgetComponents/FormComponents';
 import CosmosWidget from '../CosmosWidgetComponents/CosmosWidget';
+import WidgetSettings from '../CosmosWidgetComponents/WidgetSettings';
 
 import cosmosInfo from '../Cosmos/CosmosInfo';
+
 const socket = io(cosmosInfo.socket);
 
 class AgentRequest extends Component {
@@ -21,22 +25,35 @@ class AgentRequest extends Component {
         label: '',
         arguments: ['']
       },
-      form_valid: true,
+      validForm: true,
       commandList: [],
+      data: '',
       loadingCommands: false,
-      data: ''
+      waitingForRequest: false
     };
   }
 
-  onOK = () => {
+  componentDidMount() {
+    /* Open form if no agent is selected */
+    if (this.props.info.agent === '') this.setState({ show_form: true });
+  }
+
+  getAgentCommandsList(data) {
+    // console.log(data)
+    this.setState({ commandList: data.command_list, loadingCommands: false });
+    // console.log(data.command_list)
+  }
+
+  sumbitForm = () => {
     let valid = true;
     // do form validation here
-    if(!this.state.form.agent) valid = false;
-    if(!this.state.form.label) valid = false;
+    if (!this.state.form.agent) valid = false;
+    if (!this.state.form.label) valid = false;
     if (valid) {
       this.props.updateInfo(this.props.id, this.state.form);
       this.closeForm();
     }
+    this.setState({ validForm: valid });
   }
 
   openForm = () => {
@@ -65,35 +82,30 @@ class AgentRequest extends Component {
   selectAgent = (value) => {
     const agentName = value.agent.agent_proc;
     const nodeName = value.agent.agent_node;
-    const { structure } = value.agent;
     const { form } = this.state;
-
-    if (form.agent !== agentName && form.agent !== '') { // empty dataset selected if agent changes
-      form.data_name = [];
-    }
+    // console.log(agentName, nodeName);
     if (agentName !== this.props.info.agent && form.agent === this.props.info.agent) {
-      this.setState(prevState => ({ prevJsonStructure: prevState.jsonStructure }));
+      // console.log(agentName, nodeName);
+      socket.emit('list_agent_commands', {
+        agent: agentName, node: nodeName
+      }, this.getAgentCommandsList.bind(this));
+      form.request = '';
     }
     form.agent = agentName;
     form.node = nodeName;
-
-    socket.emit('list_agent_commands', {
-        agent: agentName, node: nodeName
-    }, this.getAgentCommandsList.bind(this));
-
-    // console.log(agentName, nodeName)
-
-    this.setState({ form, jsonStructure: structure, loadingCommands: true });
+    this.setState({ form, loadingCommands: true });
   }
 
   initializeAgent = (agent) => {
     this.selectAgent(agent);
   }
+
   sendRequest = () => {
-    const cmd = `${this.props.info.request} ${this.props.info.arguments}`
+    const cmd = `${this.props.info.request} ${this.props.info.arguments}`;
     socket.emit('agent_command',
       { agent: this.props.info.agent, node: this.props.info.node, command: cmd },
       this.commandResponseReceived.bind(this));
+    this.setState({ waitingForRequest: true });
   }
 
   handleCommandChange = (val) => {
@@ -104,36 +116,30 @@ class AgentRequest extends Component {
 
   onChange = (e) => {
     const { form } = this.state;
-    console.log(e)
-    if(e.target.id == "label") {
+    // console.log(e)
+    if (e.target.id === 'label') {
       form.label = e.target.value;
     }
 
-    if(e.target.id == "args") {
-      form.arguments = [ e.target.value ];
+    if (e.target.id === 'args') {
+      form.arguments = [e.target.value];
     }
     this.setState(form);
   }
 
-  getAgentCommandsList(data) {
-    // console.log(data)
-    this.setState({ commandList: data.command_list, loadingCommands: false });
-    // console.log(data.command_list)
-  }
-
   commandResponseReceived(data) {
-    this.setState({ data: <p style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>{data.output}</p> });
+    this.setState({ data: data.output, waitingForRequest: false });
   }
 
   render() {
-    let title = "Agent Request";
+    let title = 'Agent Request';
     if (this.props.info.node && this.props.info.agent) {
-      title=`[${this.props.info.node}] ${this.props.info.agent}`;
+      title = `[${this.props.info.node}] ${this.props.info.agent}`;
     }
     let commandDetail;
-    for(let i = 0; i < this.state.commandList.length; i += 1){
-      if(this.state.commandList[i].command == this.state.form.command){
-        commandDetail= this.state.commandList[i].detail;
+    for (let i = 0; i < this.state.commandList.length; i += 1) {
+      if (this.state.commandList[i].command === this.state.form.command) {
+        commandDetail = this.state.commandList[i].detail;
       }
     }
     return (
@@ -144,45 +150,50 @@ class AgentRequest extends Component {
         selfDestruct={this.props.selfDestruct}
         editWidget={this.openForm}
       >
-        <Modal
+        <WidgetSettings
           visible={this.state.show_form}
-          title="Agent Request Widget Settings"
-          onOk={this.onOK}
-          onCancel={this.onCancel}
+          validForm={this.state.validForm}
+          closeModal={this.closeForm}
+          submitForm={this.sumbitForm}
         >
-          <Form layout="inline">
-            <AgentSelect
-              agent={this.state.form.agent}
-              onMount={this.initializeAgent}
-              onChange={this.selectAgent}
+          <AgentSelect
+            agent={this.state.form.agent}
+            onMount={this.initializeAgent}
+            onChange={this.selectAgent}
+          />
+          <Form.Item label="Command Label" key="title">
+            <Input
+              placeholder="Command Label"
+              id="label"
+              onChange={this.onChange}
+              value={this.state.form.label}
             />
-            <Form.Item label="Command Label" key="title">
-              <Input
-                placeholder="Command Label"
-                id="label"
-                onChange={this.onChange}
-                value={this.state.form.label}
+          </Form.Item>
+          {this.state.loadingCommands && <Spin indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />} />}
+          {!this.state.loadingCommands
+            && (
+              <AgentCommandSelect
+                onChange={this.handleCommandChange}
+                commandList={this.state.commandList}
+                commandSelected={this.state.form.request}
               />
-            </Form.Item>
-            <AgentCommandSelect
-              onChange={this.handleCommandChange}
-              commandList={this.state.commandList}
-              commandSelected={this.state.form.request}
+            )
+          }
+          <Form.Item label="Args" key="args">
+            <Input
+              placeholder="args"
+              id="args"
+              onChange={this.onChange}
+              value={this.state.form.arguments[0]}
             />
-            <Form.Item label="Args" key="args">
-              <Input
-                placeholder="args"
-                id="args"
-                onChange={this.onChange}
-                value={this.state.form.arguments[0]}
-              />
-            </Form.Item>
-          </Form>
+          </Form.Item>
           {commandDetail}
-          {!this.state.form_valid && <Alert message="Incomplete" type="warning" showIcon />}
-        </Modal>
-        <Button onClick={this.sendRequest}> {this.props.info.label} </Button>
-        {this.state.data}
+        </WidgetSettings>
+        <Button onClick={this.sendRequest}>
+          {this.props.info.label}
+        </Button>
+        {this.state.waitingForRequest && <Spin indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />} />}
+        <p style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>{this.state.data}</p>
       </CosmosWidget>
     );
   }
@@ -204,3 +215,14 @@ AgentRequest.propTypes = {
 };
 
 export default AgentRequest;
+
+export function DefaultAgentRequest() {
+  return {
+    widgetClass: 'AgentRequest',
+    agent: '',
+    node: '',
+    arguments: [],
+    label: '',
+    request: ''
+  };
+}

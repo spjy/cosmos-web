@@ -5,43 +5,58 @@ import {
 import Navbar from './Global/Navbar';
 import CosmosContainer from './CosmosWidgetComponents/CosmosContainer';
 import { DefaultPlot } from './CosmosWidgets/PlotWidget';
+import { DefaultTable } from './CosmosWidgets/LiveDataTable';
+import { DefaultAgentRequest } from './CosmosWidgets/AgentRequest';
 
 const plotWidget = require('./CosmosWidgets/PlotWidget').default;
-const agentListWidget = require('./CosmosWidgets/AgentList').default;
 const dataTableWidget = require('./CosmosWidgets/LiveDataTable').default;
-const exampleWidget = require('./CosmosWidgets/Example').default;
+const agentListWidget = require('./CosmosWidgets/AgentList').default;
 const agentRequestWidget = require('./CosmosWidgets/AgentRequest').default;
 
 const imports = {
   PlotWidget: plotWidget,
-  AgentListWidget: agentListWidget,
   LiveDataTable: dataTableWidget,
-  Example: exampleWidget,
+  AgentListWidget: agentListWidget,
   AgentRequest: agentRequestWidget
 };
 
+/* Widget Type options to select from */
 const allWidgets = [
-  'Plot'
+  'Plot',
+  'Table',
+  'Agent List',
+  'Agent Request'
 ];
+
+/* returns default info object for the widgetType */
+function widgetDefault(widgetType) {
+  const widgetName = allWidgets[widgetType];
+  switch (widgetName) {
+    case 'Plot':
+      return DefaultPlot();
+    case 'Table':
+      return DefaultTable();
+    case 'Agent List':
+      return { widgetClass: 'AgentListWidget' };
+    case 'Agent Request':
+      return DefaultAgentRequest();
+    default:
+      return {};
+  }
+}
 
 class CosmosTools extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      widgetType: '',
+      widgetType: -1,
       widgets: []
     };
   }
 
   addWidget = () => {
     const { widgets } = this.state;
-    switch (this.state.widgetType) {
-      case 'Plot':
-        widgets.push(DefaultPlot());
-        break;
-      default:
-        break;
-    }
+    widgets.push(widgetDefault(this.state.widgetType));
     this.setState({ widgets });
   }
 
@@ -50,11 +65,14 @@ class CosmosTools extends Component {
   }
 
   render() {
-    const showAdd = this.state.widgetType !== '';
-    const widgetOptions = [];
+    const showAdd = this.state.widgetType >= 0;
+    const widgetOptions = [
+      <Select.Option value={-1} key={-1}>
+        Select Widget Type
+      </Select.Option>];
     for (let i = 0; i < allWidgets.length; i += 1) {
       widgetOptions.push(
-        <Select.Option key={allWidgets[i]}>
+        <Select.Option key={i} value={i}>
           {allWidgets[i]}
         </Select.Option>
       );
@@ -70,7 +88,6 @@ class CosmosTools extends Component {
           >
             {widgetOptions}
           </Select>
-
           {showAdd && <Button onClick={this.addWidget}> Add </Button>}
         </div>
         <CosmosContainer
