@@ -69,19 +69,44 @@ class CosmosContainer extends Component {
     this.setState({ widgets });
   }
 
+  addAgent = (widgetID, widget) => {
+    const agentName = widget.agent;
+    const { agents } = this.state;
+    const { widgets } = this.state;
+    widgets[widgetID] = widget;
+    agents[agentName] = { info: new CosmosAgent({ agent: agentName }), data: {} };
+    agents[agentName].info.asyncSetup()
+      .then(() => {
+        if (widgets[widgetID].data_name) {
+          widgets[widgetID].values = agents[agentName]
+            .info.getDataStructure(widgets[widgetID].data_name);
+          this.startListening(agentName);
+        }
+      });
+  }
+
   updateWidget = (index, info) => {
     const { widgets } = this.state;
-    // update agent values that need to be tracked
+    // uTO DO pdate agent values that need to be tracked
+    let trackAgent = false;
     const changes = Object.keys(info);
     let key;
     for (let i = 0; i < changes.length; i += 1) {
       key = changes[i];
       widgets[index][key] = info[key];
+      if (key === 'data_name') {
+        trackAgent = true;
+      }
     }
-    this.setState({ widgets });
+    if (trackAgent) {
+      this.addAgent(index, widgets[index]);
+    } else {
+      this.setState({ widgets });
+    }
   }
 
   startListening(agentname) {
+    // console.log('startlistening: ', agentname);
     socket.emit('start record', agentname);
     socket.on(`agent subscribe ${agentname}`, (data) => { // subscribe to agent
       if (data) {
@@ -90,6 +115,7 @@ class CosmosContainer extends Component {
         if (agents[agentname].info.values.label.length > 0) {
           e = parseLiveData(data, agents[agentname].info.values);
           agents[agentname].data = e;
+          // console.log(e)
           this.setState({ agents });
         }
       }
@@ -106,14 +132,14 @@ class CosmosContainer extends Component {
 
   render() {
     const widgets = [];
-    let widgetData = {};
+    const widgetData = [];
     let WidgetComponent;
     let widgetType;
     for (let i = 0; i < this.state.widgets.length; i += 1) {
       if (this.state.agents[this.state.widgets[i].agent]
         && this.state.widgets[i].data_name) {
-        widgetData = this.state.agents[this.state.widgets[i].agent].data;
-      }
+        widgetData.push(this.state.agents[this.state.widgets[i].agent].data);
+      } else widgetData.push({});
       widgetType = this.state.widgets[i].widgetClass;
       WidgetComponent = this.props.imports[widgetType];
       if (WidgetComponent) {
@@ -122,7 +148,7 @@ class CosmosContainer extends Component {
             key={i}
             id={i}
             info={this.state.widgets[i]}
-            data={widgetData}
+            data={widgetData[i]}
             mod={this.props.mod}
             selfDestruct={this.removeWidget}
             updateInfo={this.updateWidget}

@@ -37,11 +37,18 @@ class PlotWidget extends Component {
     };
   }
 
+  componentDidMount() {
+    // save incoming data to state
+    if (this.props.info.agent === '') {
+      this.setState({ show_form: true });
+    }
+  }
+
   componentDidUpdate(prevProps) {
     // save incoming data to state
     if (prevProps.data.agent_utc !== this.props.data.agent_utc) {
       const newData = this.props.data;
-
+      // console.log(this.props.data)
       this.dataAppend(newData);
     }
   }
@@ -357,3 +364,19 @@ PlotWidget.defaultProps = {
 };
 
 export default PlotWidget;
+
+export function DefaultPlot() {
+  return {
+    widgetClass: 'PlotWidget',
+    agent: '',
+    node: '',
+    plot_labels: ['', ''],
+    xRange: 10,
+    title: 'Plot Title',
+    data_name: [],
+    values: {
+      label: [],
+      structure: []
+    }
+  };
+}
