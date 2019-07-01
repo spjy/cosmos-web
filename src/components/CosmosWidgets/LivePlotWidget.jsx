@@ -15,7 +15,7 @@ import {
 
 const colors = ['#82ca9d', '#9ca4ed', '#f4a742', '#e81d0b', '#ed9ce6'];
 
-class PlotWidget extends Component {
+class LivePlotWidget extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -333,7 +333,7 @@ class PlotWidget extends Component {
   }
 }
 
-PlotWidget.propTypes = {
+LivePlotWidget.propTypes = {
   id: PropTypes.number.isRequired,
   info: PropTypes.shape({
     widgetClass: PropTypes.string.isRequired,
@@ -358,16 +358,16 @@ PlotWidget.propTypes = {
   mod: PropTypes.bool
 };
 
-PlotWidget.defaultProps = {
+LivePlotWidget.defaultProps = {
   mod: true,
   data: {}
 };
 
-export default PlotWidget;
+export default LivePlotWidget;
 
 export function DefaultPlot() {
   return {
-    widgetClass: 'PlotWidget',
+    widgetClass: 'LivePlotWidget',
     agent: '',
     node: '',
     plot_labels: ['', ''],

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Navbar from './Global/Navbar';
 import CosmosContainer from './CosmosWidgetComponents/CosmosContainer';
 
-const plotWidget = require('./CosmosWidgets/PlotWidget').default;
+const plotWidget = require('./CosmosWidgets/LivePlotWidget').default;
 const agentListWidget = require('./CosmosWidgets/AgentList').default;
 const dataTableWidget = require('./CosmosWidgets/LiveDataTable').default;
 const exampleWidget = require('./CosmosWidgets/Example').default;
@@ -28,7 +28,7 @@ function getWidgetInfo() {
     {
       agent: 'post527',
       node: 'node-arduino',
-      widgetClass: 'PlotWidget',
+      widgetClass: 'LivePlotWidget',
       data_name: ['device_tsen_temp_001'],
       title: 'POST527 Temperature',
       xRange: 10,
@@ -59,7 +59,7 @@ class CosmosToolsPage extends Component {
 
   render() {
     const imports = {
-      PlotWidget: plotWidget,
+      LivePlotWidget: plotWidget,
       AgentListWidget: agentListWidget,
       LiveDataTable: dataTableWidget,
       Example: exampleWidget,
