@@ -34,16 +34,19 @@ class CosmosWidget extends Component {
     return (
       <Layout style={widgetStyle}>
         <Content>
-          <div style={{ margin: '10px' }}>
-            <p style={{ display: 'inline' }}><b>{this.props.title}</b></p>
-            { this.props.mod && (
-              <ButtonGroup size="small" style={{ display: 'inline', float: 'right' }}>
-                <Button onClick={this.openForm}><Icon type="setting" /></Button>
-                <Button onClick={this.selfDestruct}><Icon type="delete" /></Button>
-              </ButtonGroup>
-            )
-            }
-          </div>
+          {!this.props.min && (
+            <div style={{ margin: '10px' }}>
+              <p style={{ display: 'inline' }}><b>{this.props.title}</b></p>
+              { this.props.mod && (
+                <ButtonGroup size="small" style={{ display: 'inline', float: 'right' }}>
+                  <Button onClick={this.openForm}><Icon type="setting" /></Button>
+                  <Button onClick={this.selfDestruct}><Icon type="delete" /></Button>
+                </ButtonGroup>
+              )
+              }
+            </div>
+          )
+          }
           {this.props.children}
         </Content>
       </Layout>
@@ -57,12 +60,14 @@ CosmosWidget.propTypes = {
   mod: PropTypes.bool.isRequired,
   selfDestruct: PropTypes.func.isRequired,
   editWidget: PropTypes.func,
-  children: PropTypes.node
+  children: PropTypes.node,
+  min: PropTypes.bool
 };
 
 CosmosWidget.defaultProps = {
   children: [],
-  editWidget: () => {}
+  editWidget: () => {},
+  min: false
 };
 
 export default CosmosWidget;

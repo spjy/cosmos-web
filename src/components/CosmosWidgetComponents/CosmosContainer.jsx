@@ -150,6 +150,7 @@ class CosmosContainer extends Component {
             info={this.state.widgets[i]}
             data={widgetData[i]}
             mod={this.props.mod}
+            min={this.props.min}
             selfDestruct={this.removeWidget}
             updateInfo={this.updateWidget}
           />
@@ -170,11 +171,16 @@ class CosmosContainer extends Component {
 CosmosContainer.propTypes = {
   widgets: PropTypes.arrayOf(PropTypes.object).isRequired,
   imports: PropTypes.shape({}),
-  mod: PropTypes.bool // true: widgets can be modified
+  mod: PropTypes.bool, // true: widgets can be modified
+  min: PropTypes.bool,
+  updateWidgets: PropTypes.func
 };
 
 CosmosContainer.defaultProps = {
   imports: {},
-  mod: true
+  mod: true,
+  min: false,
+  updateWidgets: () => {}
+
 };
 export default CosmosContainer;
