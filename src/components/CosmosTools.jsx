@@ -147,7 +147,7 @@ class CosmosTools extends Component {
     /* function to pass to CosmosContainer to update *this* state
      *   when widgets are modified
     */
-    console.log(widgets)
+    // console.log(widgets)
     this.setState({ widgets });
   }
 
@@ -256,6 +256,7 @@ class CosmosTools extends Component {
               widgets={this.state.widgets}
               imports={imports}
               min={this.state.min}
+              updateWidgets={this.updateWidgets}
             />
             {this.state.edit
               && (
