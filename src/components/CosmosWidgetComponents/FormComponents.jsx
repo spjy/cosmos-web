@@ -1,7 +1,7 @@
 /* global fetch:false */
 import React, { Component } from 'react';
 import {
-  Form, Select, TreeSelect, Badge, Input
+  Form, Select, TreeSelect, Badge
 } from 'antd';
 import PropTypes from 'prop-types';
 import io from 'socket.io-client';
@@ -205,7 +205,6 @@ DataNameSelect.propTypes = {
 export function AgentCommandSelect(props) {
   /*  This component renders the Form Input for selecting a requests specific to an agent
   */
-  const formStyle = {};
   const commandList = [];
   for (let j = 0; j < props.commandList.length; j += 1) {
     commandList.push(
@@ -232,5 +231,5 @@ export function AgentCommandSelect(props) {
 AgentCommandSelect.propTypes = {
   onChange: PropTypes.func.isRequired,
   commandList: PropTypes.arrayOf(PropTypes.object).isRequired,
-  commandSelected: PropTypes.string.isRequired,
+  commandSelected: PropTypes.string.isRequired
 };

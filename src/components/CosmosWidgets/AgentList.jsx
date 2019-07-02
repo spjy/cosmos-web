@@ -8,7 +8,7 @@ import cosmosInfo from '../Cosmos/CosmosInfo';
 import CosmosWidget from '../CosmosWidgetComponents/CosmosWidget';
 
 const socket = io(cosmosInfo.socket);
-
+/* TO DO: update agent status real-time */
 const columns = [{
   title: 'Agent',
   dataIndex: 'agent_proc',
@@ -109,7 +109,7 @@ class AgentList extends Component {
       <CosmosWidget
         id={this.props.id}
         title="Agents"
-        mod={false}
+        mod={this.props.mod}
         selfDestruct={this.props.selfDestruct}
       >
         <Table
@@ -125,7 +125,12 @@ class AgentList extends Component {
 
 AgentList.propTypes = {
   id: PropTypes.number.isRequired,
-  selfDestruct: PropTypes.func.isRequired
+  selfDestruct: PropTypes.func.isRequired,
+  mod: PropTypes.bool
+};
+
+AgentList.defaultProps = {
+  mod: false
 };
 
 export default AgentList;

@@ -114,6 +114,10 @@ class AgentRequest extends Component {
     this.setState(form);
   }
 
+  clearOutput = () => {
+    this.setState({ data: '' });
+  }
+
   onChange = (e) => {
     const { form } = this.state;
     // console.log(e)
@@ -149,6 +153,7 @@ class AgentRequest extends Component {
         mod={this.props.mod}
         selfDestruct={this.props.selfDestruct}
         editWidget={this.openForm}
+        min={this.props.min}
       >
         <WidgetSettings
           visible={this.state.show_form}
@@ -194,6 +199,9 @@ class AgentRequest extends Component {
         </Button>
         {this.state.waitingForRequest && <Spin indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />} />}
         <p style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>{this.state.data}</p>
+        {this.state.data.length > 0
+          && <Button onClick={this.clearOutput}>Clear</Button>
+        }
       </CosmosWidget>
     );
   }
@@ -211,7 +219,12 @@ AgentRequest.propTypes = {
   }).isRequired,
   selfDestruct: PropTypes.func.isRequired,
   updateInfo: PropTypes.func.isRequired,
-  mod: PropTypes.bool.isRequired
+  mod: PropTypes.bool.isRequired,
+  min: PropTypes.bool
+};
+
+AgentRequest.defaultProps = {
+  min: false
 };
 
 export default AgentRequest;

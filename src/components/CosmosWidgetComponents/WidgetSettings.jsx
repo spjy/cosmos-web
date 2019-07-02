@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Form, Alert } from 'antd';
 
@@ -8,7 +8,7 @@ import { Modal, Form, Alert } from 'antd';
 function WidgetSettings({
   visible,
   closeModal,
-  info,
+  // info,
   children,
   submitForm,
   validForm

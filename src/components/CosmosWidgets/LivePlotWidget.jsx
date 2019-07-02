@@ -268,6 +268,7 @@ class LivePlotWidget extends Component {
         id={this.props.id}
         title={`[${this.props.info.node}] ${this.props.info.agent}`}
         mod={this.props.mod}
+        min={this.props.min}
         selfDestruct={this.props.selfDestruct}
         editWidget={this.openForm}
       >
@@ -355,12 +356,14 @@ LivePlotWidget.propTypes = {
   }),
   selfDestruct: PropTypes.func.isRequired,
   updateInfo: PropTypes.func.isRequired,
-  mod: PropTypes.bool
+  mod: PropTypes.bool,
+  min: PropTypes.bool
 };
 
 LivePlotWidget.defaultProps = {
   mod: true,
-  data: {}
+  data: {},
+  min: false
 };
 
 export default LivePlotWidget;

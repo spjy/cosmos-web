@@ -83,6 +83,7 @@ class CosmosAgent {
         vals.structure.push(this.structure[temp[j]]);
       }
     }
+    this.populateJsonValues();
     return vals;
   }
 
@@ -93,7 +94,6 @@ class CosmosAgent {
     }
     if (newName) {
       this.datanames.push(jsonName);
-      this.populateJsonValues();
     }
   }
 
