@@ -7,6 +7,7 @@ const agentListWidget = require('./CosmosWidgets/AgentList').default;
 const dataTableWidget = require('./CosmosWidgets/LiveDataTable').default;
 const exampleWidget = require('./CosmosWidgets/Example').default;
 const agentRequestWidget = require('./CosmosWidgets/AgentRequest').default;
+const agentCommands = require('./CosmosWidgets/AgentCommands').default;
 
 function getWidgetInfo() {
   return [
@@ -47,6 +48,13 @@ function getWidgetInfo() {
       request: 'request_blink',
       label: 'blink on',
       arguments: ['1']
+    },
+    {
+      agent: 'post527',
+      node: 'node-arduino',
+      widgetClass: 'AgentCommands',
+      request: '',
+      arguments: ['']
     }
   ];
 }
@@ -63,7 +71,8 @@ class CosmosToolsPage extends Component {
       AgentListWidget: agentListWidget,
       LiveDataTable: dataTableWidget,
       Example: exampleWidget,
-      AgentRequest: agentRequestWidget
+      AgentRequest: agentRequestWidget,
+      AgentCommands: agentCommands
     };
     const widgets = getWidgetInfo();
 
