@@ -31,11 +31,46 @@ REACT_APP_SATELLITE_IP=localhost # IP of the COSMOS Web Server
 npm start
 ```
 
-## Docker
+## Docker Development Image
 
-If you want to run COSMOS Web through Docker:
+If you want to run the COSMOS Web development image through Docker:
 
 ```
 docker build . -t cosmos_web
 docker run 3000:3000 cosmos_web
 ```
+## Standards
+
+### Filesystem
+
+**File Naming Standards**
+
+All files should be in upper camel case format. If it contains JSX within the file, the extension shall be `.jsx`.
+
+**JSX File Standards**
+
+All JSX files shall follow the React Hooks API standard. This means all components should follow the functional style component creation.
+
+If a component requires a prop function to be passed (e.g. onChange), it should be abstracted out, meaning it should have its own function definition. If it is only changing the state and/or calling another function, you may use just an inline function.
+
+The React component along with all React states, functions and props should be documented using the [React Styleguidist](https://react-styleguidist.js.org/docs/documenting.html) standard.
+
+For use of a global state (to allow components to share the same state where the React state becomes difficult to manage), the React Context API should be used in conjunction with reducers (if needed).
+
+**Folder Organization**
+
+`/src/components`
+
+This folder contains each page's components, and each page's corresponding components should be in a folder with the same name as the page.
+
+Exception: Components that are reusable and can span across different pages are to be put into the `Global` folder.
+
+`/src/pages`
+
+This folder contains a different route to a page. Each page should contain only layout logic and store logic if children components require it.
+
+`/src/store`
+
+This folder contains the React Context global store and reducer logic.
+
+
