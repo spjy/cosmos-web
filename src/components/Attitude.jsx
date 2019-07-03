@@ -17,7 +17,7 @@ class Attitude extends Component {
 
     this.state = {
       live: false,
-      satellite: '--',
+      satellite: 'neutron1_exec',
       max: 500,
       slider: 0,
       playable: false,
@@ -32,12 +32,12 @@ class Attitude extends Component {
   }
 
   componentDidMount() {
-    const socket = new WebSocket(`ws://hsflpc23:8080/live/${this.state.satellite}`);
+    const socket = new WebSocket(`ws://hsflpc23:8081/live/${this.state.satellite}`);
 
     socket.onmessage = (data) => {
       const json = JSON.parse(data.data);
-      if (Object.keys(json).includes('node_loc_att_icrf')) {
-        const { w, d: { x, y, z } } = json.node_loc_att_icrf.pos;
+      if (Object.keys(json).includes('node_loc_att_lvlh')) {
+        const { w, d: { x, y, z } } = json.node_loc_att_lvlh.pos;
 
         this.setState({
           live: true,
