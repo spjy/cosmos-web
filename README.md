@@ -73,4 +73,6 @@ This folder contains a different route to a page. Each page should contain only 
 
 This folder contains the React Context global store and reducer logic.
 
+### Commit Style
 
+Follow the [AngularJS commit style](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-guidelines).
