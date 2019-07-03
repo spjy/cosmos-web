@@ -173,11 +173,6 @@ function tree(jsonStruc) {
 
 export function DataNameSelect(props) {
   /*  This component renders the Form Input for selecting a datanames specific to an agent
-  * props = {
-  *  allNames (array),
-  *  value (array) [values selected]
-  *  onChange (function) called when selection changes
-  * }
   */
   const jsonNames = tree(props.structure);
   const treeProps = {

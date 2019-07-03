@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import {
   Select, Button, Card, Icon, Checkbox
 } from 'antd';
@@ -6,8 +6,7 @@ import io from 'socket.io-client';
 import cosmosInfo from './Cosmos/CosmosInfo';
 import Navbar from './Global/Navbar';
 import CosmosContainer from './CosmosWidgetComponents/CosmosContainer';
-import SelectWidgetConfigDBForm from './CosmosWidgetComponents/SelectWidgetConfigDBForm';
-import WidgetConfigDBFormSave from './CosmosWidgetComponents/WidgetConfigDBFormSave';
+import { SelectWidgetConfigForm, SaveWidgetConfigForm } from './CosmosWidgetComponents/WidgetConfig';
 
 import { DefaultPlot } from './CosmosWidgets/LivePlotWidget';
 import { DefaultTable } from './CosmosWidgets/LiveDataTable';
@@ -59,247 +58,207 @@ function widgetDefault(widgetType) {
  *  - configurations of widgets can be loaded from saved in DB
  */
 
-class CosmosTools extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      newWidgetType: -1,
-      showDBConfigModal: false,
-      showDBSaveModal: false,
-      edit: false,
-      widgets: [],
-      dbConfigInfo: {
-        name: '',
-        description: '',
-        author: '',
-        id: ''
-      },
-      min: false
-    };
-  }
+export default function CosmosTools() {
+  const [newWidgetType, setNewWidgetType] = useState(-1);
 
-  addWidget = () => {
-    const { widgets } = this.state;
-    widgets.push(widgetDefault(this.state.newWidgetType));
-    this.setState({ widgets });
-  }
+  const [showDBConfigModal, setShowDBConfigModal] = useState(false);
+  const [showDBSaveModal, setShowDBSaveModal] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const [widgets, setWidgets] = useState([]);
+  const [min, setMin] = useState(false);
 
-  onChangeNewWidgetType = (val) => {
-    this.setState({ newWidgetType: val });
-  }
+  const [dbConfigInfo, setDBConfigInfo] = useState({
+    name: '',
+    description: '',
+    author: '',
+    id: ''
+  });
 
-  onClickEdit = () => {
-    /* changes prop of all widgets to 'mod'
-     *   - allows user to modify widget configurations
-    */
-    this.setState({ edit: true });
-  }
 
-  onClickSave = () => {
-    /* opens WidgetConfigDBFormSave Modal
-     *  to save configurations to widget_configurations in DB
-     */
-    this.setState({ showDBSaveModal: true });
-  }
-
-  onClickLoadWidgets = () => {
-    this.setState({ showDBConfigModal: true });
-  }
-
-  closeDBConfigModal = (selection) => {
-    if (selection.id === '') {
-      this.setState({ showDBConfigModal: false });
-    } else {
-      const w = [];
-      for (let i = 0; i < selection.widgets.length; i += 1) {
-        w.push(selection.widgets[i]);
-      }
-      this.setState({
-        showDBConfigModal: false,
-        dbConfigInfo: {
-          id: selection._id,
-          name: selection.name,
-          author: selection.author,
-          description: selection.description
-        },
-        widgets: w
-      });
-    }
-  }
-
-  closeDBSaveModal = () => {
-    this.setState({ showDBSaveModal: false, edit: false });
-  }
-
-  onClickNewConfig = () => {
-    this.setState({ edit: true });
-  }
-
-  updateConfigID = (msg) => {
-    this.setState((prevState) => {
-      const { dbConfigInfo } = prevState;
-      dbConfigInfo.id = msg.id;
-      return { dbConfigInfo, showDBSaveModal: false, edit: false };
-    });
-  }
-
-  updateWidgets = (widgets) => {
-    /* function to pass to CosmosContainer to update *this* state
-     *   when widgets are modified
-    */
-    // console.log(widgets)
-    this.setState({ widgets });
-  }
-
-  onChangeShowHeader = (e) => {
-    this.setState({ min: e.target.checked });
-  }
-
-  deleteConfig = () => {
-    this.setState({
-      newWidgetType: -1,
-      showDBConfigModal: false,
-      showDBSaveModal: false,
-      edit: false,
-      widgets: [],
-      dbConfigInfo: {
-        name: '',
-        description: '',
-        author: '',
-        id: ''
-      },
-      min: false
-    });
-  }
-
-  updateDBConfig = (dbInfo) => {
-    const db = {
-      id: dbInfo.id,
-      name: dbInfo.name,
-      author: dbInfo.author,
-      description: dbInfo.description
-    };
-    this.setState({ dbConfigInfo: db });
-    if (dbInfo.id === '') {
-      const data = {
-        name: dbInfo.name,
-        description: dbInfo.description,
-        author: dbInfo.author,
-        created: new Date(),
-        edited: new Date(),
-        widgets: this.state.widgets
-      };
-
-      socket.emit('save widget_config', data, this.updateConfigID);
-    } else {
-      socket.emit('update widget_config', {
-        id: dbInfo.id,
-        data: {
-          name: dbInfo.name,
-          description: dbInfo.description,
-          author: dbInfo.author,
-          edited: new Date(),
-          widgets: this.state.widgets
-        }
-      });
-
-      this.setState({ showDBSaveModal: false, edit: false });
-    }
-  }
-
-  render() {
-    const showAdd = this.state.newWidgetType >= 0 && this.state.edit;
-    const widgetOptions = [
-      <Select.Option value={-1} key={-1}>
-        Select Widget Type
-      </Select.Option>];
-    for (let i = 0; i < allWidgets.length; i += 1) {
-      widgetOptions.push(
-        <Select.Option key={i} value={i}>
-          {allWidgets[i]}
-        </Select.Option>
-      );
-    }
-    let action; // action button: 'Edit' or 'Save'
-    if (this.state.edit) {
-      action = (
-        <Button.Group size="small" style={{ display: 'inline', float: 'right' }}>
-          <Button onClick={this.onClickSave}><Icon type="save" /></Button>
-          <Button onClick={this.deleteConfig}><Icon type="delete" /></Button>
-        </Button.Group>
-      );
-    } else {
-      action = (
-        <Button.Group size="small" style={{ display: 'inline', float: 'right' }}>
-          <Button onClick={this.onClickEdit}><Icon type="setting" /></Button>
-          <Button onClick={this.deleteConfig}><Icon type="delete" /></Button>
-        </Button.Group>
-      );
-    }
-
-    return (
-      <div>
-        <Navbar current="cosmostools" />
-        <div style={{ margin: '10px' }}>
-          {(this.state.widgets.length === 0) && (
-            [
-              <Button key="config" type="default" onClick={this.onClickLoadWidgets}> Select Configuration from Database </Button>,
-              <Button key="save" type="default" onClick={this.onClickNewConfig}> New Configuration</Button>
-            ]
-          )
-          }
-        </div>
-        {(this.state.widgets.length > 0 || this.state.edit) && (
-          <Card size="small" title={this.state.dbConfigInfo.name} extra={action} style={{ margin: '10px' }}>
-            <CosmosContainer
-              mod={this.state.edit}
-              widgets={this.state.widgets}
-              imports={imports}
-              min={this.state.min}
-              updateWidgets={this.updateWidgets}
-            />
-            {this.state.edit
-              && (
-                <div>
-                  <br />
-                  <h3>Add Widget </h3>
-                  <Select
-                    value={this.state.newWidgetType}
-                    onChange={this.onChangeNewWidgetType}
-                    style={{ minWidth: '200px' }}
-                  >
-                    {widgetOptions}
-                  </Select>
-                  {showAdd && <Button onClick={this.addWidget}><Icon type="plus" /></Button>}
-                </div>
-              )
-            }
-            {this.state.edit && (
-              <div>
-                <br />
-                <h3>Settings </h3>
-                <Checkbox onChange={this.onChangeShowHeader} checked={this.state.min}>
-                  Hide Widget Header
-                </Checkbox>
-              </div>
-            )}
-          </Card>
-        )
-        }
-
-        <SelectWidgetConfigDBForm
-          close={this.closeDBConfigModal}
-          visible={this.state.showDBConfigModal}
-        />
-        <WidgetConfigDBFormSave
-          update={this.updateDBConfig}
-          close={this.closeDBSaveModal}
-          dbInfo={this.state.dbConfigInfo}
-          visible={this.state.showDBSaveModal}
-        />
-      </div>
+  const widgetOptions = [
+    <Select.Option value={-1} key={-1}>
+      Select Widget Type
+    </Select.Option>];
+  for (let i = 0; i < allWidgets.length; i += 1) {
+    widgetOptions.push(
+      <Select.Option key={i} value={i}>
+        {allWidgets[i]}
+      </Select.Option>
     );
   }
-}
 
-export default CosmosTools;
+
+  return (
+    <div>
+      <Navbar current="cosmostools" />
+      <div style={{ margin: '10px' }}>
+        {(widgets.length === 0) && (
+          [
+            <Button
+              key="config"
+              type="default"
+              onClick={() => setShowDBConfigModal(true)}
+            >
+              Select Configuration from Database
+            </Button>,
+            <Button
+              key="save"
+              type="default"
+              onClick={() => setEdit(true)}
+            >
+              New Configuration
+            </Button>
+          ]
+        )
+        }
+      </div>
+      {(widgets.length > 0 || edit) && (
+        <Card
+          size="small"
+          title={dbConfigInfo.name}
+          extra={(
+            <Button.Group size="small" style={{ display: 'inline', float: 'right' }}>
+              {edit && <Button onClick={() => setShowDBSaveModal(true)}><Icon type="save" /></Button>}
+              {!edit && <Button onClick={() => setEdit(true)}><Icon type="setting" /></Button>}
+              <Button onClick={() => {
+                setNewWidgetType(-1);
+                setShowDBSaveModal(false);
+                setShowDBConfigModal(false);
+                setEdit(false);
+                setWidgets([]);
+                setDBConfigInfo({
+                  name: '',
+                  description: '',
+                  author: '',
+                  id: ''
+                });
+              }}
+              >
+                <Icon type="delete" />
+              </Button>
+            </Button.Group>
+          )}
+          style={{ margin: '10px' }}
+        >
+          <CosmosContainer
+            mod={edit}
+            widgets={widgets}
+            imports={imports}
+            min={min}
+            updateWidgets={() => setWidgets(widgets)}
+          />
+          {edit
+            && (
+              <div>
+                <br />
+                <h3>Add Widget </h3>
+                <Select
+                  value={newWidgetType}
+                  onChange={val => setNewWidgetType(val)}
+                  style={{ minWidth: '200px' }}
+                >
+                  {widgetOptions}
+                </Select>
+                {(newWidgetType >= 0 && edit) && (
+                  <Button
+                    onClick={() => {
+                      const w = widgets;
+                      w.push(widgetDefault(newWidgetType));
+                      setWidgets(w);
+                    }}
+                  >
+                    <Icon type="plus" />
+                  </Button>
+                )}
+              </div>
+            )
+          }
+          {edit && (
+            <div>
+              <br />
+              <h3>Settings </h3>
+              <Checkbox
+                onChange={e => setMin(e.target.checked)}
+                checked={min}
+              >
+                Hide Widget Header
+              </Checkbox>
+            </div>
+          )}
+        </Card>
+      )
+      }
+
+      {showDBConfigModal && (
+        <SelectWidgetConfigForm
+          close={(selection) => {
+            if (selection.id !== '') {
+              const w = [];
+              for (let i = 0; i < selection.widgets.length; i += 1) {
+                w.push(selection.widgets[i]);
+              }
+              setWidgets(w);
+              setDBConfigInfo({
+                id: selection._id,
+                name: selection.name,
+                author: selection.author,
+                description: selection.description
+              });
+            }
+            setShowDBConfigModal(false);
+          }}
+        />
+      )}
+      {showDBSaveModal && (
+        <SaveWidgetConfigForm
+          update={(dbInfo) => {
+            setDBConfigInfo({
+              id: dbInfo.id,
+              name: dbInfo.name,
+              author: dbInfo.author,
+              description: dbInfo.description
+            });
+            if (dbInfo.id === '') {
+              const data = {
+                name: dbInfo.name,
+                description: dbInfo.description,
+                author: dbInfo.author,
+                created: new Date(),
+                edited: new Date(),
+                widgets
+              };
+
+              socket.emit('save widget_config', data, msg => setDBConfigInfo({
+                id: msg.id,
+                name: dbInfo.name,
+                author: dbInfo.author,
+                description: dbInfo.description
+              }));
+            } else {
+              socket.emit('update widget_config', {
+                id: dbInfo.id,
+                data: {
+                  name: dbInfo.name,
+                  description: dbInfo.description,
+                  author: dbInfo.author,
+                  edited: new Date(),
+                  widgets
+                }
+              });
+            }
+            setShowDBSaveModal(false);
+            setEdit(false);
+          }}
+          close={() => {
+            setShowDBSaveModal(false);
+            setEdit(false);
+          }
+          }
+          dbInfo={dbConfigInfo}
+        />
+      )
+      }
+
+    </div>
+  );
+}
