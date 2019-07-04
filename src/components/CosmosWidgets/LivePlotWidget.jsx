@@ -11,7 +11,7 @@ import CosmosWidget from '../CosmosWidgetComponents/CosmosWidget';
 import { AgentSelect, DataNameSelect } from '../CosmosWidgetComponents/FormComponents';
 import {
   utc2date, mjd2cal
-} from '../Cosmos/Libs';
+} from '../CosmosWidgetComponents/Utils';
 
 const colors = ['#82ca9d', '#9ca4ed', '#f4a742', '#e81d0b', '#ed9ce6'];
 
