@@ -1,4 +1,5 @@
 @import '~antd/dist/antd.css';
+@import './tailwind.css';
 
 #scene {
   width: 100%;

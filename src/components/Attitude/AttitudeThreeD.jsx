@@ -44,13 +44,15 @@ class AttitudeThreeD extends Component {
     */
 
     // create arc rotate camera at initial arc pi/4 pi/4 at radius 20 centered around (0,0,0)
-    const camera = new BABYLON.ArcRotateCamera('ArcRotateCamera', Math.PI / 4, Math.PI / 4, 1.3, new BABYLON.Vector3(0, 0, 0), scene);
+    const camera = new BABYLON.ArcRotateCamera('ArcRotateCamera', Math.PI / 4, Math.PI / 4, 3, new BABYLON.Vector3(0, 0, 0), scene);
+
+    camera.fov = 0.2;
 
     // attach the camera to the canvas
     camera.attachControl(canvas, false);
 
     // Camera zoom speed
-    camera.wheelPrecision = 1000;
+    camera.wheelPrecision = 500;
 
     /*
     /  SATELLITE AXES, ARROWS & TEXT
@@ -163,6 +165,7 @@ class AttitudeThreeD extends Component {
 
     BABYLON.SceneLoader.ImportMesh('', 'obj/', 'cubesat.obj', scene, (meshes) => {
       meshes[0].alwaysSelectAsActiveMesh = true;
+      meshes[0].doNotSyncBoundingInfo = true;
 
       this.updateSatelliteAttitude = () => {
         meshes[0].rotationQuaternion = new BABYLON.Quaternion(
