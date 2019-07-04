@@ -130,10 +130,8 @@ export function SaveWidgetConfigForm({
     // console.log(event.target.id)
     const newForm = form;
     newForm[event.target.id] = event.target.value;
-    console.log(newForm)
     updateForm(newForm);
   };
-  console.log(form)
   return (
     <Modal
       visible

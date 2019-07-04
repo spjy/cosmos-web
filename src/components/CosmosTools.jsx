@@ -65,6 +65,7 @@ export default function CosmosTools() {
   const [showDBSaveModal, setShowDBSaveModal] = useState(false);
   const [edit, setEdit] = useState(false);
   const [widgets, setWidgets] = useState([]);
+
   const [min, setMin] = useState(false);
 
   const [dbConfigInfo, setDBConfigInfo] = useState({
@@ -73,7 +74,6 @@ export default function CosmosTools() {
     author: '',
     id: ''
   });
-
 
   const widgetOptions = [
     <Select.Option value={-1} key={-1}>
@@ -145,7 +145,7 @@ export default function CosmosTools() {
             widgets={widgets}
             imports={imports}
             min={min}
-            updateWidgets={() => setWidgets(widgets)}
+            updateWidgets={setWidgets}
           />
           {edit
             && (
@@ -159,32 +159,25 @@ export default function CosmosTools() {
                 >
                   {widgetOptions}
                 </Select>
-                {(newWidgetType >= 0 && edit) && (
+                {newWidgetType >= 0 && (
                   <Button
-                    onClick={() => {
-                      const w = widgets;
-                      w.push(widgetDefault(newWidgetType));
-                      setWidgets(w);
-                    }}
+                    onClick={() => setWidgets(
+                      prevWidgets => prevWidgets.concat(widgetDefault(newWidgetType))
+                    )}
                   >
                     <Icon type="plus" />
                   </Button>
                 )}
+                <br />
+                <h3>Settings </h3>
+                <Checkbox
+                  onChange={e => setMin(e.target.checked)}
+                  checked={min}
+                >
+                  Hide Widget Header
+                </Checkbox>
               </div>
-            )
-          }
-          {edit && (
-            <div>
-              <br />
-              <h3>Settings </h3>
-              <Checkbox
-                onChange={e => setMin(e.target.checked)}
-                checked={min}
-              >
-                Hide Widget Header
-              </Checkbox>
-            </div>
-          )}
+            )}
         </Card>
       )
       }
