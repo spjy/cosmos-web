@@ -4,7 +4,7 @@ import {
 } from 'bizcharts';
 import DataSet from '@antv/data-set';
 
-import Navbar from './Global/Navbar';
+import Navbar from '../components/Global/Navbar';
 
 class Plot extends Component {
   constructor() {

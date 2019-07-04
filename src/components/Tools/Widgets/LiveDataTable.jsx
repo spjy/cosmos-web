@@ -4,11 +4,11 @@ import {
   Modal, Form, Alert, Table
 } from 'antd';
 
-import CosmosWidget from '../CosmosWidgetComponents/CosmosWidget';
-import { AgentSelect, DataNameSelect } from '../CosmosWidgetComponents/FormComponents';
+import CosmosWidget from '../WidgetComponents/CosmosWidget';
+import { AgentSelect, DataNameSelect } from '../WidgetComponents/FormComponents';
 import {
   utc2date
-} from '../CosmosWidgetComponents/Utils';
+} from '../WidgetComponents/Utils';
 
 class LiveDataTable extends Component {
   constructor(props) {

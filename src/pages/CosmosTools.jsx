@@ -3,22 +3,22 @@ import {
   Select, Button, Card, Icon, Checkbox
 } from 'antd';
 import io from 'socket.io-client';
-import cosmosInfo from './Cosmos/CosmosInfo';
-import Navbar from './Global/Navbar';
-import CosmosContainer from './CosmosWidgetComponents/CosmosContainer';
-import { SelectWidgetConfigForm, SaveWidgetConfigForm } from './CosmosWidgetComponents/WidgetConfig';
+import cosmosInfo from '../components/Cosmos/CosmosInfo';
+import Navbar from '../components/Global/Navbar';
+import CosmosContainer from '../components/Tools/WidgetComponents/CosmosContainer';
+import { SelectWidgetConfigForm, SaveWidgetConfigForm } from '../components/Tools/WidgetComponents/WidgetConfig';
 
-import { DefaultPlot } from './CosmosWidgets/LivePlotWidget';
-import { DefaultTable } from './CosmosWidgets/LiveDataTable';
-import { DefaultAgentRequest } from './CosmosWidgets/AgentRequest';
+import { DefaultPlot } from '../components/Tools/Widgets/LivePlotWidget';
+import { DefaultTable } from '../components/Tools/Widgets/LiveDataTable';
+import { DefaultAgentRequest } from '../components/Tools/Widgets/AgentRequest';
 
 const socket = io(cosmosInfo.socket);
 
 /* COSMOS Widgets that need to be imported */
-const plotWidget = require('./CosmosWidgets/LivePlotWidget').default;
-const dataTableWidget = require('./CosmosWidgets/LiveDataTable').default;
-const agentListWidget = require('./CosmosWidgets/AgentList').default;
-const agentRequestWidget = require('./CosmosWidgets/AgentRequest').default;
+const plotWidget = require('../components/Tools/Widgets/LivePlotWidget').default;
+const dataTableWidget = require('../components/Tools/Widgets/LiveDataTable').default;
+const agentListWidget = require('../components/Tools/Widgets/AgentList').default;
+const agentRequestWidget = require('../components/Tools/Widgets/AgentRequest').default;
 
 const imports = {
   LivePlotWidget: plotWidget,

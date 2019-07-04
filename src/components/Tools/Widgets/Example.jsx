@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Form, Alert } from 'antd';
 
-import CosmosWidget from '../CosmosWidgetComponents/CosmosWidget';
+import CosmosWidget from '../WidgetComponents/CosmosWidget';
 
 class Example extends Component {
   constructor(props) {

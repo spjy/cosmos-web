@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Input } from 'antd';
 
-import CosmosWidget from '../CosmosWidgetComponents/CosmosWidget';
-import WidgetSettings from '../CosmosWidgetComponents/WidgetSettings';
+import CosmosWidget from '../WidgetComponents/CosmosWidget';
+import WidgetSettings from '../WidgetComponents/WidgetSettings';
 
 /**
  * Example COSMOS Web widget.

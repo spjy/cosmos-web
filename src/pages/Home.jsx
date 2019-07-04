@@ -3,7 +3,7 @@ import {
   Card, Col, Row, Icon
 } from 'antd';
 
-import Navbar from './Global/Navbar';
+import Navbar from '../components/Global/Navbar';
 
 const Home = () => (
   <div>

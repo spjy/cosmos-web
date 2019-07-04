@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Button } from 'antd';
 import io from 'socket.io-client';
 
-import CosmosWidget from '../CosmosWidgetComponents/CosmosWidget';
+import CosmosWidget from '../Tools/WidgetComponents/CosmosWidget';
 import cosmosInfo from '../Cosmos/CosmosInfo';
 
 const socket = io(cosmosInfo.socket);

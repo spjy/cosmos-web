@@ -4,7 +4,7 @@ import {
   Table, Button, Modal, Input, Form, Alert
 } from 'antd';
 import io from 'socket.io-client';
-import cosmosInfo from '../Cosmos/CosmosInfo';
+import cosmosInfo from '../../Cosmos/CosmosInfo';
 
 const socket = io(cosmosInfo.socket);
 

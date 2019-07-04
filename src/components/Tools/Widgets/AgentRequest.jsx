@@ -5,11 +5,11 @@ import {
 } from 'antd';
 import io from 'socket.io-client';
 
-import { AgentSelect, AgentCommandSelect } from '../CosmosWidgetComponents/FormComponents';
-import CosmosWidget from '../CosmosWidgetComponents/CosmosWidget';
-import WidgetSettings from '../CosmosWidgetComponents/WidgetSettings';
+import { AgentSelect, AgentCommandSelect } from '../WidgetComponents/FormComponents';
+import CosmosWidget from '../WidgetComponents/CosmosWidget';
+import WidgetSettings from '../WidgetComponents/WidgetSettings';
 
-import cosmosInfo from '../Cosmos/CosmosInfo';
+import cosmosInfo from '../../Cosmos/CosmosInfo';
 
 const socket = io(cosmosInfo.socket);
 

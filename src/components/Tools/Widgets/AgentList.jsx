@@ -4,42 +4,44 @@ import { Table, Badge } from 'antd';
 import PropTypes from 'prop-types';
 import io from 'socket.io-client';
 
-import cosmosInfo from '../Cosmos/CosmosInfo';
-import CosmosWidget from '../CosmosWidgetComponents/CosmosWidget';
+import cosmosInfo from '../../Cosmos/CosmosInfo';
+import CosmosWidget from '../WidgetComponents/CosmosWidget';
 
 const socket = io(cosmosInfo.socket);
 /* TO DO: update agent status real-time */
-const columns = [{
-  title: 'Agent',
-  dataIndex: 'agent_proc',
-  key: 'agent_proc',
-  width: '16%'
-}, {
-  title: 'Node',
-  dataIndex: 'agent_node',
-  key: 'agent_node',
-  width: '16%'
-}, {
-  title: 'Address',
-  dataIndex: 'agent_addr',
-  key: 'agent_addr',
-  width: '16%'
-}, {
-  title: 'Port',
-  dataIndex: 'agent_port',
-  key: 'agent_port',
-  width: '16%'
-}, {
-  title: 'UTC',
-  dataIndex: 'agent_utc',
-  key: 'agent_utc',
-  width: '16%'
-}, {
-  title: 'AgentStatus',
-  dataIndex: 'status',
-  key: 'status',
-  width: '16%'
-}];
+const columns = [
+  {
+    title: 'Agent',
+    dataIndex: 'agent_proc',
+    key: 'agent_proc',
+    width: '16%'
+  }, {
+    title: 'Node',
+    dataIndex: 'agent_node',
+    key: 'agent_node',
+    width: '16%'
+  }, {
+    title: 'Address',
+    dataIndex: 'agent_addr',
+    key: 'agent_addr',
+    width: '16%'
+  }, {
+    title: 'Port',
+    dataIndex: 'agent_port',
+    key: 'agent_port',
+    width: '16%'
+  }, {
+    title: 'UTC',
+    dataIndex: 'agent_utc',
+    key: 'agent_utc',
+    width: '16%'
+  }, {
+    title: 'AgentStatus',
+    dataIndex: 'status',
+    key: 'status',
+    width: '16%'
+  }
+];
 
 class AgentList extends Component {
 /* Returns a table element of all agents, which gets updated every five seconds */

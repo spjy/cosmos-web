@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Row, Col, Form, Card, Select, Option, Button, Input } from 'antd';
+import {
+  Button, Row, Col, Form, Card, Select
+} from 'antd';
 import io from 'socket.io-client';
 
-import { AgentSelect, DataNameSelect } from '../CosmosWidgetComponents/FormComponents';
-import CosmosWidget from '../CosmosWidgetComponents/CosmosWidget';
-import WidgetSettings from '../CosmosWidgetComponents/WidgetSettings';
+import { AgentSelect, DataNameSelect } from '../WidgetComponents/FormComponents';
+import CosmosWidget from '../WidgetComponents/CosmosWidget';
+import WidgetSettings from '../WidgetComponents/WidgetSettings';
+import cosmosInfo from '../../Cosmos/CosmosInfo';
 
-import cosmosInfo from '../Cosmos/CosmosInfo';
 const socket = io(cosmosInfo.socket);
 
 /**
@@ -43,6 +45,30 @@ function AgentCommands({
 
   const [output, setOutput] = useState([]);
 
+  const onAgentSelect = (value) => {
+    const { agent_proc: agentName, agent_node: nodeName, structure } = value.agent;
+
+    if (agent !== agentName && agent !== '') { // empty dataset selected if agent changes
+      setDataName([]);
+    }
+
+    if (agentName !== info.agent && agent === info.agent) {
+      setPrevJsonStructure(jsonStructure);
+    }
+
+    setAgent(agentName);
+    setNode(nodeName);
+
+    socket.emit('list_agent_commands', {
+      agent: agentName, node: nodeName
+    }, (data) => {
+      setCommandList(data.command_list);
+    });
+
+    setJsonStructure(structure);
+    setLoadingCommands(true);
+  };
+
   return (
     <div>
       <WidgetSettings
@@ -61,29 +87,7 @@ function AgentCommands({
         <AgentSelect
           agent={agent}
           onMount={() => {}}
-          onChange={(value) => {
-            const { agent_proc: agentName, agent_node: nodeName, structure } = value.agent;
-
-            if (agent !== agentName && agent !== '') { // empty dataset selected if agent changes
-              setDataName([]);
-            }
-
-            if (agentName !== info.agent && agent === info.agent) {
-              setPrevJsonStructure(jsonStructure);
-            }
-
-            setAgent(agentName);
-            setNode(nodeName);
-
-            socket.emit('list_agent_commands', {
-              agent: agentName, node: nodeName
-            }, (data) => {
-              setCommandList(data.command_list);
-            });
-
-            setJsonStructure(structure);
-            setLoadingCommands(true);
-          }}
+          onChange={value => onAgentSelect(value)}
         />
       </WidgetSettings>
 
@@ -119,10 +123,10 @@ function AgentCommands({
                       socket.emit('agent_command', {
                         agent,
                         node,
-                        command: `${command}${commandArguments[command] ? ' ' + commandArguments[command].join(' ') : ''}`
+                        command: `${command}${commandArguments[command] ? ` ${commandArguments[command].join(' ')}` : ''}`
                       },
                       (data) => {
-                        setOutput([...output, `➜ agent ${agent} ${node} ${command} ${commandArguments[command] ? ' ' + commandArguments[command].join(' ') : ''} || ${data.output}`]);
+                        setOutput([...output, `➜ agent ${agent} ${node} ${command} ${commandArguments[command] ? ` ${commandArguments[command].join(' ')}` : ''} || ${data.output}`]);
                       });
                     }}
                   >

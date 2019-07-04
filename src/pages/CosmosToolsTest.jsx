@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import Navbar from './Global/Navbar';
-import CosmosContainer from './CosmosWidgetComponents/CosmosContainer';
+import Navbar from '../components/Global/Navbar';
+import CosmosContainer from '../components/Tools/WidgetComponents/CosmosContainer';
 
-const plotWidget = require('./CosmosWidgets/LivePlotWidget').default;
-const agentListWidget = require('./CosmosWidgets/AgentList').default;
-const dataTableWidget = require('./CosmosWidgets/LiveDataTable').default;
-const exampleWidget = require('./CosmosWidgets/Example').default;
-const agentRequestWidget = require('./CosmosWidgets/AgentRequest').default;
-const agentCommands = require('./CosmosWidgets/AgentCommands').default;
+const plotWidget = require('../components/Tools/Widgets/LivePlotWidget').default;
+const agentListWidget = require('../components/Tools/Widgets/AgentList').default;
+const dataTableWidget = require('../components/Tools/Widgets/LiveDataTable').default;
+const exampleWidget = require('../components/Tools/Widgets/Example').default;
+const agentRequestWidget = require('../components/Tools/Widgets/AgentRequest').default;
+const agentCommands = require('../components/Tools/Widgets/AgentCommands').default;
 
 
 class CosmosToolsPage extends Component {

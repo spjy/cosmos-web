@@ -7,11 +7,11 @@ import {
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Label
 } from 'recharts';
-import CosmosWidget from '../CosmosWidgetComponents/CosmosWidget';
-import { AgentSelect, DataNameSelect } from '../CosmosWidgetComponents/FormComponents';
+import CosmosWidget from '../WidgetComponents/CosmosWidget';
+import { AgentSelect, DataNameSelect } from '../WidgetComponents/FormComponents';
 import {
   utc2date, mjd2cal
-} from '../CosmosWidgetComponents/Utils';
+} from '../WidgetComponents/Utils';
 
 const colors = ['#82ca9d', '#9ca4ed', '#f4a742', '#e81d0b', '#ed9ce6'];
 

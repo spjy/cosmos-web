@@ -1,5 +1,5 @@
 /* global fetch:false */
-import cosmosInfo from '../Cosmos/CosmosInfo';
+import cosmosInfo from '../../Cosmos/CosmosInfo';
 
 function getIndex(map, str) {
   return map.findIndex(x => x.string === str);

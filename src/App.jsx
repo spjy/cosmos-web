@@ -1,13 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-import Home from './components/Home';
-import Orbit from './components/Orbit';
-import Attitude from './components/Attitude';
-import Plot from './components/Plot';
-import Path from './components/Path';
-import CosmosTools from './components/CosmosTools';
-import CosmosToolsTest from './components/CosmosToolsTest';
+import Home from './pages/Home';
+import Orbit from './pages/Orbit';
+import Attitude from './pages/Attitude';
+import Plot from './pages/Plot';
+import Path from './pages/Path';
+import CosmosTools from './pages/CosmosTools';
+import CosmosToolsTest from './pages/CosmosToolsTest';
 import LinkStarPingTest from './components/Neutron1/LinkStarPingTest';
 
 

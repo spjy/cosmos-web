@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import { notification } from 'antd';
 import io from 'socket.io-client';
 
-import Navbar from './Global/Navbar';
-import GoogleMaps from './Path/GoogleMaps';
-import PathInformation from './Path/PathInformation';
-import BalloonInformation from './Path/BalloonInformation';
-import Live from './Global/Live';
-import Replay from './Global/Replay';
-import ReplayForm from './Global/ReplayForm';
-import cosmosInfo from './Cosmos/CosmosInfo';
+import Navbar from '../components/Global/Navbar';
+import GoogleMaps from '../components/Path/GoogleMaps';
+import PathInformation from '../components/Path/PathInformation';
+import BalloonInformation from '../components/Path/BalloonInformation';
+import Live from '../components/Global/Live';
+import Replay from '../components/Global/Replay';
+import ReplayForm from '../components/Global/ReplayForm';
+import cosmosInfo from '../components/Cosmos/CosmosInfo';
 
 const socket = io(cosmosInfo.socket);
 

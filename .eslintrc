@@ -1,5 +1,8 @@
 {
     "extends": "airbnb",
+    "env" : {
+        "browser": true
+    },
     "parser": "babel-eslint",
     "rules": {
         "comma-dangle": ["warn", "never"],

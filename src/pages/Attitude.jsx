@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import { notification } from 'antd';
 import 'whatwg-fetch';
 
-import Navbar from './Global/Navbar';
-import Replay from './Global/Replay';
-import Live from './Global/Live';
-import ReplayForm from './Global/ReplayForm';
-import AttitudeInformation from './Attitude/AttitudeInformation';
-import AttitudeThreeD from './Attitude/AttitudeThreeD';
-import cosmosInfo from './Cosmos/CosmosInfo';
+import Navbar from '../components/Global/Navbar';
+import Replay from '../components/Global/Replay';
+import Live from '../components/Global/Live';
+import ReplayForm from '../components/Global/ReplayForm';
+import AttitudeInformation from '../components/Attitude/AttitudeInformation';
+import AttitudeThreeD from '../components/Attitude/AttitudeThreeD';
+import cosmosInfo from '../components/Cosmos/CosmosInfo';
 import '../App.css';
 
 class Attitude extends Component {

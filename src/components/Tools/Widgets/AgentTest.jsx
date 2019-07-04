@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Input, Button } from 'antd';
 
-import CosmosWidget from '../CosmosWidgetComponents/CosmosWidget';
+import CosmosWidget from '../WidgetComponents/CosmosWidget';
 import WidgetSettings from './WidgetSettings';
 
 /**

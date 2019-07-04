@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import { notification } from 'antd';
 import 'whatwg-fetch';
 
-import Navbar from './Global/Navbar';
-import Replay from './Global/Replay';
-import Live from './Global/Live';
-import ReplayForm from './Global/ReplayForm';
-import OrbitInformation from './Orbit/OrbitInformation';
-import OrbitThreeD from './Orbit/OrbitThreeD';
-import cosmosInfo from './Cosmos/CosmosInfo';
+import Navbar from '../components/Global/Navbar';
+import Replay from '../components/Global/Replay';
+import Live from '../components/Global/Live';
+import ReplayForm from '../components/Global/ReplayForm';
+import OrbitInformation from '../components/Orbit/OrbitInformation';
+import OrbitThreeD from '../components/Orbit/OrbitThreeD';
+import cosmosInfo from '../components/Cosmos/CosmosInfo';
 import '../App.css';
 
 class Orbit extends Component {

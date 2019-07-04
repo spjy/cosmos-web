@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import io from 'socket.io-client';
 import CosmosAgent from './CosmosAgent';
 import { parseLiveData } from './Utils';
-import cosmosInfo from '../Cosmos/CosmosInfo';
+import cosmosInfo from '../../Cosmos/CosmosInfo';
 
 const socket = io(cosmosInfo.socket);
 

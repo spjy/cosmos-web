@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Navbar from '../Global/Navbar';
-import CosmosContainer from '../CosmosWidgetComponents/CosmosContainer';
+import CosmosContainer from '../Tools/WidgetComponents/CosmosContainer';
 
 const linkStarPingWidget = require('./LinkStarPing').default;
 
