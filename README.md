@@ -51,7 +51,7 @@ All files should be in upper camel case format. If it contains JSX within the fi
 
 All JSX files shall follow the React Hooks API standard. This means all components should follow the functional style component creation.
 
-If a component requires a prop function to be passed (e.g. onChange), it should be abstracted out, meaning it should have its own function definition. If it is only changing the state and/or calling another function, you may use just an inline function.
+If a component requires a prop function to be passed (e.g. onChange), it should be abstracted out, meaning it should have its own function definition. If it is only changing the state and/or calling another function, you may use just an inline function. Function names should be in lower camel case.
 
 The React component along with all React states, functions and props should be documented using the [React Styleguidist](https://react-styleguidist.js.org/docs/documenting.html) standard.
 
