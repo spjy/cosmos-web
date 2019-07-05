@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { notification } from 'antd';
 import io from 'socket.io-client';
 
-import Navbar from '../components/Global/Navbar';
 import GoogleMaps from '../components/Path/GoogleMaps';
 import PathInformation from '../components/Path/PathInformation';
 import BalloonInformation from '../components/Path/BalloonInformation';
@@ -119,10 +118,6 @@ class Path extends Component {
 
     return (
       <div>
-        <Navbar
-          current="path"
-        />
-
         <GoogleMaps
           googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyBv6j0uD6J2xfPGI_gR-0aYH7qLhrxCR8s&v=3.exp&libraries=geometry,drawing,places"
           loadingElement={<div style={{ height: '80bh' }} />}

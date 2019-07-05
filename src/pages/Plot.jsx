@@ -4,8 +4,6 @@ import {
 } from 'bizcharts';
 import DataSet from '@antv/data-set';
 
-import Navbar from '../components/Global/Navbar';
-
 class Plot extends Component {
   constructor() {
     super();
@@ -46,9 +44,6 @@ class Plot extends Component {
 
     return (
       <div>
-        <Navbar
-          current="plot"
-        />
         <br />
         <Chart
           height={400}

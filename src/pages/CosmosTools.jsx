@@ -4,7 +4,6 @@ import {
 } from 'antd';
 import io from 'socket.io-client';
 import cosmosInfo from '../components/Cosmos/CosmosInfo';
-import Navbar from '../components/Global/Navbar';
 import CosmosContainer from '../components/Tools/WidgetComponents/CosmosContainer';
 import { SelectWidgetConfigForm, SaveWidgetConfigForm } from '../components/Tools/WidgetComponents/WidgetConfig';
 
@@ -90,7 +89,6 @@ export default function CosmosTools() {
 
   return (
     <div>
-      <Navbar current="cosmostools" />
       <div style={{ margin: '10px' }}>
         {(widgets.length === 0) && (
           [
@@ -251,7 +249,6 @@ export default function CosmosTools() {
         />
       )
       }
-
     </div>
   );
 }

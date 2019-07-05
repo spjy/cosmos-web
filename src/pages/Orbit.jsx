@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { notification } from 'antd';
 import 'whatwg-fetch';
 
-import Navbar from '../components/Global/Navbar';
 import Replay from '../components/Global/Replay';
 import Live from '../components/Global/Live';
 import ReplayForm from '../components/Global/ReplayForm';
@@ -105,10 +104,6 @@ class Orbit extends Component {
 
     return (
       <div>
-        <Navbar
-          current="orbit"
-        />
-
         <OrbitThreeD
           data={currentCoord}
           replay={replay}

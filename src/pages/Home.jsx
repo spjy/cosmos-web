@@ -3,12 +3,9 @@ import {
   Card, Col, Row, Icon
 } from 'antd';
 
-import Navbar from '../components/Global/Navbar';
-
 const Home = () => (
   <div>
     <div style={{ backgroundColor: '#ECECEC' }}>
-      <Navbar current="home" />
       <div style={{ padding: '5em', textAlign: 'center' }}>
         <h1>COSMOS Web</h1>
         for the Hawaii Space Flight Laboratory

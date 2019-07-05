@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Navbar from '../components/Global/Navbar';
 import CosmosContainer from '../components/Tools/WidgetComponents/CosmosContainer';
 
 const plotWidget = require('../components/Tools/Widgets/LivePlotWidget').default;
@@ -69,15 +68,12 @@ class CosmosToolsPage extends Component {
 
     return (
       <div>
-        <Navbar current="cosmostools" />
-        <div>
-          <CosmosContainer
-            mod
-            widgets={this.state.widgets}
-            imports={imports}
-            updateWidgets={this.updateWidgets}
-          />
-        </div>
+        <CosmosContainer
+          mod
+          widgets={this.state.widgets}
+          imports={imports}
+          updateWidgets={this.updateWidgets}
+        />
       </div>
     );
   }

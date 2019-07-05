@@ -115,10 +115,6 @@ class Attitude extends Component {
 
     return (
       <div>
-        <Navbar
-          current="attitude"
-        />
-
         <AttitudeThreeD
           data={currentCoord}
         />
