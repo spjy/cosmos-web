@@ -111,11 +111,30 @@ class Navbar extends Component {
                 &nbsp;Tools
               </Link>
               </Menu.Item>
-              <Menu.Item key="cosmostoolstest">
-                <Link to="/cosmostoolstest">
-                  <Icon type="tool" />
-                  &nbsp;Test
-                </Link>
+            <Menu.Item key="cosmostoolstest">
+              <Link to="/cosmostoolstest">
+                <Icon type="tool" />
+                &nbsp;Test
+              </Link>
+            </Menu.Item>
+          </Menu.ItemGroup>
+        </Menu.SubMenu>
+        <Menu.SubMenu
+          title={(
+            <span>
+              <Icon type="rocket" />
+              &nbsp;Missions
+            </span>
+          )}
+        >
+          <Menu.ItemGroup
+            title="Applications"
+          >
+            <Menu.Item key="neutron1">
+              <Link to="/missions/neutron1">
+                <Icon type="heat-map" />
+                &nbsp;neutron1
+              </Link>
             </Menu.Item>
           </Menu.ItemGroup>
         </Menu.SubMenu>

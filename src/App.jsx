@@ -11,6 +11,7 @@ import Path from './pages/Path';
 import CosmosTools from './pages/CosmosTools';
 import CosmosToolsTest from './pages/CosmosToolsTest';
 import LinkStarPingTest from './components/Neutron1/LinkStarPingTest';
+import neutron1 from './pages/missions/neutron1';
 
 const App = () => (
   <div>
@@ -28,6 +29,7 @@ const App = () => (
           <Route exact path="/cosmostools" component={CosmosTools} />
           <Route exact path="/cosmostoolstest" component={CosmosToolsTest} />
           <Route exact path="/linkstar" component={LinkStarPingTest} />
+          <Route exact path="/missions/neutron1" component={neutron1} />
         </Switch>
       </div>
     </Router>

@@ -299,7 +299,7 @@ class OrbitThreeD extends Component {
 
     // Wrap earth texture around the sphere
     const earthMaterial = new BABYLON.StandardMaterial('textureEarth', scene);
-    earthMaterial.diffuseTexture = new BABYLON.Texture('/obj/4096_earth.jpg', scene);
+    earthMaterial.diffuseTexture = new BABYLON.Texture('/obj/earth_mark1__jestr.jpg', scene);
     earth.material = earthMaterial;
     earth.alpha = 0.5;
 
