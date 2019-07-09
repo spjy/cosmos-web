@@ -16,7 +16,7 @@ function DisplayValue() {
 
   /** Watches for changes to selectedAgent. Then sends WS message to get list of commands. */
   useEffect(() => {
-    const ws = new WebSocket('ws://hsflpc23:8080/command/');
+    const ws = new WebSocket(`ws://${process.env.REACT_APP_WEBSOCKET_IP}:8080/command/`);
 
     if (selectedAgent.length > 0) {
       ws.send(`${selectedAgent[0]} ${selectedAgent[1]}`);
@@ -32,7 +32,7 @@ function DisplayValue() {
   /** Agent command history (to display in the terminal) */
   const [commandHistory, setCommandHistory] = useState([]);
 
-  const wsCommand = new WebSocket('ws://hsflpc23:8080/command/');
+  const wsCommand = new WebSocket(`ws://${process.env.REACT_APP_WEBSOCKET_IP}:${process.env.REACT_APP_QUERY_WEBSOCKET_PORT}/command/`);
 
   /** Manages requests for agent list and agent [node] [process] */
   wsCommand.onmessage = ({ data }) => {
@@ -69,7 +69,7 @@ function DisplayValue() {
 
   /** Handle submission of agent command */
   const sendCommand = () => {
-    const ws = new WebSocket('ws://hsflpc23:8080/command/');
+    const ws = new WebSocket(`ws://${process.env.REACT_APP_WEBSOCKET_IP}:${process.env.REACT_APP_QUERY_WEBSOCKET_PORT}/command/`);
 
     if (selectedRequest === '> agent') {
       ws.send(commandArguments);

@@ -30,7 +30,7 @@ class Orbit extends Component {
   }
 
   componentDidMount() {
-    const socket = new WebSocket(`ws://hsflpc23:8081/live/${this.state.satellite}`);
+    const socket = new WebSocket(`ws://${process.env.REACT_APP_WEBSOCKET_IP}:${process.env.REACT_APP_LIVE_WEBSOCKET_PORT}/live/${this.state.satellite}`);
 
     socket.onmessage = (data) => {
       const json = JSON.parse(data.data);
