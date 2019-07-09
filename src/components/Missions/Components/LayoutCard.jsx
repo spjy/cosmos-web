@@ -5,7 +5,7 @@ function LayoutCard({
   children
 }) {
   return (
-    <div className="flex-auto m-2 p-3 shadow overflow-x-scroll" style={{ backgroundColor: '#fbfbfb' }}>
+    <div className="flex-auto m-2 p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
       {children}
     </div>
   );
