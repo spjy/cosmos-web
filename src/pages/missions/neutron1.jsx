@@ -4,9 +4,10 @@ import { Form, Input } from 'antd';
 import {
   Context, actions, reducer
 } from '../../store/AgentStatuses';
-import BaseComponent from '../../components/Missions/BaseComponent';
+
 import Card from '../../components/Missions/Components/LayoutCard';
 import Example from '../../components/Missions/Components/Example';
+import Clock from '../../components/Missions/Components/Clock';
 import DisplayValue from '../../components/Missions/Components/DisplayValue';
 import AgentCommands from '../../components/Missions/Components/AgentCommands';
 
@@ -38,15 +39,7 @@ function neutron1() {
           />
         </Card>
         <Card>
-          <DisplayValue
-            name="Average Temperature"
-            subheader="06231999-1630Z"
-            val={(
-              <div className="text-center font-bold text-red-600 text-lg">
-                67&deg;C
-              </div>
-            )}
-          />
+          <Clock />
         </Card>
       </div>
       <Card>
