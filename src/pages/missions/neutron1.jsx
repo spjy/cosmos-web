@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
 import { Form, Input } from 'antd';
 
+import {
+  Context, actions, reducer
+} from '../../store/AgentStatuses';
 import BaseComponent from '../../components/Missions/BaseComponent';
 import Card from '../../components/Missions/Components/LayoutCard';
 import Example from '../../components/Missions/Components/Example';
 import DisplayValue from '../../components/Missions/Components/DisplayValue';
+import AgentCommands from '../../components/Missions/Components/AgentCommands';
 
-function Dashboard() {
+function neutron1() {
+  /**
+   * Store the agent statuses in the global store.
+   */
+  // const [state, dispatch] = useReducer(reducer, { payload: [] });
   /** Storage for form values */
   const [form, setForm] = useState({});
   /** Status of the live switch */
@@ -20,11 +28,11 @@ function Dashboard() {
         </Card>
         <Card>
           <DisplayValue
-            name="Payload Temperature"
+            name="Average Temperature"
             subheader="06231999-1630Z"
             val={(
-              <div className="text-center text-lg">
-                30&deg;C
+              <div className="text-center font-bold text-red-600 text-lg">
+                67&deg;C
               </div>
             )}
           />
@@ -41,8 +49,17 @@ function Dashboard() {
           />
         </Card>
       </div>
+      <Card>
+        <AgentCommands
+          val={(
+            <div className="text-center font-bold text-red-600 text-lg">
+              67&deg;C
+            </div>
+          )}
+        />
+      </Card>
     </div>
   );
 }
 
-export default Dashboard;
+export default neutron1;

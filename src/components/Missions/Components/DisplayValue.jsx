@@ -7,7 +7,11 @@ import BaseComponent from '../BaseComponent';
 function DisplayValue({
   val,
   name,
-  subheader
+  subheader,
+  liveOnly,
+  handleLiveSwitchChange,
+  showStatus,
+  status
 }) {
   /** Storage for form values */
   const [form, setForm] = useState({});
@@ -18,16 +22,34 @@ function DisplayValue({
     <BaseComponent
       name={name}
       subheader={subheader}
-      liveOnly
-      showStatus={false}
+      liveOnly={liveOnly}
+      handleLiveSwitchChange={() => {}}
+      showStatus={showStatus}
+      status={status}
       formItems={(
         <div>
-          <Form.Item label="Title" key="title">
+          <Form.Item label="Agent" key="title">
             <Input
-              placeholder="Form Title"
-              id="title"
+              placeholder="Agent"
+              id="agent"
               onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: value })}
-              value={form.title}
+              value={form.agent}
+            />
+          </Form.Item>
+          <Form.Item label="Agent" key="agent">
+            <Input
+              placeholder="Agent"
+              id="agent"
+              onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: value })}
+              value={form.agent}
+            />
+          </Form.Item>
+          <Form.Item label="Key to display" key="key">
+            <Input
+              placeholder="Key to display"
+              id="key"
+              onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: value })}
+              value={form.key}
             />
           </Form.Item>
         </div>
@@ -41,15 +63,34 @@ function DisplayValue({
 
 DisplayValue.propTypes = {
   /** Name of the component to display at the time */
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string,
   /** Supplementary information below the name */
   subheader: PropTypes.string,
   /** Value to display in card */
-  val: PropTypes.node.isRequired
+  val: PropTypes.node.isRequired,
+  /** Whether the component can display only live data. Hides/shows the live/past switch. */
+  liveOnly: PropTypes.bool,
+  /** Function is run when the live/past switch is toggled. */
+  handleLiveSwitchChange: PropTypes.func,
+  /** Whether to show a circular indicator of the status of the component */
+  showStatus: PropTypes.bool,
+  /** The type of badge to show if showStatus is true (see the ant design badges component) */
+  status: (props, propName, componentName) => {
+    if (props.showStatus) {
+      return new Error(
+        `${propName} is required when showStatus is true in ${componentName}.`
+      );
+    }
+  }
 };
 
 DisplayValue.defaultProps = {
-  subheader: null
+  name: '',
+  subheader: null,
+  showStatus: false,
+  liveOnly: true,
+  handleLiveSwitchChange: () => {},
+  status: 'error'
 };
 
 export default DisplayValue;

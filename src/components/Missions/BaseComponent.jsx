@@ -17,7 +17,8 @@ function BaseComponent({
   status,
   children,
   formItems,
-  handleLiveSwitchChange
+  handleLiveSwitchChange,
+  toolsSlot
 }) {
   /** Handler for the widget settings modal */
   const [openSettings, setOpenSettings] = useState(false);
@@ -68,6 +69,10 @@ function BaseComponent({
             </span>
           ) : null}
 
+          {
+            toolsSlot ? { toolsSlot } : null
+          }
+
           {formItems ? (
             <Button size="small" onClick={() => setOpenSettings(true)}>
               <Icon type="setting" />
@@ -76,7 +81,7 @@ function BaseComponent({
         </div>
       </div>
 
-      <Divider />
+      <div className="bg-gray-300 my-2" style={{ height: '1px' }} />
 
       <div className="px-2">
         {children}
@@ -87,37 +92,49 @@ function BaseComponent({
 
 BaseComponent.propTypes = {
   /** Name of the component to display at the time */
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string,
   /** Supplementary information below the name */
   subheader: PropTypes.string,
   /** Whether the component can display only live data. Hides/shows the live/past switch. */
   liveOnly: PropTypes.bool,
   /** Function is run when the live/past switch is toggled. */
-  handleLiveSwitchChange: PropTypes.func,
-  /** Whether to show a circular indicator of the status of the component */
-  showStatus: PropTypes.bool,
-  /** The type of badge to show if showStatus is true (see the ant design badges component) */
-  status: function (props, propName, componentName) {
+  handleLiveSwitchChange: (props, propName, componentName) => {
     if (props.showStatus) {
       return new Error(
         `${propName} is required when showStatus is true in ${componentName}.`
       );
     }
+    return PropTypes.func;
+  },
+  /** Whether to show a circular indicator of the status of the component */
+  showStatus: PropTypes.bool,
+  /** The type of badge to show if showStatus is true (see the ant design badges component) */
+  status: (props, propName, componentName) => {
+    if (props.showStatus) {
+      return new Error(
+        `${propName} is required when showStatus is true in ${componentName}.`
+      );
+    }
+    return PropTypes.string;
   },
   /** The main content of the component */
   children: PropTypes.node,
   /** Node containing form item components */
-  formItems: PropTypes.node
+  formItems: PropTypes.node,
+  /** Top right slot in header */
+  toolsSlot: PropTypes.node
 };
 
 BaseComponent.defaultProps = {
+  name: '',
   subheader: '',
   showStatus: false,
   liveOnly: false,
   handleLiveSwitchChange: () => {},
   status: 'error',
   children: null,
-  formItems: null
+  formItems: null,
+  toolsSlot: null
 };
 
 export default BaseComponent;
