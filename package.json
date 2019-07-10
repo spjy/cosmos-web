@@ -7,6 +7,7 @@
     "axios": "^0.18.1",
     "babylonjs": "^3.2.0-alpha10",
     "babylonjs-loaders": "^3.1.0-alpha3.7",
+    "lodash": "^4.17.13",
     "moment-timezone": "^0.5.26",
     "plotly.js": "^1.48.3",
     "prop-types": "^15.7.2",
