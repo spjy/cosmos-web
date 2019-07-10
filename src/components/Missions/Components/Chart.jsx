@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Input } from 'antd';
-import _ from 'lodash';
+import Plot from 'react-plotly.js';
 
 import BaseComponent from '../BaseComponent';
 
-/**
- * 
- */
-function DisplayValue({
+function Chart({
   name,
   subheader,
   data,
@@ -28,23 +25,27 @@ function DisplayValue({
   /** Status of the live switch */
   const [liveSwitch, setLiveSwitch] = useState();
 
+  const [markerColor, setMarkerColor] = useState('');
+
+  const [legendLabel, setLegendLabel] = useState('');
+
   return (
     <BaseComponent
       name={nameState}
-      subheader={data && data.utc ? data.utc : '-'}
+      subheader={subheader}
       liveOnly={liveOnly}
       showStatus={showStatus}
       status={status}
       formItems={(
         <Form layout="vertical">
           <Form.Item
-            label="Name"
-            key="name"
+            label="Chart Name"
+            key="nameState"
             hasFeedback={form.nameState && form.nameState.touched}
             validateStatus={form.nameState && form.nameState.changed ? 'success' : ''}
           >
             <Input
-              placeholder="Name"
+              placeholder="Chart Name"
               id="nameState"
               onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
               onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
@@ -74,20 +75,99 @@ function DisplayValue({
               value={form.dataKeyState && form.dataKeyState.value}
             />
           </Form.Item>
+
+          {/* <Form.Item
+            label="Chart Type"
+            key="chartType"
+            hasFeedback={form.chartType && form.chartType.touched}
+            validateStatus={form.chartType && form.chartType.changed ? 'success' : ''}
+          >
+            <Input
+              placeholder="Chart Type"
+              id="chartType"
+              onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
+              onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
+              onBlur={({ target: { id: item, value } }) => {
+                setForm({ ...form, [item]: { ...form[item], changed: true } })
+              }}
+              value={form.chartType && form.chartType.value}
+            />
+          </Form.Item> */}
+
+          <Form.Item
+            label="Marker Color"
+            key="markerColor"
+            hasFeedback={form.markerColor && form.markerColor.touched}
+            validateStatus={form.markerColor && form.markerColor.changed ? 'success' : ''}
+          >
+            <Input
+              placeholder="Marker Color"
+              id="markerColor"
+              onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
+              onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
+              onBlur={({ target: { id: item, value } }) => {
+                setMarkerColor(value);
+                setForm({ ...form, [item]: { ...form[item], changed: true } });
+              }}
+              value={form.markerColor && form.markerColor.value}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Legend Label"
+            key="legendLabel"
+            hasFeedback={form.legendLabel && form.legendLabel.touched}
+            validateStatus={form.legendLabel && form.legendLabel.changed ? 'success' : ''}
+          >
+            <Input
+              placeholder="Legend Label"
+              id="legendLabel"
+              onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
+              onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
+              onBlur={({ target: { id: item, value } }) => {
+                setLegendLabel(value);
+                setForm({ ...form, [item]: { ...form[item], changed: true } });
+              }}
+              value={form.legendLabel && form.legendLabel.value}
+            />
+          </Form.Item>
         </Form>
       )}
       handleLiveSwitchChange={checked => setLiveSwitch(checked)}
     >
-      <div className="text-center">
-        {
-          data && dataKeyState && _.has(data, dataKeyState) ? _.get(data, dataKeyState) : 'No data available.'
-        }
-      </div>
+      <Plot
+        className="w-full"
+        data={[
+          {
+            x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            y: [5, 6, 23, 4, 5, 7, 1, 4, 5, 10],
+            type: 'scatter',
+            mode: 'lines+points',
+            marker: {
+              color: markerColor
+            },
+            name: legendLabel
+          },
+          {
+            x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            y: [4, 2, 23, 4, 5, 9, 1, 2, 5, 10],
+            type: 'scatter',
+            mode: 'lines+points',
+            marker: {
+              color: 'black'
+            },
+            name: 'Second'
+          }
+        ]}
+        layout={{
+          autosize: true
+        }}
+      />
     </BaseComponent>
   );
 }
 
-DisplayValue.propTypes = {
+Chart.propTypes = {
   /** Name of the component to display at the time */
   name: PropTypes.string,
   /** Supplementary information below the name */
@@ -116,7 +196,7 @@ DisplayValue.propTypes = {
   formItems: PropTypes.node
 };
 
-DisplayValue.defaultProps = {
+Chart.defaultProps = {
   name: '',
   subheader: null,
   data: null,
@@ -129,4 +209,4 @@ DisplayValue.defaultProps = {
   formItems: null
 };
 
-export default DisplayValue;
+export default Chart;
