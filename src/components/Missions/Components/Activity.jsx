@@ -20,7 +20,7 @@ function Activity({
       showStatus
       status="error"
       formItems={(
-        <div>
+        <Form layout="vertical">
           <Form.Item label="Title" key="title">
             <Input
               placeholder="Form Title"
@@ -29,7 +29,7 @@ function Activity({
               value={form.title}
             />
           </Form.Item>
-        </div>
+        </Form>
       )}
     >
       {'{"json": "value"}'}

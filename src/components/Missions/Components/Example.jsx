@@ -16,7 +16,7 @@ function Example() {
       showStatus
       status="error"
       formItems={(
-        <div>
+        <Form layout="vertical">
           <Form.Item label="Title" key="title">
             <Input
               placeholder="Form Title"
@@ -25,7 +25,7 @@ function Example() {
               value={form.title}
             />
           </Form.Item>
-        </div>
+        </Form>
       )}
       handleLiveSwitchChange={checked => setLiveSwitch(checked)}
     >

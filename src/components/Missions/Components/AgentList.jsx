@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { Form, Input, Select, Button } from 'antd';
+import {
+  Form, Input, Select
+} from 'antd';
 
 import BaseComponent from '../BaseComponent';
 
 function DisplayValue() {
   /** Storage for form values */
   const [form, setForm] = useState({});
-  /** Status of the live switch */
-  const [liveSwitch, setLiveSwitch] = useState();
 
   return (
     <BaseComponent
@@ -17,7 +16,7 @@ function DisplayValue() {
       liveOnly
       showStatus={false}
       formItems={(
-        <div>
+        <Form layout="vertical">
           <Form.Item label="Agent" key="title">
             <Input
               placeholder="Agent"
@@ -42,7 +41,7 @@ function DisplayValue() {
               value={form.key}
             />
           </Form.Item>
-        </div>
+        </Form>
       )}
     >
       <div className="border border-gray-300 rounded mb-2 p-4 bg-white font-mono h-32 max-h-full resize-y overflow-y-scroll">
@@ -74,9 +73,5 @@ function DisplayValue() {
     </BaseComponent>
   );
 }
-
-DisplayValue.propTypes = {};
-
-DisplayValue.defaultProps = {};
 
 export default DisplayValue;

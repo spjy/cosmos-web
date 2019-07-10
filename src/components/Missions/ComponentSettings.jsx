@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Form, Alert } from 'antd';
+import { Modal, Form } from 'antd';
 
 /**
  * The component containing the modal and form for setting settings for widgets.
@@ -9,8 +9,7 @@ function ComponentSettings({
   visible,
   closeModal,
   children,
-  submitForm,
-  validForm
+  submitForm
 }) {
   return (
     <Modal
@@ -21,6 +20,7 @@ function ComponentSettings({
        * and "closeModal" prop methods in the parent component (the widget). This will get
        * all off the form values, validate them and close the modal if everything is valid.
        */
+      okText="Done"
       onOk={() => {
         submitForm();
         closeModal();
@@ -30,10 +30,8 @@ function ComponentSettings({
        */
       onCancel={() => closeModal()}
     >
-      <Form layout="vertical">
-        {children}
-      </Form>
-      {!validForm ? <Alert message="Incomplete form." type="warning" showIcon /> : null}
+      {children}
+      {/* {!validForm ? <Alert message="Incomplete form." type="warning" showIcon /> : null} */}
     </Modal>
   );
 }
@@ -47,8 +45,6 @@ ComponentSettings.propTypes = {
   children: PropTypes.node,
   /** The function to handle the submission of the form. */
   submitForm: PropTypes.func.isRequired,
-  /** Whether the form submitted is valid. */
-  validForm: PropTypes.bool.isRequired
 };
 
 ComponentSettings.defaultProps = {

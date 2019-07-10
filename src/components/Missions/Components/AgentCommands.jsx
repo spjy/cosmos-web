@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { Form, Input, Select, Button } from 'antd';
+import { Input, Select } from 'antd';
 
 import BaseComponent from '../BaseComponent';
 
 function DisplayValue() {
-  /** Storage for form values */
-  const [form, setForm] = useState({});
-  /** Status of the live switch */
-  const [liveSwitch, setLiveSwitch] = useState();
   /** Agents */
   const [agentList, setAgentList] = useState([]);
   /** Selected agent to get requests from */
@@ -94,13 +89,13 @@ function DisplayValue() {
         placeholder="Select agent node and process"
       >
         {
-          agentList.map(({ agent_node, agent_proc }) => {
+          agentList.map(({ agent_node: node, agent_proc: proc }) => {
             return (
               <Select.Option
-                key={`${agent_node}:${agent_proc}`}
-                value={`${agent_node}_${agent_proc}`}
+                key={`${node}:${proc}`}
+                value={`${node}_${proc}`}
               >
-                {agent_node}: {agent_proc}
+                {node}: {proc}
               </Select.Option>
             );
           })
