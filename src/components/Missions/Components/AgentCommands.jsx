@@ -1,23 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Input, Select } from 'antd';
+import { Input, Select, Tooltip } from 'antd';
 
 import BaseComponent from '../BaseComponent';
 
 function DisplayValue() {
+  const [wsCommand] = useState(new WebSocket(`ws://${process.env.REACT_APP_WEBSOCKET_IP}:${process.env.REACT_APP_QUERY_WEBSOCKET_PORT}/command/`));
+
   /** Agents */
   const [agentList, setAgentList] = useState([]);
   /** Selected agent to get requests from */
   const [selectedAgent, setSelectedAgent] = useState([]);
-
-  /** Watches for changes to selectedAgent. Then sends WS message to get list of commands. */
-  useEffect(() => {
-    const ws = new WebSocket(`ws://${process.env.REACT_APP_WEBSOCKET_IP}:8080/command/`);
-
-    if (selectedAgent.length > 0) {
-      ws.send(`${selectedAgent[0]} ${selectedAgent[1]}`);
-    }
-  }, [selectedAgent]);
-
   /** Requests possible from selectedAgent */
   const [agentRequests, setAgentRequests] = useState([]);
   /** Selected agent request */
@@ -27,8 +19,6 @@ function DisplayValue() {
   /** Agent command history (to display in the terminal) */
   const [commandHistory, setCommandHistory] = useState([]);
 
-  const wsCommand = new WebSocket(`ws://${process.env.REACT_APP_WEBSOCKET_IP}:${process.env.REACT_APP_QUERY_WEBSOCKET_PORT}/command/`);
-
   /** Manages requests for agent list and agent [node] [process] */
   wsCommand.onmessage = ({ data }) => {
     let json;
@@ -36,44 +26,51 @@ function DisplayValue() {
     try {
       json = JSON.parse(data);
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
-
-    console.log(data);
 
     if (json && json.agent_list) {
       // agent list
       setAgentList(json.agent_list);
-    } else if (json && json.request_output && json.request_out.response) {
+    } else if (json && json.output && json.output.requests) {
       // agent node proc
-      setAgentRequests(json.request_output.response.requests);
-    } else if (json && json.request_output) {
+      setAgentRequests(json.output.requests);
+    } else if (json && json.output) {
       // agent node proc cmd
-
+      setCommandHistory([...commandHistory, json.output]);
     }
   };
 
   /** On mount get list of agents */
   useEffect(() => {
     wsCommand.onopen = () => {
-      wsCommand.send('list');
+      wsCommand.send('list_json');
     };
-
-    console.log(agentList);
   }, []);
 
   /** Handle submission of agent command */
-  const sendCommand = () => {
-    const ws = new WebSocket(`ws://${process.env.REACT_APP_WEBSOCKET_IP}:${process.env.REACT_APP_QUERY_WEBSOCKET_PORT}/command/`);
-
+  const sendCommand = (ws) => {
     if (selectedRequest === '> agent') {
       ws.send(commandArguments);
-      setCommandHistory([...setCommandHistory, `agent ${commandArguments}`])
+      setCommandHistory([...commandHistory, `➜ agent ${commandArguments}`]);
     } else {
-      ws.send(`${agentRequests[0]} ${agentRequests[1]} ${selectedRequest} ${commandArguments}`);
-      setCommandHistory([...setCommandHistory, `agent ${agentRequests[0]} ${agentRequests[1]} ${selectedRequest} ${commandArguments}`])
+      ws.send(`${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${commandArguments}`);
+      setCommandHistory([...commandHistory, `➜ agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${commandArguments}`]);
     }
   };
+
+  const getRequests = (ws) => {
+    console.log(selectedAgent[0], selectedAgent[1]);
+
+    if (selectedAgent.length > 0) {
+      ws.send(`${selectedAgent[0]} ${selectedAgent[1]} help_json`);
+    }
+  };
+
+  /** Watches for changes to selectedAgent. Then sends WS message to get list of commands. */
+  useEffect(() => {
+    getRequests(wsCommand);
+  }, [selectedAgent]);
 
   return (
     <BaseComponent
@@ -93,9 +90,11 @@ function DisplayValue() {
             return (
               <Select.Option
                 key={`${node}:${proc}`}
-                value={`${node}_${proc}`}
+                value={`${node}:${proc}`}
               >
-                {node}: {proc}
+                {node}
+                :&nbsp;
+                {proc}
               </Select.Option>
             );
           })
@@ -119,27 +118,34 @@ function DisplayValue() {
               {
                 agentRequests.map(({ token, synopsis, description }) => {
                   return (
-                    <Select.Option value={token} key={token}>{ token }</Select.Option>
+                    <Select.Option value={token} key={token}>
+                      <Tooltip title={`${synopsis ? `${synopsis} ` : ''}${description}`}>
+                        { token }
+                      </Tooltip>
+                    </Select.Option>
                   );
                 })
               }
-              <Select.Option value="help">help</Select.Option>
-              <Select.Option value="shutdown">shutdown</Select.Option>
-              <Select.Option value="diskFreePercent">diskFreePercent</Select.Option>
-              <Select.Option value="getvalue">getvalue</Select.Option>
             </Select>
           )}
           addonAfter={(
             <div
               className="cursor-pointer text-blue-600 hover:text-blue-400"
-              onClick={() => sendCommand()}
+              onClick={() => {
+                sendCommand(wsCommand);
+                setCommandArguments('');
+              }}
             >
               Send
             </div>
           )}
           placeholder="Arguments"
-          onChange={value => setCommandArguments(value)}
-          onPressEnter={() => sendCommand()}
+          onChange={({ target: { value } }) => setCommandArguments(value)}
+          onPressEnter={() => {
+            sendCommand(wsCommand);
+            setCommandArguments('');
+          }}
+          value={commandArguments}
         />
       </div>
     </BaseComponent>
