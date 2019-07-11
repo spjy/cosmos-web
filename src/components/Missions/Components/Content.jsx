@@ -4,6 +4,9 @@ import { Form, Input } from 'antd';
 
 import BaseComponent from '../BaseComponent';
 
+/**
+ * A general purpose component.
+ */
 function Content({
   name,
   subheader,

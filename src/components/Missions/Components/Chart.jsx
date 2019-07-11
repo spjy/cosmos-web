@@ -6,32 +6,9 @@ import Plot from 'react-plotly.js';
 
 import BaseComponent from '../BaseComponent';
 
-// class Chart extends Component {
-//   constructor(props) {
-//     super(props);
-
-//     const {
-//       nameState,
-//       dataKeyState,
-//       form,
-//       liveSwitch,
-//       markerColor,
-//       legendLabel,
-//       dataRevision
-//     } = props;
-
-//     this.state = {
-//       nameState,
-//       dataKeyState,
-//       form,
-//       liveSwitch,
-//       markerColor,
-//       legendLabel,
-//       dataRevision
-//     };
-//   }
-// }
-
+/**
+ * Display data on a chart.
+ */
 function Chart({
   name,
   subheader,

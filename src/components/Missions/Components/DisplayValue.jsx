@@ -8,7 +8,7 @@ import BaseComponent from '../BaseComponent';
 import { Context } from '../../../store/neutron1';
 
 /**
- * 
+ * Displays a specified value.
  */
 function DisplayValue({
   name,

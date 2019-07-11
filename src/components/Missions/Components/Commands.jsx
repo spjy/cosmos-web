@@ -3,7 +3,10 @@ import { Input, Select, Tooltip } from 'antd';
 
 import BaseComponent from '../BaseComponent';
 
-function DisplayValue() {
+/**
+ * Send commands to agents. Simulates a CLI.
+ */
+function Commands() {
   const [wsCommand] = useState(new WebSocket(`ws://${process.env.REACT_APP_WEBSOCKET_IP}:${process.env.REACT_APP_QUERY_WEBSOCKET_PORT}/command/`));
 
   /** Agents */
@@ -163,8 +166,8 @@ function DisplayValue() {
   );
 }
 
-DisplayValue.propTypes = {};
+Commands.propTypes = {};
 
-DisplayValue.defaultProps = {};
+Commands.defaultProps = {};
 
-export default DisplayValue;
+export default Commands;

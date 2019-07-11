@@ -12,7 +12,7 @@ import Example from '../../components/Missions/Components/Example';
 import Clock from '../../components/Missions/Components/Clock';
 import DisplayValue from '../../components/Missions/Components/DisplayValue';
 import Content from '../../components/Missions/Components/Content';
-import AgentCommands from '../../components/Missions/Components/AgentCommands';
+import AgentCommands from '../../components/Missions/Components/Commands';
 import Status from '../../components/Missions/Components/Status';
 import Chart from '../../components/Missions/Components/Chart';
 

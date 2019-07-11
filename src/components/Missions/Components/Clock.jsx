@@ -5,11 +5,16 @@ import { Form, Select } from 'antd';
 
 import BaseComponent from '../BaseComponent';
 
+/**
+ * Display a specified local time and UTC time.
+ */
 function Clock({
   timezone
 }) {
   /** Storage for form values */
   const [time, setTime] = useState('');
+  /** Storage for form values */
+  const [utcTime, setUtcTime] = useState('');
   /** Settings for component */
   const [form, setForm] = useState({});
   /** Timezone */
@@ -19,17 +24,18 @@ function Clock({
   useEffect(() => {
     const clock = setTimeout(() => {
       setTime(moment().tz(timezoneState).format('MMDDYYYY-HH:mm:ss'));
+      setUtcTime(moment().tz('Europe/London').format('MMDDYYYY-HH:mm:ss'));
     }, 1000);
 
     return () => {
       clearTimeout(clock);
     };
-  }, [time]);
+  }, [time, utcTime]);
 
   return (
     <BaseComponent
       name="Time"
-      subheader={timezoneState}
+      subheader={`${timezoneState} | UTC`}
       liveOnly
       showStatus
       status="success"
@@ -54,8 +60,24 @@ function Clock({
         </Form>
       )}
     >
-      <div className="text-center text-xl">
-        {time}
+      <div className="flex flex-wrap justify-center">
+        <div className="text-sm my-1 mx-1">
+          <div className="text-gray-500">
+            Local:&nbsp;
+          </div>
+          <div className="text-lg">
+            {time}
+          </div>
+        </div>
+        <br />
+        <div className="text-sm my-1 mx-1">
+          <div className="text-gray-500">
+            UTC:&nbsp;
+          </div>
+          <div className="text-lg">
+            {utcTime}
+          </div>
+        </div>
       </div>
     </BaseComponent>
   );
