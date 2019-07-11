@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Input } from 'antd';
 import _ from 'lodash';
+import moment from 'moment-timezone';
 
 import BaseComponent from '../BaseComponent';
+import { Context } from '../../../store/neutron1';
 
 /**
  * 
@@ -29,61 +31,67 @@ function DisplayValue({
   const [liveSwitch, setLiveSwitch] = useState();
 
   return (
-    <BaseComponent
-      name={nameState}
-      subheader={data && data.utc ? data.utc : '-'}
-      liveOnly={liveOnly}
-      showStatus={showStatus}
-      status={status}
-      formItems={(
-        <Form layout="vertical">
-          <Form.Item
-            label="Name"
-            key="name"
-            hasFeedback={form.nameState && form.nameState.touched}
-            validateStatus={form.nameState && form.nameState.changed ? 'success' : ''}
+    <Context.Consumer>
+      {
+        node => (
+          <BaseComponent
+            name={nameState}
+            subheader={data && _.has(data, dataKeyState) && data.utc ? moment.unix(data.utc).format('MMDDYYYY-HH:mm:ss') : '-'}
+            liveOnly={liveOnly}
+            showStatus={showStatus}
+            status={status}
+            formItems={(
+              <Form layout="vertical">
+                <Form.Item
+                  label="Name"
+                  key="name"
+                  hasFeedback={form.nameState && form.nameState.touched}
+                  validateStatus={form.nameState && form.nameState.changed ? 'success' : ''}
+                >
+                  <Input
+                    placeholder="Name"
+                    id="nameState"
+                    onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
+                    onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
+                    onBlur={({ target: { id: item, value } }) => {
+                      setNameState(value);
+                      setForm({ ...form, [item]: { ...form[item], changed: true } });
+                    }}
+                    value={form.nameState && form.nameState.value}
+                  />
+                </Form.Item>
+      
+                <Form.Item
+                  label="Data Key"
+                  key="dataKeyState"
+                  hasFeedback={form.dataKeyState && form.dataKeyState.touched}
+                  validateStatus={form.dataKeyState && form.dataKeyState.changed ? 'success' : ''}
+                >
+                  <Input
+                    placeholder="Data Key"
+                    id="dataKeyState"
+                    onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
+                    onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
+                    onBlur={({ target: { id: item, value } }) => {
+                      setDataKeyState(value);
+                      setForm({ ...form, [item]: { ...form[item], changed: true } });
+                    }}
+                    value={form.dataKeyState && form.dataKeyState.value}
+                  />
+                </Form.Item>
+              </Form>
+            )}
+            handleLiveSwitchChange={checked => setLiveSwitch(checked)}
           >
-            <Input
-              placeholder="Name"
-              id="nameState"
-              onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
-              onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
-              onBlur={({ target: { id: item, value } }) => {
-                setNameState(value);
-                setForm({ ...form, [item]: { ...form[item], changed: true } });
-              }}
-              value={form.nameState && form.nameState.value}
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="Data Key"
-            key="dataKeyState"
-            hasFeedback={form.dataKeyState && form.dataKeyState.touched}
-            validateStatus={form.dataKeyState && form.dataKeyState.changed ? 'success' : ''}
-          >
-            <Input
-              placeholder="Data Key"
-              id="dataKeyState"
-              onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
-              onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
-              onBlur={({ target: { id: item, value } }) => {
-                setDataKeyState(value);
-                setForm({ ...form, [item]: { ...form[item], changed: true } });
-              }}
-              value={form.dataKeyState && form.dataKeyState.value}
-            />
-          </Form.Item>
-        </Form>
-      )}
-      handleLiveSwitchChange={checked => setLiveSwitch(checked)}
-    >
-      <div className="text-center">
-        {
-          data && dataKeyState && _.has(data, dataKeyState) ? _.get(data, dataKeyState) : 'No data available.'
-        }
-      </div>
-    </BaseComponent>
+            <div className="text-center">
+              {
+                data && dataKeyState && _.has(data, dataKeyState) ? _.get(data, dataKeyState) : 'No data available.'
+              }
+            </div>
+          </BaseComponent>
+        )
+      }
+    </Context.Consumer>
   );
 }
 

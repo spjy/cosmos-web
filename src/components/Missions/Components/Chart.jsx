@@ -1,9 +1,36 @@
-import React, { useState } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Input } from 'antd';
+import Plotly from 'plotly.js';
 import Plot from 'react-plotly.js';
 
 import BaseComponent from '../BaseComponent';
+
+// class Chart extends Component {
+//   constructor(props) {
+//     super(props);
+
+//     const {
+//       nameState,
+//       dataKeyState,
+//       form,
+//       liveSwitch,
+//       markerColor,
+//       legendLabel,
+//       dataRevision
+//     } = props;
+
+//     this.state = {
+//       nameState,
+//       dataKeyState,
+//       form,
+//       liveSwitch,
+//       markerColor,
+//       legendLabel,
+//       dataRevision
+//     };
+//   }
+// }
 
 function Chart({
   name,
@@ -28,6 +55,38 @@ function Chart({
   const [markerColor, setMarkerColor] = useState('');
 
   const [legendLabel, setLegendLabel] = useState('');
+
+  const [dataRevision, setDataRevision] = useState(0);
+
+  const [layout, setLayout] = useState({
+    autosize: true,
+    datarevision: dataRevision
+  });
+
+  const [plot, setPlot] = useState({
+    x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    y: [5, 6, 23, 4, 5, 7, 1, 4, 5, 10],
+    type: 'scatter',
+    mode: 'lines+points',
+    marker: {
+      color: markerColor
+    },
+    name: legendLabel,
+  });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // plot.x.push(plot.x[plot.x.length - 1] + 1);
+      // plot.y.push(plot.y[plot.y.length - 1] + 1);
+      // layout.datarevision = layout.datarevision + 1;
+
+      // setDataRevision(dataRevision + 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [plot, dataRevision]);
 
   return (
     <BaseComponent
@@ -106,7 +165,7 @@ function Chart({
               onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
               onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
               onBlur={({ target: { id: item, value } }) => {
-                setMarkerColor(value);
+                plot.marker.color = value;
                 setForm({ ...form, [item]: { ...form[item], changed: true } });
               }}
               value={form.markerColor && form.markerColor.value}
@@ -125,7 +184,7 @@ function Chart({
               onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
               onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
               onBlur={({ target: { id: item, value } }) => {
-                setLegendLabel(value);
+                plot.name = value;
                 setForm({ ...form, [item]: { ...form[item], changed: true } });
               }}
               value={form.legendLabel && form.legendLabel.value}
@@ -136,32 +195,13 @@ function Chart({
       handleLiveSwitchChange={checked => setLiveSwitch(checked)}
     >
       <Plot
+        id="plot"
         className="w-full"
         data={[
-          {
-            x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-            y: [5, 6, 23, 4, 5, 7, 1, 4, 5, 10],
-            type: 'scatter',
-            mode: 'lines+points',
-            marker: {
-              color: markerColor
-            },
-            name: legendLabel
-          },
-          {
-            x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-            y: [4, 2, 23, 4, 5, 9, 1, 2, 5, 10],
-            type: 'scatter',
-            mode: 'lines+points',
-            marker: {
-              color: 'black'
-            },
-            name: 'Second'
-          }
+          plot
         ]}
-        layout={{
-          autosize: true
-        }}
+        layout={layout}
+        revision={dataRevision}
       />
     </BaseComponent>
   );

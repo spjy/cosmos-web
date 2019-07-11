@@ -29,6 +29,8 @@ function DisplayValue() {
       // console.log(err);
     }
 
+    console.log(data);
+
     if (json && json.agent_list) {
       // agent list
       setAgentList(json.agent_list);
@@ -46,6 +48,10 @@ function DisplayValue() {
     wsCommand.onopen = () => {
       wsCommand.send('list_json');
     };
+
+    return () => {
+      wsCommand.close();
+    };
   }, []);
 
   /** Handle submission of agent command */
@@ -60,8 +66,6 @@ function DisplayValue() {
   };
 
   const getRequests = (ws) => {
-    console.log(selectedAgent[0], selectedAgent[1]);
-
     if (selectedAgent.length > 0) {
       ws.send(`${selectedAgent[0]} ${selectedAgent[1]} help_json`);
     }
@@ -82,7 +86,10 @@ function DisplayValue() {
       <Select
         className="w-full mb-2"
         dropdownMatchSelectWidth={false}
-        onChange={value => setSelectedAgent(value.split(':'))}
+        onChange={(value) => {
+          setAgentRequests([]);
+          setSelectedAgent(value.split(':'));
+        }}
         placeholder="Select agent node and process"
       >
         {
@@ -114,12 +121,16 @@ function DisplayValue() {
               dropdownMatchSelectWidth={false}
               onChange={value => setSelectedRequest(value)}
             >
-              <Select.Option value="> agent">➜ agent</Select.Option>
+              <Select.Option value="> agent">
+                <Tooltip placement="topLeft" title="node process [arguments]">
+                  ➜ agent
+                </Tooltip>
+              </Select.Option>
               {
                 agentRequests.map(({ token, synopsis, description }) => {
                   return (
                     <Select.Option value={token} key={token}>
-                      <Tooltip title={`${synopsis ? `${synopsis} ` : ''}${description}`}>
+                      <Tooltip placement="topLeft" title={`${synopsis ? `${synopsis} ` : ''}${description}`}>
                         { token }
                       </Tooltip>
                     </Select.Option>
