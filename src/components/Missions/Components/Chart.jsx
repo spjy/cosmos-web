@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input, DatePicker } from 'antd';
+import {
+  Form, Input, DatePicker, Button
+} from 'antd';
 import Plot from 'react-plotly.js';
 
 import BaseComponent from '../BaseComponent';
 import { Context } from '../../../store/neutron1';
+import socket from '../../../socket';
 
 const { RangePicker } = DatePicker;
 
@@ -25,6 +28,8 @@ function Chart({
   children,
   formItems
 }) {
+  /** Websocket endpoint for retrieving the command queries */
+  const [ws] = socket(`ws://${process.env.REACT_APP_WEBSOCKET_IP}:${process.env.REACT_APP_QUERY_WEBSOCKET_PORT}/query/`);
   /** The state that manages the component's title */
   const [nameState, setNameState] = useState(name);
   /** The state managing the node process being looked at */
@@ -37,30 +42,48 @@ function Chart({
   const [form, setForm] = useState({});
   /** Status of the live switch */
   const [liveSwitch, setLiveSwitch] = useState();
-
+  /** The color of the function */
   const [markerColor, setMarkerColor] = useState('');
-
+  /** The name to be displayed for the function's legend marker */
   const [legendLabel, setLegendLabel] = useState('');
-
+  /** Counter determining when the plot should be updated */
   const [dataRevision, setDataRevision] = useState(0);
-
+  /** Layout parameters for the plot */
   const [layout, setLayout] = useState({
     autosize: true,
-    datarevision: dataRevision
+    datarevision: dataRevision,
+    paper_bgcolor: '#FBFBFB',
+    plot_bgcolor: '#FBFBFB',
+    xaxis: {
+      title: XDataKeyState
+    },
+    yaxis: {
+      title: YDataKeyState
+    },
+    showlegend: true,
+    legend: {
+      orientation: 'h'
+    },
+    margin: {
+      r: 0,
+      t: 0,
+      b: 0
+    }
   });
-
+  /** Plot data storage */
   const [plot, setPlot] = useState({
     x: [],
     y: [],
     type: 'scatter',
-    mode: 'lines+points',
     marker: {
       color: markerColor
     },
-    name: legendLabel,
+    name: YDataKeyState
   });
+  /** Storage for historical data display */
+  const [historicalData, setHistoricalData] = useState([]);
 
-  /** Accessing the neutron1 node process context and drilling down to the specified node process to look at */
+  /** Accessing the neutron1 node process context and drilling down */
   const { state: { [nodeProcessState]: nodeProcess } } = useContext(Context);
 
   /** Handle new data incoming from the Context */
@@ -68,11 +91,21 @@ function Chart({
     if (nodeProcess && nodeProcess[XDataKeyState] && nodeProcess[YDataKeyState]) {
       plot.x.push(processXDataKey(nodeProcess[XDataKeyState]));
       plot.y.push(processYDataKey(nodeProcess[YDataKeyState]));
-      
+
       layout.datarevision = layout.datarevision + 1;
       setDataRevision(dataRevision + 1);
     }
   }, [nodeProcess]);
+
+  ws.onmessage = ({ data }) => {
+    data.forEach((d) => {
+
+    })
+  };
+
+  const retrieveHistoricalData = () => {
+    ws.send('');
+  };
 
   // useEffect(() => {
   //   const interval = setInterval(() => {
@@ -105,12 +138,20 @@ function Chart({
             validateStatus={form.dateRange && form.dateRange.changed ? 'success' : ''}
           >
             <RangePicker
+              className="mr-1"
               id="dateRange"
               showTime
               format="YYYY-MM-DD HH:mm:ss"
               disabled={liveSwitch}
             />
+            <Button
+              type="primary"
+              onClick={retrieveHistoricalData()}
+            >
+              Show
+            </Button>
           </Form.Item>
+
           <Form.Item
             label="Chart Name"
             key="nameState"
@@ -252,6 +293,9 @@ function Chart({
         data={[
           plot
         ]}
+        config={{
+          scrollZoom: true
+        }}
         layout={layout}
         revision={dataRevision}
       />
