@@ -29,7 +29,7 @@ function Chart({
   formItems
 }) {
   /** Websocket endpoint for retrieving the command queries */
-  const [ws] = socket(`ws://${process.env.REACT_APP_WEBSOCKET_IP}:${process.env.REACT_APP_QUERY_WEBSOCKET_PORT}/query/`);
+  const [ws] = useState(socket(`ws://${process.env.REACT_APP_WEBSOCKET_IP}:${process.env.REACT_APP_QUERY_WEBSOCKET_PORT}/query/`));
   /** The state that manages the component's title */
   const [nameState, setNameState] = useState(name);
   /** The state managing the node process being looked at */
@@ -80,6 +80,8 @@ function Chart({
     },
     name: YDataKeyState
   });
+  /** Storage for date range of historical data query */
+  const [historicalDateRange, setHistoricalDateRange] = useState([]);
   /** Storage for historical data display */
   const [historicalData, setHistoricalData] = useState([]);
 
@@ -88,7 +90,7 @@ function Chart({
 
   /** Handle new data incoming from the Context */
   useEffect(() => {
-    if (nodeProcess && nodeProcess[XDataKeyState] && nodeProcess[YDataKeyState]) {
+    if (nodeProcess && nodeProcess[XDataKeyState] && nodeProcess[YDataKeyState] && liveSwitch) {
       plot.x.push(processXDataKey(nodeProcess[XDataKeyState]));
       plot.y.push(processYDataKey(nodeProcess[YDataKeyState]));
 
@@ -97,14 +99,51 @@ function Chart({
     }
   }, [nodeProcess]);
 
-  ws.onmessage = ({ data }) => {
-    data.forEach((d) => {
+  /** Reset the chart if switched from past to present mode */
+  useEffect(() => {
+    if (liveSwitch) {
+      plot.x = [];
+      plot.y = [];
+    }
+  }, [liveSwitch]);
 
-    })
+  /** Get data from queried data */
+  ws.onmessage = ({ data }) => {
+    let json;
+
+    try {
+      json = JSON.parse(data);
+    } catch (err) {
+      console.log(err);
+    }
+
+    console.log(data);
+
+    if (json) {
+      // Reset chart for past data
+      plot.x = [];
+      plot.y = [];
+
+      // Insert past data into chart
+      json.forEach((d) => {
+        plot.x.push(processXDataKey(d[XDataKeyState]));
+        plot.y.push(processYDataKey(d[YDataKeyState]));
+
+        layout.datarevision = layout.datarevision + 1;
+        setDataRevision(dataRevision + 1);
+      });
+    }
   };
 
-  const retrieveHistoricalData = () => {
-    ws.send('');
+  const retrieveHistoricalData = (wsHistorical) => {
+    if (historicalDateRange.length === 2) {
+      const from = ((historicalDateRange[0].unix() / 86400.0) + 2440587.5 - 2400000.5);
+      const to = ((historicalDateRange[1].unix() / 86400.0) + 2440587.5 - 2400000.5);
+
+      wsHistorical.send(
+        `database=agent_dump?collection=${nodeProcessState}?multiple=true?query={"utc": { "$gt": ${from}, "$lt": ${to} }}`
+      );
+    }
   };
 
   // useEffect(() => {
@@ -143,10 +182,11 @@ function Chart({
               showTime
               format="YYYY-MM-DD HH:mm:ss"
               disabled={liveSwitch}
+              onChange={moment => setHistoricalDateRange(moment)}
             />
             <Button
               type="primary"
-              onClick={retrieveHistoricalData()}
+              onClick={() => retrieveHistoricalData(ws)}
             >
               Show
             </Button>
