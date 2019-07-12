@@ -44,7 +44,7 @@ function DisplayValue({
   /** Handle new data incoming from the Context */
   useEffect(() => {
     if (nodeProcess && nodeProcess.utc) {
-      setUtc(moment.unix(nodeProcess.utc).format('MMDDYYYY-HH:mm:ss'));
+      setUtc(moment.unix((((nodeProcess.utc + 2400000.5) - 2440587.5) * 86400.0)).format('MMDDYYYY-HH:mm:ss'));
     }
 
     if (nodeProcess && nodeProcess[dataKeyState]) {

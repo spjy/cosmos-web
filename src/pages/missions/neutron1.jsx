@@ -95,7 +95,9 @@ function neutron1() {
             YDataKey="device_cpu_load_000"
             processXDataKey={
               x => {
-                return moment.unix(((x - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss')
+                return moment.unix(
+                  (((x  + 2400000.5) - 2440587.5) * 86400.0)
+                ).format('YYYY-MM-DD HH:mm:ss')
               }
             }
             processYDataKey={
