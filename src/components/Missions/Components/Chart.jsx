@@ -1,10 +1,10 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Input } from 'antd';
-import Plotly from 'plotly.js';
 import Plot from 'react-plotly.js';
 
 import BaseComponent from '../BaseComponent';
+import { Context } from '../../../store/neutron1';
 
 /**
  * Display data on a chart.
@@ -12,8 +12,11 @@ import BaseComponent from '../BaseComponent';
 function Chart({
   name,
   subheader,
-  data,
-  dataKey,
+  nodeProc,
+  XDataKey,
+  YDataKey,
+  processXDataKey,
+  processYDataKey,
   liveOnly,
   showStatus,
   status,
@@ -22,8 +25,12 @@ function Chart({
 }) {
   /** The state that manages the component's title */
   const [nameState, setNameState] = useState(name);
-  /** The state that manages the component's data key displayed */
-  const [dataKeyState, setDataKeyState] = useState(dataKey);
+  /** The state managing the node process being looked at */
+  const [nodeProcessState, setNodeProcessState] = useState(nodeProc);
+  /** The state that manages the component's X-axis data key displayed */
+  const [XDataKeyState, setXDataKeyState] = useState(XDataKey);
+  /** The state that manages the component's X-axis data key displayed */
+  const [YDataKeyState, setYDataKeyState] = useState(YDataKey);
   /** Storage for form values */
   const [form, setForm] = useState({});
   /** Status of the live switch */
@@ -41,8 +48,8 @@ function Chart({
   });
 
   const [plot, setPlot] = useState({
-    x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    y: [5, 6, 23, 4, 5, 7, 1, 4, 5, 10],
+    x: [],
+    y: [],
     type: 'scatter',
     mode: 'lines+points',
     marker: {
@@ -51,19 +58,33 @@ function Chart({
     name: legendLabel,
   });
 
+  /** Accessing the neutron1 node process context and drilling down to the specified node process to look at */
+  const { state: { [nodeProcessState]: nodeProcess } } = useContext(Context);
+
+  /** Handle new data incoming from the Context */
   useEffect(() => {
-    const interval = setInterval(() => {
-      // plot.x.push(plot.x[plot.x.length - 1] + 1);
-      // plot.y.push(plot.y[plot.y.length - 1] + 1);
-      // layout.datarevision = layout.datarevision + 1;
+    if (nodeProcess && nodeProcess[XDataKeyState] && nodeProcess[YDataKeyState]) {
+      plot.x.push(processXDataKey(nodeProcess[XDataKeyState]));
+      plot.y.push(processYDataKey(nodeProcess[YDataKeyState]));
+      
+      layout.datarevision = layout.datarevision + 1;
+      setDataRevision(dataRevision + 1);
+    }
+  }, [nodeProcess]);
 
-      // setDataRevision(dataRevision + 1);
-    }, 1000);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     // plot.x.push(plot.x[plot.x.length - 1] + 1);
+  //     // plot.y.push(plot.y[plot.y.length - 1] + 1);
+  //     // layout.datarevision = layout.datarevision + 1;
 
-    return () => {
-      clearInterval(interval);
-    };
-  }, [plot, dataRevision]);
+  //     // setDataRevision(dataRevision + 1);
+  //   }, 1000);
+
+  //   return () => {
+  //     clearInterval(interval);
+  //   };
+  // }, [plot, dataRevision]);
 
   return (
     <BaseComponent
@@ -94,21 +115,40 @@ function Chart({
           </Form.Item>
 
           <Form.Item
-            label="Data Key"
-            key="dataKeyState"
-            hasFeedback={form.dataKeyState && form.dataKeyState.touched}
-            validateStatus={form.dataKeyState && form.dataKeyState.changed ? 'success' : ''}
+            label="X Data Key"
+            key="XDataKeyState"
+            hasFeedback={form.XDataKey && form.XDataKey.touched}
+            validateStatus={form.XDataKey && form.XDataKey.changed ? 'success' : ''}
           >
             <Input
-              placeholder="Data Key"
-              id="dataKeyState"
+              placeholder="X Data Key"
+              id="XDataKeyState"
               onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
               onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
               onBlur={({ target: { id: item, value } }) => {
-                setDataKeyState(value);
+                setXDataKeyState(value);
                 setForm({ ...form, [item]: { ...form[item], changed: true } });
               }}
-              value={form.dataKeyState && form.dataKeyState.value}
+              value={form.XDataKey && form.XDataKey.value}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Y Data Key"
+            key="YDataKeyState"
+            hasFeedback={form.YDataLey && form.YDataLey.touched}
+            validateStatus={form.YDataLey && form.YDataLey.changed ? 'success' : ''}
+          >
+            <Input
+              placeholder="X Data Key"
+              id="YDataKeyState"
+              onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
+              onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
+              onBlur={({ target: { id: item, value } }) => {
+                setYDataKeyState(value);
+                setForm({ ...form, [item]: { ...form[item], changed: true } });
+              }}
+              value={form.YDataLey && form.YDataLey.value}
             />
           </Form.Item>
 
@@ -190,9 +230,15 @@ Chart.propTypes = {
   /** Supplementary information below the name */
   subheader: PropTypes.string,
   /** JSON object of data */
-  data: PropTypes.object,
-  /** Key to display from the data JSON object above */
-  dataKey: PropTypes.string,
+  nodeProc: PropTypes.string,
+  /** X-axis key to display from the data JSON object above */
+  XDataKey: PropTypes.string,
+  /** Y-axis key to display from the data JSON object above */
+  YDataKey: PropTypes.string,
+  /** Function to process the X-axis key */
+  processXDataKey: PropTypes.function,
+  /** Function to process the Y-axis key */
+  processYDataKey: PropTypes.function,
   /** Whether the component can display only live data. Hides/shows the live/past switch. */
   liveOnly: PropTypes.bool,
   /** Function is run when the live/past switch is toggled. */
@@ -216,8 +262,11 @@ Chart.propTypes = {
 Chart.defaultProps = {
   name: '',
   subheader: null,
-  data: null,
-  dataKey: null,
+  nodeProc: null,
+  XDataKey: null,
+  YDataKey: null,
+  processXDataKey: x => x,
+  processYDataKey: y => y,
   showStatus: false,
   liveOnly: true,
   handleLiveSwitchChange: () => {},

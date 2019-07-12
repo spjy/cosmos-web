@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Input } from 'antd';
 import _ from 'lodash';
@@ -13,8 +13,9 @@ import { Context } from '../../../store/neutron1';
 function DisplayValue({
   name,
   subheader,
-  data,
+  nodeProc,
   dataKey,
+  unit,
   liveOnly,
   showStatus,
   status,
@@ -23,75 +24,134 @@ function DisplayValue({
 }) {
   /** The state that manages the component's title */
   const [nameState, setNameState] = useState(name);
+  /** The state that manages the node process */
+  const [nodeProcessState, setNodeProcessState] = useState(nodeProc);
   /** The state that manages the component's data key displayed */
   const [dataKeyState, setDataKeyState] = useState(dataKey);
+  /** The state that manages the component's unit of measure for the displayed value */
+  const [unitState, setUnitState] = useState(unit);
   /** Storage for form values */
   const [form, setForm] = useState({});
   /** Status of the live switch */
   const [liveSwitch, setLiveSwitch] = useState();
+  /** State for displaying the last seen UTC value */
+  const [utc, setUtc] = useState('-');
+  /** State for storing the data temporarily */
+  const [dataKeyValue, setDataKeyValue] = useState('No data available.');
+
+  /** Accessing the neutron1 node process context and drilling down to the specified node process to look at */
+  const { state: { [nodeProcessState]: nodeProcess } } = useContext(Context);
+
+  /** Handle new data incoming from the Context */
+  useEffect(() => {
+    if (nodeProcess && nodeProcess.utc) {
+      setUtc(moment.unix(nodeProcess.utc).format('MMDDYYYY-HH:mm:ss'));
+    }
+
+    if (nodeProcess && nodeProcess[dataKeyState]) {
+      setDataKeyValue(nodeProcess[dataKeyState]);
+    }
+  }, [nodeProcess]);
 
   return (
-    <Context.Consumer>
-      {
-        node => (
-          <BaseComponent
-            name={nameState}
-            subheader={data && _.has(data, dataKeyState) && data.utc ? moment.unix(data.utc).format('MMDDYYYY-HH:mm:ss') : '-'}
-            liveOnly={liveOnly}
-            showStatus={showStatus}
-            status={status}
-            formItems={(
-              <Form layout="vertical">
-                <Form.Item
-                  label="Name"
-                  key="name"
-                  hasFeedback={form.nameState && form.nameState.touched}
-                  validateStatus={form.nameState && form.nameState.changed ? 'success' : ''}
-                >
-                  <Input
-                    placeholder="Name"
-                    id="nameState"
-                    onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
-                    onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
-                    onBlur={({ target: { id: item, value } }) => {
-                      setNameState(value);
-                      setForm({ ...form, [item]: { ...form[item], changed: true } });
-                    }}
-                    value={form.nameState && form.nameState.value}
-                  />
-                </Form.Item>
-      
-                <Form.Item
-                  label="Data Key"
-                  key="dataKeyState"
-                  hasFeedback={form.dataKeyState && form.dataKeyState.touched}
-                  validateStatus={form.dataKeyState && form.dataKeyState.changed ? 'success' : ''}
-                >
-                  <Input
-                    placeholder="Data Key"
-                    id="dataKeyState"
-                    onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
-                    onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
-                    onBlur={({ target: { id: item, value } }) => {
-                      setDataKeyState(value);
-                      setForm({ ...form, [item]: { ...form[item], changed: true } });
-                    }}
-                    value={form.dataKeyState && form.dataKeyState.value}
-                  />
-                </Form.Item>
-              </Form>
-            )}
-            handleLiveSwitchChange={checked => setLiveSwitch(checked)}
+    <BaseComponent
+      name={nameState}
+      subheader={utc}
+      liveOnly={liveOnly}
+      showStatus={showStatus}
+      status={status}
+      formItems={(
+        <Form layout="vertical">
+          <Form.Item
+            label="Name"
+            key="name"
+            hasFeedback={form.nameState && form.nameState.touched}
+            validateStatus={form.nameState && form.nameState.changed ? 'success' : ''}
           >
-            <div className="text-center">
-              {
-                data && dataKeyState && _.has(data, dataKeyState) ? _.get(data, dataKeyState) : 'No data available.'
-              }
-            </div>
-          </BaseComponent>
-        )
-      }
-    </Context.Consumer>
+            <Input
+              placeholder="Name"
+              id="nameState"
+              onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
+              onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
+              onBlur={({ target: { id: item, value } }) => {
+                setNameState(value);
+                setForm({ ...form, [item]: { ...form[item], changed: true } });
+              }}
+              value={form.nameState && form.nameState.value}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Node Process"
+            key="nodeProcess"
+            hasFeedback={form.nodeProcessState && form.nodeProcessState.touched}
+            validateStatus={form.nodeProcessState && form.nodeProcessState.changed ? 'success' : ''}
+          >
+            <Input
+              placeholder="Node Process"
+              id="nodeProcessState"
+              onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
+              onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
+              onBlur={({ target: { id: item, value } }) => {
+                setNodeProcessState(value);
+                setForm({ ...form, [item]: { ...form[item], changed: true } });
+              }}
+              value={form.nodeProcessState && form.nodeProcessState.value}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Data Key"
+            key="dataKeyState"
+            hasFeedback={form.dataKeyState && form.dataKeyState.touched}
+            validateStatus={form.dataKeyState && form.dataKeyState.changed ? 'success' : ''}
+          >
+            <Input
+              placeholder="Data Key"
+              id="dataKeyState"
+              onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
+              onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
+              onBlur={({ target: { id: item, value } }) => {
+                setDataKeyState(value);
+                setForm({ ...form, [item]: { ...form[item], changed: true } });
+              }}
+              value={form.dataKeyState && form.dataKeyState.value}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Unit"
+            key="unit"
+            hasFeedback={form.unitState && form.unitState.touched}
+            validateStatus={form.unitState && form.unitState.changed ? 'success' : ''}
+          >
+            <Input
+              placeholder="Unit"
+              id="unitState"
+              onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
+              onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
+              onBlur={({ target: { id: item, value } }) => {
+                setUnitState(value);
+                setForm({ ...form, [item]: { ...form[item], changed: true } });
+              }}
+              value={form.unitState && form.unitState.value}
+            />
+          </Form.Item>
+        </Form>
+      )}
+      handleLiveSwitchChange={checked => setLiveSwitch(checked)}
+    >
+      <div className="text-center text-lg">
+        <span>
+          {dataKeyValue}
+        </span>
+        <span className="text-gray-500">
+          {
+            dataKeyValue !== 'No data available.' ? unitState : null
+          }
+        </span>
+      </div>
+    </BaseComponent>
   );
 }
 
@@ -101,9 +161,11 @@ DisplayValue.propTypes = {
   /** Supplementary information below the name */
   subheader: PropTypes.string,
   /** JSON object of data */
-  data: PropTypes.object,
+  nodeProc: PropTypes.string,
   /** Key to display from the data JSON object above */
   dataKey: PropTypes.string,
+  /** The unit of measurement of a certain value. */
+  unit: PropTypes.string,
   /** Whether the component can display only live data. Hides/shows the live/past switch. */
   liveOnly: PropTypes.bool,
   /** Function is run when the live/past switch is toggled. */
@@ -127,8 +189,9 @@ DisplayValue.propTypes = {
 DisplayValue.defaultProps = {
   name: '',
   subheader: null,
-  data: null,
+  nodeProc: null,
   dataKey: null,
+  unit: '',
   showStatus: false,
   liveOnly: true,
   handleLiveSwitchChange: () => {},
