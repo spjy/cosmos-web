@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Input } from 'antd';
-import _ from 'lodash';
 import moment from 'moment-timezone';
 
 import BaseComponent from '../BaseComponent';
@@ -77,7 +76,7 @@ function DisplayValue({
                 setNameState(value);
                 setForm({ ...form, [item]: { ...form[item], changed: true } });
               }}
-              value={form.nameState && form.nameState.value}
+              defaultValue={name}
             />
           </Form.Item>
 
@@ -96,7 +95,7 @@ function DisplayValue({
                 setNodeProcessState(value);
                 setForm({ ...form, [item]: { ...form[item], changed: true } });
               }}
-              value={form.nodeProcessState && form.nodeProcessState.value}
+              defaultValue={nodeProc}
             />
           </Form.Item>
 
@@ -115,7 +114,7 @@ function DisplayValue({
                 setDataKeyState(value);
                 setForm({ ...form, [item]: { ...form[item], changed: true } });
               }}
-              value={form.dataKeyState && form.dataKeyState.value}
+              defaultValue={dataKey}
             />
           </Form.Item>
 
@@ -134,7 +133,7 @@ function DisplayValue({
                 setUnitState(value);
                 setForm({ ...form, [item]: { ...form[item], changed: true } });
               }}
-              value={form.unitState && form.unitState.value}
+              defaultValue={unit}
             />
           </Form.Item>
         </Form>

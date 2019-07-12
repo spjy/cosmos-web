@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input } from 'antd';
+import { Form, Input, DatePicker } from 'antd';
 import Plot from 'react-plotly.js';
 
 import BaseComponent from '../BaseComponent';
 import { Context } from '../../../store/neutron1';
+
+const { RangePicker } = DatePicker;
 
 /**
  * Display data on a chart.
@@ -96,6 +98,20 @@ function Chart({
       formItems={(
         <Form layout="vertical">
           <Form.Item
+            className="w-auto"
+            label="Historical Date Range"
+            key="dateRange"
+            hasFeedback={form.dateRange && form.dateRange.touched}
+            validateStatus={form.dateRange && form.dateRange.changed ? 'success' : ''}
+          >
+            <RangePicker
+              id="dateRange"
+              showTime
+              format="YYYY-MM-DD HH:mm:ss"
+              disabled={liveSwitch}
+            />
+          </Form.Item>
+          <Form.Item
             label="Chart Name"
             key="nameState"
             hasFeedback={form.nameState && form.nameState.touched}
@@ -110,7 +126,26 @@ function Chart({
                 setNameState(value);
                 setForm({ ...form, [item]: { ...form[item], changed: true } });
               }}
-              value={form.nameState && form.nameState.value}
+              defaultValue={name}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Node Process"
+            key="nodeProcess"
+            hasFeedback={form.nodeProcess && form.nodeProcess.touched}
+            validateStatus={form.nodeProcess && form.nodeProcess.changed ? 'success' : ''}
+          >
+            <Input
+              placeholder="Node Process"
+              id="nodeProcess"
+              onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
+              onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
+              onBlur={({ target: { id: item, value } }) => {
+                setNodeProcessState(value);
+                setForm({ ...form, [item]: { ...form[item], changed: true } });
+              }}
+              defaultValue={nodeProc}
             />
           </Form.Item>
 
@@ -129,7 +164,7 @@ function Chart({
                 setXDataKeyState(value);
                 setForm({ ...form, [item]: { ...form[item], changed: true } });
               }}
-              value={form.XDataKey && form.XDataKey.value}
+              defaultValue={XDataKeyState}
             />
           </Form.Item>
 
@@ -148,7 +183,7 @@ function Chart({
                 setYDataKeyState(value);
                 setForm({ ...form, [item]: { ...form[item], changed: true } });
               }}
-              value={form.YDataLey && form.YDataLey.value}
+              defaultValue={YDataKeyState}
             />
           </Form.Item>
 
@@ -185,7 +220,7 @@ function Chart({
                 plot.marker.color = value;
                 setForm({ ...form, [item]: { ...form[item], changed: true } });
               }}
-              value={form.markerColor && form.markerColor.value}
+              defaultValue={markerColor}
             />
           </Form.Item>
 
@@ -204,7 +239,7 @@ function Chart({
                 plot.name = value;
                 setForm({ ...form, [item]: { ...form[item], changed: true } });
               }}
-              value={form.legendLabel && form.legendLabel.value}
+              defaultValue={legendLabel}
             />
           </Form.Item>
         </Form>
@@ -236,9 +271,9 @@ Chart.propTypes = {
   /** Y-axis key to display from the data JSON object above */
   YDataKey: PropTypes.string,
   /** Function to process the X-axis key */
-  processXDataKey: PropTypes.function,
+  processXDataKey: PropTypes.func,
   /** Function to process the Y-axis key */
-  processYDataKey: PropTypes.function,
+  processYDataKey: PropTypes.func,
   /** Whether the component can display only live data. Hides/shows the live/past switch. */
   liveOnly: PropTypes.bool,
   /** Function is run when the live/past switch is toggled. */
