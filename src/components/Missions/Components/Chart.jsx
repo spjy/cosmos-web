@@ -277,8 +277,6 @@ function Chart({
                 />
               </Form.Item>
 
-
-
               <Form.Item
                 label="Chart Mode"
                 key="chartMode"
