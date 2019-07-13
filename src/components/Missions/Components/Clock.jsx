@@ -60,7 +60,7 @@ function Clock({
         </Form>
       )}
     >
-      <div className="flex flex-wrap justify-center">
+      <div className="flex flex-col justify-center">
         <div className="text-sm my-1 mx-1">
           <div className="text-gray-500">
             Local:&nbsp;
