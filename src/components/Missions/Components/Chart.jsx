@@ -11,35 +11,30 @@ import socket from '../../../socket';
 
 const { RangePicker } = DatePicker;
 const { Panel } = Collapse;
-
-const ws = socket('query', '/query/');
+const { TextArea } = Input;
 
 /**
  * Display data on a chart.
  */
 function Chart({
   name,
-  subheader,
   plots,
   nodeProc,
   XDataKey,
-  YDataKey,
   processXDataKey,
   processYDataKey,
-  liveOnly,
   showStatus,
   status,
-  children,
-  formItems
+  children
 }) {
+  let processXDataKeyFunction = processXDataKey;
+
   /** The state that manages the component's title */
   const [nameState, setNameState] = useState(name);
   /** The state managing the node process being looked at */
   const [nodeProcessState, setNodeProcessState] = useState(nodeProc);
   /** The state that manages the component's X-axis data key displayed */
   const [XDataKeyState, setXDataKeyState] = useState(XDataKey);
-  /** The state that manages the component's X-axis data key displayed */
-  const [YDataKeyState, setYDataKeyState] = useState(YDataKey);
   /** Storage for form values */
   const [form, setForm] = useState({
     newChart: {
@@ -49,16 +44,10 @@ function Chart({
     1: {},
     2: {}
   });
-  /** Status of the live switch */
-  const [liveSwitch, setLiveSwitch] = useState();
-  /** The color of the function */
-  const [markerColor, setMarkerColor] = useState('red');
-  /** The name to be displayed for the function's legend marker */
-  const [legendLabel, setLegendLabel] = useState(nodeProc);
   /** Counter determining when the plot should be updated */
   const [dataRevision, setDataRevision] = useState(0);
   /** Layout parameters for the plot */
-  const [layout, setLayout] = useState({
+  const [layout] = useState({
     autosize: true,
     datarevision: dataRevision,
     paper_bgcolor: '#FBFBFB',
@@ -74,132 +63,83 @@ function Chart({
     }
   });
 
-  /** Storage for date range of historical data query */
-  const [historicalDateRange, setHistoricalDateRange] = useState([]);
-  /** Storage for historical data display */
-  const [historicalData, setHistoricalData] = useState([]);
+  const [retrievePlotHistory, setRetrievePlotHistory] = useState(null);
 
   /** Accessing the neutron1 node process context and drilling down */
   const { state: { [nodeProcessState]: nodeProcess } } = useContext(Context);
 
   /** Plot data storage */
-  const [plotsState, setPlotsState] = useState(plots);
+  const [plotsState] = useState(plots);
 
   useEffect(() => {
     // Make an object for each plot's form
-    for (let i = 0; i < plotsState.length; i = i + 1) {
+    for (let i = 0; i < plotsState.length; i += 1) {
       setForm({
         ...form,
-        [i]: {}
+        [i]: {
+          live: plotsState[i].live
+        }
       });
     }
-
-    console.log(form);
   }, []);
-
-  // useEffect(() => {
-  //   /** Get data from queried data */
-  //   ws.onmessage = ({ data }) => {
-  //     let json;
-
-  //     try {
-  //       json = JSON.parse(data);
-
-  //       // Reset chart for past data
-  //       plotsState[0].x = [];
-  //       plotsState[0].y = [];
-
-  //       // Insert past data into chart
-  //       json.forEach((d) => {
-  //         plotsState[plotsState.length - 1].x.push(processXDataKey(d[XDataKeyState]));
-  //         plotsState[plotsState.length - 1].y.push(processYDataKey(d[YDataKeyState]));
-
-  //         layout.datarevision = layout.datarevision + 1;
-  //         setDataRevision(dataRevision + 1);
-  //       });
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   };
-
-  //   return () => {
-  //     ws.close();
-  //   };
-  // }, []);
 
   /** Handle new data incoming from the Context */
   useEffect(() => {
     plotsState.forEach((p, i) => {
-      if (nodeProcess && nodeProcess[XDataKeyState] && nodeProcess[p.YDataKey] && liveSwitch) {
-        plotsState[i].x.push(processXDataKey(nodeProcess[XDataKeyState]));
+      if (nodeProcess && nodeProcess[XDataKeyState] && nodeProcess[p.YDataKey] && p.live) {
+        plotsState[i].x.push(processXDataKeyFunction(nodeProcess[XDataKeyState]));
         plotsState[i].y.push(processYDataKey(nodeProcess[p.YDataKey]));
 
-        layout.datarevision = layout.datarevision + 1;
+        layout.datarevision += 1;
         setDataRevision(dataRevision + 1);
       }
     });
   }, [nodeProcess]);
 
-  /** Reset the chart if switched from past to present mode */
   useEffect(() => {
-    if (liveSwitch) {
-      plotsState[0].x = [];
-      plotsState[0].y = [];
+    if (retrievePlotHistory !== null) {
+      const query = socket('query', '/query/');
+
+      query.onopen = () => {
+        if (form[retrievePlotHistory].dateRange.value.length === 2) {
+          // Unix time to modified julian date
+          const from = ((form[retrievePlotHistory].dateRange.value[0].unix() / 86400.0) + 2440587.5 - 2400000.5);
+          const to = ((form[retrievePlotHistory].dateRange.value[1].unix() / 86400.0) + 2440587.5 - 2400000.5);
+    
+          query.send(
+            `database=agent_dump?collection=${plotsState[retrievePlotHistory].nodeProcess}?multiple=true?query={"utc": { "$gt": ${from}, "$lt": ${to} }}`
+          );
+        }
+
+        query.onmessage = ({ data }) => {
+          try {
+            const json = JSON.parse(data);
+
+            plotsState[retrievePlotHistory].live = false;
+
+            // Reset chart for past data
+            plotsState[retrievePlotHistory].x = [];
+            plotsState[retrievePlotHistory].y = [];
+
+            // Insert past data into chart
+            json.forEach((d) => {
+              plotsState[retrievePlotHistory].x.push(processXDataKey(d[XDataKeyState]));
+              plotsState[retrievePlotHistory].y.push(processYDataKey(d[plotsState[retrievePlotHistory].YDatakey]));
+
+              layout.datarevision += 1;
+              setDataRevision(dataRevision + 1);
+            });
+
+            query.close();
+
+            setRetrievePlotHistory(null);
+          } catch (err) {
+            console.log(err);
+          }
+        };
+      };
     }
-  }, [liveSwitch]);
-
-  const retrieveHistoricalData = (plot) => {
-    const query = socket('query', '/query/');
-
-    if (form[plot].dateRange.value.length === 2) {
-      // Unix time to modified julian date
-      const from = ((form[plot].dateRange.value[0].unix() / 86400.0) + 2440587.5 - 2400000.5);
-      const to = ((form[plot].dateRange.value[1].unix() / 86400.0) + 2440587.5 - 2400000.5);
-
-      query.send(
-        `database=agent_dump?collection=${plotsState[plot].nodeProcess}?multiple=true?query={"utc": { "$gt": ${from}, "$lt": ${to} }}`
-      );
-    }
-
-    query.onmessage = ({ data }) => {
-      try {
-        const json = JSON.parse(data);
-
-        console.log(json);
-
-        // Reset chart for past data
-        plotsState[plot].x = [];
-        plotsState[plot].y = [];
-
-        // Insert past data into chart
-        json.forEach((d) => {
-          plotsState[plot].x.push(processXDataKey(d[XDataKeyState]));
-          plotsState[plot].y.push(processYDataKey(d[YDataKeyState]));
-
-          layout.datarevision = layout.datarevision + 1;
-          setDataRevision(dataRevision + 1);
-        });
-
-        query.close();
-      } catch (err) {
-        console.log(err);
-      }
-    };
-  };
-
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     // plot.x.push(plot.x[plot.x.length - 1] + 1);
-  //     // plot.y.push(plot.y[plot.y.length - 1] + 1);
-  //     // layout.datarevision = layout.datarevision + 1;
-
-  //     // setDataRevision(dataRevision + 1);
-  //   }, 1000);
-
-  //   return () => {
-  //     clearInterval(interval);
-  //   };
-  // }, [plot, dataRevision]);
+  }, [retrievePlotHistory]);
 
   return (
     <BaseComponent
@@ -208,10 +148,10 @@ function Chart({
         <span>
           <Divider type="vertical" />
           {
-            plotsState.map((plot) => {
+            plotsState.map((plot, i) => {
               return (
-                <span>
-                  <span className="inline-block rounded-full mr-1 indicator" style={{ height: '6px', width: '6px', marginBottom: '2px', backgroundColor: plot.marker.color }} />
+                <span key={i}>
+                  <span className="inline-block rounded-full mr-2 indicator" style={{ height: '6px', width: '6px', marginBottom: '2px', backgroundColor: plot.marker.color }} />
                   <span className="font-semibold">
                     {plot.nodeProcess}
                   </span>
@@ -224,7 +164,7 @@ function Chart({
           }
         </span>
       )}
-      liveOnly={liveOnly}
+      liveOnly
       showStatus={showStatus}
       status={status}
       formItems={(
@@ -241,6 +181,7 @@ function Chart({
               onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
               onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
               onBlur={({ target: { id: item, value } }) => {
+                setNameState(value);
                 setForm({ ...form, [item]: { ...form[item], changed: true } });
               }}
               defaultValue={name}
@@ -259,9 +200,28 @@ function Chart({
               onFocus={({ target: { id: item } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], touched: true, changed: false } } })}
               onChange={({ target: { id: item, value } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], value, changed: false } } })}
               onBlur={({ target: { id: item, value } }) => {
+                setXDataKeyState(value);
                 setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], changed: true } } });
               }}
               defaultValue={XDataKeyState}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Process X Data Key"
+            key="processXDataKey"
+            hasFeedback={form.newChart.processXDataKey && form.newChart.processXDataKey.touched}
+            validateStatus={form.newChart.processXDataKey && form.newChart.processXDataKey.changed ? 'success' : ''}
+          >
+            <TextArea
+              placeholder="Process X Data Key"
+              id="processXDataKey"
+              onFocus={({ target: { id: item } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], touched: true, changed: false } } })}
+              onChange={({ target: { id: item, value } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], value, changed: false } } })}
+              onBlur={({ target: { id: item, value } }) => {
+                processXDataKeyFunction = eval(value);
+              }}
+              defaultValue={'(value) => {\n\t// code to process value here \n}'}
             />
           </Form.Item>
 
@@ -274,11 +234,11 @@ function Chart({
                   <Panel
                     header={(
                       <span>
-                        <span className="inline-block rounded-full mr-1 indicator" style={{ height: '6px', width: '6px', marginBottom: '2px', backgroundColor: plot.marker.color }} />
+                        <span className="inline-block rounded-full mr-2 indicator" style={{ height: '6px', width: '6px', marginBottom: '2px', backgroundColor: plot.marker.color }} />
                         {plot.nodeProcess}
                         &nbsp;
                         <span className="text-gray-600">
-                          {plot.YDataKey} vs. {XDataKeyState}
+                          {plot.YDataKey}
                         </span>
                       </span>
                     )}
@@ -290,13 +250,17 @@ function Chart({
                         <Switch
                           checkedChildren="Live"
                           unCheckedChildren="Past"
-                          defaultChecked
-                          onChange={checked => setForm({
-                            ...form,
-                            [i]: {
-                              ...form[i], live: checked
-                            }
-                          })}
+                          defaultChecked={plot.live}
+                          onChange={(checked) => {
+                            plotsState[i].live = checked;
+
+                            setForm({
+                              ...form,
+                              [i]: {
+                                ...form[i], live: checked
+                              }
+                            });
+                          }}
                         />
                         &nbsp;
                         <Icon className="text-lg" type="close" />
@@ -320,7 +284,7 @@ function Chart({
                       />
                       <Button
                         type="primary"
-                        onClick={() => retrieveHistoricalData(i)}
+                        onClick={() => setRetrievePlotHistory(i)}
                         disabled={form[i].live}
                       >
                         Show
@@ -490,10 +454,12 @@ function Chart({
                   onBlur={({ target: { id: item, value } }) => {
                     setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], changed: true } } });
                   }}
+                  value={form.newChart.name ? form.newChart.name.value : ''}
                 />
               </Form.Item>
 
               <Form.Item
+                required
                 label="Chart Type"
                 key="chartType"
                 hasFeedback={form.newChart.chartType && form.newChart.chartType.touched}
@@ -507,6 +473,7 @@ function Chart({
                   onBlur={({ target: { id: item, value } }) => {
                     setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], changed: true } } });
                   }}
+                  value={form.newChart.chartType ? form.newChart.chartType.value : ''}
                 />
               </Form.Item>
 
@@ -524,10 +491,12 @@ function Chart({
                   onBlur={({ target: { id: item, value } }) => {
                     setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], changed: true } } });
                   }}
+                  value={form.newChart.chartMode ? form.newChart.chartMode.value : ''}
                 />
               </Form.Item>
 
               <Form.Item
+                required
                 label="Node Process"
                 key="nodeProcess"
                 hasFeedback={form.newChart.nodeProcess && form.newChart.nodeProcess.touched}
@@ -541,10 +510,12 @@ function Chart({
                   onBlur={({ target: { id: item, value } }) => {
                     setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], changed: true } } });
                   }}
+                  value={form.newChart.nodeProcess ? form.newChart.nodeProcess.value : ''}
                 />
               </Form.Item>
 
               <Form.Item
+                required
                 label="Y Data Key"
                 key="YDataKey"
                 hasFeedback={form.newChart.YDataKey && form.newChart.YDataKey.touched}
@@ -558,6 +529,7 @@ function Chart({
                   onBlur={({ target: { id: item, value } }) => {
                     setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], changed: true } } });
                   }}
+                  value={form.newChart.YDataKey ? form.newChart.YDataKey.value : ''}
                 />
               </Form.Item>
 
@@ -575,6 +547,7 @@ function Chart({
                   onBlur={({ target: { id: item, value } }) => {
                     setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], changed: true } } });
                   }}
+                  value={form.newChart.markerColor ? form.newChart.markerColor.value : ''}
                 />
               </Form.Item>
 
@@ -582,29 +555,39 @@ function Chart({
                 type="dashed"
                 block
                 onClick={() => {
-                  setForm({
-                    ...form,
-                    newChart: {
-                      live: form.newChart.live.value
+                  if (form.newChart.chartType.value && form.newChart.nodeProcess.value && form.newChart.YDataKey.value) {
+                    setForm({
+                      ...form,
+                      newChart: {
+                        live: form.newChart.live
+                      },
+                      [plotsState.length]: {}
+                    });
+
+                    plotsState.push({
+                      live: form.newChart.live,
+                      x: [],
+                      y: [],
+                      type: form.newChart.chartType.value,
+                      marker: {
+                        color: form.newChart.markerColor.value
+                      },
+                      mode: form.newChart.chartMode.value,
+                      name: form.newChart.name.value,
+                      YDataKey: form.newChart.YDataKey.value,
+                      nodeProcess: form.newChart.nodeProcess.value
+                    });
+
+                    form.newChart.name.value = '';
+                    form.newChart.markerColor.value = '';
+                    form.newChart.chartMode.value = '';
+                    form.newChart.YDataKey.value = '';
+                    form.newChart.nodeProcess.value = '';
+                    form.newChart.chartType.value = '';
+
+                    if (!form.newChart.live) {
+                      setRetrievePlotHistory(plotsState.length);
                     }
-                  });
-
-                  plotsState.push({
-                    live: form.newChart.live.value,
-                    x: [],
-                    y: [],
-                    type: form.newChart.chartType.value,
-                    marker: {
-                      color: form.newChart.markerColor.value
-                    },
-                    mode: form.newChart.chartMode.value,
-                    name: form.newChart.name.value,
-                    YDataKey: form.newChart.YDataKey.value,
-                    nodeProcess: form.newChart.nodeProcess.value
-                  });
-
-                  if (!form.newChart.live.value) {
-                    retrieveHistoricalData(plotsState.length - 1)
                   }
                 }}
               >
@@ -615,7 +598,6 @@ function Chart({
           <br />
         </Form>
       )}
-      handleLiveSwitchChange={checked => setLiveSwitch(checked)}
     >
       <Plot
         id="plot"
@@ -627,6 +609,7 @@ function Chart({
         layout={layout}
         revision={dataRevision}
       />
+      {children}
     </BaseComponent>
   );
 }
@@ -634,20 +617,6 @@ function Chart({
 Chart.propTypes = {
   /** Name of the component to display at the time */
   name: PropTypes.string,
-  /** Supplementary information below the name */
-  subheader: PropTypes.string,
-  /** General chart options */
-  chart: PropTypes.shape({
-    XDataKey: PropTypes.string
-  }).isRequired,
-  /** Charts to plot */
-  charts: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string,
-      /** Name of marker on the chart */
-      XDataKey: PropTypes.string
-    })
-  ).isRequired,
   /** Plot options for each chart */
   plots: PropTypes.arrayOf(
     PropTypes.shape({
@@ -677,16 +646,10 @@ Chart.propTypes = {
   nodeProc: PropTypes.string,
   /** X-axis key to display from the data JSON object above */
   XDataKey: PropTypes.string,
-  /** Y-axis key to display from the data JSON object above */
-  YDataKey: PropTypes.string,
   /** Function to process the X-axis key */
   processXDataKey: PropTypes.func,
   /** Function to process the Y-axis key */
   processYDataKey: PropTypes.func,
-  /** Whether the component can display only live data. Hides/shows the live/past switch. */
-  liveOnly: PropTypes.bool,
-  /** Function is run when the live/past switch is toggled. */
-  handleLiveSwitchChange: PropTypes.func,
   /** Whether to show a circular indicator of the status of the component */
   showStatus: PropTypes.bool,
   /** The type of badge to show if showStatus is true (see the ant design badges component) */
@@ -698,25 +661,18 @@ Chart.propTypes = {
     }
   },
   /** Children node */
-  children: PropTypes.node,
-  /** Form node */
-  formItems: PropTypes.node
+  children: PropTypes.node
 };
 
 Chart.defaultProps = {
   name: '',
-  subheader: null,
   nodeProc: null,
   XDataKey: null,
-  YDataKey: null,
   processXDataKey: x => x,
   processYDataKey: y => y,
   showStatus: false,
-  liveOnly: true,
-  handleLiveSwitchChange: () => {},
   status: 'error',
-  children: null,
-  formItems: null
+  children: null
 };
 
 export default Chart;

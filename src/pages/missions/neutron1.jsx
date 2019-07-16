@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useReducer } from 'react';
-import { Form, Input } from 'antd';
+import moment from 'moment-timezone';
 
 import {
   Context, actions, reducer
 } from '../../store/neutron1';
 
 import socket from '../../socket';
-import moment from 'moment-timezone';
 
 import Card from '../../components/Missions/Components/LayoutCard';
 import Example from '../../components/Missions/Components/Example';
@@ -23,10 +22,6 @@ function neutron1() {
    * Store the agent statuses in the global store.
    */
   const [state, dispatch] = useReducer(reducer, {});
-  /** Storage for form values */
-  const [form, setForm] = useState({});
-  /** Status of the live switch */
-  const [liveSwitch, setLiveSwitch] = useState();
 
   const [latestMessage, setLatestMessage] = useState({});
 
@@ -170,139 +165,126 @@ function neutron1() {
             }
           />
         </Card>
-        <Card>
-          <Chart
-            name="Voltage"
-            liveOnly={false}
-            nodeProc="neutron1:eps"
-            XDataKey="utc"
-            YDataKey="device_cpu_load_000"
-            processXDataKey={
-              x => {
-                return moment.unix(
-                  (((x  + 2400000.5) - 2440587.5) * 86400.0)
-                ).format('YYYY-MM-DD HH:mm:ss')
+        <div className="flex flex-row">
+          <Card>
+            <Chart
+              name="Voltage"
+              liveOnly={false}
+              nodeProc="neutron1:eps"
+              XDataKey="utc"
+              YDataKey="device_cpu_load_000"
+              processXDataKey={
+                x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss')
               }
-            }
-            processYDataKey={
-              y => y
-            }
-            plots={
-              [
-                {
-                  x: [],
-                  y: [],
-                  type: 'scatter',
-                  marker: {
-                    color: 'red'
-                  },
-                  name: '5V',
-                  YDataKey: 'device_bus_volt_001',
-                  nodeProcess: 'neutron1:eps',
-                  live: true
-                },
-                {
-                  x: [],
-                  y: [],
-                  type: 'scatter',
-                  marker: {
-                    color: 'blue'
-                  },
-                  name: '3.3V',
-                  YDataKey: 'device_bus_volt_002',
-                  nodeProcess: 'neutron1:eps',
-                  live: true
-                },
-                {
-                  x: [],
-                  y: [],
-                  type: 'scatter',
-                  marker: {
-                    color: 'orange'
-                  },
-                  name: 'Battery Voltage',
-                  YDataKey: 'device_bus_volt_003',
-                  nodeProcess: 'neutron1:eps',
-                  live: true
-                }
-              ]
-            }
-          />
-        </Card>
-
-        <Card>
-          <Chart
-            name="Amperage"
-            liveOnly={false}
-            nodeProc="neutron1:eps"
-            XDataKey="utc"
-            YDataKey="device_cpu_load_000"
-            processXDataKey={
-              x => {
-                return moment.unix(
-                  (((x  + 2400000.5) - 2440587.5) * 86400.0)
-                ).format('YYYY-MM-DD HH:mm:ss')
+              processYDataKey={
+                y => y
               }
-            }
-            processYDataKey={
-              y => y
-            }
-            plots={
-              [
-                {
-                  x: [],
-                  y: [],
-                  type: 'scatter',
-                  marker: {
-                    color: 'red'
+              plots={
+                [
+                  {
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    marker: {
+                      color: 'red'
+                    },
+                    name: '5V',
+                    YDataKey: 'device_bus_volt_001',
+                    nodeProcess: 'neutron1:eps',
+                    live: true
                   },
-                  name: '5V',
-                  YDataKey: 'device_bus_amp_001',
-                  nodeProcess: 'neutron1:eps',
-                  live: true
-                },
-                {
-                  x: [],
-                  y: [],
-                  type: 'scatter',
-                  marker: {
-                    color: 'blue'
+                  {
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    marker: {
+                      color: 'blue'
+                    },
+                    name: '3.3V',
+                    YDataKey: 'device_bus_volt_002',
+                    nodeProcess: 'neutron1:eps',
+                    live: true
                   },
-                  name: '3.3V',
-                  YDataKey: 'device_bus_amp_002',
-                  nodeProcess: 'neutron1:eps',
-                  live: true
-                },
-                {
-                  x: [],
-                  y: [],
-                  type: 'scatter',
-                  marker: {
-                    color: 'orange'
-                  },
-                  name: 'Battery Voltage',
-                  YDataKey: 'device_bus_amp_003',
-                  nodeProcess: 'neutron1:eps',
-                  live: true
-                }
-              ]
-            }
-          />
-        </Card>
+                  {
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    marker: {
+                      color: 'orange'
+                    },
+                    name: 'Battery Voltage',
+                    YDataKey: 'device_bus_volt_003',
+                    nodeProcess: 'neutron1:eps',
+                    live: true
+                  }
+                ]
+              }
+            />
+          </Card>
 
+          <Card>
+            <Chart
+              name="Amperage"
+              liveOnly={false}
+              nodeProc="neutron1:eps"
+              XDataKey="utc"
+              YDataKey="device_cpu_load_000"
+              processXDataKey={
+                x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss')
+              }
+              processYDataKey={
+                y => y
+              }
+              plots={
+                [
+                  {
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    marker: {
+                      color: 'red'
+                    },
+                    name: '5V',
+                    YDataKey: 'device_bus_amp_001',
+                    nodeProcess: 'neutron1:eps',
+                    live: true
+                  },
+                  {
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    marker: {
+                      color: 'blue'
+                    },
+                    name: '3.3V',
+                    YDataKey: 'device_bus_amp_002',
+                    nodeProcess: 'neutron1:eps',
+                    live: true
+                  },
+                  {
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    marker: {
+                      color: 'orange'
+                    },
+                    name: 'Battery Voltage',
+                    YDataKey: 'device_bus_amp_003',
+                    nodeProcess: 'neutron1:eps',
+                    live: true
+                  }
+                ]
+              }
+            />
+          </Card>
+        </div>
         <Card>
           <Chart
-            name="Chart"
-            liveOnly={false}
+            name="HSFLPC23 CPU Load"
             nodeProc="hsflpc23:cpu"
             XDataKey="utc"
-            YDataKey="device_cpu_load_000"
             processXDataKey={
-              x => {
-                return moment.unix(
-                  (((x  + 2400000.5) - 2440587.5) * 86400.0)
-                ).format('YYYY-MM-DD HH:mm:ss')
-              }
+              x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss')
             }
             processYDataKey={
               y => y
@@ -331,20 +313,3 @@ function neutron1() {
 }
 
 export default neutron1;
-
-        /* 
-          voltage, inside bus voltage (vbatt), 5V bus, 3.3V bus, 
-
-          device_batt:
-          power, charge, percentage
-
-          bus volt:
-          5V: device_bus_volt_001
-          3.3V: device_bus_volt_002
-          3.3V: device_bus_volt_003
-
-          bus amp:
-          1,2,3
-
-          voltage, power, current
-        */

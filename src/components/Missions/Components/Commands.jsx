@@ -23,43 +23,39 @@ function Commands() {
   /** Agent command history (to display in the terminal) */
   const [commandHistory, setCommandHistory] = useState([]);
 
-  /** On mount get list of agents */
-  useEffect(() => {
-    /** Manages requests for agent list and agent [node] [process] */
-    ws.onmessage = ({ data }) => {
-      let json;
+  /** Manages requests for agent list and agent [node] [process] */
+  ws.onmessage = ({ data }) => {
+    let json;
 
-      try {
-        json = JSON.parse(data);
-      } catch (err) {
-        // console.log(err);
-      }
+    try {
+      json = JSON.parse(data);
+    } catch (err) {
+      // console.log(err);
+    }
 
-      console.log(data);
+    console.log(json);
 
-      if (json && json.agent_list) {
-        // agent list
-        setAgentList(json.agent_list);
-      } else if (json && json.output && json.output.requests) {
-        // agent node proc
-        setAgentRequests(json.output.requests);
-      } else if (json && json.output) {
-        // agent node proc cmd
-        setCommandHistory([...commandHistory, json.output]);
-      }
-    };
+    if (json && json.agent_list) {
+      // agent list
+      setAgentList(json.agent_list);
+    } else if (json && json.output && json.output.requests) {
+      // agent node proc
+      setAgentRequests(json.output.requests);
+    } else if (json && json.output) {
+      // agent node proc cmd
+      setCommandHistory([...commandHistory, json.output]);
+    }
+  };
 
-    ws.onopen = () => {
-      ws.send('list_json');
-    };
+  ws.onopen = () => {
+    ws.send('list_json');
+  };
 
-    return () => {
-      ws.close();
-    };
-  }, []);
+  /** Close ws on unmount */
+  useEffect(() => () => ws.close(), []);
 
   /** Handle submission of agent command */
-  const sendCommand = (ws) => {
+  const sendCommand = () => {
     if (selectedRequest === '> agent') {
       ws.send(commandArguments);
       setCommandHistory([...commandHistory, `➜ agent ${commandArguments}`]);
@@ -69,7 +65,7 @@ function Commands() {
     }
   };
 
-  const getRequests = (ws) => {
+  const getRequests = () => {
     if (selectedAgent.length > 0) {
       ws.send(`${selectedAgent[0]} ${selectedAgent[1]} help_json`);
     }
@@ -147,7 +143,7 @@ function Commands() {
             <div
               className="cursor-pointer text-blue-600 hover:text-blue-400"
               onClick={() => {
-                sendCommand(ws);
+                sendCommand();
                 setCommandArguments('');
               }}
             >
@@ -157,7 +153,7 @@ function Commands() {
           placeholder="Arguments"
           onChange={({ target: { value } }) => setCommandArguments(value)}
           onPressEnter={() => {
-            sendCommand(ws);
+            sendCommand();
             setCommandArguments('');
           }}
           value={commandArguments}
