@@ -16,6 +16,7 @@ import Content from '../../components/Missions/Components/Content';
 import Commands from '../../components/Missions/Components/Commands';
 import Status from '../../components/Missions/Components/Status';
 import Chart from '../../components/Missions/Components/Chart';
+import useWebSocket from '../../hooks/useWebSocket';
 
 function neutron1() {
   /**
@@ -29,22 +30,46 @@ function neutron1() {
 
   const [latestMessage, setLatestMessage] = useState({});
 
-  const [ws] = useState(socket(`ws://${process.env.REACT_APP_WEBSOCKET_IP}:${process.env.REACT_APP_LIVE_WEBSOCKET_PORT}/live/hsflpc23:cpu`));
+  useEffect(() => {
+    const cpu = socket('live', '/live/hsflpc23:cpu');
+    const eps = socket('live', '/live/neutron1:eps');
 
-  /** Get latest data from neutron1_exec */
-  ws.onmessage = ({ data }) => {
-    let json;
+    cpu.onopen = () => {
+      console.log('open live');
+    };
 
-    try {
-      json = JSON.parse(data);
-    } catch (err) {
-      // console.log(err);
-    }
+    /** Get latest data from neutron1_exec */
+    cpu.onmessage = ({ data }) => {
+      try {
+        const json = JSON.parse(data);
 
-    if (json) {
-      dispatch(actions.get('hsflpc23:cpu', json));
-    }
-  };
+        dispatch(actions.get('hsflpc23:cpu', json));
+      } catch (err) {
+        // console.log(err);
+      }
+    };
+
+    eps.onopen = () => {
+      console.log('open live');
+    };
+
+    /** Get latest data from neutron1_exec */
+    eps.onmessage = ({ data }) => {
+      try {
+        const json = JSON.parse(data);
+
+        dispatch(actions.get('neutron1:eps', json));
+      } catch (err) {
+        // console.log(err);
+      }
+    };
+
+    return () => {
+      console.log('ok');
+      cpu.close(1000);
+      eps.close(1000);
+    };
+  }, []);
 
   return (
     <Context.Provider value={{ state, dispatch }}>
@@ -88,6 +113,185 @@ function neutron1() {
         </div>
         <Card>
           <Chart
+            name="Temperature"
+            liveOnly={false}
+            nodeProc="neutron1:eps"
+            XDataKey="utc"
+            YDataKey="device_cpu_load_000"
+            processXDataKey={
+              x => {
+                return moment.unix(
+                  (((x  + 2400000.5) - 2440587.5) * 86400.0)
+                ).format('YYYY-MM-DD HH:mm:ss')
+              }
+            }
+            processYDataKey={
+              y => y
+            }
+            plots={
+              [
+                {
+                  x: [],
+                  y: [],
+                  type: 'scatter',
+                  marker: {
+                    color: 'red'
+                  },
+                  name: '1',
+                  YDataKey: 'device_tsen_temp_001',
+                  nodeProcess: 'neutron1:eps',
+                  live: true
+                },
+                {
+                  x: [],
+                  y: [],
+                  type: 'scatter',
+                  marker: {
+                    color: 'blue'
+                  },
+                  name: '2',
+                  YDataKey: 'device_tsen_temp_002',
+                  nodeProcess: 'neutron1:eps',
+                  live: true
+                },
+                {
+                  x: [],
+                  y: [],
+                  type: 'scatter',
+                  marker: {
+                    color: 'orange'
+                  },
+                  name: '3',
+                  YDataKey: 'device_tsen_temp_003',
+                  nodeProcess: 'neutron1:eps',
+                  live: true
+                }
+              ]
+            }
+          />
+        </Card>
+        <Card>
+          <Chart
+            name="Voltage"
+            liveOnly={false}
+            nodeProc="neutron1:eps"
+            XDataKey="utc"
+            YDataKey="device_cpu_load_000"
+            processXDataKey={
+              x => {
+                return moment.unix(
+                  (((x  + 2400000.5) - 2440587.5) * 86400.0)
+                ).format('YYYY-MM-DD HH:mm:ss')
+              }
+            }
+            processYDataKey={
+              y => y
+            }
+            plots={
+              [
+                {
+                  x: [],
+                  y: [],
+                  type: 'scatter',
+                  marker: {
+                    color: 'red'
+                  },
+                  name: '5V',
+                  YDataKey: 'device_bus_volt_001',
+                  nodeProcess: 'neutron1:eps',
+                  live: true
+                },
+                {
+                  x: [],
+                  y: [],
+                  type: 'scatter',
+                  marker: {
+                    color: 'blue'
+                  },
+                  name: '3.3V',
+                  YDataKey: 'device_bus_volt_002',
+                  nodeProcess: 'neutron1:eps',
+                  live: true
+                },
+                {
+                  x: [],
+                  y: [],
+                  type: 'scatter',
+                  marker: {
+                    color: 'orange'
+                  },
+                  name: 'Battery Voltage',
+                  YDataKey: 'device_bus_volt_003',
+                  nodeProcess: 'neutron1:eps',
+                  live: true
+                }
+              ]
+            }
+          />
+        </Card>
+
+        <Card>
+          <Chart
+            name="Amperage"
+            liveOnly={false}
+            nodeProc="neutron1:eps"
+            XDataKey="utc"
+            YDataKey="device_cpu_load_000"
+            processXDataKey={
+              x => {
+                return moment.unix(
+                  (((x  + 2400000.5) - 2440587.5) * 86400.0)
+                ).format('YYYY-MM-DD HH:mm:ss')
+              }
+            }
+            processYDataKey={
+              y => y
+            }
+            plots={
+              [
+                {
+                  x: [],
+                  y: [],
+                  type: 'scatter',
+                  marker: {
+                    color: 'red'
+                  },
+                  name: '5V',
+                  YDataKey: 'device_bus_amp_001',
+                  nodeProcess: 'neutron1:eps',
+                  live: true
+                },
+                {
+                  x: [],
+                  y: [],
+                  type: 'scatter',
+                  marker: {
+                    color: 'blue'
+                  },
+                  name: '3.3V',
+                  YDataKey: 'device_bus_amp_002',
+                  nodeProcess: 'neutron1:eps',
+                  live: true
+                },
+                {
+                  x: [],
+                  y: [],
+                  type: 'scatter',
+                  marker: {
+                    color: 'orange'
+                  },
+                  name: 'Battery Voltage',
+                  YDataKey: 'device_bus_amp_003',
+                  nodeProcess: 'neutron1:eps',
+                  live: true
+                }
+              ]
+            }
+          />
+        </Card>
+
+        <Card>
+          <Chart
             name="Chart"
             liveOnly={false}
             nodeProc="hsflpc23:cpu"
@@ -103,6 +307,22 @@ function neutron1() {
             processYDataKey={
               y => y
             }
+            plots={
+              [
+                {
+                  x: [],
+                  y: [],
+                  type: 'scatter',
+                  marker: {
+                    color: 'red'
+                  },
+                  name: 'cpu load',
+                  YDataKey: 'device_cpu_load_000',
+                  nodeProcess: 'hsflpc23:cpu',
+                  live: true
+                }
+              ]
+            }
           />
         </Card>
       </div>
@@ -111,3 +331,20 @@ function neutron1() {
 }
 
 export default neutron1;
+
+        /* 
+          voltage, inside bus voltage (vbatt), 5V bus, 3.3V bus, 
+
+          device_batt:
+          power, charge, percentage
+
+          bus volt:
+          5V: device_bus_volt_001
+          3.3V: device_bus_volt_002
+          3.3V: device_bus_volt_003
+
+          bus amp:
+          1,2,3
+
+          voltage, power, current
+        */

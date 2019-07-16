@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Input, Select, Tooltip } from 'antd';
 
 import BaseComponent from '../BaseComponent';
+import socket from '../../../socket';
+
+const ws = socket('query', '/command/');
 
 /**
  * Send commands to agents. Simulates a CLI.
  */
 function Commands() {
-  const [wsCommand] = useState(new WebSocket(`ws://${process.env.REACT_APP_WEBSOCKET_IP}:${process.env.REACT_APP_QUERY_WEBSOCKET_PORT}/command/`));
-
   /** Agents */
   const [agentList, setAgentList] = useState([]);
   /** Selected agent to get requests from */
@@ -22,38 +23,38 @@ function Commands() {
   /** Agent command history (to display in the terminal) */
   const [commandHistory, setCommandHistory] = useState([]);
 
-  /** Manages requests for agent list and agent [node] [process] */
-  wsCommand.onmessage = ({ data }) => {
-    let json;
-
-    try {
-      json = JSON.parse(data);
-    } catch (err) {
-      // console.log(err);
-    }
-
-    console.log(data);
-
-    if (json && json.agent_list) {
-      // agent list
-      setAgentList(json.agent_list);
-    } else if (json && json.output && json.output.requests) {
-      // agent node proc
-      setAgentRequests(json.output.requests);
-    } else if (json && json.output) {
-      // agent node proc cmd
-      setCommandHistory([...commandHistory, json.output]);
-    }
-  };
-
   /** On mount get list of agents */
   useEffect(() => {
-    wsCommand.onopen = () => {
-      wsCommand.send('list_json');
+    /** Manages requests for agent list and agent [node] [process] */
+    ws.onmessage = ({ data }) => {
+      let json;
+
+      try {
+        json = JSON.parse(data);
+      } catch (err) {
+        // console.log(err);
+      }
+
+      console.log(data);
+
+      if (json && json.agent_list) {
+        // agent list
+        setAgentList(json.agent_list);
+      } else if (json && json.output && json.output.requests) {
+        // agent node proc
+        setAgentRequests(json.output.requests);
+      } else if (json && json.output) {
+        // agent node proc cmd
+        setCommandHistory([...commandHistory, json.output]);
+      }
+    };
+
+    ws.onopen = () => {
+      ws.send('list_json');
     };
 
     return () => {
-      wsCommand.close();
+      ws.close();
     };
   }, []);
 
@@ -76,7 +77,7 @@ function Commands() {
 
   /** Watches for changes to selectedAgent. Then sends WS message to get list of commands. */
   useEffect(() => {
-    getRequests(wsCommand);
+    getRequests(ws);
   }, [selectedAgent]);
 
   return (
@@ -146,7 +147,7 @@ function Commands() {
             <div
               className="cursor-pointer text-blue-600 hover:text-blue-400"
               onClick={() => {
-                sendCommand(wsCommand);
+                sendCommand(ws);
                 setCommandArguments('');
               }}
             >
@@ -156,7 +157,7 @@ function Commands() {
           placeholder="Arguments"
           onChange={({ target: { value } }) => setCommandArguments(value)}
           onPressEnter={() => {
-            sendCommand(wsCommand);
+            sendCommand(ws);
             setCommandArguments('');
           }}
           value={commandArguments}

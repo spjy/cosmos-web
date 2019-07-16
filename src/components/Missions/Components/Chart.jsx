@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Form, Input, DatePicker, Button, Switch, Collapse, Icon
+  Form, Input, DatePicker, Button, Switch, Collapse, Icon, Divider
 } from 'antd';
 import Plot from 'react-plotly.js';
 
@@ -12,13 +12,14 @@ import socket from '../../../socket';
 const { RangePicker } = DatePicker;
 const { Panel } = Collapse;
 
+const ws = socket('query', '/query/');
+
 /**
  * Display data on a chart.
  */
 function Chart({
   name,
   subheader,
-  charts,
   plots,
   nodeProc,
   XDataKey,
@@ -31,8 +32,6 @@ function Chart({
   children,
   formItems
 }) {
-  /** Websocket endpoint for retrieving the command queries */
-  const [ws] = useState(socket(`ws://${process.env.REACT_APP_WEBSOCKET_IP}:${process.env.REACT_APP_QUERY_WEBSOCKET_PORT}/query/`));
   /** The state that manages the component's title */
   const [nameState, setNameState] = useState(name);
   /** The state managing the node process being looked at */
@@ -42,9 +41,14 @@ function Chart({
   /** The state that manages the component's X-axis data key displayed */
   const [YDataKeyState, setYDataKeyState] = useState(YDataKey);
   /** Storage for form values */
-  const [form, setForm] = useState({ newChart: {
-    live: true
-  }});
+  const [form, setForm] = useState({
+    newChart: {
+      live: true
+    },
+    0: {},
+    1: {},
+    2: {}
+  });
   /** Status of the live switch */
   const [liveSwitch, setLiveSwitch] = useState();
   /** The color of the function */
@@ -69,19 +73,7 @@ function Chart({
       b: 0
     }
   });
-  /** Plot data storage */
-  const [plotsState, setPlotsState] = useState([
-    {
-      x: [],
-      y: [],
-      type: 'scatter',
-      marker: {
-        color: markerColor
-      },
-      name: YDataKeyState
-    }
-  ]);
-  
+
   /** Storage for date range of historical data query */
   const [historicalDateRange, setHistoricalDateRange] = useState([]);
   /** Storage for historical data display */
@@ -90,37 +82,62 @@ function Chart({
   /** Accessing the neutron1 node process context and drilling down */
   const { state: { [nodeProcessState]: nodeProcess } } = useContext(Context);
 
-  const [chartsState, setChartsState] = useState([
-    {
-      live: false,
-      historicalDateRange: [],
-      chartName: '',
-      nodeProcess: '',
-      XDataKey: '',
-      YDataKey: '',
-      markerColor: '',
-      legendLabel: '',
-      chart: {
-        x: [],
-        y: [],
-        type: 'scatter',
-        marker: {
-          color: markerColor
-        },
-        name: YDataKeyState
-      }
+  /** Plot data storage */
+  const [plotsState, setPlotsState] = useState(plots);
+
+  useEffect(() => {
+    // Make an object for each plot's form
+    for (let i = 0; i < plotsState.length; i = i + 1) {
+      setForm({
+        ...form,
+        [i]: {}
+      });
     }
-  ]);
+
+    console.log(form);
+  }, []);
+
+  // useEffect(() => {
+  //   /** Get data from queried data */
+  //   ws.onmessage = ({ data }) => {
+  //     let json;
+
+  //     try {
+  //       json = JSON.parse(data);
+
+  //       // Reset chart for past data
+  //       plotsState[0].x = [];
+  //       plotsState[0].y = [];
+
+  //       // Insert past data into chart
+  //       json.forEach((d) => {
+  //         plotsState[plotsState.length - 1].x.push(processXDataKey(d[XDataKeyState]));
+  //         plotsState[plotsState.length - 1].y.push(processYDataKey(d[YDataKeyState]));
+
+  //         layout.datarevision = layout.datarevision + 1;
+  //         setDataRevision(dataRevision + 1);
+  //       });
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   };
+
+  //   return () => {
+  //     ws.close();
+  //   };
+  // }, []);
 
   /** Handle new data incoming from the Context */
   useEffect(() => {
-    if (nodeProcess && nodeProcess[XDataKeyState] && nodeProcess[YDataKeyState] && liveSwitch) {
-      plotsState[0].x.push(processXDataKey(nodeProcess[XDataKeyState]));
-      plotsState[0].y.push(processYDataKey(nodeProcess[YDataKeyState]));
+    plotsState.forEach((p, i) => {
+      if (nodeProcess && nodeProcess[XDataKeyState] && nodeProcess[p.YDataKey] && liveSwitch) {
+        plotsState[i].x.push(processXDataKey(nodeProcess[XDataKeyState]));
+        plotsState[i].y.push(processYDataKey(nodeProcess[p.YDataKey]));
 
-      layout.datarevision = layout.datarevision + 1;
-      setDataRevision(dataRevision + 1);
-    }
+        layout.datarevision = layout.datarevision + 1;
+        setDataRevision(dataRevision + 1);
+      }
+    });
   }, [nodeProcess]);
 
   /** Reset the chart if switched from past to present mode */
@@ -131,43 +148,43 @@ function Chart({
     }
   }, [liveSwitch]);
 
-  /** Get data from queried data */
-  ws.onmessage = ({ data }) => {
-    let json;
+  const retrieveHistoricalData = (plot) => {
+    const query = socket('query', '/query/');
 
-    try {
-      json = JSON.parse(data);
-    } catch (err) {
-      console.log(err);
-    }
+    if (form[plot].dateRange.value.length === 2) {
+      // Unix time to modified julian date
+      const from = ((form[plot].dateRange.value[0].unix() / 86400.0) + 2440587.5 - 2400000.5);
+      const to = ((form[plot].dateRange.value[1].unix() / 86400.0) + 2440587.5 - 2400000.5);
 
-    console.log(data);
-
-    if (json) {
-      // Reset chart for past data
-      plotsState[0].x = [];
-      plotsState[0].y = [];
-
-      // Insert past data into chart
-      json.forEach((d) => {
-        plotsState[0].x.push(processXDataKey(d[XDataKeyState]));
-        plotsState[0].y.push(processYDataKey(d[YDataKeyState]));
-
-        layout.datarevision = layout.datarevision + 1;
-        setDataRevision(dataRevision + 1);
-      });
-    }
-  };
-
-  const retrieveHistoricalData = (wsHistorical) => {
-    if (historicalDateRange.length === 2) {
-      const from = ((historicalDateRange[0].unix() / 86400.0) + 2440587.5 - 2400000.5);
-      const to = ((historicalDateRange[1].unix() / 86400.0) + 2440587.5 - 2400000.5);
-
-      wsHistorical.send(
-        `database=agent_dump?collection=${nodeProcessState}?multiple=true?query={"utc": { "$gt": ${from}, "$lt": ${to} }}`
+      query.send(
+        `database=agent_dump?collection=${plotsState[plot].nodeProcess}?multiple=true?query={"utc": { "$gt": ${from}, "$lt": ${to} }}`
       );
     }
+
+    query.onmessage = ({ data }) => {
+      try {
+        const json = JSON.parse(data);
+
+        console.log(json);
+
+        // Reset chart for past data
+        plotsState[plot].x = [];
+        plotsState[plot].y = [];
+
+        // Insert past data into chart
+        json.forEach((d) => {
+          plotsState[plot].x.push(processXDataKey(d[XDataKeyState]));
+          plotsState[plot].y.push(processYDataKey(d[YDataKeyState]));
+
+          layout.datarevision = layout.datarevision + 1;
+          setDataRevision(dataRevision + 1);
+        });
+
+        query.close();
+      } catch (err) {
+        console.log(err);
+      }
+    };
   };
 
   // useEffect(() => {
@@ -187,7 +204,26 @@ function Chart({
   return (
     <BaseComponent
       name={nameState}
-      subheader={nodeProcessState}
+      subheader={(
+        <span>
+          <Divider type="vertical" />
+          {
+            plotsState.map((plot) => {
+              return (
+                <span>
+                  <span className="inline-block rounded-full mr-1 indicator" style={{ height: '6px', width: '6px', marginBottom: '2px', backgroundColor: plot.marker.color }} />
+                  <span className="font-semibold">
+                    {plot.nodeProcess}
+                  </span>
+                  &nbsp;-&nbsp;
+                  {plot.YDataKey}
+                  <Divider type="vertical" />
+                </span>
+              );
+            })
+          }
+        </span>
+      )}
       liveOnly={liveOnly}
       showStatus={showStatus}
       status={status}
@@ -205,191 +241,210 @@ function Chart({
               onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
               onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
               onBlur={({ target: { id: item, value } }) => {
-                setNameState(value);
                 setForm({ ...form, [item]: { ...form[item], changed: true } });
               }}
               defaultValue={name}
             />
           </Form.Item>
+
+          <Form.Item
+            label="X Data Key"
+            key="XDataKey"
+            hasFeedback={form.newChart.XDataKey && form.newChart.XDataKey.touched}
+            validateStatus={form.newChart.XDataKey && form.newChart.XDataKey.changed ? 'success' : ''}
+          >
+            <Input
+              placeholder="X Data Key"
+              id="XDataKey"
+              onFocus={({ target: { id: item } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], touched: true, changed: false } } })}
+              onChange={({ target: { id: item, value } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], value, changed: false } } })}
+              onBlur={({ target: { id: item, value } }) => {
+                setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], changed: true } } });
+              }}
+              defaultValue={XDataKeyState}
+            />
+          </Form.Item>
+
           <Collapse
             bordered
           >
-            <Panel
-              header={(
-                <span>
-                  <strong>hsflpc23:cpu</strong>: device_cpu_load_000 vs. utc
-                </span>
-              )}
-              key="1"
-              extra={(
-                <div
-                  onClick={event => event.stopPropagation()}
-                >
-                  <Switch
-                    checkedChildren="Live"
-                    unCheckedChildren="Past"
-                    defaultChecked
-                    onChange={checked => setLiveSwitch(checked)}
-                  />
-                  &nbsp;
-                  <Icon className="text-lg" type="close" />
-                </div>
-              )}
-            >
-              <Form.Item
-                className="w-auto"
-                label="Historical Date Range"
-                key="dateRange"
-                hasFeedback={form.dateRange && form.dateRange.touched}
-                validateStatus={form.dateRange && form.dateRange.changed ? 'success' : ''}
-              >
-                <RangePicker
-                  className="mr-1"
-                  id="dateRange"
-                  showTime
-                  format="YYYY-MM-DD HH:mm:ss"
-                  disabled={liveSwitch}
-                  onChange={moment => setHistoricalDateRange(moment)}
-                />
-                <Button
-                  type="primary"
-                  onClick={() => retrieveHistoricalData(ws)}
-                >
-                  Show
-                </Button>
-              </Form.Item>
+            {
+              plotsState.map((plot, i) => {
+                return (
+                  <Panel
+                    header={(
+                      <span>
+                        <span className="inline-block rounded-full mr-1 indicator" style={{ height: '6px', width: '6px', marginBottom: '2px', backgroundColor: plot.marker.color }} />
+                        {plot.nodeProcess}
+                        &nbsp;
+                        <span className="text-gray-600">
+                          {plot.YDataKey} vs. {XDataKeyState}
+                        </span>
+                      </span>
+                    )}
+                    key={i}
+                    extra={(
+                      <div
+                        onClick={event => event.stopPropagation()}
+                      >
+                        <Switch
+                          checkedChildren="Live"
+                          unCheckedChildren="Past"
+                          defaultChecked
+                          onChange={checked => setForm({
+                            ...form,
+                            [i]: {
+                              ...form[i], live: checked
+                            }
+                          })}
+                        />
+                        &nbsp;
+                        <Icon className="text-lg" type="close" />
+                      </div>
+                    )}
+                  >
+                    <Form.Item
+                      className="w-auto"
+                      label="Historical Date Range"
+                      key="dateRange"
+                      hasFeedback={form[i].dateRange && form[i].dateRange.touched}
+                      validateStatus={form[i].dateRange && form[i].dateRange.changed ? 'success' : ''}
+                    >
+                      <RangePicker
+                        className="mr-1"
+                        id="dateRange"
+                        showTime
+                        format="YYYY-MM-DD HH:mm:ss"
+                        disabled={form[i].live}
+                        onChange={moment => setForm({ ...form, [i]: { ...form[i], dateRange: { ...form[i].dateRange, value: moment } } })}
+                      />
+                      <Button
+                        type="primary"
+                        onClick={() => retrieveHistoricalData(i)}
+                        disabled={form[i].live}
+                      >
+                        Show
+                      </Button>
+                    </Form.Item>
 
-              <Form.Item
-                label="Chart Type"
-                key="nameState"
-                hasFeedback={form.chartType && form.chartType.touched}
-                validateStatus={form.chartType && form.chartType.changed ? 'success' : ''}
-              >
-                <Input
-                  placeholder="Chart Type"
-                  id="chartType"
-                  onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
-                  onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
-                  onBlur={({ target: { id: item, value } }) => {
-                    setForm({ ...form, [item]: { ...form[item], changed: true } });
-                  }}
-                  defaultValue={name}
-                />
-              </Form.Item>
+                    <Form.Item
+                      label="Name"
+                      key="name"
+                      hasFeedback={form[i].name && form[i].name.touched}
+                      validateStatus={form[i].name && form[i].name.changed ? 'success' : ''}
+                    >
+                      <Input
+                        placeholder="Name"
+                        id="name"
+                        onFocus={({ target: { id: item } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], touched: true, changed: false } } })}
+                        onChange={({ target: { id: item, value } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], value, changed: false } } })}
+                        onBlur={({ target: { id: item, value } }) => {
+                          plotsState[i].name = value;
+                          setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: true } } });
+                        }}
+                        defaultValue={plot.name}
+                      />
+                    </Form.Item>
 
-              <Form.Item
-                label="Chart Mode"
-                key="chartMode"
-                hasFeedback={form.chartMode && form.chartMode.touched}
-                validateStatus={form.chartMode && form.chartMode.changed ? 'success' : ''}
-              >
-                <Input
-                  placeholder="Chart Mode"
-                  id="chartMode"
-                  onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
-                  onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
-                  onBlur={({ target: { id: item, value } }) => {
-                    setForm({ ...form, [item]: { ...form[item], changed: true } });
-                  }}
-                  defaultValue={name}
-                />
-              </Form.Item>
 
-              <Form.Item
-                label="Node Process"
-                key="nodeProcess"
-                hasFeedback={form.nodeProcess && form.nodeProcess.touched}
-                validateStatus={form.nodeProcess && form.nodeProcess.changed ? 'success' : ''}
-              >
-                <Input
-                  placeholder="Node Process"
-                  id="nodeProcess"
-                  onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
-                  onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
-                  onBlur={({ target: { id: item, value } }) => {
-                    setNodeProcessState(value);
-                    setForm({ ...form, [item]: { ...form[item], changed: true } });
-                  }}
-                  defaultValue={nodeProc}
-                />
-              </Form.Item>
+                    <Form.Item
+                      label="Chart Type"
+                      key="chartType"
+                      hasFeedback={form[i].chartType && form[i].chartType.touched}
+                      validateStatus={form[i].chartType && form[i].chartType.changed ? 'success' : ''}
+                    >
+                      <Input
+                        placeholder="Chart Type"
+                        id="chartType"
+                        onFocus={({ target: { id: item } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], touched: true, changed: false } } })}
+                        onChange={({ target: { id: item, value } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], value, changed: false } } })}
+                        onBlur={({ target: { id: item, value } }) => {
+                          plotsState[i].type = value;
+                          setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: true } } });
+                        }}
+                        defaultValue={plot.type}
+                      />
+                    </Form.Item>
 
-              <Form.Item
-                label="X Data Key"
-                key="XDataKey"
-                hasFeedback={form.XDataKey && form.XDataKey.touched}
-                validateStatus={form.XDataKey && form.XDataKey.changed ? 'success' : ''}
-              >
-                <Input
-                  placeholder="X Data Key"
-                  id="XDataKey"
-                  onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
-                  onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
-                  onBlur={({ target: { id: item, value } }) => {
-                    setXDataKeyState(value);
-                    setForm({ ...form, [item]: { ...form[item], changed: true } });
-                  }}
-                  defaultValue={XDataKey}
-                />
-              </Form.Item>
+                    <Form.Item
+                      label="Chart Mode"
+                      key="chartMode"
+                      hasFeedback={form[i].chartMode && form[i].chartMode.touched}
+                      validateStatus={form[i].chartMode && form[i].chartMode.changed ? 'success' : ''}
+                    >
+                      <Input
+                        placeholder="Chart Mode"
+                        id="chartMode"
+                        onFocus={({ target: { id: item } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], touched: true, changed: false } } })}
+                        onChange={({ target: { id: item, value } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], value, changed: false } } })}
+                        onBlur={({ target: { id: item, value } }) => {
+                          plotsState[i].mode = value;
+                          setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: true } } });
+                        }}
+                        defaultValue={plot.mode}
+                      />
+                    </Form.Item>
 
-              <Form.Item
-                label="Y Data Key"
-                key="YDataKey"
-                hasFeedback={form.YDataKey && form.YDataKey.touched}
-                validateStatus={form.YDataKey && form.YDataKey.changed ? 'success' : ''}
-              >
-                <Input
-                  placeholder="Y Data Key"
-                  id="YDataKey"
-                  onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
-                  onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
-                  onBlur={({ target: { id: item, value } }) => {
-                    setYDataKeyState(value);
-                    setForm({ ...form, [item]: { ...form[item], changed: true } });
-                  }}
-                  defaultValue={YDataKey}
-                />
-              </Form.Item>
+                    <Form.Item
+                      label="Node Process"
+                      key="nodeProcess"
+                      hasFeedback={form[i].nodeProcess && form[i].nodeProcess.touched}
+                      validateStatus={form[i].nodeProcess && form[i].nodeProcess.changed ? 'success' : ''}
+                    >
+                      <Input
+                        placeholder="Node Process"
+                        id="nodeProcess"
+                        onFocus={({ target: { id: item } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], touched: true, changed: false } } })}
+                        onChange={({ target: { id: item, value } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], value, changed: false } } })}
+                        onBlur={({ target: { id: item, value } }) => {
+                          plotsState[i].nodeProcess = value;
+                          setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: true } } });
+                        }}
+                        defaultValue={plot.nodeProcess}
+                      />
+                    </Form.Item>
 
-              <Form.Item
-                label="Marker Color"
-                key="markerColor"
-                hasFeedback={form.markerColor && form.markerColor.touched}
-                validateStatus={form.markerColor && form.markerColor.changed ? 'success' : ''}
-              >
-                <Input
-                  placeholder="Marker Color"
-                  id="markerColor"
-                  onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
-                  onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
-                  onBlur={({ target: { id: item, value } }) => {
-                    plotsState[0].marker.color = value;
-                    setForm({ ...form, [item]: { ...form[item], changed: true } });
-                  }}
-                  defaultValue={markerColor}
-                />
-              </Form.Item>
+                    <Form.Item
+                      label="Y Data Key"
+                      key="YDataKey"
+                      hasFeedback={form[i].YDataKey && form[i].YDataKey.touched}
+                      validateStatus={form[i].YDataKey && form[i].YDataKey.changed ? 'success' : ''}
+                    >
+                      <Input
+                        placeholder="Y Data Key"
+                        id="YDataKey"
+                        onFocus={({ target: { id: item } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], touched: true, changed: false } } })}
+                        onChange={({ target: { id: item, value } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], value, changed: false } } })}
+                        onBlur={({ target: { id: item, value } }) => {
+                          plotsState[i].YDataKey = value;
+                          setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: true } } });
+                        }}
+                        defaultValue={plot.YDataKey}
+                      />
+                    </Form.Item>
 
-              <Form.Item
-                label="Legend Label"
-                key="legendLabel"
-                hasFeedback={form.legendLabel && form.legendLabel.touched}
-                validateStatus={form.legendLabel && form.legendLabel.changed ? 'success' : ''}
-              >
-                <Input
-                  placeholder="Legend Label"
-                  id="legendLabel"
-                  onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
-                  onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
-                  onBlur={({ target: { id: item, value } }) => {
-                    plotsState[0].name = value;
-                    setForm({ ...form, [item]: { ...form[item], changed: true } });
-                  }}
-                  defaultValue={legendLabel}
-                />
-              </Form.Item>
-            </Panel>
+                    <Form.Item
+                      label="Marker Color"
+                      key="markerColor"
+                      hasFeedback={form[i].markerColor && form[i].markerColor.touched}
+                      validateStatus={form[i].markerColor && form[i].markerColor.changed ? 'success' : ''}
+                    >
+                      <Input
+                        placeholder="Marker Color"
+                        id="markerColor"
+                        onFocus={({ target: { id: item } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], touched: true, changed: false } } })}
+                        onChange={({ target: { id: item, value } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], value, changed: false } } })}
+                        onBlur={({ target: { id: item, value } }) => {
+                          plotsState[i].marker.color = value;
+                          setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: true } } });
+                        }}
+                        defaultValue={plot.marker.color}
+                      />
+                    </Form.Item>
+                  </Panel>
+                );
+              })
+            }
             <Panel header="Add Chart" key="3">
               <Switch
                 checkedChildren="Live"
@@ -408,8 +463,8 @@ function Chart({
                 className="w-auto"
                 label="Historical Date Range"
                 key="dateRange"
-                hasFeedback={form.dateRange && form.dateRange.touched}
-                validateStatus={form.dateRange && form.dateRange.changed ? 'success' : ''}
+                hasFeedback={form.newChart.dateRange && form.newChart.dateRange.touched}
+                validateStatus={form.newChart.dateRange && form.newChart.dateRange.changed ? 'success' : ''}
               >
                 <RangePicker
                   className="mr-1"
@@ -417,14 +472,25 @@ function Chart({
                   showTime
                   format="YYYY-MM-DD HH:mm:ss"
                   disabled={form.newChart.live}
-                  onChange={moment => setHistoricalDateRange(moment)}
+                  onChange={moment => setForm({ ...form, newChart: { ...form.newChart, dateRange: { ...form.newChart.dateRange, value: moment } } })}
                 />
-                <Button
-                  type="primary"
-                  onClick={() => retrieveHistoricalData(ws)}
-                >
-                  Show
-                </Button>
+              </Form.Item>
+
+              <Form.Item
+                label="Name"
+                key="name"
+                hasFeedback={form.newChart.name && form.newChart.name.touched}
+                validateStatus={form.newChart.name && form.newChart.name.changed ? 'success' : ''}
+              >
+                <Input
+                  placeholder="Name"
+                  id="name"
+                  onFocus={({ target: { id: item } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], touched: true, changed: false } } })}
+                  onChange={({ target: { id: item, value } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], value, changed: false } } })}
+                  onBlur={({ target: { id: item, value } }) => {
+                    setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], changed: true } } });
+                  }}
+                />
               </Form.Item>
 
               <Form.Item
@@ -479,23 +545,6 @@ function Chart({
               </Form.Item>
 
               <Form.Item
-                label="X Data Key"
-                key="XDataKey"
-                hasFeedback={form.newChart.XDataKey && form.newChart.XDataKey.touched}
-                validateStatus={form.newChart.XDataKey && form.newChart.XDataKey.changed ? 'success' : ''}
-              >
-                <Input
-                  placeholder="X Data Key"
-                  id="XDataKey"
-                  onFocus={({ target: { id: item } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], touched: true, changed: false } } })}
-                  onChange={({ target: { id: item, value } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], value, changed: false } } })}
-                  onBlur={({ target: { id: item, value } }) => {
-                    setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], changed: true } } });
-                  }}
-                />
-              </Form.Item>
-
-              <Form.Item
                 label="Y Data Key"
                 key="YDataKey"
                 hasFeedback={form.newChart.YDataKey && form.newChart.YDataKey.touched}
@@ -529,45 +578,34 @@ function Chart({
                 />
               </Form.Item>
 
-              <Form.Item
-                label="Legend Label"
-                key="legendLabel"
-                hasFeedback={form.newChart.legendLabel && form.newChart.legendLabel.touched}
-                validateStatus={form.newChart.legendLabel && form.newChart.legendLabel.changed ? 'success' : ''}
-              >
-                <Input
-                  placeholder="Legend Label"
-                  id="legendLabel"
-                  onFocus={({ target: { id: item } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], touched: true, changed: false } } })}
-                  onChange={({ target: { id: item, value } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], value, changed: false } } })}
-                  onBlur={({ target: { id: item, value } }) => {
-                    setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], changed: true } } });
-                  }}
-                />
-              </Form.Item>
-
               <Button
                 type="dashed"
                 block
                 onClick={() => {
-                  chartsState.push({
-                    nodeProcess: form.newChart.nodeProcess,
-                    XDataKey: form.newChart.XDataKey,
-                    YDataKey: form.newChart.YDataKey,
-                    markerColor: form.newChart.markerColor,
-                    legendLabel: form.newChart.legendLabel
+                  setForm({
+                    ...form,
+                    newChart: {
+                      live: form.newChart.live.value
+                    }
                   });
 
                   plotsState.push({
+                    live: form.newChart.live.value,
                     x: [],
                     y: [],
-                    type: form.newChart.chartType,
+                    type: form.newChart.chartType.value,
                     marker: {
-                      color: form.newChart.markerColor
+                      color: form.newChart.markerColor.value
                     },
-                    mode: form.newChart.chartMode,
-                    name: form.newChart.chartName
+                    mode: form.newChart.chartMode.value,
+                    name: form.newChart.name.value,
+                    YDataKey: form.newChart.YDataKey.value,
+                    nodeProcess: form.newChart.nodeProcess.value
                   });
+
+                  if (!form.newChart.live.value) {
+                    retrieveHistoricalData(plotsState.length - 1)
+                  }
                 }}
               >
                 Add Chart
@@ -605,16 +643,9 @@ Chart.propTypes = {
   /** Charts to plot */
   charts: PropTypes.arrayOf(
     PropTypes.shape({
-      /** Whether the chart displays live values */
-      live: PropTypes.bool,
-      /** Name of the node process to listen to */
-      nodeProcess: PropTypes.string,
-      /** Data key to plot on the y-axis */
-      YDataKey: PropTypes.string,
-      /** Color of marker on chart */
-      markerColor: PropTypes.string,
+      name: PropTypes.string,
       /** Name of marker on the chart */
-      legendLabel: PropTypes.string
+      XDataKey: PropTypes.string
     })
   ).isRequired,
   /** Plot options for each chart */
@@ -633,7 +664,13 @@ Chart.propTypes = {
       /** */
       mode: PropTypes.string,
       /** */
-      name: PropTypes.string
+      name: PropTypes.string,
+      /** Name of the node process to listen to */
+      nodeProcess: PropTypes.string,
+      /** Data key to plot on the y-axis */
+      YDataKey: PropTypes.string,
+      /** Whether the chart displays live values */
+      live: PropTypes.bool
     })
   ).isRequired,
   /** JSON object of data */

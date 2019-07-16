@@ -13,6 +13,8 @@ function ComponentSettings({
 }) {
   return (
     <Modal
+      bodyStyle={{ padding: '1em' }}
+      width={600}
       visible={visible}
       title="Widget Settings"
       /**

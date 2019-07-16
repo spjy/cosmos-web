@@ -32,25 +32,25 @@ class Attitude extends Component {
   }
 
   componentDidMount() {
-    const socket = new WebSocket(`ws://${process.env.REACT_APP_WEBSOCKET_IP}:${process.env.REACT_APP_LIVE_WEBSOCKET_PORT}/live/${this.state.satellite}`);
+    // const socket = new WebSocket(`ws://${process.env.REACT_APP_WEBSOCKET_IP}:${process.env.REACT_APP_LIVE_WEBSOCKET_PORT}/live/${this.state.satellite}`);
 
-    socket.onmessage = (data) => {
-      const json = JSON.parse(data.data);
-      if (Object.keys(json).includes('node_loc_att_lvlh')) {
-        const { w, d: { x, y, z } } = json.node_loc_att_lvlh.pos;
+    // socket.onmessage = (data) => {
+    //   const json = JSON.parse(data.data);
+    //   if (Object.keys(json).includes('node_loc_att_lvlh')) {
+    //     const { w, d: { x, y, z } } = json.node_loc_att_lvlh.pos;
 
-        this.setState({
-          live: true,
-          satellite: this.state.satellite,
-          currentCoord: {
-            w,
-            x,
-            y,
-            z
-          }
-        });
-      }
-    };
+    //     this.setState({
+    //       live: true,
+    //       satellite: this.state.satellite,
+    //       currentCoord: {
+    //         w,
+    //         x,
+    //         y,
+    //         z
+    //       }
+    //     });
+    //   }
+    // };
   }
 
   onReplayFormSubmit(value) {

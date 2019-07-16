@@ -30,24 +30,24 @@ class Orbit extends Component {
   }
 
   componentDidMount() {
-    const socket = new WebSocket(`ws://${process.env.REACT_APP_WEBSOCKET_IP}:${process.env.REACT_APP_LIVE_WEBSOCKET_PORT}/live/${this.state.satellite}`);
+    // const socket = new WebSocket(`ws://${process.env.REACT_APP_WEBSOCKET_IP}:${process.env.REACT_APP_LIVE_WEBSOCKET_PORT}/live/${this.state.satellite}`);
 
-    socket.onmessage = (data) => {
-      const json = JSON.parse(data.data);
-      if (json.node_loc_pos_eci) {
-        const [x, y, z] = json.node_loc_pos_eci.pos;
+    // socket.onmessage = (data) => {
+    //   const json = JSON.parse(data.data);
+    //   if (json.node_loc_pos_eci) {
+    //     const [x, y, z] = json.node_loc_pos_eci.pos;
 
-        this.setState({
-          live: true,
-          satellite: this.state.satellite,
-          currentCoord: {
-            x: x / 1000,
-            y: y / 1000,
-            z: z / 1000
-          }
-        });
-      }
-    };
+    //     this.setState({
+    //       live: true,
+    //       satellite: this.state.satellite,
+    //       currentCoord: {
+    //         x: x / 1000,
+    //         y: y / 1000,
+    //         z: z / 1000
+    //       }
+    //     });
+    //   }
+    // };
   }
 
   onReplayChange(value) {
