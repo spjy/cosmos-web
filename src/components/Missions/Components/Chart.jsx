@@ -207,7 +207,7 @@ function Chart({
             />
           </Form.Item>
 
-          <Form.Item
+          {/* <Form.Item
             label="Process X Data Key"
             key="processXDataKey"
             hasFeedback={form.newChart.processXDataKey && form.newChart.processXDataKey.touched}
@@ -223,7 +223,7 @@ function Chart({
               }}
               defaultValue={'(value) => {\n\t// code to process value here \n}'}
             />
-          </Form.Item>
+          </Form.Item> */}
 
           <Collapse
             bordered
@@ -233,11 +233,13 @@ function Chart({
                 return (
                   <Panel
                     header={(
-                      <span>
+                      <span className="text-gray-600">
                         <span className="inline-block rounded-full mr-2 indicator" style={{ height: '6px', width: '6px', marginBottom: '2px', backgroundColor: plot.marker.color }} />
-                        {plot.nodeProcess}
+                        <strong>
+                          {plot.nodeProcess}
+                        </strong>
                         &nbsp;
-                        <span className="text-gray-600">
+                        <span>
                           {plot.YDataKey}
                         </span>
                       </span>

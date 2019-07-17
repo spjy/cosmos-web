@@ -30,10 +30,8 @@ function Commands() {
     try {
       json = JSON.parse(data);
     } catch (err) {
-      // console.log(err);
+      console.log(err);
     }
-
-    console.log(json);
 
     if (json && json.agent_list) {
       // agent list
@@ -52,7 +50,11 @@ function Commands() {
   };
 
   /** Close ws on unmount */
-  useEffect(() => () => ws.close(), []);
+  useEffect(() => {
+    return () => {
+      ws.close();
+    };
+  }, []);
 
   /** Handle submission of agent command */
   const sendCommand = () => {
@@ -93,18 +95,16 @@ function Commands() {
         placeholder="Select agent node and process"
       >
         {
-          agentList.map(({ agent_node: node, agent_proc: proc }) => {
-            return (
-              <Select.Option
-                key={`${node}:${proc}`}
-                value={`${node}:${proc}`}
-              >
-                {node}
-                :&nbsp;
-                {proc}
-              </Select.Option>
-            );
-          })
+          agentList.map(({ agent_node: node, agent_proc: proc }) => (
+            <Select.Option
+              key={`${node}:${proc}`}
+              value={`${node}:${proc}`}
+            >
+              {node}
+              :&nbsp;
+              {proc}
+            </Select.Option>
+          ))
         }
       </Select>
       <div className="border border-gray-300 rounded mb-2 p-4 bg-white font-mono h-32 max-h-full resize-y overflow-y-scroll">
@@ -127,15 +127,13 @@ function Commands() {
                 </Tooltip>
               </Select.Option>
               {
-                agentRequests.map(({ token, synopsis, description }) => {
-                  return (
-                    <Select.Option value={token} key={token}>
-                      <Tooltip placement="topLeft" title={`${synopsis ? `${synopsis} ` : ''}${description}`}>
-                        { token }
-                      </Tooltip>
-                    </Select.Option>
-                  );
-                })
+                agentRequests.map(({ token, synopsis, description }) => (
+                  <Select.Option value={token} key={token}>
+                    <Tooltip placement="topLeft" title={`${synopsis ? `${synopsis} ` : ''}${description}`}>
+                      { token }
+                    </Tooltip>
+                  </Select.Option>
+                ))
               }
             </Select>
           )}

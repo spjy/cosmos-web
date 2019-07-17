@@ -1,31 +1,51 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Badge } from 'antd';
 import moment from 'moment-timezone';
 
+import socket from '../../../socket';
+
+const ws = socket('query', '/command/');
+
 function Status({
   statuses
 }) {
+  const [list, setList] = useState([]);
+
+  ws.onmessage = ({ data }) => {
+    try {
+      const json = JSON.parse(data);
+
+      setList(json.agent_list);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // useEffect(() => {
+  //   const timeout = setTimeout(() => {
+  //     if (ws) {
+  //       ws.send('list_json');
+  //     }
+  //   }, 5000);
+
+  //   return () => {
+  //     clearTimeout(timeout);
+  //   };
+  // }, [list]);
+
   return (
     <table>
       <tbody>
-        <tr>
-          <td>
-            <Badge status="success" />
-          </td>
-          <td className="pr-4">
-            neutron1:adcs
-          </td>
-          <td className="text-gray-500">
-            06231999-1630Z
-          </td>
-        </tr>
         {
-          statuses.map(({ agent_node: node, agent_proc: proc, agent_utc: utc }) => {
+          list.length === 0 ? 'No agents.' : null
+        }
+        {
+          list.map(({ agent_node: node, agent_proc: proc, agent_utc: utc, status }) => {
             return (
-              <tr>
+              <tr key={`${node}:${proc}`}>
                 <td>
-                  <Badge status="success" />
+                  {status === 'OK' ? <Badge status="success" /> : <Badge status="default" />}
                 </td>
                 <td className="pr-4">
                   {node}
@@ -33,67 +53,12 @@ function Status({
                   {proc}
                 </td>
                 <td className="text-gray-500">
-                  {moment.unix(utc).format('MMDDYYYY-HHmmss')}
+                  {moment.unix((((utc + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss')}
                 </td>
               </tr>
             );
           })
         }
-        <tr>
-          <td>
-            <Badge status="success" />
-          </td>
-          <td className="pr-4">
-            neutron1:obc
-          </td>
-          <td className="text-gray-500">
-            06231999-1630Z
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <Badge status="default" />
-          </td>
-          <td className="pr-4">
-            neutron1:file
-          </td>
-          <td className="text-gray-500">
-            06231999-1630Z
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <Badge status="default" />
-          </td>
-          <td className="pr-4">
-            neutron1:exec
-          </td>
-          <td className="text-gray-500">
-            06231999-1630Z
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <Badge status="success" />
-          </td>
-          <td className="pr-4">
-            neutron1:cpu
-          </td>
-          <td className="text-gray-500">
-            06231999-1630Z
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <Badge status="default" />
-          </td>
-          <td className="pr-4">
-            neutron1:motion
-          </td>
-          <td className="text-gray-500">
-            06231999-1630Z
-          </td>
-        </tr>
       </tbody>
     </table>
   );

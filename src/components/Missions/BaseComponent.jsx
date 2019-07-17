@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Icon, Switch, Menu, Dropdown, Button, Badge
+  Icon, Switch, Button, Badge
 } from 'antd';
 import PropTypes from 'prop-types';
 
@@ -102,7 +102,7 @@ BaseComponent.propTypes = {
   /** Name of the component to display at the time */
   name: PropTypes.string,
   /** Supplementary information below the name */
-  subheader: PropTypes.string,
+  subheader: PropTypes.node,
   /** Whether the component can display only live data. Hides/shows the live/past switch. */
   liveOnly: PropTypes.bool,
   /** Function is run when the live/past switch is toggled. */
@@ -135,7 +135,7 @@ BaseComponent.propTypes = {
 
 BaseComponent.defaultProps = {
   name: '',
-  subheader: '',
+  subheader: null,
   showStatus: false,
   liveOnly: false,
   handleLiveSwitchChange: () => {},

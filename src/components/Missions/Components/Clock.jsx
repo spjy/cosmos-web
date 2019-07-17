@@ -60,25 +60,26 @@ function Clock({
         </Form>
       )}
     >
-      <div className="flex flex-col justify-center">
-        <div className="text-sm my-1 mx-1">
-          <div className="text-gray-500">
-            Local:&nbsp;
-          </div>
-          <div className="text-lg">
-            {time}
-          </div>
-        </div>
-        <br />
-        <div className="text-sm my-1 mx-1">
-          <div className="text-gray-500">
-            UTC:&nbsp;
-          </div>
-          <div className="text-lg">
-            {utcTime}
-          </div>
-        </div>
-      </div>
+      <table>
+        <tbody>
+          <tr>
+            <td className="pr-4 text-gray-500">
+              Local
+            </td>
+            <td className="pr-2">
+              {time}
+            </td>
+          </tr>
+          <tr>
+            <td className="pr-4 text-gray-500">
+              UTC
+            </td>
+            <td className="pr-2">
+              {utcTime}
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </BaseComponent>
   );
 }

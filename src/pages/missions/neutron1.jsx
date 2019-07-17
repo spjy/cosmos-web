@@ -87,6 +87,16 @@ function neutron1() {
           <Card>
             <DisplayValue
               name="HSFLPC23 CPU Load"
+              displayValues={
+                [
+                  {
+                    name: 'CPU Load',
+                    nodeProcess: 'hsflpc23:cpu',
+                    dataKey: 'device_cpu_load_000',
+                    unit: '%'
+                  }
+                ]
+              }
               subheader="06231999-1630Z"
               nodeProc="hsflpc23:cpu"
               dataKey="device_cpu_load_000"
@@ -109,16 +119,10 @@ function neutron1() {
         <Card>
           <Chart
             name="Temperature"
-            liveOnly={false}
             nodeProc="neutron1:eps"
             XDataKey="utc"
-            YDataKey="device_cpu_load_000"
             processXDataKey={
-              x => {
-                return moment.unix(
-                  (((x  + 2400000.5) - 2440587.5) * 86400.0)
-                ).format('YYYY-MM-DD HH:mm:ss')
-              }
+              x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss')
             }
             processYDataKey={
               y => y
@@ -169,10 +173,8 @@ function neutron1() {
           <Card>
             <Chart
               name="Voltage"
-              liveOnly={false}
               nodeProc="neutron1:eps"
               XDataKey="utc"
-              YDataKey="device_cpu_load_000"
               processXDataKey={
                 x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss')
               }
@@ -225,10 +227,8 @@ function neutron1() {
           <Card>
             <Chart
               name="Amperage"
-              liveOnly={false}
               nodeProc="neutron1:eps"
               XDataKey="utc"
-              YDataKey="device_cpu_load_000"
               processXDataKey={
                 x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss')
               }

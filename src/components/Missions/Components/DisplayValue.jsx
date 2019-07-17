@@ -9,9 +9,10 @@ import { Context } from '../../../store/neutron1';
 /**
  * Displays a specified value.
  */
-function DisplayValue({
+const DisplayValue = React.memo(function DisplayValue({
   name,
   subheader,
+  displayValues,
   nodeProc,
   dataKey,
   unit,
@@ -37,19 +38,23 @@ function DisplayValue({
   const [utc, setUtc] = useState('-');
   /** State for storing the data temporarily */
   const [dataKeyValue, setDataKeyValue] = useState('No data available.');
-
+  
+  const [displayValuesState, setDisplayValuesState] = useState(displayValues);
   /** Accessing the neutron1 node process context and drilling down to the specified node process to look at */
   const { state: { [nodeProcessState]: nodeProcess } } = useContext(Context);
 
+
   /** Handle new data incoming from the Context */
   useEffect(() => {
-    if (nodeProcess && nodeProcess.utc) {
-      setUtc(moment.unix((((nodeProcess.utc + 2400000.5) - 2440587.5) * 86400.0)).format('MMDDYYYY-HH:mm:ss'));
-    }
+    displayValuesState.forEach((v, i) => {
+      if (nodeProcess && nodeProcess[v.dataKey]) {
+        displayValuesState[i].value = nodeProcess[v.dataKey];
+      }
 
-    if (nodeProcess && nodeProcess[dataKeyState]) {
-      setDataKeyValue(nodeProcess[dataKeyState]);
-    }
+      if (nodeProcess && nodeProcess[v.dataKey] && nodeProcess.utc) {
+        displayValuesState[i].utc = moment.unix((((nodeProcess.utc + 2400000.5) - 2440587.5) * 86400.0)).format('MMDDYYYY-HH:mm:ss');
+      }
+    });
   }, [nodeProcess]);
 
   return (
@@ -140,7 +145,31 @@ function DisplayValue({
       )}
       handleLiveSwitchChange={checked => setLiveSwitch(checked)}
     >
-      <div className="text-center text-lg">
+      <table>
+        <tbody>
+          {
+            displayValuesState.length === 0 ? 'No values.' : null
+          }
+          {
+            displayValuesState.map(({ name, unit }, i) => {
+              return (
+                <tr key={name}>
+                  <td className="pr-2 text-gray-500">
+                    {name}
+                  </td>
+                  <td className="pr-2">
+                    {displayValuesState[i].value ? `${displayValuesState[i].value}${unit}` : '-'}
+                  </td>
+                  <td className="text-gray-500">
+                    {displayValuesState[i].utc ? displayValuesState[i].utc : '-'}
+                  </td>
+                </tr>
+              );
+            })
+          }
+        </tbody>
+      </table>
+      {/* <div className="text-center text-lg">
         <span>
           {dataKeyValue}
         </span>
@@ -149,16 +178,25 @@ function DisplayValue({
             dataKeyValue !== 'No data available.' ? unitState : null
           }
         </span>
-      </div>
+      </div> */}
     </BaseComponent>
   );
-}
+});
 
 DisplayValue.propTypes = {
   /** Name of the component to display at the time */
   name: PropTypes.string,
   /** Supplementary information below the name */
   subheader: PropTypes.string,
+  /** */
+  displayValues: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+      nodeProcess: PropTypes.string,
+      dataKey: PropTypes.string,
+      unit: PropTypes.string
+    })
+  ),
   /** JSON object of data */
   nodeProc: PropTypes.string,
   /** Key to display from the data JSON object above */
@@ -167,8 +205,6 @@ DisplayValue.propTypes = {
   unit: PropTypes.string,
   /** Whether the component can display only live data. Hides/shows the live/past switch. */
   liveOnly: PropTypes.bool,
-  /** Function is run when the live/past switch is toggled. */
-  handleLiveSwitchChange: PropTypes.func,
   /** Whether to show a circular indicator of the status of the component */
   showStatus: PropTypes.bool,
   /** The type of badge to show if showStatus is true (see the ant design badges component) */
@@ -193,7 +229,6 @@ DisplayValue.defaultProps = {
   unit: '',
   showStatus: false,
   liveOnly: true,
-  handleLiveSwitchChange: () => {},
   status: 'error',
   children: null,
   formItems: null
