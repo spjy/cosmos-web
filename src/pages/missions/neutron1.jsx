@@ -28,10 +28,7 @@ function neutron1() {
   useEffect(() => {
     const cpu = socket('live', '/live/hsflpc23:cpu');
     const eps = socket('live', '/live/neutron1:eps');
-
-    cpu.onopen = () => {
-      console.log('open live');
-    };
+    const ncpu = socket('live', '/live/neutron1:cpu');
 
     /** Get latest data from neutron1_exec */
     cpu.onmessage = ({ data }) => {
@@ -42,10 +39,6 @@ function neutron1() {
       } catch (err) {
         // console.log(err);
       }
-    };
-
-    eps.onopen = () => {
-      console.log('open live');
     };
 
     /** Get latest data from neutron1_exec */
@@ -59,10 +52,22 @@ function neutron1() {
       }
     };
 
+    /** Get latest data from neutron1_exec */
+    ncpu.onmessage = ({ data }) => {
+      try {
+        const json = JSON.parse(data);
+
+        dispatch(actions.get('neutron1:cpu', json));
+      } catch (err) {
+        // console.log(err);
+      }
+    };
+
     return () => {
       console.log('ok');
       cpu.close(1000);
       eps.close(1000);
+      ncpu.close(1000);
     };
   }, []);
 
@@ -70,7 +75,7 @@ function neutron1() {
     <Context.Provider value={{ state, dispatch }}>
       <div className="p-4">
         <div className="flex flex-row">
-          <Card>
+          <Card flex="w-1/3">
             <Content
               name="Agent Statuses"
             >
@@ -81,10 +86,7 @@ function neutron1() {
               </div>
             </Content>
           </Card>
-          <Card>
-            <Example />
-          </Card>
-          <Card>
+          <Card flex="w-1/3">
             <DisplayValue
               name="HSFLPC23 CPU Load"
               displayValues={
@@ -93,7 +95,15 @@ function neutron1() {
                     name: 'CPU Load',
                     nodeProcess: 'hsflpc23:cpu',
                     dataKey: 'device_cpu_load_000',
-                    unit: '%'
+                    unit: '%',
+                    processDataKey: x => x.toFixed(2)
+                  },
+                  {
+                    name: 'Max GiB',
+                    nodeProcess: 'hsflpc23:cpu',
+                    dataKey: 'device_cpu_gib_000',
+                    unit: 'GiB',
+                    processDataKey: x => x.toFixed(2)
                   }
                 ]
               }
@@ -107,7 +117,7 @@ function neutron1() {
               </div>
             </DisplayValue>
           </Card>
-          <Card>
+          <Card flex="w-1/3">
             <Clock />
           </Card>
         </div>
@@ -170,7 +180,7 @@ function neutron1() {
           />
         </Card>
         <div className="flex flex-row">
-          <Card>
+          <Card flex="w-1/2">
             <Chart
               name="Voltage"
               nodeProc="neutron1:eps"
@@ -224,7 +234,7 @@ function neutron1() {
             />
           </Card>
 
-          <Card>
+          <Card flex="w-1/2">
             <Chart
               name="Amperage"
               nodeProc="neutron1:eps"
@@ -278,10 +288,54 @@ function neutron1() {
             />
           </Card>
         </div>
+
         <Card>
           <Chart
-            name="HSFLPC23 CPU Load"
-            nodeProc="hsflpc23:cpu"
+            name="Battery Health"
+            nodeProc="neutron1:eps"
+            XDataKey="utc"
+            processXDataKey={
+              x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss')
+            }
+            processYDataKey={
+              y => y
+            }
+            plots={
+              [
+                {
+                  x: [],
+                  y: [],
+                  type: 'scatter',
+                  marker: {
+                    color: 'red'
+                  },
+                  name: 'Battery Percentage',
+                  YDataKey: 'device_batt_percentage_000',
+                  nodeProcess: 'neutron1:eps',
+                  live: true
+                },
+                {
+                  x: [],
+                  y: [],
+                  type: 'scatter',
+                  mode: 'marker',
+                  marker: {
+                    color: 'blue'
+                  },
+                  name: 'Charge',
+                  YDataKey: 'device_batt_charge_000',
+                  nodeProcess: 'neutron1:eps',
+                  live: true
+                }
+              ]
+            }
+          />
+        </Card>
+
+        <Card>
+          <Chart
+            name="neutron1 CPU Load"
+            nodeProc="neutron1:cpu"
             XDataKey="utc"
             processXDataKey={
               x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss')
@@ -300,7 +354,7 @@ function neutron1() {
                   },
                   name: 'cpu load',
                   YDataKey: 'device_cpu_load_000',
-                  nodeProcess: 'hsflpc23:cpu',
+                  nodeProcess: 'neutron1:cpu',
                   live: true
                 }
               ]

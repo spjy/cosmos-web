@@ -22,17 +22,17 @@ function Status({
     }
   };
 
-  // useEffect(() => {
-  //   const timeout = setTimeout(() => {
-  //     if (ws) {
-  //       ws.send('list_json');
-  //     }
-  //   }, 5000);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (ws) {
+        ws.send('list_json');
+      }
+    }, 5000);
 
-  //   return () => {
-  //     clearTimeout(timeout);
-  //   };
-  // }, [list]);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [list]);
 
   return (
     <table>

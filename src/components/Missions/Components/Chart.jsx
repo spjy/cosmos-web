@@ -27,8 +27,6 @@ function Chart({
   status,
   children
 }) {
-  let processXDataKeyFunction = processXDataKey;
-
   /** The state that manages the component's title */
   const [nameState, setNameState] = useState(name);
   /** The state managing the node process being looked at */
@@ -39,10 +37,7 @@ function Chart({
   const [form, setForm] = useState({
     newChart: {
       live: true
-    },
-    0: {},
-    1: {},
-    2: {}
+    }
   });
   /** Counter determining when the plot should be updated */
   const [dataRevision, setDataRevision] = useState(0);
@@ -74,12 +69,7 @@ function Chart({
   useEffect(() => {
     // Make an object for each plot's form
     for (let i = 0; i < plotsState.length; i += 1) {
-      setForm({
-        ...form,
-        [i]: {
-          live: plotsState[i].live
-        }
-      });
+      form[i] = {};
     }
   }, []);
 
@@ -87,7 +77,7 @@ function Chart({
   useEffect(() => {
     plotsState.forEach((p, i) => {
       if (nodeProcess && nodeProcess[XDataKeyState] && nodeProcess[p.YDataKey] && p.live) {
-        plotsState[i].x.push(processXDataKeyFunction(nodeProcess[XDataKeyState]));
+        plotsState[i].x.push(processXDataKey(nodeProcess[XDataKeyState]));
         plotsState[i].y.push(processYDataKey(nodeProcess[p.YDataKey]));
 
         layout.datarevision += 1;
@@ -105,7 +95,7 @@ function Chart({
           // Unix time to modified julian date
           const from = ((form[retrievePlotHistory].dateRange.value[0].unix() / 86400.0) + 2440587.5 - 2400000.5);
           const to = ((form[retrievePlotHistory].dateRange.value[1].unix() / 86400.0) + 2440587.5 - 2400000.5);
-    
+
           query.send(
             `database=agent_dump?collection=${plotsState[retrievePlotHistory].nodeProcess}?multiple=true?query={"utc": { "$gt": ${from}, "$lt": ${to} }}`
           );
@@ -273,21 +263,21 @@ function Chart({
                       className="w-auto"
                       label="Historical Date Range"
                       key="dateRange"
-                      hasFeedback={form[i].dateRange && form[i].dateRange.touched}
-                      validateStatus={form[i].dateRange && form[i].dateRange.changed ? 'success' : ''}
+                      hasFeedback={form[i] && form[i].dateRange && form[i].dateRange.touched}
+                      validateStatus={form[i] && form[i].dateRange && form[i].dateRange.changed ? 'success' : ''}
                     >
                       <RangePicker
                         className="mr-1"
                         id="dateRange"
                         showTime
                         format="YYYY-MM-DD HH:mm:ss"
-                        disabled={form[i].live}
+                        disabled={form[i] && form[i].live}
                         onChange={moment => setForm({ ...form, [i]: { ...form[i], dateRange: { ...form[i].dateRange, value: moment } } })}
                       />
                       <Button
                         type="primary"
                         onClick={() => setRetrievePlotHistory(i)}
-                        disabled={form[i].live}
+                        disabled={form[i] && form[i].live}
                       >
                         Show
                       </Button>
@@ -296,8 +286,8 @@ function Chart({
                     <Form.Item
                       label="Name"
                       key="name"
-                      hasFeedback={form[i].name && form[i].name.touched}
-                      validateStatus={form[i].name && form[i].name.changed ? 'success' : ''}
+                      hasFeedback={form[i] && form[i].name && form[i].name.touched}
+                      validateStatus={form[i] && form[i].name && form[i].name.changed ? 'success' : ''}
                     >
                       <Input
                         placeholder="Name"
@@ -316,8 +306,8 @@ function Chart({
                     <Form.Item
                       label="Chart Type"
                       key="chartType"
-                      hasFeedback={form[i].chartType && form[i].chartType.touched}
-                      validateStatus={form[i].chartType && form[i].chartType.changed ? 'success' : ''}
+                      hasFeedback={form[i] && form[i].chartType && form[i].chartType.touched}
+                      validateStatus={form[i] && form[i].chartType && form[i].chartType.changed ? 'success' : ''}
                     >
                       <Input
                         placeholder="Chart Type"
@@ -335,8 +325,8 @@ function Chart({
                     <Form.Item
                       label="Chart Mode"
                       key="chartMode"
-                      hasFeedback={form[i].chartMode && form[i].chartMode.touched}
-                      validateStatus={form[i].chartMode && form[i].chartMode.changed ? 'success' : ''}
+                      hasFeedback={form[i] && form[i].chartMode && form[i].chartMode.touched}
+                      validateStatus={form[i] && form[i].chartMode && form[i].chartMode.changed ? 'success' : ''}
                     >
                       <Input
                         placeholder="Chart Mode"
@@ -354,8 +344,8 @@ function Chart({
                     <Form.Item
                       label="Node Process"
                       key="nodeProcess"
-                      hasFeedback={form[i].nodeProcess && form[i].nodeProcess.touched}
-                      validateStatus={form[i].nodeProcess && form[i].nodeProcess.changed ? 'success' : ''}
+                      hasFeedback={form[i] && form[i].nodeProcess && form[i].nodeProcess.touched}
+                      validateStatus={form[i] && form[i].nodeProcess && form[i].nodeProcess.changed ? 'success' : ''}
                     >
                       <Input
                         placeholder="Node Process"
@@ -373,8 +363,8 @@ function Chart({
                     <Form.Item
                       label="Y Data Key"
                       key="YDataKey"
-                      hasFeedback={form[i].YDataKey && form[i].YDataKey.touched}
-                      validateStatus={form[i].YDataKey && form[i].YDataKey.changed ? 'success' : ''}
+                      hasFeedback={form[i] && form[i].YDataKey && form[i].YDataKey.touched}
+                      validateStatus={form[i] && form[i].YDataKey && form[i].YDataKey.changed ? 'success' : ''}
                     >
                       <Input
                         placeholder="Y Data Key"
@@ -392,8 +382,8 @@ function Chart({
                     <Form.Item
                       label="Marker Color"
                       key="markerColor"
-                      hasFeedback={form[i].markerColor && form[i].markerColor.touched}
-                      validateStatus={form[i].markerColor && form[i].markerColor.changed ? 'success' : ''}
+                      hasFeedback={form[i] && form[i].markerColor && form[i].markerColor.touched}
+                      validateStatus={form[i] && form[i].markerColor && form[i].markerColor.changed ? 'success' : ''}
                     >
                       <Input
                         placeholder="Marker Color"
@@ -643,7 +633,7 @@ Chart.propTypes = {
       /** Whether the chart displays live values */
       live: PropTypes.bool
     })
-  ).isRequired,
+  ),
   /** JSON object of data */
   nodeProc: PropTypes.string,
   /** X-axis key to display from the data JSON object above */
@@ -668,6 +658,7 @@ Chart.propTypes = {
 
 Chart.defaultProps = {
   name: '',
+  plots: [],
   nodeProc: null,
   XDataKey: null,
   processXDataKey: x => x,
