@@ -22,11 +22,13 @@ function Clock({
 
   /** On mount, set the time and update each second */
   useEffect(() => {
+    // Every second, update local and UTC time view
     const clock = setTimeout(() => {
       setTime(moment().tz(timezoneState).format('MMDDYYYY-HH:mm:ss'));
       setUtcTime(moment().tz('Europe/London').format('MMDDYYYY-HH:mm:ss'));
     }, 1000);
 
+    // Stop timeout on unmount
     return () => {
       clearTimeout(clock);
     };

@@ -174,7 +174,7 @@ function DisplayValue({
                         onFocus={({ target: { id: item } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], touched: true, changed: false } } })}
                         onChange={({ target: { id: item, value } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], value, changed: false } } })}
                         onBlur={({ target: { id: item, value } }) => {
-                          if (value.includes('return x')) {
+                          if (value.includes('return')) {
                             displayValuesState[i].processDataKey = new Function('x', value);
                             setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: true, help: null } } });
                           } else {
@@ -279,7 +279,7 @@ function DisplayValue({
                   onFocus={({ target: { id: item } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], touched: true, changed: false } } })}
                   onChange={({ target: { id: item, value } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], value, changed: false } } })}
                   onBlur={({ target: { id: item, value } }) => {
-                    if (value.includes('return x')) {
+                    if (value.includes('return')) {
                       setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], value: new Function('x', value), changed: true, help: null } } });
                     } else {
                       setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], changed: false, help: 'You must return at least the variable "x".' } } });
