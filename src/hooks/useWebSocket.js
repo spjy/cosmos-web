@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 /**
  * R
@@ -6,30 +6,37 @@ import React, { useState } from 'react';
  * @param {String} endpoint The endpoint to listen to including the initital '/'
  */
 function useWebSocket(type, endpoint) {
-  /** WebSocket Instance */
-  const [ws, setWs] = useState(
-    new WebSocket(`ws://${process.env.REACT_APP_WEBSOCKET_IP}:${type === 'query' ? process.env.REACT_APP_QUERY_WEBSOCKET_PORT : ''}${type === 'live' ? process.env.REACT_APP_LIVE_WEBSOCKET_PORT : ''}${endpoint}`)
-  );
-  /** Last  */
-  const [lastMessage, setLastMessage] = useState(null);
+  let ws = new WebSocket(`ws://${process.env.REACT_APP_WEBSOCKET_IP}:${type === 'query' ? process.env.REACT_APP_QUERY_WEBSOCKET_PORT : ''}${type === 'live' ? process.env.REACT_APP_LIVE_WEBSOCKET_PORT : ''}${endpoint}`);
 
-  ws.onclose = () => {};
+  ws.onclose = (error) => {
+    switch (error.code) {
+      case 1000:
+        // Closed peacefully
+        break;
+      default:
+        // Closed forcefully. Try to reconnect.
+        setTimeout(() => {
+          ws = null;
 
-  ws.onerror = (err) => {
-    ws.close();
-    setTimeout(() => {
-      console.error(err);
-      return useWebSocket(type, endpoint);
-    }, 1000);
-  };
-
-  ws.onmessage = ({ data }) => {
-    let json;
-
-    try {
-      
+          useWebSocket(type, endpoint);
+        }, 1000);
+        break;
     }
   };
+
+  ws.onerror = (error) => {
+    console.log('error');
+    switch (error.code) {
+      case 'ECONNREFUSED':
+        // Closed forcefully. Try to reconnect.
+        ws.close();
+        break;
+      default:
+        break;
+    }
+  };
+
+  return ws;
 }
 
 export default useWebSocket;
