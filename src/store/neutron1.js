@@ -9,7 +9,7 @@ export const actions = {
       nodeproc,
       payload: message
     };
-  },
+  }
 };
 
 export function reducer(state, {

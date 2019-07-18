@@ -9,7 +9,7 @@ const ws = socket('query', '/command/');
 /**
  * Send commands to agents. Simulates a CLI.
  */
-function Commands() {
+const Commands = React.memo(() => {
   /** Agents */
   const [agentList, setAgentList] = useState([]);
   /** Selected agent to get requests from */
@@ -45,6 +45,7 @@ function Commands() {
     }
   };
 
+  /** Get list of agents on mount */
   ws.onopen = () => {
     ws.send('list_json');
   };
@@ -67,6 +68,7 @@ function Commands() {
     }
   };
 
+  /** Get the possible requests for selected agent */
   const getRequests = () => {
     if (selectedAgent.length > 0) {
       ws.send(`${selectedAgent[0]} ${selectedAgent[1]} help_json`);
@@ -159,10 +161,6 @@ function Commands() {
       </div>
     </BaseComponent>
   );
-}
-
-Commands.propTypes = {};
-
-Commands.defaultProps = {};
+});
 
 export default Commands;

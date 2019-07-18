@@ -93,15 +93,22 @@ function neutron1() {
                 [
                   {
                     name: 'CPU Load',
-                    nodeProcess: 'hsflpc23:cpu',
+                    nodeProcess: 'neutron1:cpu',
                     dataKey: 'device_cpu_load_000',
                     unit: '%',
                     processDataKey: x => x.toFixed(2)
                   },
                   {
-                    name: 'Max GiB',
-                    nodeProcess: 'hsflpc23:cpu',
+                    name: 'GiB',
+                    nodeProcess: 'neutron1:cpu',
                     dataKey: 'device_cpu_gib_000',
+                    unit: 'GiB',
+                    processDataKey: x => x.toFixed(2)
+                  },
+                  {
+                    name: 'Max GiB',
+                    nodeProcess: 'neutron1:cpu',
+                    dataKey: 'device_cpu_maxgib_000',
                     unit: 'GiB',
                     processDataKey: x => x.toFixed(2)
                   }

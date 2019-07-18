@@ -57,15 +57,15 @@ function Chart({
       b: 0
     }
   });
-
+  /** Store to detect whether the user wants to get historical data to plot */
   const [retrievePlotHistory, setRetrievePlotHistory] = useState(null);
-
   /** Accessing the neutron1 node process context and drilling down */
   const { state: { [nodeProcessState]: nodeProcess } } = useContext(Context);
 
   /** Plot data storage */
   const [plotsState] = useState(plots);
 
+  /** Initialize form slots for each plot */
   useEffect(() => {
     // Make an object for each plot's form
     for (let i = 0; i < plotsState.length; i += 1) {
@@ -76,7 +76,9 @@ function Chart({
   /** Handle new data incoming from the Context */
   useEffect(() => {
     plotsState.forEach((p, i) => {
+      // Upon context change, see if changes affect this chart's values
       if (nodeProcess && nodeProcess[XDataKeyState] && nodeProcess[p.YDataKey] && p.live) {
+        // If so, push to arrays and update data
         plotsState[i].x.push(processXDataKey(nodeProcess[XDataKeyState]));
         plotsState[i].y.push(processYDataKey(nodeProcess[p.YDataKey]));
 
@@ -86,11 +88,13 @@ function Chart({
     });
   }, [nodeProcess]);
 
+  /** Handle the collection of historical data */
   useEffect(() => {
     if (retrievePlotHistory !== null) {
       const query = socket('query', '/query/');
 
       query.onopen = () => {
+        // Check to see if user chose a range of dates
         if (form[retrievePlotHistory].dateRange.value.length === 2) {
           // Unix time to modified julian date
           const from = ((form[retrievePlotHistory].dateRange.value[0].unix() / 86400.0) + 2440587.5 - 2400000.5);
@@ -122,6 +126,7 @@ function Chart({
 
             query.close();
 
+            // Reset state to null to allow for detection of future plot history requests
             setRetrievePlotHistory(null);
           } catch (err) {
             console.log(err);
@@ -547,7 +552,9 @@ function Chart({
                 type="dashed"
                 block
                 onClick={() => {
+                  // Check if required values are here
                   if (form.newChart.chartType.value && form.newChart.nodeProcess.value && form.newChart.YDataKey.value) {
+                    // Make form slots for new plot
                     setForm({
                       ...form,
                       newChart: {
@@ -556,6 +563,7 @@ function Chart({
                       [plotsState.length]: {}
                     });
 
+                    // Create chart
                     plotsState.push({
                       live: form.newChart.live,
                       x: [],
@@ -570,6 +578,7 @@ function Chart({
                       nodeProcess: form.newChart.nodeProcess.value
                     });
 
+                    // Clear form values
                     form.newChart.name.value = '';
                     form.newChart.markerColor.value = '';
                     form.newChart.chartMode.value = '';
@@ -577,6 +586,7 @@ function Chart({
                     form.newChart.nodeProcess.value = '';
                     form.newChart.chartType.value = '';
 
+                    // If not live, retrieve the data from database
                     if (!form.newChart.live) {
                       setRetrievePlotHistory(plotsState.length);
                     }

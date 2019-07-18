@@ -32,7 +32,7 @@ function DisplayValue({
 
   const [displayValuesState, setDisplayValuesState] = useState(displayValues);
   /** Accessing the neutron1 node process context and drilling down to the specified node process to look at */
-  const { state: { [nodeProcessState]: nodeProcess } } = useContext(Context);
+  const { state } = useContext(Context);
 
   useEffect(() => {
     // Make an object for each plot's form
@@ -44,15 +44,15 @@ function DisplayValue({
   /** Handle new data incoming from the Context */
   useEffect(() => {
     displayValuesState.forEach((v, i) => {
-      if (nodeProcess && nodeProcess[v.dataKey]) {
-        displayValuesState[i].value = nodeProcess[v.dataKey];
+      if (state[v.nodeProcess] && state[v.nodeProcess][v.dataKey]) {
+        displayValuesState[i].value = state[v.nodeProcess][v.dataKey];
       }
 
-      if (nodeProcess && nodeProcess[v.dataKey] && nodeProcess.utc) {
-        displayValuesState[i].utc = moment.unix((((nodeProcess.utc + 2400000.5) - 2440587.5) * 86400.0)).format('MMDDYYYY-HH:mm:ss');
+      if (state[v.nodeProcess] && state[v.nodeProcess][v.dataKey] && state[v.nodeProcess].utc) {
+        displayValuesState[i].utc = moment.unix((((state[v.nodeProcess].utc + 2400000.5) - 2440587.5) * 86400.0)).format('YYYYMMDDTHH:mm:ss');
       }
     });
-  }, [nodeProcess]);
+  }, [state]);
 
   return (
     <BaseComponent
