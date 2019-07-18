@@ -27,13 +27,14 @@ function Chart({
   status,
   children
 }) {
+  let processXDataKeyState = processXDataKey;
   /** The state that manages the component's title */
   const [nameState, setNameState] = useState(name);
   /** The state managing the node process being looked at */
   const [nodeProcessState, setNodeProcessState] = useState(nodeProc);
   /** The state that manages the component's X-axis data key displayed */
   const [XDataKeyState, setXDataKeyState] = useState(XDataKey);
-  /** Storage for form values */
+
   const [form, setForm] = useState({
     newChart: {
       live: true
@@ -79,8 +80,8 @@ function Chart({
       // Upon context change, see if changes affect this chart's values
       if (nodeProcess && nodeProcess[XDataKeyState] && nodeProcess[p.YDataKey] && p.live) {
         // If so, push to arrays and update data
-        plotsState[i].x.push(processXDataKey(nodeProcess[XDataKeyState]));
-        plotsState[i].y.push(processYDataKey(nodeProcess[p.YDataKey]));
+        plotsState[i].x.push(processXDataKeyState(nodeProcess[XDataKeyState]));
+        plotsState[i].y.push(plotsState[i].processYDataKey ? plotsState[i].processYDataKey(nodeProcess[p.YDataKey]) : nodeProcess[p.YDataKey]);
 
         layout.datarevision += 1;
         setDataRevision(dataRevision + 1);
@@ -118,7 +119,7 @@ function Chart({
             // Insert past data into chart
             json.forEach((d) => {
               plotsState[retrievePlotHistory].x.push(processXDataKey(d[XDataKeyState]));
-              plotsState[retrievePlotHistory].y.push(processYDataKey(d[plotsState[retrievePlotHistory].YDatakey]));
+              plotsState[retrievePlotHistory].y.push(plotsState[retrievePlotHistory].processYDataKey(d[plotsState[retrievePlotHistory].YDataKey]));
 
               layout.datarevision += 1;
               setDataRevision(dataRevision + 1);
@@ -186,39 +187,57 @@ function Chart({
           <Form.Item
             label="X Data Key"
             key="XDataKey"
-            hasFeedback={form.newChart.XDataKey && form.newChart.XDataKey.touched}
-            validateStatus={form.newChart.XDataKey && form.newChart.XDataKey.changed ? 'success' : ''}
+            hasFeedback={form.XDataKey && form.XDataKey.touched}
+            validateStatus={form.XDataKey && form.XDataKey.changed ? 'success' : ''}
           >
             <Input
               placeholder="X Data Key"
               id="XDataKey"
-              onFocus={({ target: { id: item } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], touched: true, changed: false } } })}
-              onChange={({ target: { id: item, value } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], value, changed: false } } })}
+              onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
+              onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
               onBlur={({ target: { id: item, value } }) => {
                 setXDataKeyState(value);
-                setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], changed: true } } });
+                setForm({ ...form, [item]: { ...form[item], changed: true } });
               }}
               defaultValue={XDataKeyState}
             />
           </Form.Item>
 
-          {/* <Form.Item
+          <Form.Item
             label="Process X Data Key"
             key="processXDataKey"
-            hasFeedback={form.newChart.processXDataKey && form.newChart.processXDataKey.touched}
-            validateStatus={form.newChart.processXDataKey && form.newChart.processXDataKey.changed ? 'success' : ''}
+            hasFeedback={form.processXDataKey && form.processXDataKey.touched}
+            validateStatus={form.processXDataKey && form.processXDataKey.changed ? 'success' : ''}
+            help={form.processXDataKey && form.processXDataKey.help ? form.processXDataKey.help : 'Define the function body (in JavaScript) here to process the variable "x".'}
           >
             <TextArea
+              rows={4}
               placeholder="Process X Data Key"
               id="processXDataKey"
-              onFocus={({ target: { id: item } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], touched: true, changed: false } } })}
-              onChange={({ target: { id: item, value } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], value, changed: false } } })}
+              onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
+              onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
               onBlur={({ target: { id: item, value } }) => {
-                processXDataKeyFunction = eval(value);
+                if (value.includes('return')) {
+                  processXDataKeyState = new Function('x', value);
+                  
+                  // Convert currently existing values
+                  plotsState.forEach((plot, i) => {
+                    if (plot[i].x.length > 0) {
+                      plot[i].x = plot[i].x.map(x => processXDataKeyState(x));
+  
+                      layout.datarevision += 1;
+                      setDataRevision(dataRevision + 1);
+                    }
+                  });
+
+                  setForm({ ...form, [item]: { ...form[item], changed: true, help: null } });
+                } else {
+                  setForm({ ...form, [item]: { ...form[item], changed: false, help: 'You must return at least the variable "x".' } });
+                }
               }}
-              defaultValue={'(value) => {\n\t// code to process value here \n}'}
+              defaultValue={processXDataKey ? processXDataKey.toString().replace(/^[^{]*{\s*/, '').replace(/\s*}[^}]*$/, '') : 'return x;'}
             />
-          </Form.Item> */}
+          </Form.Item>
 
           <Collapse
             bordered
@@ -385,6 +404,40 @@ function Chart({
                     </Form.Item>
 
                     <Form.Item
+                      label="Process Y Data Key"
+                      key="processYDataKey"
+                      hasFeedback={form[i] && form[i].processYDataKey && form[i].processYDataKey.touched}
+                      validateStatus={form[i] && form[i].processYDataKey && form[i].processYDataKey.changed ? 'success' : ''}
+                      help={form[i] && form[i].processYDataKey && form[i].processYDataKey.help ? form[i].processYDataKey.help : 'Define the function body (in JavaScript) here to process the variable "x".'}
+                    >
+                      <TextArea
+                        rows={4}
+                        placeholder="Process Y Data Key"
+                        id="processYDataKey"
+                        onFocus={({ target: { id: item } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], touched: true, changed: false } } })}
+                        onChange={({ target: { id: item, value } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], value, changed: false } } })}
+                        onBlur={({ target: { id: item, value } }) => {
+                          if (value.includes('return')) {
+                            plotsState[i].processYDataKey = new Function('x', value);
+                            
+                            // Convert currently existing values
+                            if (plotsState[i].y.length > 0) {
+                              plotsState[i].y = plotsState[i].y.map(y => plotsState[i].processYDataKey(y));
+
+                              layout.datarevision += 1;
+                              setDataRevision(dataRevision + 1);
+                            }
+
+                            setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: true, help: null } } });
+                          } else {
+                            setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: false, help: 'You must return at least the variable "x".' } } });
+                          }
+                        }}
+                        defaultValue={plot.processYDataKey ? plot.processYDataKey.toString().replace(/^[^{]*{\s*/, '').replace(/\s*}[^}]*$/, '') : 'return x;'}
+                      />
+                    </Form.Item>
+
+                    <Form.Item
                       label="Marker Color"
                       key="markerColor"
                       hasFeedback={form[i] && form[i].markerColor && form[i].markerColor.touched}
@@ -531,6 +584,30 @@ function Chart({
               </Form.Item>
 
               <Form.Item
+                label="Process Y Data Key"
+                key="processYDataKey"
+                hasFeedback={form.newChart.processYDataKey && form.newChart.processYDataKey.touched}
+                validateStatus={form.newChart.processYDataKey && form.newChart.processYDataKey.changed ? 'success' : ''}
+                help={form.newChart.processYDataKey && form.newChart.processYDataKey.help ? form.newChart.processYDataKey.help : 'Define the function body (in JavaScript) here to process the variable "x".'}
+              >
+                <TextArea
+                  rows={4}
+                  placeholder="Process Y Data Key"
+                  id="processYDataKey"
+                  onFocus={({ target: { id: item } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], touched: true, changed: false } } })}
+                  onChange={({ target: { id: item, value } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], value, changed: false } } })}
+                  onBlur={({ target: { id: item, value } }) => {
+                    if (value.includes('return')) {
+                      setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], value: new Function('x', value), changed: true, help: null } } });
+                    } else {
+                      setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], changed: false, help: 'You must return at least the variable "x".' } } });
+                    }
+                  }}
+                  value={form.newChart.processYDataKey && form.newChart.processYDataKey.value ? form.newChart.processYDataKey.value.toString().replace(/^[^{]*{\s*/, '').replace(/\s*}[^}]*$/, '') : ''}
+                />
+              </Form.Item>
+
+              <Form.Item
                 label="Marker Color"
                 key="markerColor"
                 hasFeedback={form.newChart.markerColor && form.newChart.markerColor.touched}
@@ -553,7 +630,7 @@ function Chart({
                 block
                 onClick={() => {
                   // Check if required values are here
-                  if (form.newChart.chartType.value && form.newChart.nodeProcess.value && form.newChart.YDataKey.value) {
+                  if (form.newChart.chartType.value && form.newChart.nodeProcess.value && form.newChart.YDataKey.value && form.newChart.processYDataKey.value.includes('return')) {
                     // Make form slots for new plot
                     setForm({
                       ...form,
@@ -575,6 +652,7 @@ function Chart({
                       mode: form.newChart.chartMode.value,
                       name: form.newChart.name.value,
                       YDataKey: form.newChart.YDataKey.value,
+                      processYDataKey: form.newChart.processYDataKey.value,
                       nodeProcess: form.newChart.nodeProcess.value
                     });
 
@@ -583,6 +661,7 @@ function Chart({
                     form.newChart.markerColor.value = '';
                     form.newChart.chartMode.value = '';
                     form.newChart.YDataKey.value = '';
+                    form.newChart.processYDataKey.value = '';
                     form.newChart.nodeProcess.value = '';
                     form.newChart.chartType.value = '';
 
