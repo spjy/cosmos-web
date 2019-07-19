@@ -1,5 +1,6 @@
 const path = require('path');
 
+const neutrino = require('neutrino');
 const react = require('@neutrinojs/react');
 const airbnb = require('@neutrinojs/airbnb');
 const jest = require('@neutrinojs/jest');
@@ -24,21 +25,7 @@ module.exports = {
       }
     }),
     jest(),
-    styles({
-      loaders: [
-        {
-          loader: 'postcss-loader',
-          useId: 'postcss',
-          options: {
-            config: {
-              path: neutrino.options.root,
-            },
-          },
-        },
-      ],
-    }),
     devServer({
-      port: 5001,
       disableHostCheck: true
     }),
     (neutrino) => {

@@ -36,6 +36,7 @@
     "@neutrinojs/library": "^9.0.0-rc.3",
     "@neutrinojs/react": "9.0.0-rc.3",
     "@neutrinojs/style-loader": "^9.0.0-rc.3",
+    "autoprefixer": "^9.6.1",
     "copy-webpack-plugin": "^5.0.3",
     "dotenv-webpack": "^1.7.0",
     "eslint": "5.16.0",

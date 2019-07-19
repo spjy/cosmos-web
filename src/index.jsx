@@ -4,7 +4,7 @@ import { AppContainer } from 'react-hot-loader';
 
 import registerServiceWorker from './registerServiceWorker';
 import App from './App';
-import './index.css';
+import './App.css';
 
 const load = () => render(
   (
