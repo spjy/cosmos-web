@@ -4,10 +4,10 @@
  * @param {String} ip The IP of the WebSocket to open.
  */
 function socket(type, endpoint) {
-  let ws = new WebSocket(`ws://${process.env.REACT_APP_WEBSOCKET_IP}:${type === 'query' ? process.env.REACT_APP_QUERY_WEBSOCKET_PORT : ''}${type === 'live' ? process.env.REACT_APP_LIVE_WEBSOCKET_PORT : ''}${endpoint}`);
+  let ws = new WebSocket(`ws://${process.env.WEBSOCKET_IP}:${type === 'query' ? process.env.QUERY_WEBSOCKET_PORT : ''}${type === 'live' ? process.env.LIVE_WEBSOCKET_PORT : ''}${endpoint}`);
 
   ws.onclose = (error) => {
-    console.log(`closed ws://${process.env.REACT_APP_WEBSOCKET_IP}:${type === 'query' ? process.env.REACT_APP_QUERY_WEBSOCKET_PORT : ''}${type === 'live' ? process.env.REACT_APP_LIVE_WEBSOCKET_PORT : ''}${endpoint}`);
+    console.log(`closed ws://${process.env.WEBSOCKET_IP}:${type === 'query' ? process.env.QUERY_WEBSOCKET_PORT : ''}${type === 'live' ? process.env.LIVE_WEBSOCKET_PORT : ''}${endpoint}`);
     switch (error.code) {
       case 1000:
         // Closed peacefully

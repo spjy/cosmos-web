@@ -146,6 +146,7 @@ const Commands = React.memo(() => {
                 sendCommand();
                 setCommandArguments('');
               }}
+              role="button"
             >
               Send
             </div>

@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
  * @param {String} endpoint The endpoint to listen to including the initital '/'
  */
 function useWebSocket(type, endpoint) {
-  let ws = new WebSocket(`ws://${process.env.REACT_APP_WEBSOCKET_IP}:${type === 'query' ? process.env.REACT_APP_QUERY_WEBSOCKET_PORT : ''}${type === 'live' ? process.env.REACT_APP_LIVE_WEBSOCKET_PORT : ''}${endpoint}`);
+  let ws = new WebSocket(`ws://${process.env.WEBSOCKET_IP}:${type === 'query' ? process.env.QUERY_WEBSOCKET_PORT : ''}${type === 'live' ? process.env.LIVE_WEBSOCKET_PORT : ''}${endpoint}`);
 
   ws.onclose = (error) => {
     switch (error.code) {

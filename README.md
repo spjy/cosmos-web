@@ -19,10 +19,18 @@ cd cosmos-web
 npm install
 ```
 
-Modify the .env file to have the correct variables.
+If you need to modify the default environment variable values (do not modify .env.defaults directly):
 
 ```
-REACT_APP_SATELLITE_IP=localhost # IP of the COSMOS Web Server
+cp .env.defaults .env
+```
+
+```
+WEB_API=localhost # For the old Node app
+WEBSOCKET_IP=localhost # New WS implementation
+QUERY_WEBSOCKET_PORT=8080 # Port of the WS to access the query endpoints
+LIVE_WEBSOCKET_PORT=8081 # Port of the WS to access the live endpoints
+
 ```
 
 ## Running
