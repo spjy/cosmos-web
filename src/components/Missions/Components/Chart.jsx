@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Form, Input, DatePicker, Button, Switch, Collapse, Icon, Divider
+  Form, Input, InputNumber, DatePicker, Button, Switch, Collapse, Icon, Divider
 } from 'antd';
 import Plot from 'react-plotly.js';
 
@@ -35,6 +35,8 @@ function Chart({
   /** The state that manages the component's X-axis data key displayed */
   const [XDataKeyState, setXDataKeyState] = useState(XDataKey);
 
+  const [YRange, setYRange] = useState([]);
+
   const [form, setForm] = useState({
     newChart: {
       live: true
@@ -45,6 +47,7 @@ function Chart({
   /** Layout parameters for the plot */
   const [layout] = useState({
     autosize: true,
+    uirevision: 0,
     datarevision: dataRevision,
     paper_bgcolor: '#FBFBFB',
     plot_bgcolor: '#FBFBFB',
@@ -53,9 +56,9 @@ function Chart({
       orientation: 'h'
     },
     margin: {
-      r: 0,
-      t: 0,
-      b: 0
+      r: 10,
+      t: 10,
+      b: 15
     }
   });
   /** Store to detect whether the user wants to get historical data to plot */
@@ -70,7 +73,9 @@ function Chart({
   useEffect(() => {
     // Make an object for each plot's form
     for (let i = 0; i < plotsState.length; i += 1) {
-      form[i] = {};
+      form[i] = {
+        live: plotsState[i].live
+      };
     }
   }, []);
 
@@ -141,7 +146,7 @@ function Chart({
     <BaseComponent
       name={nameState}
       subheader={(
-        <span>
+        <span className="text-xs">
           <Divider type="vertical" />
           {
             plotsState.map((plot, i) => {
@@ -237,6 +242,74 @@ function Chart({
               }}
               defaultValue={processXDataKey ? processXDataKey.toString().replace(/^[^{]*{\s*/, '').replace(/\s*}[^}]*$/, '') : 'return x;'}
             />
+          </Form.Item>
+
+          <Form.Item
+            label="Y Range"
+            key="YRange"
+            // hasFeedback={form.YRange && form.YRange.touched}
+            // validateStatus={form.YRange && form.YRange.changed ? 'success' : ''}
+          >
+            <InputNumber
+              className="mr-2"
+              placeholder="Min"
+              id="YRangeMin"
+              onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
+              onChange={value => setForm({ ...form, YRangeMin: { ...form.YRangeMin, value, changed: false } })}
+              onBlur={({ target: { id: item, value } }) => {
+                if (form.YRangeMax && value < form.YRangeMax.value) {
+                  YRange[0] = value;
+                  setForm({ ...form, [item]: { ...form[item], changed: true } });
+                }
+                setForm({ ...form, [item]: { ...form[item], changed: false } });
+              }}
+            />
+            <span
+              className="mr-2"
+            >
+              to
+            </span>
+            <InputNumber
+              className="mr-2"
+              placeholder="Max"
+              id="YRangeMax"
+              onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
+              onChange={value => setForm({ ...form, YRangeMax: { ...form.YRangeMax, value, changed: false } })}
+              onBlur={({ target: { id: item, value } }) => {
+                if (form.YRangeMin && value > form.YRangeMin.value) {
+                  setForm({ ...form, [item]: { ...form[item], changed: true } });
+                }
+                setForm({ ...form, [item]: { ...form[item], changed: false } });
+              }}
+            />
+
+            <Button
+              className="mr-2"
+              onClick={() => {
+                if (form.YRangeMin && form.YRangeMax && form.YRangeMax.value.toString() && form.YRangeMin.value.toString()) {
+                  layout.yaxis.range = [form.YRangeMin.value, form.YRangeMax.value];
+
+                  layout.datarevision += 1;
+                  layout.uirevision += 1;
+                  setDataRevision(dataRevision + 1);
+
+                  console.log(layout);
+                }
+              }}
+            >
+              Set axes
+            </Button>
+
+            <Button
+              type="danger"
+              onClick={() => {
+                delete layout.yaxis.range;
+
+                console.log(layout);
+              }}
+            >
+              Reset axes
+            </Button>
           </Form.Item>
 
           <Collapse
@@ -689,6 +762,7 @@ function Chart({
         }}
         layout={layout}
         revision={dataRevision}
+        useResizeHandler
       />
       {children}
     </BaseComponent>

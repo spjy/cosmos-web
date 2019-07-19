@@ -23,15 +23,16 @@ function Status({
   };
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (ws) {
+    if (ws) {
+      const timeout = setTimeout(() => {
         ws.send('list_json');
-      }
-    }, 5000);
+      }, 5000);
 
-    return () => {
-      clearTimeout(timeout);
-    };
+      return () => {
+        clearTimeout(timeout);
+      };
+    }
+    return () => {};
   }, [list]);
 
   return (
