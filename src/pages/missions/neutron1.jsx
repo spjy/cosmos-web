@@ -15,6 +15,7 @@ import Content from '../../components/Missions/Components/Content';
 import Commands from '../../components/Missions/Components/Commands';
 import Status from '../../components/Missions/Components/Status';
 import Chart from '../../components/Missions/Components/Chart';
+import Globe from '../../components/Missions/Components/Globe';
 import useWebSocket from '../../hooks/useWebSocket';
 
 function neutron1() {
@@ -26,38 +27,14 @@ function neutron1() {
   const [latestMessage, setLatestMessage] = useState({});
 
   useEffect(() => {
-    const cpu = socket('live', '/live/hsflpc23:cpu');
-    const eps = socket('live', '/live/neutron1:eps');
-    const ncpu = socket('live', '/live/neutron1:cpu');
+    const all = socket('live', '/live/all');
 
     /** Get latest data from neutron1_exec */
-    cpu.onmessage = ({ data }) => {
+    all.onmessage = ({ data }) => {
       try {
         const json = JSON.parse(data);
 
-        dispatch(actions.get('hsflpc23:cpu', json));
-      } catch (err) {
-        // console.log(err);
-      }
-    };
-
-    /** Get latest data from neutron1_exec */
-    eps.onmessage = ({ data }) => {
-      try {
-        const json = JSON.parse(data);
-
-        dispatch(actions.get('neutron1:eps', json));
-      } catch (err) {
-        // console.log(err);
-      }
-    };
-
-    /** Get latest data from neutron1_exec */
-    ncpu.onmessage = ({ data }) => {
-      try {
-        const json = JSON.parse(data);
-
-        dispatch(actions.get('neutron1:cpu', json));
+        dispatch(actions.get(json.node_type, json));
       } catch (err) {
         // console.log(err);
       }
@@ -65,9 +42,7 @@ function neutron1() {
 
     return () => {
       console.log('ok');
-      cpu.close(1000);
-      eps.close(1000);
-      ncpu.close(1000);
+      all.close(1000);
     };
   }, []);
 
@@ -133,6 +108,12 @@ function neutron1() {
             <Commands />
           </Card>
         </div>
+        <Card>
+          <Globe
+            name="Orbit"
+            nodeProc="beagle1:adcs"
+          />
+        </Card>
         <Card>
           <Chart
             name="Temperature"

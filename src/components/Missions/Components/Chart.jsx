@@ -39,8 +39,8 @@ function Chart({
 
   const [form, setForm] = useState({
     newChart: {
-      live: true
-    }
+      live: true,
+    },
   });
   /** Counter determining when the plot should be updated */
   const [dataRevision, setDataRevision] = useState(0);
@@ -53,13 +53,13 @@ function Chart({
     plot_bgcolor: '#FBFBFB',
     showlegend: true,
     legend: {
-      orientation: 'h'
+      orientation: 'h',
     },
     margin: {
       r: 10,
       t: 10,
-      b: 15
-    }
+      b: 15,
+    },
   });
   /** Store to detect whether the user wants to get historical data to plot */
   const [retrievePlotHistory, setRetrievePlotHistory] = useState(null);
@@ -74,7 +74,7 @@ function Chart({
     // Make an object for each plot's form
     for (let i = 0; i < plotsState.length; i += 1) {
       form[i] = {
-        live: plotsState[i].live
+        live: plotsState[i].live,
       };
     }
   }, []);
@@ -149,19 +149,17 @@ function Chart({
         <span className="text-xs">
           <Divider type="vertical" />
           {
-            plotsState.map((plot, i) => {
-              return (
-                <span key={i}>
-                  <span className="inline-block rounded-full mr-2 indicator" style={{ height: '6px', width: '6px', marginBottom: '2px', backgroundColor: plot.marker.color }} />
-                  <span className="font-semibold">
-                    {plot.nodeProcess}
-                  </span>
-                  &nbsp;-&nbsp;
-                  {plot.YDataKey}
-                  <Divider type="vertical" />
+            plotsState.map(plot => (
+              <span key={`${plot.nodeProcess}${plot.YDataKey}`}>
+                <span className="inline-block rounded-full mr-2 indicator" style={{ height: '6px', width: '6px', marginBottom: '2px', backgroundColor: plot.marker.color }} />
+                <span className="font-semibold">
+                  {plot.nodeProcess}
                 </span>
-              );
-            })
+                &nbsp;-&nbsp;
+                {plot.YDataKey}
+                <Divider type="vertical" />
+              </span>
+            ))
           }
         </span>
       )}
@@ -346,8 +344,8 @@ function Chart({
                             setForm({
                               ...form,
                               [i]: {
-                                ...form[i], live: checked
-                              }
+                                ...form[i], live: checked,
+                              },
                             });
                           }}
                         />
@@ -540,8 +538,9 @@ function Chart({
                 onChange={checked => setForm({
                   ...form,
                   newChart: {
-                    ...form.newChart, live: checked
-                  }
+                    ...form.newChart,
+                    live: checked,
+                  },
                 })}
               />
               <br />
@@ -708,9 +707,9 @@ function Chart({
                     setForm({
                       ...form,
                       newChart: {
-                        live: form.newChart.live
+                        live: form.newChart.live,
                       },
-                      [plotsState.length]: {}
+                      [plotsState.length]: {},
                     });
 
                     // Create chart
@@ -720,13 +719,13 @@ function Chart({
                       y: [],
                       type: form.newChart.chartType.value,
                       marker: {
-                        color: form.newChart.markerColor.value
+                        color: form.newChart.markerColor.value,
                       },
                       mode: form.newChart.chartMode.value,
                       name: form.newChart.name.value,
                       YDataKey: form.newChart.YDataKey.value,
                       processYDataKey: form.newChart.processYDataKey.value,
-                      nodeProcess: form.newChart.nodeProcess.value
+                      nodeProcess: form.newChart.nodeProcess.value,
                     });
 
                     // Clear form values
@@ -758,7 +757,7 @@ function Chart({
         className="w-full"
         data={plotsState}
         config={{
-          scrollZoom: true
+          scrollZoom: true,
         }}
         layout={layout}
         revision={dataRevision}
@@ -783,7 +782,7 @@ Chart.propTypes = {
       type: PropTypes.string,
       /** */
       marker: PropTypes.shape({
-        color: PropTypes.string
+        color: PropTypes.string,
       }),
       /** */
       mode: PropTypes.string,
@@ -794,8 +793,8 @@ Chart.propTypes = {
       /** Data key to plot on the y-axis */
       YDataKey: PropTypes.string,
       /** Whether the chart displays live values */
-      live: PropTypes.bool
-    })
+      live: PropTypes.bool,
+    }),
   ),
   /** JSON object of data */
   nodeProc: PropTypes.string,
@@ -816,7 +815,7 @@ Chart.propTypes = {
     }
   },
   /** Children node */
-  children: PropTypes.node
+  children: PropTypes.node,
 };
 
 Chart.defaultProps = {
@@ -828,7 +827,7 @@ Chart.defaultProps = {
   processYDataKey: y => y,
   showStatus: false,
   status: 'error',
-  children: null
+  children: null,
 };
 
 export default Chart;

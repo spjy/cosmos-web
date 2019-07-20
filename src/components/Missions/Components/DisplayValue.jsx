@@ -86,127 +86,125 @@ function DisplayValue({
             bordered
           >
             {
-              displayValuesState.map((displayValue, i) => {
-                return (
-                  <Panel
-                    header={(
-                      <span className="text-gray-600">
-                        <span className="inline-block rounded-full mr-2 indicator" style={{ height: '6px', width: '6px', marginBottom: '2px' }} />
-                        <strong>
-                          {displayValue.nodeProcess}
-                        </strong>
-                        &nbsp;
-                        <span>
-                          {displayValue.name}
-                        </span>
+              displayValuesState.map((displayValue, i) => (
+                <Panel
+                  header={(
+                    <span className="text-gray-600">
+                      <span className="inline-block rounded-full mr-2 indicator" style={{ height: '6px', width: '6px', marginBottom: '2px' }} />
+                      <strong>
+                        {displayValue.nodeProcess}
+                      </strong>
+                      &nbsp;
+                      <span>
+                        {displayValue.name}
                       </span>
-                    )}
-                    key={i}
+                    </span>
+                  )}
+                  key={`${displayValue.nodeProcess}${displayValue.dataKey}`}
+                >
+                  <Form.Item
+                    label="Name"
+                    key="name"
+                    hasFeedback={form[i] && form[i].name && form[i].name.touched}
+                    validateStatus={form[i] && form[i].name && form[i].name.changed ? 'success' : ''}
                   >
-                    <Form.Item
-                      label="Name"
-                      key="name"
-                      hasFeedback={form[i] && form[i].name && form[i].name.touched}
-                      validateStatus={form[i] && form[i].name && form[i].name.changed ? 'success' : ''}
-                    >
-                      <Input
-                        placeholder="Name"
-                        id="name"
-                        onFocus={({ target: { id: item } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], touched: true, changed: false } } })}
-                        onChange={({ target: { id: item, value } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], value, changed: false } } })}
-                        onBlur={({ target: { id: item, value } }) => {
-                          displayValuesState[i].name = value;
-                          setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: true } } });
-                        }}
-                        defaultValue={displayValue.name}
-                      />
-                    </Form.Item>
-                    
-                    <Form.Item
-                      label="Node Process"
-                      key="nodeProcess"
-                      hasFeedback={form[i] && form[i].nodeProcess && form[i].nodeProcess.touched}
-                      validateStatus={form[i] && form[i].nodeProcess && form[i].nodeProcess.changed ? 'success' : ''}
-                    >
-                      <Input
-                        placeholder="Node Process"
-                        id="nodeProcess"
-                        onFocus={({ target: { id: item } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], touched: true, changed: false } } })}
-                        onChange={({ target: { id: item, value } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], value, changed: false } } })}
-                        onBlur={({ target: { id: item, value } }) => {
-                          displayValuesState[i].nodeProcess = value;
-                          setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: true } } });
-                        }}
-                        defaultValue={displayValue.nodeProcess}
-                      />
-                    </Form.Item>
+                    <Input
+                      placeholder="Name"
+                      id="name"
+                      onFocus={({ target: { id: item } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], touched: true, changed: false } } })}
+                      onChange={({ target: { id: item, value } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], value, changed: false } } })}
+                      onBlur={({ target: { id: item, value } }) => {
+                        displayValuesState[i].name = value;
+                        setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: true } } });
+                      }}
+                      defaultValue={displayValue.name}
+                    />
+                  </Form.Item>
+                  
+                  <Form.Item
+                    label="Node Process"
+                    key="nodeProcess"
+                    hasFeedback={form[i] && form[i].nodeProcess && form[i].nodeProcess.touched}
+                    validateStatus={form[i] && form[i].nodeProcess && form[i].nodeProcess.changed ? 'success' : ''}
+                  >
+                    <Input
+                      placeholder="Node Process"
+                      id="nodeProcess"
+                      onFocus={({ target: { id: item } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], touched: true, changed: false } } })}
+                      onChange={({ target: { id: item, value } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], value, changed: false } } })}
+                      onBlur={({ target: { id: item, value } }) => {
+                        displayValuesState[i].nodeProcess = value;
+                        setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: true } } });
+                      }}
+                      defaultValue={displayValue.nodeProcess}
+                    />
+                  </Form.Item>
 
-                    <Form.Item
-                      label="Data Key"
-                      key="dataKey"
-                      hasFeedback={form[i] && form[i].dataKey && form[i].dataKey.touched}
-                      validateStatus={form[i] && form[i].dataKey && form[i].dataKey.changed ? 'success' : ''}
-                    >
-                      <Input
-                        placeholder="Data Key"
-                        id="dataKey"
-                        onFocus={({ target: { id: item } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], touched: true, changed: false } } })}
-                        onChange={({ target: { id: item, value } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], value, changed: false } } })}
-                        onBlur={({ target: { id: item, value } }) => {
-                          displayValuesState[i].dataKey = value;
-                          setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: true } } });
-                        }}
-                        defaultValue={displayValue.dataKey}
-                      />
-                    </Form.Item>
+                  <Form.Item
+                    label="Data Key"
+                    key="dataKey"
+                    hasFeedback={form[i] && form[i].dataKey && form[i].dataKey.touched}
+                    validateStatus={form[i] && form[i].dataKey && form[i].dataKey.changed ? 'success' : ''}
+                  >
+                    <Input
+                      placeholder="Data Key"
+                      id="dataKey"
+                      onFocus={({ target: { id: item } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], touched: true, changed: false } } })}
+                      onChange={({ target: { id: item, value } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], value, changed: false } } })}
+                      onBlur={({ target: { id: item, value } }) => {
+                        displayValuesState[i].dataKey = value;
+                        setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: true } } });
+                      }}
+                      defaultValue={displayValue.dataKey}
+                    />
+                  </Form.Item>
 
-                    <Form.Item
-                      label="Process Data Key"
-                      key="processDataKey"
-                      hasFeedback={form[i] && form[i].processDataKey && form[i].processDataKey.touched}
-                      validateStatus={form[i] && form[i].processDataKey && form[i].processDataKey.changed ? 'success' : ''}
-                      help={form[i] && form[i].processDataKey && form[i].processDataKey.help ? form[i].processDataKey.help : 'Define the function body (in JavaScript) here to process the variable "x".'}
-                    >
-                      <TextArea
-                        rows={4}
-                        placeholder="Process Data Key"
-                        id="processDataKey"
-                        onFocus={({ target: { id: item } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], touched: true, changed: false } } })}
-                        onChange={({ target: { id: item, value } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], value, changed: false } } })}
-                        onBlur={({ target: { id: item, value } }) => {
-                          if (value.includes('return')) {
-                            displayValuesState[i].processDataKey = new Function('x', value);
-                            setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: true, help: null } } });
-                          } else {
-                            setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: false, help: 'You must return at least the variable "x".' } } });
-                          }
-                        }}
-                        defaultValue={displayValue.processDataKey ? displayValue.processDataKey.toString().replace(/^[^{]*{\s*/, '').replace(/\s*}[^}]*$/, '') : 'return x;'}
-                      />
-                    </Form.Item>
+                  <Form.Item
+                    label="Process Data Key"
+                    key="processDataKey"
+                    hasFeedback={form[i] && form[i].processDataKey && form[i].processDataKey.touched}
+                    validateStatus={form[i] && form[i].processDataKey && form[i].processDataKey.changed ? 'success' : ''}
+                    help={form[i] && form[i].processDataKey && form[i].processDataKey.help ? form[i].processDataKey.help : 'Define the function body (in JavaScript) here to process the variable "x".'}
+                  >
+                    <TextArea
+                      rows={4}
+                      placeholder="Process Data Key"
+                      id="processDataKey"
+                      onFocus={({ target: { id: item } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], touched: true, changed: false } } })}
+                      onChange={({ target: { id: item, value } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], value, changed: false } } })}
+                      onBlur={({ target: { id: item, value } }) => {
+                        if (value.includes('return')) {
+                          displayValuesState[i].processDataKey = new Function('x', value);
+                          setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: true, help: null } } });
+                        } else {
+                          setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: false, help: 'You must return at least the variable "x".' } } });
+                        }
+                      }}
+                      defaultValue={displayValue.processDataKey ? displayValue.processDataKey.toString().replace(/^[^{]*{\s*/, '').replace(/\s*}[^}]*$/, '') : 'return x;'}
+                    />
+                  </Form.Item>
 
-                    <Form.Item
-                      label="Unit"
-                      key="unit"
-                      hasFeedback={form[i] && form[i].unit && form[i].unit.touched}
-                      validateStatus={form[i] && form[i].unit && form[i].unit.changed ? 'success' : ''}
-                    >
-                      <Input
-                        placeholder="Unit"
-                        id="unit"
-                        onFocus={({ target: { id: item } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], touched: true, changed: false } } })}
-                        onChange={({ target: { id: item, value } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], value, changed: false } } })}
-                        onBlur={({ target: { id: item, value } }) => {
-                          displayValuesState[i].unit = value;
-                          setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: true } } });
-                        }}
+                  <Form.Item
+                    label="Unit"
+                    key="unit"
+                    hasFeedback={form[i] && form[i].unit && form[i].unit.touched}
+                    validateStatus={form[i] && form[i].unit && form[i].unit.changed ? 'success' : ''}
+                  >
+                    <Input
+                      placeholder="Unit"
+                      id="unit"
+                      onFocus={({ target: { id: item } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], touched: true, changed: false } } })}
+                      onChange={({ target: { id: item, value } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], value, changed: false } } })}
+                      onBlur={({ target: { id: item, value } }) => {
+                        displayValuesState[i].unit = value;
+                        setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: true } } });
+                      }}
 
-                        defaultValue={displayValue.unit}
-                      />
-                    </Form.Item>
-                  </Panel>
-                );
-              })
+                      defaultValue={displayValue.unit}
+                    />
+                  </Form.Item>
+                </Panel>
+              ))
             }
             <Panel header="Add Value" key="3">
               <Form.Item
