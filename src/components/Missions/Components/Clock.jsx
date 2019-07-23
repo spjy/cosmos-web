@@ -24,8 +24,8 @@ function Clock({
   useEffect(() => {
     // Every second, update local and UTC time view
     const clock = setTimeout(() => {
-      setTime(moment().tz(timezoneState).format('MMDDYYYY-HH:mm:ss'));
-      setUtcTime(moment().tz('Europe/London').format('MMDDYYYY-HH:mm:ss'));
+      setTime(moment().tz(timezoneState).format('MMDDYYYYTHH:mm:ss'));
+      setUtcTime(moment().tz('Europe/London').format('MMDDYYYYTHH:mm:ss'));
     }, 1000);
 
     // Stop timeout on unmount
@@ -87,11 +87,11 @@ function Clock({
 }
 
 Clock.propTypes = {
-  timezone: PropTypes.string
+  timezone: PropTypes.string,
 };
 
 Clock.defaultProps = {
-  timezone: 'Pacific/Honolulu'
+  timezone: 'Pacific/Honolulu',
 };
 
 export default Clock;

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useReducer } from 'react';
 import moment from 'moment-timezone';
 
 import {
-  Context, actions, reducer
+  Context, actions, reducer,
 } from '../../store/neutron1';
 
 import socket from '../../socket';
@@ -86,7 +86,7 @@ function neutron1() {
                     dataKey: 'device_cpu_maxgib_000',
                     unit: 'GiB',
                     processDataKey: x => x.toFixed(2)
-                  }
+                  },
                 ]
               }
               subheader="06231999-1630Z"
@@ -112,6 +112,15 @@ function neutron1() {
           <Globe
             name="Orbit"
             nodeProc="beagle1:adcs"
+            orbits={[
+              {
+                name: 'neutron1',
+                modelFileName: 'cubesat1.glb',
+                nodeProcess: 'neutron1:adcs',
+                live: true,
+                position: [21.289373, 157.917480, 350000.0],
+              },
+            ]}
           />
         </Card>
         <Card>

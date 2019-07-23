@@ -38,7 +38,7 @@ function Chart({
   const [YRange, setYRange] = useState([]);
 
   const [form, setForm] = useState({
-    newChart: {
+    newValue: {
       live: true,
     },
   });
@@ -67,7 +67,7 @@ function Chart({
   const { state: { [nodeProcessState]: nodeProcess } } = useContext(Context);
 
   /** Plot data storage */
-  const [plotsState] = useState(plots);
+  const [plotsState, setPlotsState] = useState(plots);
 
   /** Initialize form slots for each plot */
   useEffect(() => {
@@ -107,7 +107,7 @@ function Chart({
           const to = ((form[retrievePlotHistory].dateRange.value[1].unix() / 86400.0) + 2440587.5 - 2400000.5);
 
           query.send(
-            `database=agent_dump?collection=${plotsState[retrievePlotHistory].nodeProcess}?multiple=true?query={"utc": { "$gt": ${from}, "$lt": ${to} }}`
+            `database=agent_dump?collection=${plotsState[retrievePlotHistory].nodeProcess}?multiple=true?query={"utc": { "$gt": ${from}, "$lt": ${to} }}`,
           );
         }
 
@@ -256,7 +256,6 @@ function Chart({
               onChange={value => setForm({ ...form, YRangeMin: { ...form.YRangeMin, value, changed: false } })}
               onBlur={({ target: { id: item, value } }) => {
                 if (form.YRangeMax && value < form.YRangeMax.value) {
-                  YRange[0] = value;
                   setForm({ ...form, [item]: { ...form[item], changed: true } });
                 }
                 setForm({ ...form, [item]: { ...form[item], changed: false } });
@@ -290,8 +289,6 @@ function Chart({
                   layout.datarevision += 1;
                   layout.uirevision += 1;
                   setDataRevision(dataRevision + 1);
-
-                  console.log(layout);
                 }
               }}
             >
@@ -302,8 +299,69 @@ function Chart({
               type="danger"
               onClick={() => {
                 delete layout.yaxis.range;
+              }}
+            >
+              Reset axes
+            </Button>
+          </Form.Item>
 
-                console.log(layout);
+          <Form.Item
+            label="X Range"
+            key="XRange"
+            // hasFeedback={form.YRange && form.YRange.touched}
+            // validateStatus={form.YRange && form.YRange.changed ? 'success' : ''}
+          >
+            <InputNumber
+              className="mr-2"
+              placeholder="Min"
+              id="XRangeMin"
+              onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
+              onChange={value => setForm({ ...form, XRangeMin: { ...form.XRangeMin, value, changed: false } })}
+              onBlur={({ target: { id: item, value } }) => {
+                if (form.XRangeMax && value < form.XRangeMax.value) {
+                  setForm({ ...form, [item]: { ...form[item], changed: true } });
+                }
+                setForm({ ...form, [item]: { ...form[item], changed: false } });
+              }}
+            />
+            <span
+              className="mr-2"
+            >
+              to
+            </span>
+            <InputNumber
+              className="mr-2"
+              placeholder="Max"
+              id="XRangeMax"
+              onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
+              onChange={value => setForm({ ...form, XRangeMax: { ...form.XRangeMax, value, changed: false } })}
+              onBlur={({ target: { id: item, value } }) => {
+                if (form.XRangeMin && value > form.XRangeMin.value) {
+                  setForm({ ...form, [item]: { ...form[item], changed: true } });
+                }
+                setForm({ ...form, [item]: { ...form[item], changed: false } });
+              }}
+            />
+
+            <Button
+              className="mr-2"
+              onClick={() => {
+                if (form.XRangeMin && form.XRangeMax && form.XRangeMax.value.toString() && form.XRangeMin.value.toString()) {
+                  layout.xaxis.range = [form.XRangeMin.value, form.XRangeMax.value];
+
+                  layout.datarevision += 1;
+                  layout.uirevision += 1;
+                  setDataRevision(dataRevision + 1);
+                }
+              }}
+            >
+              Set axes
+            </Button>
+
+            <Button
+              type="danger"
+              onClick={() => {
+                delete layout.xaxis.range;
               }}
             >
               Reset axes
@@ -350,7 +408,16 @@ function Chart({
                           }}
                         />
                         &nbsp;
-                        <Icon className="text-lg" type="close" />
+                        &nbsp;
+                        <span
+                          onClick={(event) => {
+                            event.stopPropagation();
+
+                            setPlotsState(plotsState.filter((plots, j) => j !== i));
+                          }}
+                        >
+                          X
+                        </span>
                       </div>
                     )}
                   >
@@ -537,8 +604,8 @@ function Chart({
                 defaultChecked
                 onChange={checked => setForm({
                   ...form,
-                  newChart: {
-                    ...form.newChart,
+                  newValue: {
+                    ...form.newValue,
                     live: checked,
                   },
                 })}
@@ -549,34 +616,34 @@ function Chart({
                 className="w-auto"
                 label="Historical Date Range"
                 key="dateRange"
-                hasFeedback={form.newChart.dateRange && form.newChart.dateRange.touched}
-                validateStatus={form.newChart.dateRange && form.newChart.dateRange.changed ? 'success' : ''}
+                hasFeedback={form.newValue.dateRange && form.newValue.dateRange.touched}
+                validateStatus={form.newValue.dateRange && form.newValue.dateRange.changed ? 'success' : ''}
               >
                 <RangePicker
                   className="mr-1"
                   id="dateRange"
                   showTime
                   format="YYYY-MM-DD HH:mm:ss"
-                  disabled={form.newChart.live}
-                  onChange={moment => setForm({ ...form, newChart: { ...form.newChart, dateRange: { ...form.newChart.dateRange, value: moment } } })}
+                  disabled={form.newValue.live}
+                  onChange={moment => setForm({ ...form, newValue: { ...form.newValue, dateRange: { ...form.newValue.dateRange, value: moment } } })}
                 />
               </Form.Item>
 
               <Form.Item
                 label="Name"
                 key="name"
-                hasFeedback={form.newChart.name && form.newChart.name.touched}
-                validateStatus={form.newChart.name && form.newChart.name.changed ? 'success' : ''}
+                hasFeedback={form.newValue.name && form.newValue.name.touched}
+                validateStatus={form.newValue.name && form.newValue.name.changed ? 'success' : ''}
               >
                 <Input
                   placeholder="Name"
                   id="name"
-                  onFocus={({ target: { id: item } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], touched: true, changed: false } } })}
-                  onChange={({ target: { id: item, value } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], value, changed: false } } })}
+                  onFocus={({ target: { id: item } }) => setForm({ ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], touched: true, changed: false } } })}
+                  onChange={({ target: { id: item, value } }) => setForm({ ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], value, changed: false } } })}
                   onBlur={({ target: { id: item, value } }) => {
-                    setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], changed: true } } });
+                    setForm({ ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], changed: true } } });
                   }}
-                  value={form.newChart.name ? form.newChart.name.value : ''}
+                  value={form.newValue.name ? form.newValue.name.value : ''}
                 />
               </Form.Item>
 
@@ -584,36 +651,36 @@ function Chart({
                 required
                 label="Chart Type"
                 key="chartType"
-                hasFeedback={form.newChart.chartType && form.newChart.chartType.touched}
-                validateStatus={form.newChart.chartType && form.newChart.chartType.changed ? 'success' : ''}
+                hasFeedback={form.newValue.chartType && form.newValue.chartType.touched}
+                validateStatus={form.newValue.chartType && form.newValue.chartType.changed ? 'success' : ''}
               >
                 <Input
                   placeholder="Chart Type"
                   id="chartType"
-                  onFocus={({ target: { id: item } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], touched: true, changed: false } } })}
-                  onChange={({ target: { id: item, value } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], value, changed: false } } })}
+                  onFocus={({ target: { id: item } }) => setForm({ ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], touched: true, changed: false } } })}
+                  onChange={({ target: { id: item, value } }) => setForm({ ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], value, changed: false } } })}
                   onBlur={({ target: { id: item, value } }) => {
-                    setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], changed: true } } });
+                    setForm({ ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], changed: true } } });
                   }}
-                  value={form.newChart.chartType ? form.newChart.chartType.value : ''}
+                  value={form.newValue.chartType ? form.newValue.chartType.value : ''}
                 />
               </Form.Item>
 
               <Form.Item
                 label="Chart Mode"
                 key="chartMode"
-                hasFeedback={form.newChart.chartMode && form.newChart.chartMode.touched}
-                validateStatus={form.newChart.chartMode && form.newChart.chartMode.changed ? 'success' : ''}
+                hasFeedback={form.newValue.chartMode && form.newValue.chartMode.touched}
+                validateStatus={form.newValue.chartMode && form.newValue.chartMode.changed ? 'success' : ''}
               >
                 <Input
                   placeholder="Chart Mode"
                   id="chartMode"
-                  onFocus={({ target: { id: item } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], touched: true, changed: false } } })}
-                  onChange={({ target: { id: item, value } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], value, changed: false } } })}
+                  onFocus={({ target: { id: item } }) => setForm({ ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], touched: true, changed: false } } })}
+                  onChange={({ target: { id: item, value } }) => setForm({ ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], value, changed: false } } })}
                   onBlur={({ target: { id: item, value } }) => {
-                    setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], changed: true } } });
+                    setForm({ ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], changed: true } } });
                   }}
-                  value={form.newChart.chartMode ? form.newChart.chartMode.value : ''}
+                  value={form.newValue.chartMode ? form.newValue.chartMode.value : ''}
                 />
               </Form.Item>
 
@@ -621,18 +688,18 @@ function Chart({
                 required
                 label="Node Process"
                 key="nodeProcess"
-                hasFeedback={form.newChart.nodeProcess && form.newChart.nodeProcess.touched}
-                validateStatus={form.newChart.nodeProcess && form.newChart.nodeProcess.changed ? 'success' : ''}
+                hasFeedback={form.newValue.nodeProcess && form.newValue.nodeProcess.touched}
+                validateStatus={form.newValue.nodeProcess && form.newValue.nodeProcess.changed ? 'success' : ''}
               >
                 <Input
                   placeholder="Node Process"
                   id="nodeProcess"
-                  onFocus={({ target: { id: item } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], touched: true, changed: false } } })}
-                  onChange={({ target: { id: item, value } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], value, changed: false } } })}
+                  onFocus={({ target: { id: item } }) => setForm({ ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], touched: true, changed: false } } })}
+                  onChange={({ target: { id: item, value } }) => setForm({ ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], value, changed: false } } })}
                   onBlur={({ target: { id: item, value } }) => {
-                    setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], changed: true } } });
+                    setForm({ ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], changed: true } } });
                   }}
-                  value={form.newChart.nodeProcess ? form.newChart.nodeProcess.value : ''}
+                  value={form.newValue.nodeProcess ? form.newValue.nodeProcess.value : ''}
                 />
               </Form.Item>
 
@@ -640,60 +707,60 @@ function Chart({
                 required
                 label="Y Data Key"
                 key="YDataKey"
-                hasFeedback={form.newChart.YDataKey && form.newChart.YDataKey.touched}
-                validateStatus={form.newChart.YDataKey && form.newChart.YDataKey.changed ? 'success' : ''}
+                hasFeedback={form.newValue.YDataKey && form.newValue.YDataKey.touched}
+                validateStatus={form.newValue.YDataKey && form.newValue.YDataKey.changed ? 'success' : ''}
               >
                 <Input
                   placeholder="Y Data Key"
                   id="YDataKey"
-                  onFocus={({ target: { id: item } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], touched: true, changed: false } } })}
-                  onChange={({ target: { id: item, value } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], value, changed: false } } })}
+                  onFocus={({ target: { id: item } }) => setForm({ ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], touched: true, changed: false } } })}
+                  onChange={({ target: { id: item, value } }) => setForm({ ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], value, changed: false } } })}
                   onBlur={({ target: { id: item, value } }) => {
-                    setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], changed: true } } });
+                    setForm({ ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], changed: true } } });
                   }}
-                  value={form.newChart.YDataKey ? form.newChart.YDataKey.value : ''}
+                  value={form.newValue.YDataKey ? form.newValue.YDataKey.value : ''}
                 />
               </Form.Item>
 
               <Form.Item
                 label="Process Y Data Key"
                 key="processYDataKey"
-                hasFeedback={form.newChart.processYDataKey && form.newChart.processYDataKey.touched}
-                validateStatus={form.newChart.processYDataKey && form.newChart.processYDataKey.changed ? 'success' : ''}
-                help={form.newChart.processYDataKey && form.newChart.processYDataKey.help ? form.newChart.processYDataKey.help : 'Define the function body (in JavaScript) here to process the variable "x".'}
+                hasFeedback={form.newValue.processYDataKey && form.newValue.processYDataKey.touched}
+                validateStatus={form.newValue.processYDataKey && form.newValue.processYDataKey.changed ? 'success' : ''}
+                help={form.newValue.processYDataKey && form.newValue.processYDataKey.help ? form.newValue.processYDataKey.help : 'Define the function body (in JavaScript) here to process the variable "x".'}
               >
                 <TextArea
                   rows={4}
                   placeholder="Process Y Data Key"
                   id="processYDataKey"
-                  onFocus={({ target: { id: item } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], touched: true, changed: false } } })}
-                  onChange={({ target: { id: item, value } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], value, changed: false } } })}
+                  onFocus={({ target: { id: item } }) => setForm({ ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], touched: true, changed: false } } })}
+                  onChange={({ target: { id: item, value } }) => setForm({ ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], value, changed: false } } })}
                   onBlur={({ target: { id: item, value } }) => {
                     if (value.includes('return')) {
-                      setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], value: new Function('x', value), changed: true, help: null } } });
+                      setForm({ ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], value: new Function('x', value), changed: true, help: null } } });
                     } else {
-                      setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], changed: false, help: 'You must return at least the variable "x".' } } });
+                      setForm({ ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], changed: false, help: 'You must return at least the variable "x".' } } });
                     }
                   }}
-                  value={form.newChart.processYDataKey && form.newChart.processYDataKey.value ? form.newChart.processYDataKey.value.toString().replace(/^[^{]*{\s*/, '').replace(/\s*}[^}]*$/, '') : ''}
+                  value={form.newValue.processYDataKey && form.newValue.processYDataKey.value ? form.newValue.processYDataKey.value.toString().replace(/^[^{]*{\s*/, '').replace(/\s*}[^}]*$/, '') : ''}
                 />
               </Form.Item>
 
               <Form.Item
                 label="Marker Color"
                 key="markerColor"
-                hasFeedback={form.newChart.markerColor && form.newChart.markerColor.touched}
-                validateStatus={form.newChart.markerColor && form.newChart.markerColor.changed ? 'success' : ''}
+                hasFeedback={form.newValue.markerColor && form.newValue.markerColor.touched}
+                validateStatus={form.newValue.markerColor && form.newValue.markerColor.changed ? 'success' : ''}
               >
                 <Input
                   placeholder="Marker Color"
                   id="markerColor"
-                  onFocus={({ target: { id: item } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], touched: true, changed: false } } })}
-                  onChange={({ target: { id: item, value } }) => setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], value, changed: false } } })}
+                  onFocus={({ target: { id: item } }) => setForm({ ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], touched: true, changed: false } } })}
+                  onChange={({ target: { id: item, value } }) => setForm({ ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], value, changed: false } } })}
                   onBlur={({ target: { id: item, value } }) => {
-                    setForm({ ...form, newChart: { ...form.newChart, [item]: { ...form.newChart[item], changed: true } } });
+                    setForm({ ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], changed: true } } });
                   }}
-                  value={form.newChart.markerColor ? form.newChart.markerColor.value : ''}
+                  value={form.newValue.markerColor ? form.newValue.markerColor.value : ''}
                 />
               </Form.Item>
 
@@ -702,43 +769,43 @@ function Chart({
                 block
                 onClick={() => {
                   // Check if required values are here
-                  if (form.newChart.chartType.value && form.newChart.nodeProcess.value && form.newChart.YDataKey.value && form.newChart.processYDataKey.value.includes('return')) {
+                  if (form.newValue.chartType.value && form.newValue.nodeProcess.value && form.newValue.YDataKey.value) {
                     // Make form slots for new plot
                     setForm({
                       ...form,
-                      newChart: {
-                        live: form.newChart.live,
+                      newValue: {
+                        live: form.newValue.live,
                       },
                       [plotsState.length]: {},
                     });
 
                     // Create chart
                     plotsState.push({
-                      live: form.newChart.live,
+                      live: form.newValue.live,
                       x: [],
                       y: [],
-                      type: form.newChart.chartType.value,
+                      type: form.newValue.chartType.value,
                       marker: {
-                        color: form.newChart.markerColor.value,
+                        color: form.newValue.markerColor.value,
                       },
-                      mode: form.newChart.chartMode.value,
-                      name: form.newChart.name.value,
-                      YDataKey: form.newChart.YDataKey.value,
-                      processYDataKey: form.newChart.processYDataKey.value,
-                      nodeProcess: form.newChart.nodeProcess.value,
+                      mode: form.newValue.chartMode.value,
+                      name: form.newValue.name.value,
+                      YDataKey: form.newValue.YDataKey.value,
+                      processYDataKey: form.newValue.processYDataKey.value.includes('return') ? form.newValue.processYDataKey.value : x => x,
+                      nodeProcess: form.newValue.nodeProcess.value,
                     });
 
                     // Clear form values
-                    form.newChart.name.value = '';
-                    form.newChart.markerColor.value = '';
-                    form.newChart.chartMode.value = '';
-                    form.newChart.YDataKey.value = '';
-                    form.newChart.processYDataKey.value = '';
-                    form.newChart.nodeProcess.value = '';
-                    form.newChart.chartType.value = '';
+                    form.newValue.name.value = '';
+                    form.newValue.markerColor.value = '';
+                    form.newValue.chartMode.value = '';
+                    form.newValue.YDataKey.value = '';
+                    form.newValue.processYDataKey.value = '';
+                    form.newValue.nodeProcess.value = '';
+                    form.newValue.chartType.value = '';
 
                     // If not live, retrieve the data from database
-                    if (!form.newChart.live) {
+                    if (!form.newValue.live) {
                       setRetrievePlotHistory(plotsState.length);
                     }
                   }

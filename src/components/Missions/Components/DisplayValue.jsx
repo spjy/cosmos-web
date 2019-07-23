@@ -378,7 +378,7 @@ DisplayValue.propTypes = {
       dataKey: PropTypes.string,
       processDataKey: PropTypes.func,
       unit: PropTypes.string,
-    })
+    }),
   ),
   /** JSON object of data */
   nodeProc: PropTypes.string,
