@@ -22,6 +22,8 @@ const { RangePicker } = DatePicker;
 const origin = Cesium.Cartesian3.fromDegrees(-90.0, 40.0, 200000.0);
 const modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(origin);
 
+Cesium.Ion.defaultAccessToken = process.env.CESIUM_ION_TOKEN;
+
 function getPos(lat, long, height) {
   const pos = Cesium.Cartesian3.fromDegrees(lat, long, height);
 

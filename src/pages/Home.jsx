@@ -7,8 +7,7 @@ const Home = () => (
   <div>
     <div style={{ backgroundColor: '#ECECEC' }}>
       <div style={{ padding: '5em', textAlign: 'center' }}>
-        <h1>COSMOS Web</h1>
-        for the Hawaii Space Flight Laboratory
+        <h1 className="text-4xl">COSMOS Web</h1>
       </div>
     </div>
     <br />
