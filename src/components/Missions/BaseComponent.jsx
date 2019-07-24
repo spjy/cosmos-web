@@ -30,7 +30,7 @@ function BaseComponent({
   }, []);
 
   return (
-    <div>
+    <div className="overflow-y-hidden">
       <ComponentSettings
         visible={openSettings}
         /** Closes the modal. */
@@ -44,7 +44,7 @@ function BaseComponent({
         {formItems}
       </ComponentSettings>
 
-      <div className="flex justify-between pr-1">
+      <div className="flex justify-between pr-1 dragHandle cursor-move">
         <div className="flex flex-row flex-shrink-0">
           {showStatus ? (
             <div className="m-1">
@@ -107,7 +107,7 @@ BaseComponent.propTypes = {
   liveOnly: PropTypes.bool,
   /** Function is run when the live/past switch is toggled. */
   handleLiveSwitchChange: (props, propName, componentName) => {
-    if (props.showStatus) {
+    if (!props.liveOnly) {
       return new Error(
         `${propName} is required when showStatus is true in ${componentName}.`
       );

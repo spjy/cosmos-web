@@ -58,8 +58,8 @@ function DisplayValue({
     <BaseComponent
       name={nameState}
       liveOnly
-      showStatus={showStatus}
-      status={status}
+      showStatus
+      status="success"
       formItems={(
         <Form layout="vertical">
 
