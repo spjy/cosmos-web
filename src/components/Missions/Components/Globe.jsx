@@ -182,9 +182,9 @@ function DisplayValue({
             setOrbitsState(tempOrbit);
 
             setCameraFlyTo(Cesium.Cartesian3.fromArray([
-              startOrbitPosition[0] * 10,
-              startOrbitPosition[1] * 10,
-              startOrbitPosition[2] * 10,
+              startOrbitPosition[0] * 3,
+              startOrbitPosition[1] * 3,
+              startOrbitPosition[2] * 3,
             ]));
 
             query.close();
