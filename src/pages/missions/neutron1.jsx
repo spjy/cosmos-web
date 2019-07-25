@@ -197,9 +197,17 @@ function neutron1() {
                 {
                   name: 'neutron1',
                   modelFileName: 'cubesat1.glb',
-                  nodeProcess: 'neutron1:adcs',
+                  nodeProcess: 'cubesat1:propagator_simple',
                   live: true,
                   position: [21.289373, 157.917480, 350000.0],
+                  orientation: {
+                    d: {
+                      x: 0,
+                      y: 0,
+                      z: 0,
+                    },
+                    w: 0,
+                  },
                 },
               ]}
             />
@@ -207,7 +215,7 @@ function neutron1() {
           <div key="f" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <Chart
               name="Temperature"
-              nodeProc="neutron1:eps"
+              nodeProc="beagle1:eps"
               XDataKey="utc"
               processXDataKey={
                 x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss')
@@ -260,7 +268,7 @@ function neutron1() {
           <div key="g" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <Chart
               name="Voltage"
-              nodeProc="neutron1:eps"
+              nodeProc="beagle1:eps"
               XDataKey="utc"
               processXDataKey={
                 x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss')
@@ -313,7 +321,7 @@ function neutron1() {
           <div key="h" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <Chart
               name="Amperage"
-              nodeProc="neutron1:eps"
+              nodeProc="beagle1:eps"
               XDataKey="utc"
               processXDataKey={
                 x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss')
@@ -366,7 +374,7 @@ function neutron1() {
           <div key="i" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <Chart
               name="Battery Health"
-              nodeProc="neutron1:eps"
+              nodeProc="beagle1:eps"
               XDataKey="utc"
               processXDataKey={
                 x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss')

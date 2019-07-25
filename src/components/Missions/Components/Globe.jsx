@@ -25,15 +25,14 @@ const modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(origin);
 Cesium.Ion.defaultAccessToken = process.env.CESIUM_ION_TOKEN;
 
 function getPos(lat, long, height) {
-  const pos = Cesium.Cartesian3.fromDegrees(lat, long, height);
+  const pos = Cesium.Cartesian3.fromArray([lat, long, height]);
 
-  
   return Cesium.Transforms.eastNorthUpToFixedFrame(pos);
 }
 
 function getArray(x, y, z) {
   const pos = Cesium.Cartesian3.fromArray([x, y, z]);
-  
+
   return Cesium.Transforms.eastNorthUpToFixedFrame(pos);
 }
 
@@ -76,12 +75,13 @@ function DisplayValue({
     }
   }, []);
 
-  useState(() => {
+  useEffect(() => {
     orbitsState.forEach((orbit, i) => {
       if (state[orbit.nodeProcess] && state[orbit.nodeProcess].node_loc_pos_eci && state[orbit.nodeProcess].node_loc_pos_eci.pos && orbit.live) {
         const tempOrbit = [...orbitsState];
 
         tempOrbit[i].position = state[orbit.nodeProcess].node_loc_pos_eci.pos;
+        tempOrbit[i].orientation = state[orbit.nodeProcess].node_loc_att_icrf.pos;
 
         setOrbitsState(tempOrbit);
       }
@@ -355,7 +355,7 @@ function DisplayValue({
                         defaultValue={orbit.nodeProcess}
                       />
                     </Form.Item>
-{/* 
+{/*
                     <Form.Item
                       label="Y Data Key"
                       key="YDataKey"
@@ -604,7 +604,7 @@ function DisplayValue({
       <Viewer
         fullscreenButton={false}
       >
-        <Globe enableLighting />
+        <Globe />
         <Clock
           startTime={start}
           stopTime={stop}
@@ -623,9 +623,11 @@ function DisplayValue({
                   <Model
                     modelMatrix={getPos(orbit.position[0], orbit.position[1], orbit.position[2])}
                     url={model}
-                    minimumPixelSize={15}
+                    minimumPixelSize={35}
                   />
-                  <PathGraphics />
+                  <PathGraphics
+                    // leadTime={Cesium.Property()}
+                  />
                 </Entity>
               );
             }
@@ -656,6 +658,10 @@ function DisplayValue({
             <td className="p-2 pr-8">Latitude</td>
             <td className="p-2 pr-8">Longitude</td>
             <td className="p-2 pr-8">Altitude</td>
+            <td className="p-2 pr-8">x</td>
+            <td className="p-2 pr-8">y</td>
+            <td className="p-2 pr-8">z</td>
+            <td className="p-2 pr-8">w</td>
           </tr>
           {
           orbitsState.map(orbit => (
@@ -664,6 +670,10 @@ function DisplayValue({
               <td className="p-2 pr-8">{orbit.position[0]}</td>
               <td className="p-2 pr-8">{orbit.position[1]}</td>
               <td className="p-2 pr-8">{orbit.position[2]}</td>
+              <td className="p-2 pr-8">{orbit.orientation.d.x}</td>
+              <td className="p-2 pr-8">{orbit.orientation.d.y}</td>
+              <td className="p-2 pr-8">{orbit.orientation.d.z}</td>
+              <td className="p-2 pr-8">{orbit.orientation.w}</td>
             </tr>
           ))
         }
