@@ -147,7 +147,12 @@ function Chart({
       name={nameState}
       subheader={(
         <span className="text-xs">
-          <Divider type="vertical" />
+          {
+            plotsState.length === 0 ? 'No charts to display.' : null
+          }
+          {
+            plotsState.length > 0 ? <Divider type="vertical" /> : null
+          }
           {
             plotsState.map(plot => (
               <span key={`${plot.nodeProcess}${plot.YDataKey}`}>
@@ -164,8 +169,6 @@ function Chart({
         </span>
       )}
       liveOnly
-      showStatus={showStatus}
-      status={status}
       formItems={(
         <Form layout="vertical">
           <Form.Item

@@ -172,15 +172,7 @@ function neutron1() {
             <Globe
               name="Orbit"
               nodeProc="beagle1:adcs"
-              orbits={[
-                {
-                  name: 'neutron1',
-                  modelFileName: 'cubesat1.glb',
-                  nodeProcess: 'neutron1:adcs',
-                  live: true,
-                  position: [21.289373, 157.917480, 350000.0],
-                },
-              ]}
+              orbits={[]}
             />
           </div>
           <div key="f" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>

@@ -59,7 +59,7 @@ function DisplayValue({
       name={nameState}
       liveOnly
       showStatus
-      status="success"
+      status={displayValuesState.length === 0 ? 'default' : 'success'}
       formItems={(
         <Form layout="vertical">
 
@@ -313,7 +313,7 @@ function DisplayValue({
                     setForm({
                       ...form,
                       newChart: {},
-                      [displayValuesState.length]: {}
+                      [displayValuesState.length]: {},
                     });
 
                     displayValuesState.push({
@@ -321,7 +321,7 @@ function DisplayValue({
                       nodeProcess: form.newChart.nodeProcess.value,
                       dataKey: form.newChart.dataKey.value,
                       processDataKey: form.newChart.processDataKey.value,
-                      unit: form.newChart.unit.value
+                      unit: form.newChart.unit.value,
                     });
 
                     form.newChart.name.value = '';
@@ -339,11 +339,11 @@ function DisplayValue({
         </Form>
       )}
     >
+      {
+        displayValuesState.length === 0 ? 'No values to display.' : null
+      }
       <table style={{ tableLayout: 'fixed' }}>
         <tbody>
-          {
-            displayValuesState.length === 0 ? 'No values.' : null
-          }
           {
             displayValuesState.map(({ name: label, unit: u }, i) => {
               return (

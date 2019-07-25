@@ -204,6 +204,7 @@ function DisplayValue({
   return (
     <BaseComponent
       name={nameState}
+      subheader={orbitsState.length === 0 ? 'No orbits to display.' : null}
       liveOnly
       showStatus={showStatus}
       status={status}
@@ -557,7 +558,7 @@ function DisplayValue({
                 block
                 onClick={() => {
                   // Check if required values are here
-                  if (form.newOrbit.modelFileName.value && form.newOrbit.nodeProcess.value && form.newOrbit.DataKey.value) {
+                  if (form.newOrbit.nodeProcess.value) {
                     // Make form slots for new plot
                     setForm({
                       ...form,
@@ -571,17 +572,17 @@ function DisplayValue({
                     orbitsState.push({
                       name: form.newOrbit.name.value,
                       nodeProcess: form.newOrbit.nodeProcess.value,
-                      modelFileName: form.newOrbit.modelFileName.value,
-                      dataKey: form.newOrbit.dataKey.value,
-                      processDataKey: form.newValue.processDataKey.value.includes('return') || form.newValue.processDataKey.value.includes('=>') ? form.newOrbit.processDataKey.value : x => x,
+                      modelFileName: form.newOrbit.modelFileName.value === '' ? form.newOrbit.modelFileName.value : 'cubesat1.glb',
+                      processDataKey: form.newOrbit.processDataKey && (form.newOrbit.processDataKey.value.includes('return') || form.newOrbit.processDataKey.value.includes('=>')) ? form.newOrbit.processDataKey.value : x => x,
                       live: form.newOrbit.live,
+                      position: [21.289373, 157.917480, 350000.0],
                     });
 
                     // Clear form values
                     form.newOrbit.name.value = '';
                     form.newOrbit.nodeProcess.value = '';
                     form.newOrbit.modelFileName.value = '';
-                    form.newOrbit.dataKey.value = '';
+                    // form.newOrbit.dataKey.value = '';
                     form.newOrbit.processDataKey.value = '';
 
                     // If not live, retrieve the data from database
@@ -591,7 +592,7 @@ function DisplayValue({
                   }
                 }}
               >
-                Add Chart
+                Add Orbit
               </Button>
             </Panel>
           </Collapse>
