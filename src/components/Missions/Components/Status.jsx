@@ -35,6 +35,8 @@ function Status({
   //   return () => {};
   // }, [list]);
 
+  useEffect(() => () => ws.close(1000));
+
   return (
     <>
       {

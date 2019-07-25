@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment-timezone';
 import {
-  Viewer, Entity, Model, Globe, Clock, CameraFlyTo,
+  Viewer, Entity, Model, Globe, Clock, CameraFlyTo, PathGraphics,
 } from 'resium';
 import Cesium from 'cesium';
 
@@ -126,6 +126,8 @@ function DisplayValue({
   //     clearTimeout(timeout);
   //   };
   // }, [x]);
+
+  // ground track
 
   /** Handle the collection of historical data */
   useEffect(() => {
@@ -608,6 +610,9 @@ function DisplayValue({
           stopTime={stop}
           currentTime={start}
         />
+        <Entity>
+          <PathGraphics />
+        </Entity>
         {
           orbitsState.map((orbit) => {
             if (orbit.live) {
@@ -620,6 +625,7 @@ function DisplayValue({
                     url={model}
                     minimumPixelSize={15}
                   />
+                  <PathGraphics />
                 </Entity>
               );
             }
@@ -635,7 +641,9 @@ function DisplayValue({
                   name={orbit.name}
                   position={orbit.position}
                   point={{ pixelSize: 10 }}
-                />
+                >
+                  <PathGraphics />
+                </Entity>
               </span>
             );
           })

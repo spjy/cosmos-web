@@ -65,12 +65,33 @@ function neutron1() {
         x: 0,
         y: 2,
         w: 12,
-        h: 27,
+        h: 34,
       },
       {
         i: 'f',
         x: 0,
         y: 3,
+        w: 12,
+        h: 18,
+      },
+      {
+        i: 'g',
+        x: 0,
+        y: 4,
+        w: 12,
+        h: 18,
+      },
+      {
+        i: 'h',
+        x: 0,
+        y: 5,
+        w: 12,
+        h: 18,
+      },
+      {
+        i: 'i',
+        x: 0,
+        y: 6,
         w: 12,
         h: 18,
       },
@@ -172,7 +193,15 @@ function neutron1() {
             <Globe
               name="Orbit"
               nodeProc="beagle1:adcs"
-              orbits={[]}
+              orbits={[
+                {
+                  name: 'neutron1',
+                  modelFileName: 'cubesat1.glb',
+                  nodeProcess: 'neutron1:adcs',
+                  live: true,
+                  position: [21.289373, 157.917480, 350000.0],
+                },
+              ]}
             />
           </div>
           <div key="f" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
@@ -221,6 +250,154 @@ function neutron1() {
                     },
                     name: '3',
                     YDataKey: 'device_tsen_temp_003',
+                    nodeProcess: 'neutron1:eps',
+                    live: true
+                  }
+                ]
+              }
+            />
+          </div>
+          <div key="g" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
+            <Chart
+              name="Voltage"
+              nodeProc="neutron1:eps"
+              XDataKey="utc"
+              processXDataKey={
+                x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss')
+              }
+              processYDataKey={
+                y => y
+              }
+              plots={
+                [
+                  {
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    marker: {
+                      color: 'red'
+                    },
+                    name: '5V',
+                    YDataKey: 'device_bus_volt_001',
+                    nodeProcess: 'neutron1:eps',
+                    live: true
+                  },
+                  {
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    marker: {
+                      color: 'blue'
+                    },
+                    name: '3.3V',
+                    YDataKey: 'device_bus_volt_002',
+                    nodeProcess: 'neutron1:eps',
+                    live: true
+                  },
+                  {
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    marker: {
+                      color: 'orange'
+                    },
+                    name: 'Battery Voltage',
+                    YDataKey: 'device_bus_volt_003',
+                    nodeProcess: 'neutron1:eps',
+                    live: true
+                  }
+                ]
+              }
+            />
+          </div>
+          <div key="h" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
+            <Chart
+              name="Amperage"
+              nodeProc="neutron1:eps"
+              XDataKey="utc"
+              processXDataKey={
+                x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss')
+              }
+              processYDataKey={
+                y => y
+              }
+              plots={
+                [
+                  {
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    marker: {
+                      color: 'red'
+                    },
+                    name: '5V',
+                    YDataKey: 'device_bus_amp_001',
+                    nodeProcess: 'neutron1:eps',
+                    live: true
+                  },
+                  {
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    marker: {
+                      color: 'blue'
+                    },
+                    name: '3.3V',
+                    YDataKey: 'device_bus_amp_002',
+                    nodeProcess: 'neutron1:eps',
+                    live: true
+                  },
+                  {
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    marker: {
+                      color: 'orange'
+                    },
+                    name: 'Battery Voltage',
+                    YDataKey: 'device_bus_amp_003',
+                    nodeProcess: 'neutron1:eps',
+                    live: true
+                  }
+                ]
+              }
+            />
+          </div>
+          <div key="i" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
+            <Chart
+              name="Battery Health"
+              nodeProc="neutron1:eps"
+              XDataKey="utc"
+              processXDataKey={
+                x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss')
+              }
+              processYDataKey={
+                y => y
+              }
+              plots={
+                [
+                  {
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    marker: {
+                      color: 'red'
+                    },
+                    name: 'Battery Percentage',
+                    YDataKey: 'device_batt_percentage_000',
+                    nodeProcess: 'neutron1:eps',
+                    live: true
+                  },
+                  {
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    mode: 'marker',
+                    marker: {
+                      color: 'blue'
+                    },
+                    name: 'Charge',
+                    YDataKey: 'device_batt_charge_000',
                     nodeProcess: 'neutron1:eps',
                     live: true
                   }
