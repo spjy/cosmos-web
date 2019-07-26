@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment-timezone';
 import {
-  Viewer, Entity, Model, Globe, Clock, CameraFlyTo, PathGraphics, CzmlDataSource,
+  Viewer, Entity, Model, Globe, Clock, CameraFlyTo,
 } from 'resium';
 import Cesium from 'cesium';
 
@@ -13,7 +13,6 @@ import {
 import BaseComponent from '../BaseComponent';
 import { Context } from '../../../store/neutron1';
 import model from '../../../public/cubesat.glb';
-import Attitude from '../../../public/quat.czml';
 import socket from '../../../socket';
 
 const { Panel } = Collapse;
@@ -26,14 +25,18 @@ const modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(origin);
 Cesium.Ion.defaultAccessToken = process.env.CESIUM_ION_TOKEN;
 
 function getPos(lat, long, height) {
-  const pos = Cesium.Cartesian3.fromArray([lat, long, height]);
+  const pos = Cesium.Cartesian3.fromDegrees(lat, long, height);
 
   return Cesium.Transforms.eastNorthUpToFixedFrame(pos);
 }
 
+function getOrientation(x, y, z, w) {
+  return Cesium.VelocityOrientationProperty(Cesium.Quaternion(x, y, z, w));
+}
+
 function getArray(x, y, z) {
   const pos = Cesium.Cartesian3.fromArray([x, y, z]);
-
+  
   return Cesium.Transforms.eastNorthUpToFixedFrame(pos);
 }
 
@@ -76,26 +79,12 @@ function DisplayValue({
     }
   }, []);
 
-  useEffect(() => {
+  useState(() => {
     orbitsState.forEach((orbit, i) => {
       if (state[orbit.nodeProcess] && state[orbit.nodeProcess].node_loc_pos_eci && state[orbit.nodeProcess].node_loc_pos_eci.pos && orbit.live) {
         const tempOrbit = [...orbitsState];
 
-        if (!tempOrbit[i].path) {
-          tempOrbit[i].path = new Cesium.SampledPositionProperty();
-        }
-
-        if (state[orbit.nodeProcess].utc && state[orbit.nodeProcess].node_loc_pos_eci) {
-          const date = Cesium.JulianDate.fromDate(moment.unix((((state[orbit.nodeProcess].utc + 2400000.5) - 2440587.5) * 86400.0)).toDate());
-          const pos = Cesium.Cartesian3.fromArray([state[orbit.nodeProcess].node_loc_pos_eci.pos[0], state[orbit.nodeProcess].node_loc_pos_eci.pos[1], state[orbit.nodeProcess].node_loc_pos_eci.pos[2]]);
-
-          tempOrbit[i].path.addSample(date, pos);
-
-          console.log(tempOrbit[i]);
-        }
-
         tempOrbit[i].position = state[orbit.nodeProcess].node_loc_pos_eci.pos;
-        tempOrbit[i].orientation = state[orbit.nodeProcess].node_loc_att_icrf.pos;
 
         setOrbitsState(tempOrbit);
       }
@@ -140,8 +129,6 @@ function DisplayValue({
   //     clearTimeout(timeout);
   //   };
   // }, [x]);
-
-  // ground track
 
   /** Handle the collection of historical data */
   useEffect(() => {
@@ -369,7 +356,7 @@ function DisplayValue({
                         defaultValue={orbit.nodeProcess}
                       />
                     </Form.Item>
-{/*
+{/* 
                     <Form.Item
                       label="Y Data Key"
                       key="YDataKey"
@@ -618,30 +605,24 @@ function DisplayValue({
       <Viewer
         fullscreenButton={false}
       >
-        <Globe />
+        <Globe enableLighting />
         <Clock
           startTime={start}
           stopTime={stop}
           currentTime={start}
         />
-        {/* <CzmlDataSource data={Attitude} /> */}
         {
           orbitsState.map((orbit) => {
             if (orbit.live) {
               return (
                 <Entity
                   key={orbit.name}
-                  position={orbit.path}
                 >
                   <Model
                     modelMatrix={getPos(orbit.position[0], orbit.position[1], orbit.position[2])}
+                    orientation={getOrientation(orbit.orientation.d.x, orbit.orientation.d.y, orbit.orientation.d.z, orbit.orientation.w)}
                     url={model}
-                    minimumPixelSize={35}
-                  />
-                  <PathGraphics
-                    width={3}
-                    leadTime={600}
-                    trailTime={600}
+                    minimumPixelSize={15}
                   />
                 </Entity>
               );
@@ -658,13 +639,7 @@ function DisplayValue({
                   name={orbit.name}
                   position={orbit.position}
                   point={{ pixelSize: 10 }}
-                >
-                  <PathGraphics
-                    width={3}
-                    leadTime={600}
-                    trailTime={600}
-                  />
-                </Entity>
+                />
               </span>
             );
           })
@@ -677,10 +652,6 @@ function DisplayValue({
             <td className="p-2 pr-8">Latitude</td>
             <td className="p-2 pr-8">Longitude</td>
             <td className="p-2 pr-8">Altitude</td>
-            <td className="p-2 pr-8">x</td>
-            <td className="p-2 pr-8">y</td>
-            <td className="p-2 pr-8">z</td>
-            <td className="p-2 pr-8">w</td>
           </tr>
           {
           orbitsState.map(orbit => (
@@ -689,10 +660,6 @@ function DisplayValue({
               <td className="p-2 pr-8">{orbit.position[0]}</td>
               <td className="p-2 pr-8">{orbit.position[1]}</td>
               <td className="p-2 pr-8">{orbit.position[2]}</td>
-              <td className="p-2 pr-8">{orbit.orientation.d.x}</td>
-              <td className="p-2 pr-8">{orbit.orientation.d.y}</td>
-              <td className="p-2 pr-8">{orbit.orientation.d.z}</td>
-              <td className="p-2 pr-8">{orbit.orientation.w}</td>
             </tr>
           ))
         }
