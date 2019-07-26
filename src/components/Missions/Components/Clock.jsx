@@ -9,14 +9,12 @@ import BaseComponent from '../BaseComponent';
  * Display a specified local time and UTC time.
  */
 function Clock({
-  timezone
+  timezone,
 }) {
   /** Storage for form values */
   const [time, setTime] = useState('');
   /** Storage for form values */
   const [utcTime, setUtcTime] = useState('');
-  /** Settings for component */
-  const [form, setForm] = useState({});
   /** Timezone */
   const [timezoneState, setTimezoneState] = useState(timezone);
 

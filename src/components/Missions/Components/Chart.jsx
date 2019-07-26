@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Form, Input, InputNumber, DatePicker, Button, Switch, Collapse, Icon, Divider
+  Form, Input, InputNumber, DatePicker, Button, Switch, Collapse, Divider,
 } from 'antd';
 import Plot from 'react-plotly.js';
 
@@ -22,10 +22,7 @@ function Chart({
   nodeProc,
   XDataKey,
   processXDataKey,
-  processYDataKey,
-  showStatus,
-  status,
-  children
+  children,
 }) {
   let processXDataKeyState = processXDataKey;
   /** The state that manages the component's title */
@@ -34,8 +31,6 @@ function Chart({
   const [nodeProcessState, setNodeProcessState] = useState(nodeProc);
   /** The state that manages the component's X-axis data key displayed */
   const [XDataKeyState, setXDataKeyState] = useState(XDataKey);
-
-  const [YRange, setYRange] = useState([]);
 
   const [form, setForm] = useState({
     newValue: {
@@ -64,7 +59,7 @@ function Chart({
   /** Store to detect whether the user wants to get historical data to plot */
   const [retrievePlotHistory, setRetrievePlotHistory] = useState(null);
   /** Accessing the neutron1 node process context and drilling down */
-  const { state: { [nodeProcessState]: nodeProcess } } = useContext(Context);
+  const { state } = useContext(Context);
 
   /** Plot data storage */
   const [plotsState, setPlotsState] = useState(plots);
@@ -83,16 +78,22 @@ function Chart({
   useEffect(() => {
     plotsState.forEach((p, i) => {
       // Upon context change, see if changes affect this chart's values
-      if (nodeProcess && nodeProcess[XDataKeyState] && nodeProcess[p.YDataKey] && p.live) {
+      if (state[p.nodeProcess] && state[p.nodeProcess][XDataKeyState] && state[p.nodeProcess][p.YDataKey] && p.live) {
         // If so, push to arrays and update data
-        plotsState[i].x.push(processXDataKeyState(nodeProcess[XDataKeyState]));
-        plotsState[i].y.push(plotsState[i].processYDataKey ? plotsState[i].processYDataKey(nodeProcess[p.YDataKey]) : nodeProcess[p.YDataKey]);
+        plotsState[i].x.push(processXDataKeyState(state[p.nodeProcess][XDataKeyState]));
+        plotsState[i]
+          .y
+          .push(
+            plotsState[i].processYDataKey
+              ? plotsState[i].processYDataKey(state[p.nodeProcess][p.YDataKey])
+              : state[p.nodeProcess][p.YDataKey],
+          );
 
         layout.datarevision += 1;
         setDataRevision(dataRevision + 1);
       }
     });
-  }, [nodeProcess]);
+  }, [state]);
 
   /** Handle the collection of historical data */
   useEffect(() => {
@@ -103,8 +104,10 @@ function Chart({
         // Check to see if user chose a range of dates
         if (form[retrievePlotHistory].dateRange.value.length === 2) {
           // Unix time to modified julian date
-          const from = ((form[retrievePlotHistory].dateRange.value[0].unix() / 86400.0) + 2440587.5 - 2400000.5);
-          const to = ((form[retrievePlotHistory].dateRange.value[1].unix() / 86400.0) + 2440587.5 - 2400000.5);
+          const from = (form[retrievePlotHistory].dateRange.value[0].unix() / 86400.0)
+            + 2440587.5 - 2400000.5;
+          const to = (form[retrievePlotHistory].dateRange.value[1].unix() / 86400.0)
+            + 2440587.5 - 2400000.5;
 
           query.send(
             `database=agent_dump?collection=${plotsState[retrievePlotHistory].nodeProcess}?multiple=true?query={"utc": { "$gt": ${from}, "$lt": ${to} }}`,
@@ -124,7 +127,12 @@ function Chart({
             // Insert past data into chart
             json.forEach((d) => {
               plotsState[retrievePlotHistory].x.push(processXDataKey(d[XDataKeyState]));
-              plotsState[retrievePlotHistory].y.push(plotsState[retrievePlotHistory].processYDataKey(d[plotsState[retrievePlotHistory].YDataKey]));
+              plotsState[retrievePlotHistory]
+                .y
+                .push(
+                  plotsState[retrievePlotHistory]
+                    .processYDataKey(d[plotsState[retrievePlotHistory].YDataKey]),
+                );
 
               layout.datarevision += 1;
               setDataRevision(dataRevision + 1);
@@ -180,8 +188,8 @@ function Chart({
             <Input
               placeholder="Chart Name"
               id="nameState"
-              onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
-              onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
+              onFocus={({ target: { id: item } })=> setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
+              onChange={({ target: { id: item, value } })=> setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
               onBlur={({ target: { id: item, value } }) => {
                 setNameState(value);
                 setForm({ ...form, [item]: { ...form[item], changed: true } });
@@ -225,12 +233,12 @@ function Chart({
               onBlur={({ target: { id: item, value } }) => {
                 if (value.includes('return')) {
                   processXDataKeyState = new Function('x', value);
-                  
+
                   // Convert currently existing values
                   plotsState.forEach((plot, i) => {
                     if (plot[i].x.length > 0) {
                       plot[i].x = plot[i].x.map(x => processXDataKeyState(x));
-  
+
                       layout.datarevision += 1;
                       setDataRevision(dataRevision + 1);
                     }
@@ -799,13 +807,13 @@ function Chart({
                     });
 
                     // Clear form values
-                    form.newValue.name.value = '';
-                    form.newValue.markerColor.value = '';
-                    form.newValue.chartMode.value = '';
-                    form.newValue.YDataKey.value = '';
-                    form.newValue.processYDataKey.value = '';
-                    form.newValue.nodeProcess.value = '';
-                    form.newValue.chartType.value = '';
+                    form.newValue.name.value = {};
+                    form.newValue.markerColor.value = {};
+                    form.newValue.chartMode.value = {};
+                    form.newValue.YDataKey.value = {};
+                    form.newValue.processYDataKey.value = {};
+                    form.newValue.nodeProcess.value = {};
+                    form.newValue.chartType.value = {};
 
                     // If not live, retrieve the data from database
                     if (!form.newValue.live) {
@@ -844,19 +852,19 @@ Chart.propTypes = {
   /** Plot options for each chart */
   plots: PropTypes.arrayOf(
     PropTypes.shape({
-      /**  */
+      /** Chart y values */
       x: PropTypes.arrayOf(PropTypes.any),
-      /** */
+      /** Chart x values */
       y: PropTypes.arrayOf(PropTypes.any),
-      /** */
+      /** Chart type */
       type: PropTypes.string,
-      /** */
+      /** Chart marker color */
       marker: PropTypes.shape({
         color: PropTypes.string,
       }),
-      /** */
+      /** Chart mode */
       mode: PropTypes.string,
-      /** */
+      /** Chart name */
       name: PropTypes.string,
       /** Name of the node process to listen to */
       nodeProcess: PropTypes.string,
@@ -872,18 +880,6 @@ Chart.propTypes = {
   XDataKey: PropTypes.string,
   /** Function to process the X-axis key */
   processXDataKey: PropTypes.func,
-  /** Function to process the Y-axis key */
-  processYDataKey: PropTypes.func,
-  /** Whether to show a circular indicator of the status of the component */
-  showStatus: PropTypes.bool,
-  /** The type of badge to show if showStatus is true (see the ant design badges component) */
-  status: (props, propName, componentName) => {
-    if (props.showStatus) {
-      return new Error(
-        `${propName} is required when showStatus is true in ${componentName}.`
-      );
-    }
-  },
   /** Children node */
   children: PropTypes.node,
 };
@@ -894,9 +890,6 @@ Chart.defaultProps = {
   nodeProc: null,
   XDataKey: null,
   processXDataKey: x => x,
-  processYDataKey: y => y,
-  showStatus: false,
-  status: 'error',
   children: null,
 };
 

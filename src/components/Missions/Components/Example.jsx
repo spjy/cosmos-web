@@ -7,7 +7,7 @@ function Example() {
   /** Storage for form values */
   const [form, setForm] = useState({});
   /** Status of the live switch */
-  const [liveSwitch, setLiveSwitch] = useState();
+  const [, setLiveSwitch] = useState();
 
   return (
     <BaseComponent

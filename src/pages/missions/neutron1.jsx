@@ -389,12 +389,12 @@ function neutron1() {
                     y: [],
                     type: 'scatter',
                     marker: {
-                      color: 'red'
+                      color: 'red',
                     },
                     name: 'Battery Percentage',
                     YDataKey: 'device_batt_percentage_000',
                     nodeProcess: 'neutron1:eps',
-                    live: true
+                    live: true,
                   },
                   {
                     x: [],
@@ -402,12 +402,12 @@ function neutron1() {
                     type: 'scatter',
                     mode: 'marker',
                     marker: {
-                      color: 'blue'
+                      color: 'blue',
                     },
                     name: 'Charge',
                     YDataKey: 'device_batt_charge_000',
                     nodeProcess: 'neutron1:eps',
-                    live: true
+                    live: true,
                   }
                 ]
               }

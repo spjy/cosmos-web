@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  Form, Input, Select
+  Form, Input, Select,
 } from 'antd';
 
 import BaseComponent from '../BaseComponent';

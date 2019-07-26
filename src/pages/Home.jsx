@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Card, Col, Row, Icon
+  Card, Col, Row, Icon,
 } from 'antd';
 
 const Home = () => (

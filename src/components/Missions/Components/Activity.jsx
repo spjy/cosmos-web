@@ -7,7 +7,7 @@ import BaseComponent from '../BaseComponent';
 function Activity({
   name,
   subheader,
-  val
+  val,
 }) {
   /** Storage for form values */
   const [form, setForm] = useState({});
@@ -32,7 +32,7 @@ function Activity({
         </Form>
       )}
     >
-      {'{"json": "value"}'}
+      {val}
     </BaseComponent>
   );
 }
@@ -43,12 +43,12 @@ Activity.propTypes = {
   /** Supplementary information below the name */
   subheader: PropTypes.string,
   /** Value to display in card */
-  val: PropTypes.node.isRequired
+  val: PropTypes.node.isRequired,
 };
 
 Activity.defaultProps = {
   name: '',
-  subheader: null
+  subheader: null,
 };
 
 export default Activity;

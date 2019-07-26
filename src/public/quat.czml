@@ -343,7 +343,7 @@
       ]
     },
     "model":{
-      "gltf":"./cubesat.glb",
+      "gltf":"http://assets.agi.com/models/cubesat.obj.gltf",
       "scale":1,
       "runAnimations":false,
       "show":true

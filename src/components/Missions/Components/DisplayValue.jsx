@@ -1,6 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input, Collapse, Button } from 'antd';
+import {
+  Form, Input, Collapse, Button,
+} from 'antd';
 import moment from 'moment-timezone';
 
 import BaseComponent from '../BaseComponent';
@@ -15,23 +17,19 @@ const { TextArea } = Input;
 function DisplayValue({
   name,
   displayValues,
-  nodeProc,
-  showStatus,
-  status,
-  children,
-  formItems
 }) {
   /** The state that manages the component's title */
   const [nameState, setNameState] = useState(name);
-  /** The state that manages the node process */
-  const [nodeProcessState, setNodeProcessState] = useState(nodeProc);
   /** Storage for form values */
   const [form, setForm] = useState({
-    newChart: {}
+    newChart: {},
   });
 
+  const [formError, setFormError] = useState('');
+
   const [displayValuesState, setDisplayValuesState] = useState(displayValues);
-  /** Accessing the neutron1 node process context and drilling down to the specified node process to look at */
+  /** Accessing the neutron1 node process context
+   * and drilling down to the specified node process to look at */
   const { state } = useContext(Context);
 
   useEffect(() => {
@@ -101,6 +99,17 @@ function DisplayValue({
                     </span>
                   )}
                   key={`${displayValue.nodeProcess}${displayValue.dataKey}`}
+                  extra={
+                    <span
+                      onClick={(event) => {
+                        event.stopPropagation();
+
+                        setDisplayValuesState(displayValuesState.filter((values, j) => j !== i));
+                      }}
+                    >
+                      X
+                    </span>
+                  }
                 >
                   <Form.Item
                     label="Name"
@@ -120,7 +129,7 @@ function DisplayValue({
                       defaultValue={displayValue.name}
                     />
                   </Form.Item>
-                  
+
                   <Form.Item
                     label="Node Process"
                     key="nodeProcess"
@@ -250,6 +259,7 @@ function DisplayValue({
                 key="dataKey"
                 hasFeedback={form.newChart.dataKey && form.newChart.dataKey.touched}
                 validateStatus={form.newChart.dataKey && form.newChart.dataKey.changed ? 'success' : ''}
+                help={form.newChart.dataKey && form.newChart.dataKey.help ? form.newChart.dataKey.help : ''}
               >
                 <Input
                   placeholder="Data Key"
@@ -305,31 +315,47 @@ function DisplayValue({
                 />
               </Form.Item>
 
+              <div className="text-red-500">
+                {formError}
+              </div>
+
+              <br />
+
               <Button
                 type="dashed"
                 block
                 onClick={() => {
-                  if (form.newChart.nodeProcess.value && form.newChart.dataKey.value) {
-                    setForm({
-                      ...form,
-                      newChart: {},
-                      [displayValuesState.length]: {},
-                    });
-
-                    displayValuesState.push({
-                      name: form.newChart.name.value,
-                      nodeProcess: form.newChart.nodeProcess.value,
-                      dataKey: form.newChart.dataKey.value,
-                      processDataKey: form.newChart.processDataKey.value,
-                      unit: form.newChart.unit.value,
-                    });
-
-                    form.newChart.name.value = '';
-                    form.newChart.nodeProcess.value = '';
-                    form.newChart.dataKey.value = '';
-                    form.newChart.processDataKey.value = '';
-                    form.newChart.unit.value = '';
+                  if (!form.newChart.nodeProcess || !form.newChart.nodeProcess.value) {
+                    setFormError('Check the "Node Process" field.');
+                    return;
                   }
+
+                  if (!form.newChart.dataKey || !form.newChart.dataKey.value) {
+                    setFormError('Check the "Data Key" field.');
+                    return;
+                  }
+
+                  setForm({
+                    ...form,
+                    newChart: {},
+                    [displayValuesState.length]: {},
+                  });
+
+                  displayValuesState.push({
+                    name: form.newChart.name && form.newChart.name.value ? form.newChart.name.value : '',
+                    nodeProcess: form.newChart.nodeProcess.value,
+                    dataKey: form.newChart.dataKey.value,
+                    processDataKey: form.newChart.processDataKey && form.newChart.processDataKey.value && (form.newChart.processDataKey.value.includes('return') || form.newChart.processDataKey.value.includes('=>')) ? form.newChart.processDataKey.value : x => x,
+                    unit: form.newChart.unit && form.newChart.unit.value ? form.newChart.unit.value : '',
+                  });
+
+                  form.newChart.name = {};
+                  form.newChart.nodeProcess = {};
+                  form.newChart.dataKey = {};
+                  form.newChart.processDataKey = {};
+                  form.newChart.unit = {};
+
+                  setFormError('');
                 }}
               >
                 Add Value
@@ -380,32 +406,11 @@ DisplayValue.propTypes = {
       unit: PropTypes.string,
     }),
   ),
-  /** JSON object of data */
-  nodeProc: PropTypes.string,
-  /** Whether to show a circular indicator of the status of the component */
-  showStatus: PropTypes.bool,
-  /** The type of badge to show if showStatus is true (see the ant design badges component) */
-  status: (props, propName, componentName) => {
-    if (props.showStatus) {
-      return new Error(
-        `${propName} is required when showStatus is true in ${componentName}.`
-      );
-    }
-  },
-  /** Children node */
-  children: PropTypes.node,
-  /** Form node */
-  formItems: PropTypes.node
 };
 
 DisplayValue.defaultProps = {
   name: '',
   displayValues: [],
-  nodeProc: null,
-  showStatus: false,
-  status: 'error',
-  children: null,
-  formItems: null
 };
 
 export default DisplayValue;

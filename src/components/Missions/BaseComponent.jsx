@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Icon, Switch, Button, Badge
+  Icon, Switch, Button, Badge,
 } from 'antd';
 import PropTypes from 'prop-types';
 
@@ -20,7 +20,7 @@ function BaseComponent({
   children,
   formItems,
   handleLiveSwitchChange,
-  toolsSlot
+  toolsSlot,
 }) {
   /** Handler for the widget settings modal */
   const [openSettings, setOpenSettings] = useState(false);
@@ -109,7 +109,7 @@ BaseComponent.propTypes = {
   handleLiveSwitchChange: (props, propName, componentName) => {
     if (!props.liveOnly) {
       return new Error(
-        `${propName} is required when showStatus is true in ${componentName}.`
+        `${propName} is required when showStatus is true in ${componentName}.`,
       );
     }
   },
@@ -119,7 +119,7 @@ BaseComponent.propTypes = {
   status: (props, propName, componentName) => {
     if (props.showStatus) {
       return new Error(
-        `${propName} is required when showStatus is true in ${componentName}.`
+        `${propName} is required when showStatus is true in ${componentName}.`,
       );
     }
   },
@@ -130,7 +130,7 @@ BaseComponent.propTypes = {
   /** Node containing form item components */
   formItems: PropTypes.node,
   /** Top right slot in header */
-  toolsSlot: PropTypes.node
+  toolsSlot: PropTypes.node,
 };
 
 BaseComponent.defaultProps = {
@@ -143,7 +143,7 @@ BaseComponent.defaultProps = {
   status: 'error',
   children: null,
   formItems: null,
-  toolsSlot: null
+  toolsSlot: null,
 };
 
 export default BaseComponent;

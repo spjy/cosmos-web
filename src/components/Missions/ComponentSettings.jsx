@@ -9,7 +9,7 @@ function ComponentSettings({
   visible,
   closeModal,
   children,
-  submitForm
+  submitForm,
 }) {
   return (
     <Modal
@@ -50,7 +50,7 @@ ComponentSettings.propTypes = {
 };
 
 ComponentSettings.defaultProps = {
-  children: []
+  children: [],
 };
 
 const SettingsForm = Form.create({ name: 'horizontal_login' })(ComponentSettings);

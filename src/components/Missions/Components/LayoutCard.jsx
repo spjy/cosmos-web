@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 function LayoutCard({
   flex,
-  children
+  children,
 }) {
   return (
     <div className={`${flex} p-3 shadow overflow-x-auto`} style={{ backgroundColor: '#fbfbfb' }}>
@@ -14,7 +14,7 @@ function LayoutCard({
 
 LayoutCard.propTypes = {
   flex: PropTypes.string.isRequired,
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
 };
 
 export default LayoutCard;

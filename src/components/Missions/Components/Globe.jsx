@@ -2,37 +2,27 @@ import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment-timezone';
 import {
-  Viewer, Entity, Model, Globe, Clock, CameraFlyTo, PathGraphics, CzmlDataSource,
+  Viewer, Entity, Model, Globe, Clock, CameraFlyTo, PathGraphics,
 } from 'resium';
 import Cesium from 'cesium';
 
 import {
-  Form, Input, Collapse, Button, Switch, DatePicker, Icon,
+  Form, Input, Collapse, Button, Switch, DatePicker,
 } from 'antd';
 
 import BaseComponent from '../BaseComponent';
 import { Context } from '../../../store/neutron1';
 import model from '../../../public/cubesat.glb';
-import Attitude from '../../../public/quat.czml';
 import socket from '../../../socket';
 
 const { Panel } = Collapse;
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
-const origin = Cesium.Cartesian3.fromDegrees(-90.0, 40.0, 200000.0);
-const modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(origin);
-
 Cesium.Ion.defaultAccessToken = process.env.CESIUM_ION_TOKEN;
 
 function getPos(lat, long, height) {
   const pos = Cesium.Cartesian3.fromArray([lat, long, height]);
-
-  return Cesium.Transforms.eastNorthUpToFixedFrame(pos);
-}
-
-function getArray(x, y, z) {
-  const pos = Cesium.Cartesian3.fromArray([x, y, z]);
 
   return Cesium.Transforms.eastNorthUpToFixedFrame(pos);
 }
@@ -43,16 +33,11 @@ function getArray(x, y, z) {
 function DisplayValue({
   name,
   orbits,
-  nodeProc,
   showStatus,
   status,
-  children,
-  formItems
 }) {
   /** The state that manages the component's title */
   const [nameState, setNameState] = useState(name);
-  /** The state that manages the node process */
-  const [nodeProcessState, setNodeProcessState] = useState(nodeProc);
   /** Storage for form values */
   const [form, setForm] = useState({
     newOrbit: {
@@ -78,7 +63,11 @@ function DisplayValue({
 
   useEffect(() => {
     orbitsState.forEach((orbit, i) => {
-      if (state[orbit.nodeProcess] && state[orbit.nodeProcess].node_loc_pos_eci && state[orbit.nodeProcess].node_loc_pos_eci.pos && orbit.live) {
+      if (state[orbit.nodeProcess]
+          && state[orbit.nodeProcess].node_loc_pos_eci
+          && state[orbit.nodeProcess].node_loc_pos_eci.pos
+          && orbit.live
+      ) {
         const tempOrbit = [...orbitsState];
 
         if (!tempOrbit[i].path) {
@@ -86,12 +75,24 @@ function DisplayValue({
         }
 
         if (state[orbit.nodeProcess].utc && state[orbit.nodeProcess].node_loc_pos_eci) {
-          const date = Cesium.JulianDate.fromDate(moment.unix((((state[orbit.nodeProcess].utc + 2400000.5) - 2440587.5) * 86400.0)).toDate());
-          const pos = Cesium.Cartesian3.fromArray([state[orbit.nodeProcess].node_loc_pos_eci.pos[0], state[orbit.nodeProcess].node_loc_pos_eci.pos[1], state[orbit.nodeProcess].node_loc_pos_eci.pos[2]]);
+          const date = Cesium
+            .JulianDate
+            .fromDate(
+              moment
+                .unix((((state[orbit.nodeProcess].utc + 2400000.5) - 2440587.5) * 86400.0))
+                .toDate(),
+            );
+          const pos = Cesium
+            .Cartesian3
+            .fromArray(
+              [
+                state[orbit.nodeProcess].node_loc_pos_eci.pos[0],
+                state[orbit.nodeProcess].node_loc_pos_eci.pos[1],
+                state[orbit.nodeProcess].node_loc_pos_eci.pos[2],
+              ],
+            );
 
           tempOrbit[i].path.addSample(date, pos);
-
-          console.log(tempOrbit[i]);
         }
 
         tempOrbit[i].position = state[orbit.nodeProcess].node_loc_pos_eci.pos;
@@ -126,8 +127,6 @@ function DisplayValue({
   const [stop, setStop] = useState(null);
   const [cameraFlyTo, setCameraFlyTo] = useState(null);
 
-  const [position, setPosition] = useState(null);
-
   // useEffect(() => {
   //   const timeout = setTimeout(() => {
   //     setX(x + 0.5);
@@ -152,8 +151,10 @@ function DisplayValue({
         // Check to see if user chose a range of dates
         if (form[retrieveOrbitHistory].dateRange.value.length === 2) {
           // Unix time to modified julian date
-          const from = ((form[retrieveOrbitHistory].dateRange.value[0].unix() / 86400.0) + 2440587.5 - 2400000.5);
-          const to = ((form[retrieveOrbitHistory].dateRange.value[1].unix() / 86400.0) + 2440587.5 - 2400000.5);
+          const from = (form[retrieveOrbitHistory].dateRange.value[0].unix() / 86400.0)
+            + 2440587.5 - 2400000.5;
+          const to = (form[retrieveOrbitHistory].dateRange.value[1].unix() / 86400.0)
+            + 2440587.5 - 2400000.5;
 
           query.send(
             `database=agent_dump?collection=${orbitsState[retrieveOrbitHistory].nodeProcess}?multiple=true?query={"utc": { "$gt": ${from}, "$lt": ${to} }}?options={"limit": 200}`,
@@ -164,8 +165,6 @@ function DisplayValue({
           try {
             const json = JSON.parse(data);
 
-            console.log(json);
-
             const tempOrbit = [...orbitsState];
 
             let startOrbit;
@@ -175,8 +174,16 @@ function DisplayValue({
             tempOrbit[retrieveOrbitHistory].live = false;
 
             if (json.length > 0) {
-              startOrbit = Cesium.JulianDate.fromDate(moment.unix((((json[0].utc + 2400000.5) - 2440587.5) * 86400.0)).toDate());
-              stopOrbit = Cesium.JulianDate.fromDate(moment.unix((((json[json.length - 1].utc + 2400000.5) - 2440587.5) * 86400.0)).toDate());
+              startOrbit = Cesium
+                .JulianDate
+                .fromDate(
+                  moment.unix((((json[0].utc + 2400000.5) - 2440587.5) * 86400.0)).toDate(),
+                );
+              stopOrbit = Cesium
+                .JulianDate
+                .fromDate(
+                  moment.unix((((json[json.length - 1].utc + 2400000.5) - 2440587.5) * 86400.0)).toDate(),
+                );
               startOrbitPosition = json[0].node_loc_pos_eci.pos;
             }
 
@@ -284,7 +291,15 @@ function DisplayValue({
                           }}
                         />
                         &nbsp;
-                        <Icon className="text-lg" type="close" />
+                        <span
+                          onClick={(event) => {
+                            event.stopPropagation();
+
+                            setOrbitsState(orbitsState.filter((orbits, j) => j !== i));
+                          }}
+                        >
+                          X
+                        </span>
                       </div>
                     )}
                   >
@@ -301,7 +316,7 @@ function DisplayValue({
                         showTime
                         format="YYYY-MM-DD HH:mm:ss"
                         disabled={form[i] && form[i].live}
-                        onChange={moment => setForm({ ...form, [i]: { ...form[i], dateRange: { ...form[i].dateRange, value: moment } } })}
+                        onChange={m => setForm({ ...form, [i]: { ...form[i], dateRange: { ...form[i].dateRange, value: m } } })}
                       />
                       <Button
                         type="primary"
@@ -369,7 +384,7 @@ function DisplayValue({
                         defaultValue={orbit.nodeProcess}
                       />
                     </Form.Item>
-{/*
+                    {/*
                     <Form.Item
                       label="Y Data Key"
                       key="YDataKey"
@@ -461,7 +476,7 @@ function DisplayValue({
                   id="name"
                   onFocus={({ target: { id: item } }) => setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], touched: true, changed: false } } })}
                   onChange={({ target: { id: item, value } }) => setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], value, changed: false } } })}
-                  onBlur={({ target: { id: item, value } }) => {
+                  onBlur={({ target: { id: item } }) => {
                     setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], changed: true } } });
                   }}
                   value={form.newOrbit.name ? form.newOrbit.name.value : ''}
@@ -480,7 +495,7 @@ function DisplayValue({
                   id="modelFileName"
                   onFocus={({ target: { id: item } }) => setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], touched: true, changed: false } } })}
                   onChange={({ target: { id: item, value } }) => setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], value, changed: false } } })}
-                  onBlur={({ target: { id: item, value } }) => {
+                  onBlur={({ target: { id: item } }) => {
                     setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], changed: true } } });
                   }}
                   value={form.newOrbit.modelFileName ? form.newOrbit.modelFileName.value : ''}
@@ -499,7 +514,7 @@ function DisplayValue({
                   id="nodeProcess"
                   onFocus={({ target: { id: item } }) => setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], touched: true, changed: false } } })}
                   onChange={({ target: { id: item, value } }) => setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], value, changed: false } } })}
-                  onBlur={({ target: { id: item, value } }) => {
+                  onBlur={({ target: { id: item } }) => {
                     setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], changed: true } } });
                   }}
                   value={form.newOrbit.nodeProcess ? form.newOrbit.nodeProcess.value : ''}
@@ -560,7 +575,18 @@ function DisplayValue({
                   onChange={({ target: { id: item, value } }) => setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], value, changed: false } } })}
                   onBlur={({ target: { id: item, value } }) => {
                     if (value.includes('return')) {
-                      setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], value: new Function('x', value), changed: true, help: null } } });
+                      setForm({
+                        ...form,
+                        newOrbit: {
+                          ...form.newOrbit,
+                          [item]: {
+                            ...form.newOrbit[item],
+                            value: new Function('x', value),
+                            changed: true,
+                            help: null,
+                          },
+                        },
+                      });
                     } else {
                       setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], changed: false, help: 'You must return at least the variable "x".' } } });
                     }
@@ -592,6 +618,14 @@ function DisplayValue({
                       processDataKey: form.newOrbit.processDataKey && (form.newOrbit.processDataKey.value.includes('return') || form.newOrbit.processDataKey.value.includes('=>')) ? form.newOrbit.processDataKey.value : x => x,
                       live: form.newOrbit.live,
                       position: [21.289373, 157.917480, 350000.0],
+                      orientation: {
+                        d: {
+                          x: 0,
+                          y: 0,
+                          z: 0,
+                        },
+                        w: 0,
+                      },
                     });
 
                     // Clear form values
@@ -599,7 +633,7 @@ function DisplayValue({
                     form.newOrbit.nodeProcess.value = '';
                     form.newOrbit.modelFileName.value = '';
                     // form.newOrbit.dataKey.value = '';
-                    form.newOrbit.processDataKey.value = '';
+                    // form.newOrbit.processDataKey.value = '';
 
                     // If not live, retrieve the data from database
                     if (!form.newOrbit.live) {
@@ -618,7 +652,7 @@ function DisplayValue({
       <Viewer
         fullscreenButton={false}
       >
-        <Globe />
+        <Globe enableLighting />
         <Clock
           startTime={start}
           stopTime={stop}
@@ -640,8 +674,9 @@ function DisplayValue({
                   />
                   <PathGraphics
                     width={3}
-                    leadTime={600}
-                    trailTime={600}
+                    leadTime={86400}
+                    trailTime={86400}
+                    material={Cesium.Color.CHARTREUSE}
                   />
                 </Entity>
               );
@@ -663,6 +698,7 @@ function DisplayValue({
                     width={3}
                     leadTime={600}
                     trailTime={600}
+                    material={Cesium.Color.CRIMSON}
                   />
                 </Entity>
               </span>
@@ -721,8 +757,6 @@ DisplayValue.propTypes = {
       ),
     }),
   ),
-  /** JSON object of data */
-  nodeProc: PropTypes.string,
   /** Whether to show a circular indicator of the status of the component */
   showStatus: PropTypes.bool,
   /** The type of badge to show if showStatus is true (see the ant design badges component) */
@@ -733,20 +767,13 @@ DisplayValue.propTypes = {
       );
     }
   },
-  /** Children node */
-  children: PropTypes.node,
-  /** Form node */
-  formItems: PropTypes.node,
 };
 
 DisplayValue.defaultProps = {
   name: '',
   orbits: [],
-  nodeProc: null,
   showStatus: false,
   status: 'error',
-  children: null,
-  formItems: null,
 };
 
 export default DisplayValue;
