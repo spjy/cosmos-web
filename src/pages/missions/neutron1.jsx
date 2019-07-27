@@ -10,8 +10,6 @@ import {
 
 import socket from '../../socket';
 
-import Card from '../../components/Missions/Components/LayoutCard';
-import Example from '../../components/Missions/Components/Example';
 import Clock from '../../components/Missions/Components/Clock';
 import DisplayValue from '../../components/Missions/Components/DisplayValue';
 import Content from '../../components/Missions/Components/Content';
@@ -19,10 +17,9 @@ import Commands from '../../components/Missions/Components/Commands';
 import Status from '../../components/Missions/Components/Status';
 import Chart from '../../components/Missions/Components/Chart';
 import Globe from '../../components/Missions/Components/Globe';
-import useWebSocket from '../../hooks/useWebSocket';
+import Attitude from '../../components/Missions/Components/Attitude';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
-
 
 function neutron1() {
   /**
@@ -30,7 +27,7 @@ function neutron1() {
    */
   const [state, dispatch] = useReducer(reducer, {});
 
-  const [layouts, setLayouts] = useState({
+  const [layouts] = useState({
     lg: [
       {
         i: 'a',
@@ -64,8 +61,8 @@ function neutron1() {
         i: 'e',
         x: 0,
         y: 2,
-        w: 12,
-        h: 34,
+        w: 6,
+        h: 20,
       },
       {
         i: 'f',
@@ -94,6 +91,13 @@ function neutron1() {
         y: 6,
         w: 12,
         h: 18,
+      },
+      {
+        i: 'j',
+        x: 6,
+        y: 2,
+        w: 6,
+        h: 34,
       },
     ],
   });
@@ -124,14 +128,15 @@ function neutron1() {
         <ResponsiveGridLayout
           className="layout"
           breakpoints={{
-            lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0
+            lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0,
           }}
           cols={{
-            lg: 12, md: 10, sm: 6, xs: 4, xxs: 2
+            lg: 12, md: 10, sm: 6, xs: 4, xxs: 2,
           }}
           layouts={layouts}
           margin={[12, 12]}
           draggableHandle=".dragHandle"
+          draggableCancel=".preventDragHandle"
           rowHeight={20}
         >
           <div key="a" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
@@ -155,21 +160,21 @@ function neutron1() {
                     nodeProcess: 'hsflpc23:cpu',
                     dataKey: 'device_cpu_load_000',
                     unit: '%',
-                    processDataKey: x => x.toFixed(2)
+                    processDataKey: x => x.toFixed(2),
                   },
                   {
                     name: 'GiB',
                     nodeProcess: 'hsflpc23:cpu',
                     dataKey: 'device_cpu_gib_000',
                     unit: 'GiB',
-                    processDataKey: x => x.toFixed(2)
+                    processDataKey: x => x.toFixed(2),
                   },
                   {
                     name: 'Max GiB',
                     nodeProcess: 'hsflpc23:cpu',
                     dataKey: 'device_cpu_maxgib_000',
                     unit: 'GiB',
-                    processDataKey: x => x.toFixed(2)
+                    processDataKey: x => x.toFixed(2),
                   },
                 ]
               }
@@ -230,37 +235,37 @@ function neutron1() {
                     y: [],
                     type: 'scatter',
                     marker: {
-                      color: 'red'
+                      color: 'red',
                     },
                     name: '1',
                     YDataKey: 'device_tsen_temp_001',
-                    nodeProcess: 'neutron1:eps',
-                    live: true
+                    nodeProcess: 'beagle1:eps',
+                    live: true,
                   },
                   {
                     x: [],
                     y: [],
                     type: 'scatter',
                     marker: {
-                      color: 'blue'
+                      color: 'blue',
                     },
                     name: '2',
                     YDataKey: 'device_tsen_temp_002',
-                    nodeProcess: 'neutron1:eps',
-                    live: true
+                    nodeProcess: 'beagle1:eps',
+                    live: true,
                   },
                   {
                     x: [],
                     y: [],
                     type: 'scatter',
                     marker: {
-                      color: 'orange'
+                      color: 'orange',
                     },
                     name: '3',
                     YDataKey: 'device_tsen_temp_003',
-                    nodeProcess: 'neutron1:eps',
-                    live: true
-                  }
+                    nodeProcess: 'beagle1:eps',
+                    live: true,
+                  },
                 ]
               }
             />
@@ -283,37 +288,37 @@ function neutron1() {
                     y: [],
                     type: 'scatter',
                     marker: {
-                      color: 'red'
+                      color: 'red',
                     },
                     name: '5V',
                     YDataKey: 'device_bus_volt_001',
-                    nodeProcess: 'neutron1:eps',
-                    live: true
+                    nodeProcess: 'beagle1:eps',
+                    live: true,
                   },
                   {
                     x: [],
                     y: [],
                     type: 'scatter',
                     marker: {
-                      color: 'blue'
+                      color: 'blue',
                     },
                     name: '3.3V',
                     YDataKey: 'device_bus_volt_002',
-                    nodeProcess: 'neutron1:eps',
-                    live: true
+                    nodeProcess: 'beagle1:eps',
+                    live: true,
                   },
                   {
                     x: [],
                     y: [],
                     type: 'scatter',
                     marker: {
-                      color: 'orange'
+                      color: 'orange',
                     },
                     name: 'Battery Voltage',
                     YDataKey: 'device_bus_volt_003',
-                    nodeProcess: 'neutron1:eps',
-                    live: true
-                  }
+                    nodeProcess: 'beagle1:eps',
+                    live: true,
+                  },
                 ]
               }
             />
@@ -336,37 +341,37 @@ function neutron1() {
                     y: [],
                     type: 'scatter',
                     marker: {
-                      color: 'red'
+                      color: 'red',
                     },
                     name: '5V',
                     YDataKey: 'device_bus_amp_001',
-                    nodeProcess: 'neutron1:eps',
-                    live: true
+                    nodeProcess: 'beagle1:eps',
+                    live: true,
                   },
                   {
                     x: [],
                     y: [],
                     type: 'scatter',
                     marker: {
-                      color: 'blue'
+                      color: 'blue',
                     },
                     name: '3.3V',
                     YDataKey: 'device_bus_amp_002',
-                    nodeProcess: 'neutron1:eps',
-                    live: true
+                    nodeProcess: 'beagle1:eps',
+                    live: true,
                   },
                   {
                     x: [],
                     y: [],
                     type: 'scatter',
                     marker: {
-                      color: 'orange'
+                      color: 'orange',
                     },
                     name: 'Battery Voltage',
                     YDataKey: 'device_bus_amp_003',
-                    nodeProcess: 'neutron1:eps',
-                    live: true
-                  }
+                    nodeProcess: 'beagle1:eps',
+                    live: true,
+                  },
                 ]
               }
             />
@@ -408,9 +413,29 @@ function neutron1() {
                     YDataKey: 'device_batt_charge_000',
                     nodeProcess: 'neutron1:eps',
                     live: true,
-                  }
+                  },
                 ]
               }
+            />
+          </div>
+          <div key="j" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
+            <Attitude
+              name="Attitude"
+              attitudes={[
+                {
+                  name: 'n1',
+                  nodeProcess: 'cubesat1:propagator_simple',
+                  quaternions: {
+                    d: {
+                      x: 0,
+                      y: 0,
+                      z: 0,
+                    },
+                    w: 0,
+                  },
+                  live: true,
+                },
+              ]}
             />
           </div>
         </ResponsiveGridLayout>

@@ -22,8 +22,8 @@ function Clock({
   useEffect(() => {
     // Every second, update local and UTC time view
     const clock = setTimeout(() => {
-      setTime(moment().tz(timezoneState).format('MMDDYYYYTHH:mm:ss'));
-      setUtcTime(moment().tz('Europe/London').format('MMDDYYYYTHH:mm:ss'));
+      setTime(moment().tz(timezoneState).format('YYYYMMDDTHH:mm:ss'));
+      setUtcTime(moment().tz('Europe/London').format('YYYYMMDDTHH:mm:ss'));
     }, 1000);
 
     // Stop timeout on unmount
@@ -35,7 +35,6 @@ function Clock({
   return (
     <BaseComponent
       name="Time"
-      subheader={`${timezoneState} | UTC`}
       liveOnly
       showStatus
       status="success"
@@ -64,7 +63,7 @@ function Clock({
         <tbody>
           <tr>
             <td className="pr-4 text-gray-500">
-              Local
+              {timezoneState.split('/')[1]}
             </td>
             <td className="pr-2">
               {time}

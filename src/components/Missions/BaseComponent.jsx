@@ -57,7 +57,7 @@ function BaseComponent({
               {name}
             </div>
 
-            <div className="text-gray-600 text-sm">
+            <div className="text-gray-600 text-sm preventDragHandle cursor-auto">
               {subheader}
             </div>
           </div>

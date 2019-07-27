@@ -9,11 +9,7 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
-.upload-json {
-  margin: 20px;
-}
-.cosmos-plot {
-  padding: 50px;
-  margin: 10px 5px;
-  background-color: #f9fafc
+
+#scene {
+  width: 100%;
 }

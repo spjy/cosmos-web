@@ -51,11 +51,7 @@ const Commands = React.memo(() => {
   };
 
   /** Close ws on unmount */
-  useEffect(() => {
-    return () => {
-      ws.close();
-    };
-  }, []);
+  useEffect(() => () => ws.close(), []);
 
   /** Handle submission of agent command */
   const sendCommand = () => {
@@ -146,7 +142,9 @@ const Commands = React.memo(() => {
                 sendCommand();
                 setCommandArguments('');
               }}
+              onKeyDown={() => {}}
               role="button"
+              tabIndex={0}
             >
               Send
             </div>

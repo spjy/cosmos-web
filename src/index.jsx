@@ -2,7 +2,6 @@ import React from 'react';
 import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 
-import registerServiceWorker from './registerServiceWorker';
 import App from './App';
 import './App.css';
 
@@ -21,4 +20,3 @@ if (module.hot) {
 }
 
 load();
-registerServiceWorker();

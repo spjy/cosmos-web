@@ -6,7 +6,7 @@ import { Menu, Icon } from 'antd';
 class Navbar extends Component {
   static propTypes = {
     /** Currently selected navigation bar item. */
-    current: PropTypes.string.isRequired
+    current: PropTypes.string.isRequired,
   };
 
   // handleClick = (e) => {
@@ -16,10 +16,12 @@ class Navbar extends Component {
   // }
 
   render() {
+    const { current } = this.props;
+
     return (
       <Menu
         onClick={this.handleClick}
-        selectedKeys={[this.props.current]}
+        selectedKeys={[current]}
         mode="horizontal"
       >
         <Menu.Item key="home">

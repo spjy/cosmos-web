@@ -16,7 +16,7 @@ function ComponentSettings({
       bodyStyle={{ padding: '1em' }}
       width={600}
       visible={visible}
-      title="Widget Settings"
+      title="Component Settings"
       /**
        * On pressing the "OK" button at the footer of the modal, call the "submitForm"
        * and "closeModal" prop methods in the parent component (the widget). This will get

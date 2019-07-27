@@ -11,6 +11,7 @@ import {
 } from 'antd';
 
 import BaseComponent from '../BaseComponent';
+import AttitudeThreeD from './Babylon/AttitudeThreeD';
 import { Context } from '../../../store/neutron1';
 import model from '../../../public/cubesat.glb';
 import socket from '../../../socket';
@@ -19,33 +20,12 @@ const { Panel } = Collapse;
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
-const origin = Cesium.Cartesian3.fromDegrees(-90.0, 40.0, 200000.0);
-const modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(origin);
-
-Cesium.Ion.defaultAccessToken = process.env.CESIUM_ION_TOKEN;
-
-function getPos(lat, long, height) {
-  const pos = Cesium.Cartesian3.fromDegrees(lat, long, height);
-
-  return Cesium.Transforms.eastNorthUpToFixedFrame(pos);
-}
-
-function getOrientation(x, y, z, w) {
-  return Cesium.VelocityOrientationProperty(Cesium.Quaternion(x, y, z, w));
-}
-
-function getArray(x, y, z) {
-  const pos = Cesium.Cartesian3.fromArray([x, y, z]);
-  
-  return Cesium.Transforms.eastNorthUpToFixedFrame(pos);
-}
-
 /**
  * Displays a specified value.
  */
 function DisplayValue({
   name,
-  orbits,
+  attitudes,
   nodeProc,
   showStatus,
   status,
@@ -65,70 +45,31 @@ function DisplayValue({
 
   const { state } = useContext(Context);
 
-  const [orbitsState, setOrbitsState] = useState(orbits);
+  const [attitudesState, setAttitudesState] = useState(attitudes);
 
   const [retrieveOrbitHistory, setRetrieveOrbitHistory] = useState(null);
 
   /** Initialize form slots for each orbit */
   useEffect(() => {
     // Make an object for each plot's form
-    for (let i = 0; i < orbitsState.length; i += 1) {
+    for (let i = 0; i < attitudesState.length; i += 1) {
       form[i] = {
-        live: orbitsState[i].live,
+        live: attitudesState[i].live,
       };
     }
   }, []);
 
-  useState(() => {
-    orbitsState.forEach((orbit, i) => {
-      if (state[orbit.nodeProcess] && state[orbit.nodeProcess].node_loc_pos_eci && state[orbit.nodeProcess].node_loc_pos_eci.pos && orbit.live) {
-        const tempOrbit = [...orbitsState];
+  useEffect(() => {
+    attitudesState.forEach((attitude, i) => {
+      if (state[attitude.nodeProcess] && state[attitude.nodeProcess].node_loc_att_icrf && state[attitude.nodeProcess].node_loc_att_icrf.pos && attitude.live) {
+        const tempAttitude = [...attitudesState];
 
-        tempOrbit[i].position = state[orbit.nodeProcess].node_loc_pos_eci.pos;
+        tempAttitude[i].quaternions = state[attitude.nodeProcess].node_loc_att_icrf.pos;
 
-        setOrbitsState(tempOrbit);
+        setAttitudesState(tempAttitude);
       }
     });
   }, [state]);
-
-  // useEffect(() => {
-  //   const t = setTimeout(() => {
-  //     const temp = [...orbitsState];
-
-  //     temp[0].position = [
-  //       temp[0].position[0] += 1,
-  //       temp[0].position[1] += 1,
-  //       temp[0].position[2] += 1,
-  //     ];
-
-  //     setOrbitsState(temp);
-  //   }, 1000);
-
-  //   console.log(orbitsState[0]);
-
-  //   return () => {
-  //     clearTimeout(t);
-  //   };
-  // }, [orbitsState]);
-
-  const [start, setStart] = useState(Cesium.JulianDate.now);
-  const [stop, setStop] = useState(null);
-  const [cameraFlyTo, setCameraFlyTo] = useState(null);
-
-  const [position, setPosition] = useState(null);
-
-  // useEffect(() => {
-  //   const timeout = setTimeout(() => {
-  //     setX(x + 0.5);
-  //     setY(y + 0.5);
-
-  //     console.log(x, y);
-  //   }, 100);
-
-  //   return () => {
-  //     clearTimeout(timeout);
-  //   };
-  // }, [x]);
 
   /** Handle the collection of historical data */
   useEffect(() => {
@@ -207,459 +148,36 @@ function DisplayValue({
   return (
     <BaseComponent
       name={nameState}
-      subheader={orbitsState.length === 0 ? 'No orbits to display.' : null}
+      subheader={attitudesState.length === 0 ? 'No orbits to display.' : null}
       liveOnly
       showStatus={showStatus}
       status={status}
       formItems={(
         <Form layout="vertical">
-          <Form.Item
-            label="Name"
-            key="nameState"
-            hasFeedback={form.nameState && form.nameState.touched}
-            validateStatus={form.nameState && form.nameState.changed ? 'success' : ''}
-          >
-            <Input
-              placeholder="Name"
-              id="nameState"
-              onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
-              onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
-              onBlur={({ target: { id: item, value } }) => {
-                setNameState(value);
-                setForm({ ...form, [item]: { ...form[item], changed: true } });
-              }}
-              defaultValue={name}
-            />
-          </Form.Item>
-
-          <Collapse
-            bordered
-          >
-            {
-              orbitsState.map((orbit, i) => {
-                return (
-                  <Panel
-                    header={(
-                      <span className="text-gray-600">
-                        <strong>
-                          {orbit.nodeProcess}
-                        </strong>
-                        &nbsp;
-                        <span>
-                          {orbit.dataKey}
-                        </span>
-                      </span>
-                    )}
-                    key={i}
-                    extra={(
-                      <div
-                        onClick={event => event.stopPropagation()}
-                      >
-                        <Switch
-                          checkedChildren="Live"
-                          unCheckedChildren="Past"
-                          defaultChecked={orbit.live}
-                          onChange={(checked) => {
-                            orbitsState[i].live = checked;
-
-                            setForm({
-                              ...form,
-                              [i]: {
-                                ...form[i], live: checked,
-                              },
-                            });
-                          }}
-                        />
-                        &nbsp;
-                        <Icon className="text-lg" type="close" />
-                      </div>
-                    )}
-                  >
-                    <Form.Item
-                      className="w-auto"
-                      label="Historical Date Range"
-                      key="dateRange"
-                      hasFeedback={form[i] && form[i].dateRange && form[i].dateRange.touched}
-                      validateStatus={form[i] && form[i].dateRange && form[i].dateRange.changed ? 'success' : ''}
-                    >
-                      <RangePicker
-                        className="mr-1"
-                        id="dateRange"
-                        showTime
-                        format="YYYY-MM-DD HH:mm:ss"
-                        disabled={form[i] && form[i].live}
-                        onChange={moment => setForm({ ...form, [i]: { ...form[i], dateRange: { ...form[i].dateRange, value: moment } } })}
-                      />
-                      <Button
-                        type="primary"
-                        onClick={() => setRetrieveOrbitHistory(i)}
-                        disabled={form[i] && form[i].live}
-                      >
-                        Show
-                      </Button>
-                    </Form.Item>
-
-                    <Form.Item
-                      label="Name"
-                      key="name"
-                      hasFeedback={form[i] && form[i].name && form[i].name.touched}
-                      validateStatus={form[i] && form[i].name && form[i].name.changed ? 'success' : ''}
-                    >
-                      <Input
-                        placeholder="Name"
-                        id="name"
-                        onFocus={({ target: { id: item } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], touched: true, changed: false } } })}
-                        onChange={({ target: { id: item, value } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], value, changed: false } } })}
-                        onBlur={({ target: { id: item, value } }) => {
-                          orbitsState[i].name = value;
-                          setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: true } } });
-                        }}
-                        defaultValue={orbit.name}
-                      />
-                    </Form.Item>
-
-
-                    <Form.Item
-                      label="Model File Name"
-                      key="modelFilename"
-                      hasFeedback={form[i] && form[i].modelFilename && form[i].modelFilename.touched}
-                      validateStatus={form[i] && form[i].modelFilename && form[i].modelFilename.changed ? 'success' : ''}
-                    >
-                      <Input
-                        placeholder="Model File Name"
-                        id="modelFilename"
-                        onFocus={({ target: { id: item } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], touched: true, changed: false } } })}
-                        onChange={({ target: { id: item, value } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], value, changed: false } } })}
-                        onBlur={({ target: { id: item, value } }) => {
-                          orbitsState[i].type = value;
-                          setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: true } } });
-                        }}
-                        defaultValue={orbit.modelFileName}
-                      />
-                    </Form.Item>
-
-                    <Form.Item
-                      label="Node Process"
-                      key="nodeProcess"
-                      hasFeedback={form[i] && form[i].nodeProcess && form[i].nodeProcess.touched}
-                      validateStatus={form[i] && form[i].nodeProcess && form[i].nodeProcess.changed ? 'success' : ''}
-                    >
-                      <Input
-                        placeholder="Node Process"
-                        id="nodeProcess"
-                        onFocus={({ target: { id: item } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], touched: true, changed: false } } })}
-                        onChange={({ target: { id: item, value } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], value, changed: false } } })}
-                        onBlur={({ target: { id: item, value } }) => {
-                          orbitsState[i].nodeProcess = value;
-                          setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: true } } });
-                        }}
-                        defaultValue={orbit.nodeProcess}
-                      />
-                    </Form.Item>
-{/* 
-                    <Form.Item
-                      label="Y Data Key"
-                      key="YDataKey"
-                      hasFeedback={form[i] && form[i].YDataKey && form[i].YDataKey.touched}
-                      validateStatus={form[i] && form[i].YDataKey && form[i].YDataKey.changed ? 'success' : ''}
-                    >
-                      <Input
-                        placeholder="Y Data Key"
-                        id="YDataKey"
-                        onFocus={({ target: { id: item } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], touched: true, changed: false } } })}
-                        onChange={({ target: { id: item, value } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], value, changed: false } } })}
-                        onBlur={({ target: { id: item, value } }) => {
-                          orbitsState[i].YDataKey = value;
-                          setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: true } } });
-                        }}
-                        defaultValue={plot.YDataKey}
-                      />
-                    </Form.Item> */}
-
-                    <Form.Item
-                      label="Process Data Key"
-                      key="processDataKey"
-                      hasFeedback={form[i] && form[i].processDataKey && form[i].processDataKey.touched}
-                      validateStatus={form[i] && form[i].processDataKey && form[i].processDataKey.changed ? 'success' : ''}
-                      help={form[i] && form[i].processDataKey && form[i].processDataKey.help ? form[i].processDataKey.help : 'Define the function body (in JavaScript) here to process the variable "x".'}
-                    >
-                      <TextArea
-                        rows={4}
-                        placeholder="Process Data Key"
-                        id="processDataKey"
-                        onFocus={({ target: { id: item } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], touched: true, changed: false } } })}
-                        onChange={({ target: { id: item, value } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], value, changed: false } } })}
-                        onBlur={({ target: { id: item, value } }) => {
-                          if (value.includes('return')) {
-                            orbitsState[i].processDataKey = new Function('x', value);
-
-                            setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: true, help: null } } });
-                          } else {
-                            setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: false, help: 'You must return at least the variable "x".' } } });
-                          }
-                        }}
-                        defaultValue={orbit.processDataKey ? orbit.processDataKey.toString().replace(/^[^{]*{\s*/, '').replace(/\s*}[^}]*$/, '') : 'return x;'}
-                      />
-                    </Form.Item>
-                  </Panel>
-                );
-              })
-            }
-            <Panel header="Add Orbit" key="3">
-              <Switch
-                checkedChildren="Live"
-                unCheckedChildren="Past"
-                defaultChecked
-                onChange={checked => setForm({
-                  ...form,
-                  newOrbit: {
-                    ...form.newOrbit,
-                    live: checked,
-                  },
-                })}
-              />
-              <br />
-              <br />
-              <Form.Item
-                className="w-auto"
-                label="Historical Date Range"
-                key="dateRange"
-                hasFeedback={form.newOrbit.dateRange && form.newOrbit.dateRange.touched}
-                validateStatus={form.newOrbit.dateRange && form.newOrbit.dateRange.changed ? 'success' : ''}
-              >
-                <RangePicker
-                  className="mr-1"
-                  id="dateRange"
-                  showTime
-                  format="YYYY-MM-DD HH:mm:ss"
-                  disabled={form.newOrbit.live}
-                  onChange={m => setForm({ ...form, newOrbit: { ...form.newOrbit, dateRange: { ...form.newOrbit.dateRange, value: m } } })}
-                />
-              </Form.Item>
-
-              <Form.Item
-                label="Name"
-                key="name"
-                hasFeedback={form.newOrbit.name && form.newOrbit.name.touched}
-                validateStatus={form.newOrbit.name && form.newOrbit.name.changed ? 'success' : ''}
-              >
-                <Input
-                  placeholder="Name"
-                  id="name"
-                  onFocus={({ target: { id: item } }) => setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], touched: true, changed: false } } })}
-                  onChange={({ target: { id: item, value } }) => setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], value, changed: false } } })}
-                  onBlur={({ target: { id: item, value } }) => {
-                    setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], changed: true } } });
-                  }}
-                  value={form.newOrbit.name ? form.newOrbit.name.value : ''}
-                />
-              </Form.Item>
-
-              <Form.Item
-                required
-                label="Model File Name"
-                key="modelFileName"
-                hasFeedback={form.newOrbit.modelFileName && form.newOrbit.modelFileName.touched}
-                validateStatus={form.newOrbit.modelFileName && form.newOrbit.modelFileName.changed ? 'success' : ''}
-              >
-                <Input
-                  placeholder="Model File Name"
-                  id="modelFileName"
-                  onFocus={({ target: { id: item } }) => setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], touched: true, changed: false } } })}
-                  onChange={({ target: { id: item, value } }) => setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], value, changed: false } } })}
-                  onBlur={({ target: { id: item, value } }) => {
-                    setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], changed: true } } });
-                  }}
-                  value={form.newOrbit.modelFileName ? form.newOrbit.modelFileName.value : ''}
-                />
-              </Form.Item>
-
-              <Form.Item
-                required
-                label="Node Process"
-                key="nodeProcess"
-                hasFeedback={form.newOrbit.nodeProcess && form.newOrbit.nodeProcess.touched}
-                validateStatus={form.newOrbit.nodeProcess && form.newOrbit.nodeProcess.changed ? 'success' : ''}
-              >
-                <Input
-                  placeholder="Node Process"
-                  id="nodeProcess"
-                  onFocus={({ target: { id: item } }) => setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], touched: true, changed: false } } })}
-                  onChange={({ target: { id: item, value } }) => setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], value, changed: false } } })}
-                  onBlur={({ target: { id: item, value } }) => {
-                    setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], changed: true } } });
-                  }}
-                  value={form.newOrbit.nodeProcess ? form.newOrbit.nodeProcess.value : ''}
-                />
-              </Form.Item>
-
-              {/* <Form.Item
-                required
-                label="Data Keys"
-                key="dataKey"
-                hasFeedback={form.newOrbit.dataKey && form.newOrbit.dataKey.touched}
-                validateStatus={form.newOrbit.dataKey && form.newOrbit.dataKey.changed ? 'success' : ''}
-              >
-                <Collapse bordered={false} defaultActiveKey={['1']}>
-                  <Panel header="This is panel header 1" key="1">
-                    ok
-                  </Panel>
-                  <Panel header="This is panel header 2" key="2">
-                    ok
-                  </Panel>
-                  <Panel header="This is panel header 3" key="3">
-                    ok
-                  </Panel>
-                </Collapse>
-              </Form.Item>
-
-              <Form.Item
-                required
-                label="Data Key"
-                key="dataKey"
-                hasFeedback={form.newOrbit.dataKey && form.newOrbit.dataKey.touched}
-                validateStatus={form.newOrbit.dataKey && form.newOrbit.dataKey.changed ? 'success' : ''}
-              >
-                <Input
-                  placeholder="Data Key"
-                  id="dataKey"
-                  onFocus={({ target: { id: item } }) => setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], touched: true, changed: false } } })}
-                  onChange={({ target: { id: item, value } }) => setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], value, changed: false } } })}
-                  onBlur={({ target: { id: item, value } }) => {
-                    setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], changed: true } } });
-                  }}
-                  value={form.newOrbit.dataKey ? form.newOrbit.dataKey.value : ''}
-                />
-              </Form.Item> */}
-
-              <Form.Item
-                label="Process Data Key"
-                key="processDataKey"
-                hasFeedback={form.newOrbit.processDataKey && form.newOrbit.processDataKey.touched}
-                validateStatus={form.newOrbit.processDataKey && form.newOrbit.processDataKey.changed ? 'success' : ''}
-                help={form.newOrbit.processDataKey && form.newOrbit.processDataKey.help ? form.newOrbit.processDataKey.help : 'Define the function body (in JavaScript) here to process the variable "x".'}
-              >
-                <TextArea
-                  rows={4}
-                  placeholder="Process Data Key"
-                  id="processDataKey"
-                  onFocus={({ target: { id: item } }) => setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], touched: true, changed: false } } })}
-                  onChange={({ target: { id: item, value } }) => setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], value, changed: false } } })}
-                  onBlur={({ target: { id: item, value } }) => {
-                    if (value.includes('return')) {
-                      setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], value: new Function('x', value), changed: true, help: null } } });
-                    } else {
-                      setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], changed: false, help: 'You must return at least the variable "x".' } } });
-                    }
-                  }}
-                  value={form.newOrbit.processDataKey && form.newOrbit.processDataKey.value ? form.newOrbit.processDataKey.value.toString().replace(/^[^{]*{\s*/, '').replace(/\s*}[^}]*$/, '') : ''}
-                />
-              </Form.Item>
-
-              <Button
-                type="dashed"
-                block
-                onClick={() => {
-                  // Check if required values are here
-                  if (form.newOrbit.nodeProcess.value) {
-                    // Make form slots for new plot
-                    setForm({
-                      ...form,
-                      newOrbit: {
-                        live: form.newOrbit.live,
-                      },
-                      [orbitsState.length]: {},
-                    });
-
-                    // Create chart
-                    orbitsState.push({
-                      name: form.newOrbit.name.value,
-                      nodeProcess: form.newOrbit.nodeProcess.value,
-                      modelFileName: form.newOrbit.modelFileName.value === '' ? form.newOrbit.modelFileName.value : 'cubesat1.glb',
-                      processDataKey: form.newOrbit.processDataKey && (form.newOrbit.processDataKey.value.includes('return') || form.newOrbit.processDataKey.value.includes('=>')) ? form.newOrbit.processDataKey.value : x => x,
-                      live: form.newOrbit.live,
-                      position: [21.289373, 157.917480, 350000.0],
-                    });
-
-                    // Clear form values
-                    form.newOrbit.name.value = '';
-                    form.newOrbit.nodeProcess.value = '';
-                    form.newOrbit.modelFileName.value = '';
-                    // form.newOrbit.dataKey.value = '';
-                    form.newOrbit.processDataKey.value = '';
-
-                    // If not live, retrieve the data from database
-                    if (!form.newOrbit.live) {
-                      setRetrieveOrbitHistory(orbitsState.length);
-                    }
-                  }
-                }}
-              >
-                Add Orbit
-              </Button>
-            </Panel>
-          </Collapse>
+          ok
         </Form>
       )}
     >
-      <Viewer
-        fullscreenButton={false}
-      >
-        <Globe enableLighting />
-        <Clock
-          startTime={start}
-          stopTime={stop}
-          currentTime={start}
-        />
-        {
-          orbitsState.map((orbit) => {
-            if (orbit.live) {
-              return (
-                <Entity
-                  key={orbit.name}
-                >
-                  <Model
-                    modelMatrix={getPos(orbit.position[0], orbit.position[1], orbit.position[2])}
-                    orientation={getOrientation(orbit.orientation.d.x, orbit.orientation.d.y, orbit.orientation.d.z, orbit.orientation.w)}
-                    url={model}
-                    minimumPixelSize={15}
-                  />
-                </Entity>
-              );
-            }
-
-            return (
-              <span
-                key={orbit.name}
-              >
-                {
-                  cameraFlyTo ? <CameraFlyTo destination={cameraFlyTo} /> : null
-                }
-                <Entity
-                  name={orbit.name}
-                  position={orbit.position}
-                  point={{ pixelSize: 10 }}
-                />
-              </span>
-            );
-          })
-        }
-      </Viewer>
-      <table className="mt-4 w-full">
+      <AttitudeThreeD
+        data={attitudesState[0].quaternions}
+      />
+      <table className="mt-4 w-full overflow-x-scroll">
         <tbody>
           <tr className="bg-gray-200 border-b border-gray-400">
             <td className="p-2 pr-8">Name</td>
-            <td className="p-2 pr-8">Latitude</td>
-            <td className="p-2 pr-8">Longitude</td>
-            <td className="p-2 pr-8">Altitude</td>
+            <td className="p-2 pr-8">x</td>
+            <td className="p-2 pr-8">y</td>
+            <td className="p-2 pr-8">z</td>
+            <td className="p-2 pr-8">w</td>
           </tr>
           {
-          orbitsState.map(orbit => (
-            <tr className="text-gray-700 border-b border-gray-400" key={orbit.name}>
-              <td className="p-2 pr-8">{orbit.name}</td>
-              <td className="p-2 pr-8">{orbit.position[0]}</td>
-              <td className="p-2 pr-8">{orbit.position[1]}</td>
-              <td className="p-2 pr-8">{orbit.position[2]}</td>
+          attitudesState.map(attitude => (
+            <tr className="text-gray-700 border-b border-gray-400" key={attitude.name}>
+              <td className="p-2 pr-8">{attitude.name}</td>
+              <td className="p-2 pr-8">{attitude.quaternions.d && attitude.quaternions.d.x ? attitude.quaternions.d.x : '-'}</td>
+              <td className="p-2 pr-8">{attitude.quaternions.d && attitude.quaternions.d.y ? attitude.quaternions.d.y : '-'}</td>
+              <td className="p-2 pr-8">{attitude.quaternions.d && attitude.quaternions.d.z ? attitude.quaternions.d.z : '-'}</td>
+              <td className="p-2 pr-8">{attitude.quaternions.d && attitude.quaternions.w ? attitude.quaternions.w : '-'}</td>
             </tr>
           ))
         }
@@ -673,19 +191,10 @@ DisplayValue.propTypes = {
   /** Name of the component to display at the time */
   name: PropTypes.string,
   /** */
-  orbits: PropTypes.arrayOf(
+  attitudes: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,
-      dataKeys: PropTypes.arrayOf(
-        PropTypes.shape({
-          name: PropTypes.string,
-          modelFileName: PropTypes.string,
-          nodeProcess: PropTypes.string,
-          dataKey: PropTypes.string,
-          processDataKey: PropTypes.func,
-          live: PropTypes.bool,
-        }),
-      ),
+      nodeProcess: PropTypes.string,
     }),
   ),
   /** JSON object of data */
@@ -708,7 +217,7 @@ DisplayValue.propTypes = {
 
 DisplayValue.defaultProps = {
   name: '',
-  orbits: [],
+  attitudes: [],
   nodeProc: null,
   showStatus: false,
   status: 'error',

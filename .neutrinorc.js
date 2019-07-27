@@ -22,7 +22,7 @@ module.exports = {
     react({
       html: {
         title: 'COSMOS Web',
-      }
+      },
     }),
     jest(),
     devServer({
@@ -31,7 +31,7 @@ module.exports = {
     (neutrino) => {
       neutrino.config.module
         .rule('file-loader')
-          .test(/\.(glb|czml)$/)
+          .test(/\.(glb|czml|obj)$/)
           .use('file-loader')
             .loader('file-loader')
 
