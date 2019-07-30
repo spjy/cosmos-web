@@ -91,7 +91,7 @@ function BaseComponent({
 
       <Divider />
 
-      <div className="px-2">
+      <div className="p-2 overflow-y-scroll h-full">
         {children}
       </div>
     </div>

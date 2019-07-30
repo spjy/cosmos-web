@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as BABYLON from 'babylonjs';
 import 'babylonjs-loaders';
-import cubesat from './cubesat.obj';
+import cubesat from '../../../../public/cubesat.obj';
 
 import BabylonScene from './BabylonScene';
 
@@ -160,6 +160,7 @@ class AttitudeThreeD extends Component {
     const wireframe = new BABYLON.StandardMaterial('wireframe', scene);
 
     wireframe.wireframe = true;
+    wireframe.diffuseColor = new BABYLON.Color3(0.56, 0.83, 1);
 
     // Attitude sphere
     const attitudeSphere = BABYLON.MeshBuilder.CreateSphere('attitudeSphere', { diameter: 1, diameterX: 1, updatable: true }, scene);

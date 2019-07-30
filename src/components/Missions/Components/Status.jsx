@@ -4,7 +4,7 @@ import moment from 'moment-timezone';
 
 import socket from '../../../socket';
 
-const ws = socket('query', '/command/');
+const ws = socket('live', '/live/list');
 
 function Status() {
   const [list, setList] = useState([]);
@@ -14,47 +14,35 @@ function Status() {
       const json = JSON.parse(data);
 
       setList(json.agent_list);
+
+      console.log(json);
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => {
-    if (ws) {
-      const timeout = setTimeout(() => {
-        ws.send('list_json');
-      }, 5000);
-
-      return () => {
-        clearTimeout(timeout);
-      };
-    }
-    return () => {};
-  }, [list]);
-
-  useEffect(() => () => ws.close(1000));
+  useEffect(() => () => ws.close(1000), []);
 
   return (
-    <>
+    <div>
       {
         list.length === 0 ? 'No agents.' : null
       }
-      <table>
+      <table className="">
         <tbody>
           {
             list.map(({
-              agent_node: node, agent_proc: proc, agent_utc: utc, status,
+              agent, utc,
             }) => (
-              <tr key={`${node}:${proc}`}>
+              <tr key={agent}>
                 <td>
-                  {status === 'OK' ? <Badge status="success" /> : <Badge status="default" />}
+                  {<Badge status="success" />}
                 </td>
                 <td className="pr-4">
-                  {node}
-                  :
-                  {proc}
+                  {agent}
                 </td>
                 <td className="text-gray-500">
+                  {utc}
                   {moment.unix((((utc + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss')}
                 </td>
               </tr>
@@ -62,7 +50,7 @@ function Status() {
           }
         </tbody>
       </table>
-    </>
+    </div>
   );
 }
 

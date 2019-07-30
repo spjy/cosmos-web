@@ -143,11 +143,9 @@ function neutron1() {
             <Content
               name="Agent Statuses"
             >
-              <div className="h-32 resize-y">
-                <Status
-                  statuses={[]}
-                />
-              </div>
+              <Status
+                statuses={[]}
+              />
             </Content>
           </div>
           <div key="b" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
