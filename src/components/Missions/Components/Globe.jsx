@@ -439,10 +439,9 @@ function DisplayValue({
                 />
               </Form.Item>
 
-              <div>
+              <div className="text-red-500 mb-3">
                 {formError}
               </div>
-              <br />
 
               <Button
                 type="dashed"
@@ -450,7 +449,7 @@ function DisplayValue({
                 onClick={() => {
                   // Check if required values are here
                   if (form.newOrbit.nodeProcess.value) {
-                    setFormError('Check the "Node Process field.');
+                    setFormError('Check the "Node Process field. It is required.');
                     return;
                   }
 

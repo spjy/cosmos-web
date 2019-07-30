@@ -54,6 +54,7 @@ function DisplayValue({
 
   return (
     <BaseComponent
+      className=""
       name={nameState}
       liveOnly
       showStatus
@@ -637,23 +638,21 @@ function DisplayValue({
                 />
               </Form.Item>
 
-              <div className="text-red-500">
+              <div className="text-red-500 mb-3">
                 {formError}
               </div>
-
-              <br />
 
               <Button
                 type="dashed"
                 block
                 onClick={() => {
                   if (!form.newChart.nodeProcess || !form.newChart.nodeProcess.value) {
-                    setFormError('Check the "Node Process" field.');
+                    setFormError('Check the "Node Process" field. It is required.');
                     return;
                   }
 
                   if (!form.newChart.dataKey || !form.newChart.dataKey.value) {
-                    setFormError('Check the "Data Key" field.');
+                    setFormError('Check the "Data Key" field. It is required.');
                     return;
                   }
 
@@ -690,7 +689,7 @@ function DisplayValue({
       {
         displayValuesState.length === 0 ? 'No values to display.' : null
       }
-      <table style={{ tableLayout: 'fixed' }}>
+      <table>
         <tbody>
           {
             displayValuesState.map(({ name: label, unit: u }, i) => (

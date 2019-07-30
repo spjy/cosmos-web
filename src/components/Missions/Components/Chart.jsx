@@ -880,17 +880,16 @@ function Chart({
                     ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], value, changed: false } } })}
                   onBlur={({ target: { id: item } }) => {
                     setForm({
-                      ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], changed: true } } });
+                      ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], changed: true } },
+                    });
                   }}
                   value={form.newValue.markerColor ? form.newValue.markerColor.value : ''}
                 />
               </Form.Item>
 
-              <div className="text-red-500">
+              <div className="text-red-500 mb-3">
                 {formError}
               </div>
-              
-              <br />
 
               <Button
                 type="dashed"
@@ -898,17 +897,17 @@ function Chart({
                 onClick={() => {
                   // Check if required values are here
                   if (!form.newValue.chartType || !form.newValue.chartType.value) {
-                    setFormError('Check the "Chart Type" field.');
+                    setFormError('Check the "Chart Type" field. It is required.');
                     return;
                   }
 
                   if (!form.newValue.nodeProcess || !form.newValue.nodeProcess.value) {
-                    setFormError('Check the "Node Process" field.');
+                    setFormError('Check the "Node Process" field. It is required.');
                     return;
                   }
 
                   if (!form.newValue.YDataKey || !form.newValue.YDataKey.value) {
-                    setFormError('Check the "Y Data Key" field.');
+                    setFormError('Check the "Y Data Key" field. It is required.');
                     return;
                   }
                   // Make form slots for new plot
