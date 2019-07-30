@@ -163,7 +163,17 @@ function Chart({
           {
             plotsState.map(plot => (
               <span key={`${plot.nodeProcess}${plot.YDataKey}`}>
-                <span className="inline-block rounded-full mr-2 indicator" style={{ height: '6px', width: '6px', marginBottom: '2px', backgroundColor: plot.marker.color }} />
+                <span
+                  className="inline-block rounded-full mr-2 indicator"
+                  style={
+                    {
+                      height: '6px',
+                      width: '6px',
+                      marginBottom: '2px',
+                      backgroundColor: plot.marker.color,
+                    }
+                  }
+                />
                 <span className="font-semibold">
                   {plot.nodeProcess}
                 </span>
@@ -188,13 +198,30 @@ function Chart({
               placeholder="Chart Name"
               id="nameState"
               onFocus={({ target: { id: item } }) => setForm({
-                ...form, [item]: { ...form[item], touched: true, changed: false } })}
+                ...form,
+                [item]: {
+                  ...form[item],
+                  touched: true,
+                  changed: false,
+                },
+              })}
               onChange={({ target: { id: item, value } }) => setForm({
-                ...form, [item]: { ...form[item], value, changed: false } })}
+                ...form,
+                [item]: {
+                  ...form[item],
+                  value,
+                  changed: false,
+                },
+              })}
               onBlur={({ target: { id: item, value } }) => {
                 setNameState(value);
                 setForm({
-                  ...form, [item]: { ...form[item], changed: true } });
+                  ...form,
+                  [item]: {
+                    ...form[item],
+                    changed: true,
+                  },
+                });
               }}
               defaultValue={name}
             />

@@ -71,8 +71,22 @@ function DisplayValue({
             <Input
               placeholder="Name"
               id="nameState"
-              onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
-              onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
+              onFocus={({ target: { id: item } }) => setForm({
+                ...form,
+                [item]: {
+                  ...form[item],
+                  touched: true,
+                  changed: false,
+                },
+              })}
+              onChange={({ target: { id: item, value } }) => setForm({
+                ...form,
+                [item]: {
+                  ...form[item],
+                  value,
+                  changed: false,
+                },
+              })}
               onBlur={({ target: { id: item, value } }) => {
                 setNameState(value);
                 setForm({ ...form, [item]: { ...form[item], changed: true } });

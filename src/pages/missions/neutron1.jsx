@@ -117,7 +117,6 @@ function neutron1() {
     };
 
     return () => {
-      console.log('ok');
       all.close(1000);
     };
   }, []);
