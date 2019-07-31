@@ -7,19 +7,19 @@ export const actions = {
     return {
       type: GET_LATEST_MESSAGE,
       nodeproc,
-      payload: message
+      payload: message,
     };
-  }
+  },
 };
 
 export function reducer(state, {
-  type, nodeproc, payload
+  type, nodeproc, payload,
 }) {
   switch (type) {
     case GET_LATEST_MESSAGE:
       return {
         ...state,
-        [nodeproc]: payload
+        [nodeproc]: payload,
       };
     default:
       return state;

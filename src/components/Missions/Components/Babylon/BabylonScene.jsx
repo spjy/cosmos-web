@@ -5,6 +5,7 @@ const canvas = HTMLCanvasElement;
 
 class ThreeD extends Component {
   componentDidMount() {
+    // eslint-disable-next-line
     const { engineOptions, adaptToDeviceRatio, onSceneMount } = this.props;
 
     this.engine = new BABYLON.Engine(

@@ -7,7 +7,7 @@ export const actions = {
   insert(agent) {
     return {
       type: INSERT_AGENT,
-      payload: agent
+      payload: agent,
     };
   },
   update(proc, node, agent) {
@@ -15,19 +15,19 @@ export const actions = {
       type: EDIT_AGENT,
       proc,
       node,
-      payload: agent
+      payload: agent,
     };
-  }
+  },
 };
 
 export function reducer(state, {
-  type, payload, proc, node
+  type, payload, proc, node,
 }) {
   switch (type) {
     case INSERT_AGENT:
       return {
         ...state,
-        payload
+        payload,
       };
     case EDIT_AGENT:
       return {
@@ -36,11 +36,11 @@ export function reducer(state, {
           if (proc === agent.agent_proc && node === agent.agent_node) {
             return {
               ...agent,
-              ...payload
+              ...payload,
             };
           }
           return agent;
-        })
+        }),
       };
     default:
       return state;

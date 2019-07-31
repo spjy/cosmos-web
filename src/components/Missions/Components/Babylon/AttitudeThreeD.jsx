@@ -8,7 +8,14 @@ import BabylonScene from './BabylonScene';
 
 class AttitudeThreeD extends Component {
   static propTypes = {
-    data: PropTypes.object.isRequired,
+    data: PropTypes.shape({
+      d: PropTypes.shape({
+        x: PropTypes.number,
+        y: PropTypes.number,
+        z: PropTypes.number,
+      }),
+      w: PropTypes.number,
+    }).isRequired,
   };
 
   onSceneMount = (e) => {
@@ -38,7 +45,9 @@ class AttitudeThreeD extends Component {
     */
 
     // create a basic light, aiming 0,10,0 - meaning, to the sky
+    // eslint-disable-next-line
     new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 10, 0), scene);
+    // eslint-disable-next-line
     new BABYLON.HemisphericLight('light2', new BABYLON.Vector3(0, -10, 0), scene);
 
     /*
@@ -46,7 +55,7 @@ class AttitudeThreeD extends Component {
     */
 
     // create arc rotate camera at initial arc pi/4 pi/4 at radius 20 centered around (0,0,0)
-    const camera = new BABYLON.ArcRotateCamera('ArcRotateCamera', Math.PI / 4, Math.PI / 4, 3, new BABYLON.Vector3(0, 0, 0), scene);
+    const camera = new BABYLON.ArcRotateCamera('ArcRotateCamera', Math.PI / 4, Math.PI / 4, 3, new BABYLON.Vector3(0, 0, 0), scene, true);
 
     camera.fov = 0.2;
 
@@ -172,20 +181,25 @@ class AttitudeThreeD extends Component {
     */
 
     // load in satellite obj file
-    BABYLON.SceneLoader.Load('/', cubesat.substring(1, cubesat.length), engine, (scene) => {});
+    BABYLON.SceneLoader.Load('/', cubesat.substring(1, cubesat.length), engine, () => {});
 
     assetsManager.addMeshTask('CUBESAT', '', '/', cubesat.substring(1, cubesat.length));
 
     BABYLON.SceneLoader.ImportMesh('', '/', cubesat.substring(1, cubesat.length), scene, (meshes) => {
+      // eslint-disable-next-line
       meshes[0].alwaysSelectAsActiveMesh = true;
+      // eslint-disable-next-line
       meshes[0].doNotSyncBoundingInfo = true;
 
       this.updateSatelliteAttitude = () => {
+        const { data: { d: { x, y, z }, w } } = this.props;
+
+        // eslint-disable-next-line
         meshes[0].rotationQuaternion = new BABYLON.Quaternion(
-          this.props.data.w,
-          this.props.data.d.x,
-          this.props.data.d.y,
-          this.props.data.d.z,
+          w,
+          x,
+          y,
+          z,
         );
       };
     });
@@ -198,6 +212,7 @@ class AttitudeThreeD extends Component {
     });
   };
 
+  // eslint-disable-next-line
   componentWillUpdate = () => {
     if (typeof (this.updateSatelliteAttitude) === 'function') { // check if function is defined
       this.updateSatelliteAttitude();
