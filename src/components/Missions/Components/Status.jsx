@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Badge } from 'antd';
 import moment from 'moment-timezone';
 
+import { Context } from '../../../store/neutron1';
 import socket from '../../../socket';
 
 const ws = socket('live', '/live/list');
@@ -9,17 +10,13 @@ const ws = socket('live', '/live/list');
 function Status() {
   const [list, setList] = useState([]);
 
-  ws.onmessage = ({ data }) => {
-    try {
-      const json = JSON.parse(data);
+  const { state } = useContext(Context);
 
-      setList(json.agent_list);
-
-      console.log(json);
-    } catch (error) {
-      console.log(error);
+  useEffect(() => {
+    if (state.list) {
+      setList(state.list.agent_list);
     }
-  };
+  }, [state.list]);
 
   useEffect(() => () => ws.close(1000), []);
 
@@ -43,7 +40,7 @@ function Status() {
                 </td>
                 <td className="text-gray-500">
                   {utc}
-                  {moment.unix((((utc + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss')}
+                  {/* {moment.unix((((utc + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss')} */}
                 </td>
               </tr>
             ))

@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Input, Select, Tooltip } from 'antd';
 
+import { Context } from '../../../store/neutron1';
 import BaseComponent from '../BaseComponent';
 import socket from '../../../socket';
 
@@ -33,10 +34,7 @@ const Commands = React.memo(() => {
       console.log(err);
     }
 
-    if (json && json.agent_list) {
-      // agent list
-      setAgentList(json.agent_list);
-    } else if (json && json.output && json.output.requests) {
+    if (json && json.output && json.output.requests) {
       // agent node proc
       setAgentRequests(json.output.requests);
     } else if (json && json.output) {
@@ -45,10 +43,14 @@ const Commands = React.memo(() => {
     }
   };
 
-  /** Get list of agents on mount */
-  ws.onopen = () => {
-    ws.send('list_json');
-  };
+
+  const { state } = useContext(Context);
+
+  useEffect(() => {
+    if (state.list) {
+      setAgentList(state.list.agent_list);
+    }
+  }, [state.list]);
 
   /** Close ws on unmount */
   useEffect(() => () => ws.close(), []);
@@ -93,14 +95,12 @@ const Commands = React.memo(() => {
         placeholder="Select agent node and process"
       >
         {
-          agentList.map(({ agent_node: node, agent_proc: proc }) => (
+          agentList.map(({ agent }) => (
             <Select.Option
-              key={`${node}:${proc}`}
-              value={`${node}:${proc}`}
+              key={agent}
+              value={agent}
             >
-              {node}
-              :&nbsp;
-              {proc}
+              {agent}
             </Select.Option>
           ))
         }
