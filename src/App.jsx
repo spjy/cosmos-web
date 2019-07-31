@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Navbar from './components/Global/Navbar';
 
 import Home from './pages/Home';
-import neutron1 from './pages/missions/neutron1';
+import Neutron1 from './pages/missions/Neutron1';
 
 const App = () => (
   <div>
@@ -15,7 +15,7 @@ const App = () => (
         </header>
         <Switch>
           <Route exact path="/" component={Home} />
-          <Route exact path="/missions/neutron1" component={neutron1} />
+          <Route exact path="/missions/neutron1" component={Neutron1} />
         </Switch>
       </div>
     </Router>

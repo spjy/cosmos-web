@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Badge } from 'antd';
-import moment from 'moment-timezone';
+// import moment from 'moment-timezone';
 
 import { Context } from '../../../store/neutron1';
 import socket from '../../../socket';
@@ -40,7 +40,11 @@ function Status() {
                 </td>
                 <td className="text-gray-500">
                   {utc}
-                  {/* {moment.unix((((utc + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss')} */}
+                  {/* {
+                    moment
+                      .unix((((utc + 2400000.5) - 2440587.5) * 86400.0))
+                      .format('YYYY-MM-DD HH:mm:ss')
+                  } */}
                 </td>
               </tr>
             ))

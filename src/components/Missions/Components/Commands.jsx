@@ -31,7 +31,7 @@ const Commands = React.memo(() => {
     try {
       json = JSON.parse(data);
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
 
     if (json && json.output && json.output.requests) {
@@ -107,6 +107,7 @@ const Commands = React.memo(() => {
       </Select>
       <div className="border border-gray-300 rounded mb-2 p-4 bg-white font-mono h-32 max-h-full resize-y overflow-y-scroll">
         {
+          // eslint-disable-next-line
           commandHistory.map((command, i) => (<div key={i}>{ command }</div>))
         }
       </div>

@@ -106,22 +106,26 @@ BaseComponent.propTypes = {
   /** Whether the component can display only live data. Hides/shows the live/past switch. */
   liveOnly: PropTypes.bool,
   /** Function is run when the live/past switch is toggled. */
-  handleLiveSwitchChange: (props, propName, componentName) => {
-    if (!props.liveOnly) {
+  handleLiveSwitchChange: ({ liveOnly }, propName, componentName) => {
+    if (!liveOnly) {
       return new Error(
         `${propName} is required when showStatus is true in ${componentName}.`,
       );
     }
+
+    return null;
   },
   /** Whether to show a circular indicator of the status of the component */
   showStatus: PropTypes.bool,
   /** The type of badge to show if showStatus is true (see the ant design badges component) */
-  status: (props, propName, componentName) => {
-    if (props.showStatus) {
+  status: ({ showStatus }, propName, componentName) => {
+    if (showStatus) {
       return new Error(
         `${propName} is required when showStatus is true in ${componentName}.`,
       );
     }
+
+    return null;
   },
   /** Callback function to launch event when form gets submitted */
   submitForm: PropTypes.func,

@@ -16,7 +16,6 @@ import model from '../../../public/cubesat.glb';
 import socket from '../../../socket';
 
 const { Panel } = Collapse;
-const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
 Cesium.Ion.defaultAccessToken = process.env.CESIUM_ION_TOKEN;
@@ -179,12 +178,16 @@ function DisplayValue({
               startOrbit = Cesium
                 .JulianDate
                 .fromDate(
-                  moment.unix((((json[0].utc + 2400000.5) - 2440587.5) * 86400.0)).toDate(),
+                  moment
+                    .unix((((json[0].utc + 2400000.5) - 2440587.5) * 86400.0))
+                    .toDate(),
                 );
               stopOrbit = Cesium
                 .JulianDate
                 .fromDate(
-                  moment.unix((((json[json.length - 1].utc + 2400000.5) - 2440587.5) * 86400.0)).toDate(),
+                  moment
+                    .unix((((json[json.length - 1].utc + 2400000.5) - 2440587.5) * 86400.0))
+                    .toDate(),
                 );
               startOrbitPosition = json[0].node_loc_pos_eci.pos;
             }
@@ -195,7 +198,13 @@ function DisplayValue({
               const p = orbit.node_loc_pos_eci.pos;
 
               if (orbit.utc && orbit.node_loc_pos_eci) {
-                const date = Cesium.JulianDate.fromDate(moment.unix((((orbit.utc + 2400000.5) - 2440587.5) * 86400.0)).toDate());
+                const date = Cesium
+                  .JulianDate
+                  .fromDate(
+                    moment
+                      .unix((((orbit.utc + 2400000.5) - 2440587.5) * 86400.0))
+                      .toDate(),
+                  );
                 const pos = Cesium.Cartesian3.fromArray(p);
 
                 sampledPosition.addSample(date, pos);
@@ -244,8 +253,22 @@ function DisplayValue({
             <Input
               placeholder="Name"
               id="nameState"
-              onFocus={({ target: { id: item } }) => setForm({ ...form, [item]: { ...form[item], touched: true, changed: false } })}
-              onChange={({ target: { id: item, value } }) => setForm({ ...form, [item]: { ...form[item], value, changed: false } })}
+              onFocus={({ target: { id: item } }) => setForm({
+                ...form,
+                [item]: {
+                  ...form[item],
+                  touched: true,
+                  changed: false,
+                },
+              })}
+              onChange={({ target: { id: item, value } }) => setForm({
+                ...form,
+                [item]: {
+                  ...form[item],
+                  value,
+                  changed: false,
+                },
+              })}
               onBlur={({ target: { id: item, value } }) => {
                 setNameState(value);
                 setForm({ ...form, [item]: { ...form[item], changed: true } });
@@ -258,117 +281,189 @@ function DisplayValue({
             bordered
           >
             {
-              orbitsState.map((orbit, i) => {
-                return (
-                  <Panel
-                    header={(
-                      <span className="text-gray-600">
-                        <strong>
-                          {orbit.nodeProcess}
-                        </strong>
-                        &nbsp;
-                        <span>
-                          {orbit.dataKey}
-                        </span>
+              orbitsState.map((orbit, i) => (
+                <Panel
+                  header={(
+                    <span className="text-gray-600">
+                      <strong>
+                        {orbit.nodeProcess}
+                      </strong>
+                      &nbsp;
+                      <span>
+                        {orbit.dataKey}
                       </span>
-                    )}
-                    key={i}
-                    extra={(
-                      <div
-                        onClick={event => event.stopPropagation()}
+                    </span>
+                  )}
+                  // eslint-disable-next-line
+                  key={i}
+                  extra={(
+                    <div
+                      onClick={event => event.stopPropagation()}
+                      onKeyDown={() => {}}
+                      role="button"
+                      tabIndex={-1}
+                    >
+                      <Switch
+                        checkedChildren="Live"
+                        unCheckedChildren="Past"
+                        defaultChecked={orbit.live}
+                        onChange={(checked) => {
+                          orbitsState[i].live = checked;
+
+                          setForm({
+                            ...form,
+                            [i]: {
+                              ...form[i], live: checked,
+                            },
+                          });
+                        }}
+                      />
+                      &nbsp;
+                      <span
+                        onClick={(event) => {
+                          event.stopPropagation();
+
+                          setOrbitsState(orbitsState.filter((o, j) => j !== i));
+                        }}
+                        onKeyPress={() => {}}
+                        role="button"
+                        tabIndex={-2}
                       >
-                        <Switch
-                          checkedChildren="Live"
-                          unCheckedChildren="Past"
-                          defaultChecked={orbit.live}
-                          onChange={(checked) => {
-                            orbitsState[i].live = checked;
-
-                            setForm({
-                              ...form,
-                              [i]: {
-                                ...form[i], live: checked,
-                              },
-                            });
-                          }}
-                        />
-                        &nbsp;
-                        <span
-                          onClick={(event) => {
-                            event.stopPropagation();
-
-                            setOrbitsState(orbitsState.filter((orbits, j) => j !== i));
-                          }}
-                        >
-                          X
-                        </span>
-                      </div>
-                    )}
+                        X
+                      </span>
+                    </div>
+                  )}
+                >
+                  <Form.Item
+                    className="w-auto"
+                    label="Historical Date Range"
+                    key="dateRange"
+                    hasFeedback={form[i] && form[i].dateRange && form[i].dateRange.touched}
+                    validateStatus={form[i] && form[i].dateRange && form[i].dateRange.changed ? 'success' : ''}
                   >
-                    <Form.Item
-                      className="w-auto"
-                      label="Historical Date Range"
-                      key="dateRange"
-                      hasFeedback={form[i] && form[i].dateRange && form[i].dateRange.touched}
-                      validateStatus={form[i] && form[i].dateRange && form[i].dateRange.changed ? 'success' : ''}
+                    <RangePicker
+                      className="mr-1"
+                      id="dateRange"
+                      showTime
+                      format="YYYY-MM-DD HH:mm:ss"
+                      disabled={form[i] && form[i].live}
+                      onChange={m => setForm({
+                        ...form,
+                        [i]: {
+                          ...form[i],
+                          dateRange: {
+                            ...form[i].dateRange,
+                            value: m,
+                          },
+                        },
+                      })}
+                    />
+                    <Button
+                      type="primary"
+                      onClick={() => setRetrieveOrbitHistory(i)}
+                      disabled={form[i] && form[i].live}
                     >
-                      <RangePicker
-                        className="mr-1"
-                        id="dateRange"
-                        showTime
-                        format="YYYY-MM-DD HH:mm:ss"
-                        disabled={form[i] && form[i].live}
-                        onChange={m => setForm({ ...form, [i]: { ...form[i], dateRange: { ...form[i].dateRange, value: m } } })}
-                      />
-                      <Button
-                        type="primary"
-                        onClick={() => setRetrieveOrbitHistory(i)}
-                        disabled={form[i] && form[i].live}
-                      >
-                        Show
-                      </Button>
-                    </Form.Item>
+                      Show
+                    </Button>
+                  </Form.Item>
 
-                    <Form.Item
-                      label="Name"
-                      key="name"
-                      hasFeedback={form[i] && form[i].name && form[i].name.touched}
-                      validateStatus={form[i] && form[i].name && form[i].name.changed ? 'success' : ''}
-                    >
-                      <Input
-                        placeholder="Name"
-                        id="name"
-                        onFocus={({ target: { id: item } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], touched: true, changed: false } } })}
-                        onChange={({ target: { id: item, value } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], value, changed: false } } })}
-                        onBlur={({ target: { id: item, value } }) => {
-                          orbitsState[i].name = value;
-                          setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: true } } });
-                        }}
-                        defaultValue={orbit.name}
-                      />
-                    </Form.Item>
+                  <Form.Item
+                    label="Name"
+                    key="name"
+                    hasFeedback={form[i] && form[i].name && form[i].name.touched}
+                    validateStatus={form[i] && form[i].name && form[i].name.changed ? 'success' : ''}
+                  >
+                    <Input
+                      placeholder="Name"
+                      id="name"
+                      onFocus={({ target: { id: item } }) => setForm({
+                        ...form,
+                        [i]: {
+                          ...form[i],
+                          [item]: {
+                            ...form[i][item],
+                            touched: true,
+                            changed: false,
+                          },
+                        },
+                      })}
+                      onChange={({ target: { id: item, value } }) => setForm({
+                        ...form,
+                        [i]: {
+                          ...form[i],
+                          [item]: {
+                            ...form[i][item],
+                            value,
+                            changed: false,
+                          },
+                        },
+                      })}
+                      onBlur={({ target: { id: item, value } }) => {
+                        orbitsState[i].name = value;
+                        setForm({
+                          ...form,
+                          [i]: {
+                            ...form[i],
+                            [item]: {
+                              ...form[i][item],
+                              changed: true,
+                            },
+                          },
+                        });
+                      }}
+                      defaultValue={orbit.name}
+                    />
+                  </Form.Item>
 
-                    <Form.Item
-                      label="Node Process"
-                      key="nodeProcess"
-                      hasFeedback={form[i] && form[i].nodeProcess && form[i].nodeProcess.touched}
-                      validateStatus={form[i] && form[i].nodeProcess && form[i].nodeProcess.changed ? 'success' : ''}
-                    >
-                      <Input
-                        placeholder="Node Process"
-                        id="nodeProcess"
-                        onFocus={({ target: { id: item } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], touched: true, changed: false } } })}
-                        onChange={({ target: { id: item, value } }) => setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], value, changed: false } } })}
-                        onBlur={({ target: { id: item, value } }) => {
-                          orbitsState[i].nodeProcess = value;
-                          setForm({ ...form, [i]: { ...form[i], [item]: { ...form[i][item], changed: true } } });
-                        }}
-                        defaultValue={orbit.nodeProcess}
-                      />
-                    </Form.Item>
-                  </Panel>
-                );
-              })
+                  <Form.Item
+                    label="Node Process"
+                    key="nodeProcess"
+                    hasFeedback={form[i] && form[i].nodeProcess && form[i].nodeProcess.touched}
+                    validateStatus={form[i] && form[i].nodeProcess && form[i].nodeProcess.changed ? 'success' : ''}
+                  >
+                    <Input
+                      placeholder="Node Process"
+                      id="nodeProcess"
+                      onFocus={({ target: { id: item } }) => setForm({
+                        ...form,
+                        [i]: {
+                          ...form[i],
+                          [item]: {
+                            ...form[i][item],
+                            touched: true,
+                            changed: false,
+                          },
+                        },
+                      })}
+                      onChange={({ target: { id: item, value } }) => setForm({
+                        ...form,
+                        [i]: {
+                          ...form[i],
+                          [item]: {
+                            ...form[i][item],
+                            value,
+                            changed: false,
+                          },
+                        },
+                      })}
+                      onBlur={({ target: { id: item, value } }) => {
+                        orbitsState[i].nodeProcess = value;
+                        setForm({
+                          ...form,
+                          [i]: {
+                            ...form[i],
+                            [item]: {
+                              ...form[i][item],
+                              changed: true,
+                            },
+                          },
+                        });
+                      }}
+                      defaultValue={orbit.nodeProcess}
+                    />
+                  </Form.Item>
+                </Panel>
+              ))
             }
             <Panel header="Add Orbit" key="3">
               <Switch
@@ -398,7 +493,16 @@ function DisplayValue({
                   showTime
                   format="YYYY-MM-DD HH:mm:ss"
                   disabled={form.newOrbit.live}
-                  onChange={m => setForm({ ...form, newOrbit: { ...form.newOrbit, dateRange: { ...form.newOrbit.dateRange, value: m } } })}
+                  onChange={m => setForm({
+                    ...form,
+                    newOrbit: {
+                      ...form.newOrbit,
+                      dateRange: {
+                        ...form.newOrbit.dateRange,
+                        value: m,
+                      },
+                    },
+                  })}
                 />
               </Form.Item>
 
@@ -411,10 +515,39 @@ function DisplayValue({
                 <Input
                   placeholder="Name"
                   id="name"
-                  onFocus={({ target: { id: item } }) => setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], touched: true, changed: false } } })}
-                  onChange={({ target: { id: item, value } }) => setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], value, changed: false } } })}
+                  onFocus={({ target: { id: item } }) => setForm({
+                    ...form,
+                    newOrbit: {
+                      ...form.newOrbit,
+                      [item]: {
+                        ...form.newOrbit[item],
+                        touched: true,
+                        changed: false,
+                      },
+                    },
+                  })}
+                  onChange={({ target: { id: item, value } }) => setForm({
+                    ...form,
+                    newOrbit: {
+                      ...form.newOrbit,
+                      [item]: {
+                        ...form.newOrbit[item],
+                        value,
+                        changed: false,
+                      },
+                    },
+                  })}
                   onBlur={({ target: { id: item } }) => {
-                    setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], changed: true } } });
+                    setForm({
+                      ...form,
+                      newOrbit: {
+                        ...form.newOrbit,
+                        [item]: {
+                          ...form.newOrbit[item],
+                          changed: true,
+                        },
+                      },
+                    });
                   }}
                   value={form.newOrbit.name ? form.newOrbit.name.value : ''}
                 />
@@ -430,10 +563,39 @@ function DisplayValue({
                 <Input
                   placeholder="Node Process"
                   id="nodeProcess"
-                  onFocus={({ target: { id: item } }) => setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], touched: true, changed: false } } })}
-                  onChange={({ target: { id: item, value } }) => setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], value, changed: false } } })}
+                  onFocus={({ target: { id: item } }) => setForm({
+                    ...form,
+                    newOrbit: {
+                      ...form.newOrbit,
+                      [item]: {
+                        ...form.newOrbit[item],
+                        touched: true,
+                        changed: false,
+                      },
+                    },
+                  })}
+                  onChange={({ target: { id: item, value } }) => setForm({
+                    ...form,
+                    newOrbit: {
+                      ...form.newOrbit,
+                      [item]: {
+                        ...form.newOrbit[item],
+                        value,
+                        changed: false,
+                      },
+                    },
+                  })}
                   onBlur={({ target: { id: item } }) => {
-                    setForm({ ...form, newOrbit: { ...form.newOrbit, [item]: { ...form.newOrbit[item], changed: true } } });
+                    setForm({
+                      ...form,
+                      newOrbit: {
+                        ...form.newOrbit,
+                        [item]: {
+                          ...form.newOrbit[item],
+                          changed: true,
+                        },
+                      },
+                    });
                   }}
                   value={form.newOrbit.nodeProcess ? form.newOrbit.nodeProcess.value : ''}
                 />
@@ -514,6 +676,14 @@ function DisplayValue({
                 <Entity
                   key={orbit.name}
                   position={orbit.path}
+                  orientation={Cesium.VelocityOrientationProperty(
+                    Cesium.Quaternion(
+                      orbit.orientation.w,
+                      orbit.orientation.d.x,
+                      orbit.orientation.d.y,
+                      orbit.orientation.d.z,
+                    ),
+                  )}
                 >
                   <Model
                     modelMatrix={getPos(orbit.position[0], orbit.position[1], orbit.position[2])}
@@ -608,12 +778,14 @@ DisplayValue.propTypes = {
   /** Whether to show a circular indicator of the status of the component */
   showStatus: PropTypes.bool,
   /** The type of badge to show if showStatus is true (see the ant design badges component) */
-  status: (props, propName, componentName) => {
-    if (props.showStatus) {
+  status: ({ showStatus }, propName, componentName) => {
+    if (showStatus) {
       return new Error(
         `${propName} is required when showStatus is true in ${componentName}.`,
       );
     }
+
+    return null;
   },
 };
 

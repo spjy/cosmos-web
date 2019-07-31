@@ -30,7 +30,7 @@ function Clock({
     return () => {
       clearTimeout(clock);
     };
-  }, [time, utcTime]);
+  }, [time, utcTime, timezoneState]);
 
   return (
     <BaseComponent

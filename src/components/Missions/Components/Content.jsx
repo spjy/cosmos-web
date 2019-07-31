@@ -45,12 +45,14 @@ Content.propTypes = {
   /** Whether to show a circular indicator of the status of the component */
   showStatus: PropTypes.bool,
   /** The type of badge to show if showStatus is true (see the ant design badges component) */
-  status: (props, propName, componentName) => {
-    if (props.showStatus) {
+  status: ({ showStatus }, propName, componentName) => {
+    if (showStatus) {
       return new Error(
         `${propName} is required when showStatus is true in ${componentName}.`,
       );
     }
+
+    return null;
   },
   /** Children node */
   children: PropTypes.node,
