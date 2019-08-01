@@ -73,28 +73,30 @@ function DisplayValue({
       <AttitudeThreeD
         data={attitudesState[0].quaternions}
       />
-      <table className="mt-4 w-full overflow-x-scroll">
-        <tbody>
-          <tr className="bg-gray-200 border-b border-gray-400">
-            <td className="p-2 pr-8">Name</td>
-            <td className="p-2 pr-8">x</td>
-            <td className="p-2 pr-8">y</td>
-            <td className="p-2 pr-8">z</td>
-            <td className="p-2 pr-8">w</td>
-          </tr>
-          {
-          attitudesState.map(attitude => (
-            <tr className="text-gray-700 border-b border-gray-400" key={attitude.name}>
-              <td className="p-2 pr-8">{attitude.name}</td>
-              <td className="p-2 pr-8">{attitude.quaternions.d && attitude.quaternions.d.x ? attitude.quaternions.d.x : '-'}</td>
-              <td className="p-2 pr-8">{attitude.quaternions.d && attitude.quaternions.d.y ? attitude.quaternions.d.y : '-'}</td>
-              <td className="p-2 pr-8">{attitude.quaternions.d && attitude.quaternions.d.z ? attitude.quaternions.d.z : '-'}</td>
-              <td className="p-2 pr-8">{attitude.quaternions.d && attitude.quaternions.w ? attitude.quaternions.w : '-'}</td>
+      <div className="overflow-x-scroll">
+        <table className="mt-4 w-full overflow-x-scroll">
+          <tbody>
+            <tr className="bg-gray-200 border-b border-gray-400">
+              <td className="p-2 pr-8">Name</td>
+              <td className="p-2 pr-8">x</td>
+              <td className="p-2 pr-8">y</td>
+              <td className="p-2 pr-8">z</td>
+              <td className="p-2 pr-8">w</td>
             </tr>
-          ))
-        }
-        </tbody>
-      </table>
+            {
+            attitudesState.map(attitude => (
+              <tr className="text-gray-700 border-b border-gray-400" key={attitude.name}>
+                <td className="p-2 pr-8">{attitude.name}</td>
+                <td className="p-2 pr-8">{attitude.quaternions.d && attitude.quaternions.d.x ? attitude.quaternions.d.x : '-'}</td>
+                <td className="p-2 pr-8">{attitude.quaternions.d && attitude.quaternions.d.y ? attitude.quaternions.d.y : '-'}</td>
+                <td className="p-2 pr-8">{attitude.quaternions.d && attitude.quaternions.d.z ? attitude.quaternions.d.z : '-'}</td>
+                <td className="p-2 pr-8">{attitude.quaternions.d && attitude.quaternions.w ? attitude.quaternions.w : '-'}</td>
+              </tr>
+            ))
+          }
+          </tbody>
+        </table>
+      </div>
     </BaseComponent>
   );
 }

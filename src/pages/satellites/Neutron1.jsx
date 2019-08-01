@@ -55,7 +55,7 @@ function Neutron1() {
         x: 0,
         y: 1,
         w: 12,
-        h: 9,
+        h: 10,
       },
       {
         i: 'e',
@@ -69,7 +69,7 @@ function Neutron1() {
         x: 0,
         y: 3,
         w: 12,
-        h: 18,
+        h: 20,
       },
       {
         i: 'g',
@@ -97,7 +97,7 @@ function Neutron1() {
         x: 6,
         y: 2,
         w: 6,
-        h: 34,
+        h: 20,
       },
     ],
   });
@@ -154,7 +154,7 @@ function Neutron1() {
                 [
                   {
                     name: 'CPU Load',
-                    nodeProcess: 'hsflpc23:cpu',
+                    nodeProcess: 'beagle1:cpu',
                     dataKey: 'device_cpu_load_000',
                     unit: '%',
                     processDataKey: x => x.toFixed(2),

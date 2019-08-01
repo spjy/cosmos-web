@@ -15,6 +15,13 @@ class Navbar extends Component {
   //   });
   // }
 
+  /**
+   * Ground Stations -> MASDIR
+   * Move Missions nuetron1 to satellite
+   * have modules
+   * masdir gs 
+   */
+
   render() {
     const { current } = this.props;
 
@@ -33,32 +40,20 @@ class Navbar extends Component {
         <Menu.SubMenu
           title={(
             <span>
-              <Icon type="rocket" />
-              Satellite
+              <Icon type="box-plot" />
+              Modules
             </span>
           )}
         >
-          <Menu.ItemGroup
-            title="Applications"
-          >
+          <Menu.ItemGroup>
             <Menu.Item
-              key="orbit"
+              key="Globe"
             >
               <Link
-                to="/orbit"
+                to="/satellite/globe"
               >
-                <Icon type="sync" />
-                Orbit
-              </Link>
-            </Menu.Item>
-            <Menu.Item
-              key="attitude"
-            >
-              <Link
-                to="/attitude"
-              >
-                <Icon type="swap-right" />
-                Attitude
+                <Icon type="picture" />
+                Globe
               </Link>
             </Menu.Item>
           </Menu.ItemGroup>
@@ -67,17 +62,40 @@ class Navbar extends Component {
           title={(
             <span>
               <Icon type="rocket" />
-              &nbsp;Missions
+              Satellites
             </span>
           )}
         >
           <Menu.ItemGroup
             title="Applications"
           >
-            <Menu.Item key="neutron1">
-              <Link to="/missions/neutron1">
+            <Menu.Item
+              key="neutron1"
+            >
+              <Link
+                to="/satellite/neutron1"
+              >
                 <Icon type="heat-map" />
-                &nbsp;neutron1
+                neutron1
+              </Link>
+            </Menu.Item>
+          </Menu.ItemGroup>
+        </Menu.SubMenu>
+        <Menu.SubMenu
+          title={(
+            <span>
+              <Icon type="wifi" />
+              Ground Stations
+            </span>
+          )}
+        >
+          <Menu.ItemGroup
+            title="Applications"
+          >
+            <Menu.Item key="MASDIR">
+              <Link to="/gs/masdir">
+                <Icon type="cloud" />
+                MASDIR
               </Link>
             </Menu.Item>
           </Menu.ItemGroup>
