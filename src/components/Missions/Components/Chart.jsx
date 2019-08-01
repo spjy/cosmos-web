@@ -304,9 +304,11 @@ function Chart({
 
                   // Convert currently existing values
                   plotsState.forEach((plot, i) => {
-                    if (plot[i].x.length > 0) {
+                    if (plotsState[i].x.length > 0) {
                       // eslint-disable-next-line
-                      plot[i].x = plot[i].x.map(x => processXDataKeyState(x));
+                      plotsState[i].x = plot[i]
+                        .x
+                        .map(x => processXDataKeyState(x));
 
                       layout.datarevision += 1;
                       setDataRevision(dataRevision + 1);

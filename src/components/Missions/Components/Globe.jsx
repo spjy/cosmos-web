@@ -724,34 +724,36 @@ function DisplayValue({
           })
         }
       </Viewer>
-      <table className="mt-4 w-full">
-        <tbody>
-          <tr className="bg-gray-200 border-b border-gray-400">
-            <td className="p-2 pr-8">Name</td>
-            <td className="p-2 pr-8">Latitude</td>
-            <td className="p-2 pr-8">Longitude</td>
-            <td className="p-2 pr-8">Altitude</td>
-            <td className="p-2 pr-8">x</td>
-            <td className="p-2 pr-8">y</td>
-            <td className="p-2 pr-8">z</td>
-            <td className="p-2 pr-8">w</td>
-          </tr>
-          {
-          orbitsState.map(orbit => (
-            <tr className="text-gray-700 border-b border-gray-400" key={orbit.name}>
-              <td className="p-2 pr-8">{orbit.name}</td>
-              <td className="p-2 pr-8">{orbit.position[0]}</td>
-              <td className="p-2 pr-8">{orbit.position[1]}</td>
-              <td className="p-2 pr-8">{orbit.position[2]}</td>
-              <td className="p-2 pr-8">{orbit.orientation.d.x}</td>
-              <td className="p-2 pr-8">{orbit.orientation.d.y}</td>
-              <td className="p-2 pr-8">{orbit.orientation.d.z}</td>
-              <td className="p-2 pr-8">{orbit.orientation.w}</td>
+      <div className="overflow-x-scroll">
+        <table className="mt-4">
+          <tbody className="w-10">
+            <tr className="bg-gray-200 border-b border-gray-400">
+              <td className="p-2 pr-8">Name</td>
+              <td className="p-2 pr-8">Latitude</td>
+              <td className="p-2 pr-8">Longitude</td>
+              <td className="p-2 pr-8">Altitude</td>
+              <td className="p-2 pr-8">x</td>
+              <td className="p-2 pr-8">y</td>
+              <td className="p-2 pr-8">z</td>
+              <td className="p-2 pr-8">w</td>
             </tr>
-          ))
-        }
-        </tbody>
-      </table>
+            {
+            orbitsState.map(orbit => (
+              <tr className="text-gray-700 border-b border-gray-400" key={orbit.name}>
+                <td className="p-2 pr-8">{orbit.name}</td>
+                <td className="p-2 pr-8">{orbit.position[0]}</td>
+                <td className="p-2 pr-8">{orbit.position[1]}</td>
+                <td className="p-2 pr-8">{orbit.position[2]}</td>
+                <td className="p-2 pr-8">{orbit.orientation.d.x}</td>
+                <td className="p-2 pr-8">{orbit.orientation.d.y}</td>
+                <td className="p-2 pr-8">{orbit.orientation.d.z}</td>
+                <td className="p-2 pr-8">{orbit.orientation.w}</td>
+              </tr>
+            ))
+          }
+          </tbody>
+        </table>
+      </div>
     </BaseComponent>
   );
 }
