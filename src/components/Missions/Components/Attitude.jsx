@@ -74,7 +74,7 @@ function DisplayValue({
         data={attitudesState[0].quaternions}
       />
       <div className="overflow-x-scroll">
-        <table className="mt-4 w-full overflow-x-scroll">
+        <table className="mt-4 w-full">
           <tbody>
             <tr className="bg-gray-200 border-b border-gray-400">
               <td className="p-2 pr-8">Name</td>

@@ -725,7 +725,7 @@ function DisplayValue({
         }
       </Viewer>
       <div className="overflow-x-scroll">
-        <table className="mt-4">
+        <table className="mt-4 w-full">
           <tbody className="w-10">
             <tr className="bg-gray-200 border-b border-gray-400">
               <td className="p-2 pr-8">Name</td>
