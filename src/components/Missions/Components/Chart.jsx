@@ -1575,6 +1575,7 @@ Chart.propTypes = {
       YDataKey: PropTypes.string,
       /** Whether the chart displays live values */
       live: PropTypes.bool,
+      processYDataKey: PropTypes.func,
     }),
   ),
   /** X-axis key to display from the data JSON object above */
