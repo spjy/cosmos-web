@@ -62,14 +62,14 @@ function Neutron1() {
         x: 0,
         y: 2,
         w: 6,
-        h: 20,
+        h: 18,
       },
       {
         i: 'f',
         x: 0,
         y: 3,
         w: 12,
-        h: 20,
+        h: 18,
       },
       {
         i: 'g',
@@ -149,7 +149,7 @@ function Neutron1() {
           </div>
           <div key="b" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <DisplayValue
-              name="HSFLPC23 CPU Load"
+              name="beagle1 CPU"
               displayValues={
                 [
                   {
@@ -161,14 +161,14 @@ function Neutron1() {
                   },
                   {
                     name: 'GiB',
-                    nodeProcess: 'hsflpc23:cpu',
+                    nodeProcess: 'beagle1:cpu',
                     dataKey: 'device_cpu_gib_000',
                     unit: 'GiB',
                     processDataKey: x => x.toFixed(2),
                   },
                   {
                     name: 'Max GiB',
-                    nodeProcess: 'hsflpc23:cpu',
+                    nodeProcess: 'beagle1:cpu',
                     dataKey: 'device_cpu_maxgib_000',
                     unit: 'GiB',
                     processDataKey: x => x.toFixed(2),
@@ -223,7 +223,7 @@ function Neutron1() {
                 x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss')
               }
               processYDataKey={
-                y => y
+                y => y - 273.15
               }
               plots={
                 [

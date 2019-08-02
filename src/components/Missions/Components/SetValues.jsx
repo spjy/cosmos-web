@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input } from 'antd';
+import { Form, Input, Button } from 'antd';
 
 import BaseComponent from '../BaseComponent';
 
@@ -67,7 +67,46 @@ function SetValues({
             }}
             defaultValue={name}
           />
+          <Button className="my-2">Submit</Button>
+        </Form.Item>
 
+        <Form.Item
+          label="Doppler Shift"
+          key="nameState"
+          hasFeedback={form.nameState && form.nameState.touched}
+          validateStatus={form.nameState && form.nameState.changed ? 'success' : ''}
+        >
+          <Input
+            placeholder="Doppler Shift"
+            id="nameState"
+            onFocus={({ target: { id: item } }) => setForm({
+              ...form,
+              [item]: {
+                ...form[item],
+                touched: true,
+                changed: false,
+              },
+            })}
+            onChange={({ target: { id: item, value } }) => setForm({
+              ...form,
+              [item]: {
+                ...form[item],
+                value,
+                changed: false,
+              },
+            })}
+            onBlur={({ target: { id: item, value } }) => {
+              setForm({
+                ...form,
+                [item]: {
+                  ...form[item],
+                  changed: true,
+                },
+              });
+            }}
+            defaultValue={name}
+          />
+          <Button className="my-2">Submit</Button>
         </Form.Item>
       </Form>
     </BaseComponent>
