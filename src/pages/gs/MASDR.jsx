@@ -63,7 +63,7 @@ function Neutron1() {
         x: 0,
         y: 2,
         w: 12,
-        h: 20,
+        h: 38,
       },
       {
         i: 'f',

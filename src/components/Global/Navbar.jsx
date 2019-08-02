@@ -95,7 +95,7 @@ class Navbar extends Component {
             <Menu.Item key="MASDIR">
               <Link to="/gs/masdir">
                 <Icon type="cloud" />
-                MASDIR
+                MASDR
               </Link>
             </Menu.Item>
           </Menu.ItemGroup>
