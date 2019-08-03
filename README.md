@@ -2,7 +2,7 @@
 
 COSMOS Web - a web application to visualize telemetry data from a satellite. UI Repository.
 
-See https://github.com/spjy/cosmos-web-server for the server component of COSMOS Web.
+See https://github.com/spjy/cosmos-mongodb for the server component of COSMOS Web.
 
 ## Requirements
 
@@ -26,12 +26,14 @@ cp .env.defaults .env
 ```
 
 ```
-WEB_API=localhost # For the old Node app
-WEBSOCKET_IP=localhost # New WS implementation
+WEB_API=localhost # For the old Node app (deprecated)
+WEBSOCKET_IP=localhost # Agent Mongo IP
 QUERY_WEBSOCKET_PORT=8080 # Port of the WS to access the query endpoints
 LIVE_WEBSOCKET_PORT=8081 # Port of the WS to access the live endpoints
-
+CESIUM_ION_TOKEN= # Token for the globe simulation
 ```
+
+If you need to run Agent Mongo, see this repository: https://github.com/spjy/cosmos-mongodb
 
 ## Running
 
