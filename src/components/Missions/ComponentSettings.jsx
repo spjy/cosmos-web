@@ -14,7 +14,7 @@ function ComponentSettings({
   return (
     <Modal
       bodyStyle={{ padding: '1em' }}
-      width={600}
+      width={750}
       visible={visible}
       title="Component Settings"
       /**
@@ -27,6 +27,7 @@ function ComponentSettings({
         submitForm();
         closeModal();
       }}
+      footer={null}
       /**
        * On pressing the "Cancel" button at the footer of the modal, close the modal.
        */

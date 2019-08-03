@@ -23,7 +23,9 @@ function Chart({
   processXDataKey,
   children,
 }) {
-  let processXDataKeyState = processXDataKey;
+  const [processXDataKeyState, setProcessXDataKeyState] = useState({
+    func: processXDataKey,
+  });
   /** The state that manages the component's title */
   const [nameState, setNameState] = useState(name);
   /** The state that manages the component's X-axis data key displayed */
@@ -83,7 +85,8 @@ function Chart({
           && p.live
       ) {
         // If so, push to arrays and update data
-        plotsState[i].x.push(processXDataKeyState(state[p.nodeProcess][XDataKeyState]));
+
+        plotsState[i].x.push(processXDataKeyState.func(state[p.nodeProcess][XDataKeyState]));
         plotsState[i]
           .y
           .push(
@@ -129,7 +132,7 @@ function Chart({
 
             // Insert past data into chart
             json.forEach((d) => {
-              plotsState[retrievePlotHistory].x.push(processXDataKey(d[XDataKeyState]));
+              plotsState[retrievePlotHistory].x.push(processXDataKeyState.func(d[XDataKeyState]));
               plotsState[retrievePlotHistory]
                 .y
                 .push(
@@ -300,15 +303,18 @@ function Chart({
               onBlur={({ target: { id: item, value } }) => {
                 if (value.includes('return')) {
                   // eslint-disable-next-line
-                  processXDataKeyState = new Function('x', value);
-
+                  setProcessXDataKeyState({
+                    // eslint-disable-next-line
+                    func: new Function('x', value),
+                  });
                   // Convert currently existing values
                   plotsState.forEach((plot, i) => {
+                    console.log(plot);
                     if (plotsState[i].x.length > 0) {
                       // eslint-disable-next-line
-                      plotsState[i].x = plot[i]
+                      plotsState[i].x = plotsState[i]
                         .x
-                        .map(x => processXDataKeyState(x));
+                        .map(x => processXDataKeyState.func(x));
 
                       layout.datarevision += 1;
                       setDataRevision(dataRevision + 1);
