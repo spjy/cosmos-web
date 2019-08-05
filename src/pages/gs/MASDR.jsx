@@ -139,7 +139,7 @@ function Neutron1() {
           draggableCancel=".preventDragHandle"
           rowHeight={20}
         >
-          <div key="a" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
+          <div key="a" className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <Content
               name="Agent Statuses"
             >
@@ -148,7 +148,7 @@ function Neutron1() {
               />
             </Content>
           </div>
-          <div key="b" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
+          <div key="b" className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <DisplayValue
               name="Ground Station Values"
               displayValues={
@@ -165,15 +165,15 @@ function Neutron1() {
               subheader="06231999-1630Z"
             />
           </div>
-          <div key="c" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
+          <div key="c" className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <Clock />
           </div>
-          <div key="d" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
+          <div key="d" className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <SetValues
               name="Set Parameters"
             />
           </div>
-          <div key="e" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
+          <div key="e" className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <Globe
               name="Orbit"
               nodeProc="beagle1:adcs"
