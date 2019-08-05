@@ -62,7 +62,7 @@ function Neutron1() {
         x: 0,
         y: 2,
         w: 6,
-        h: 18,
+        h: 22,
       },
       {
         i: 'f',
@@ -97,7 +97,7 @@ function Neutron1() {
         x: 6,
         y: 2,
         w: 6,
-        h: 20,
+        h: 22,
       },
     ],
   });
@@ -138,7 +138,7 @@ function Neutron1() {
           draggableCancel=".preventDragHandle"
           rowHeight={20}
         >
-          <div key="a" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
+          <div key="a" className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <Content
               name="Agent Statuses"
             >
@@ -147,7 +147,7 @@ function Neutron1() {
               />
             </Content>
           </div>
-          <div key="b" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
+          <div key="b" className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <DisplayValue
               name="beagle1 CPU"
               displayValues={
@@ -185,13 +185,13 @@ function Neutron1() {
               </div>
             </DisplayValue>
           </div>
-          <div key="c" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
+          <div key="c" className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <Clock />
           </div>
-          <div key="d" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
+          <div key="d" className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <Commands />
           </div>
-          <div key="e" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
+          <div key="e" className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <Globe
               name="Orbit"
               nodeProc="beagle1:adcs"
@@ -214,7 +214,7 @@ function Neutron1() {
               ]}
             />
           </div>
-          <div key="f" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
+          <div key="f" className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <Chart
               name="Temperature"
               nodeProc="beagle1:eps"
@@ -270,7 +270,7 @@ function Neutron1() {
               }
             />
           </div>
-          <div key="g" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
+          <div key="g" className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <Chart
               name="Voltage"
               nodeProc="beagle1:eps"
@@ -323,7 +323,7 @@ function Neutron1() {
               }
             />
           </div>
-          <div key="h" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
+          <div key="h" className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <Chart
               name="Amperage"
               nodeProc="beagle1:eps"
@@ -376,7 +376,7 @@ function Neutron1() {
               }
             />
           </div>
-          <div key="i" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
+          <div key="i" className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <Chart
               name="Battery Health"
               nodeProc="beagle1:eps"
@@ -418,7 +418,7 @@ function Neutron1() {
               }
             />
           </div>
-          <div key="j" className="p-3 shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
+          <div key="j" className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <Attitude
               name="Attitude"
               attitudes={[

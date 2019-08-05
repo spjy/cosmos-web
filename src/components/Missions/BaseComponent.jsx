@@ -44,10 +44,10 @@ function BaseComponent({
         {formItems}
       </ComponentSettings>
 
-      <div className="flex justify-between pr-1 dragHandle cursor-move">
+      <div className="flex justify-between p-3 dragHandle cursor-move" style={{ backgroundColor: '#f1f1f1' }}>
         <div className="flex flex-row flex-shrink-0">
           {showStatus ? (
-            <div className="m-1">
+            <div style={{ marginTop: '0.2em' }}>
               <Badge status={status} />
             </div>
           ) : null}
@@ -89,9 +89,7 @@ function BaseComponent({
         </div>
       </div>
 
-      <Divider />
-
-      <div className="p-2 overflow-y-scroll h-full">
+      <div className="p-4 overflow-y-scroll h-full">
         {children}
       </div>
     </div>
