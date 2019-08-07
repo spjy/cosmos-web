@@ -23,6 +23,10 @@ function Chart({
   processXDataKey,
   children,
 }) {
+  /** Accessing the neutron1 node process context and drilling down */
+  const { state } = useContext(Context);
+
+  /** Store the function to process the X Data Key */
   const [processXDataKeyState, setProcessXDataKeyState] = useState({
     func: processXDataKey,
   });
@@ -30,13 +34,13 @@ function Chart({
   const [nameState, setNameState] = useState(name);
   /** The state that manages the component's X-axis data key displayed */
   const [XDataKeyState, setXDataKeyState] = useState(XDataKey);
-
+  /** Form values */
   const [form, setForm] = useState({
     newValue: {
       live: true,
     },
   });
-
+  /** Store the form error message. If '', there is no error */
   const [formError, setFormError] = useState('');
   /** Counter determining when the plot should be updated */
   const [dataRevision, setDataRevision] = useState(0);
@@ -59,9 +63,6 @@ function Chart({
   });
   /** Store to detect whether the user wants to get historical data to plot */
   const [retrievePlotHistory, setRetrievePlotHistory] = useState(null);
-  /** Accessing the neutron1 node process context and drilling down */
-  const { state } = useContext(Context);
-
   /** Plot data storage */
   const [plotsState, setPlotsState] = useState(plots);
 
@@ -80,12 +81,11 @@ function Chart({
     plotsState.forEach((p, i) => {
       // Upon context change, see if changes affect this chart's values
       if (state[p.nodeProcess]
-          && state[p.nodeProcess][XDataKeyState]
-          && state[p.nodeProcess][p.YDataKey]
-          && p.live
+        && state[p.nodeProcess][XDataKeyState]
+        && state[p.nodeProcess][p.YDataKey]
+        && p.live
       ) {
         // If so, push to arrays and update data
-
         plotsState[i].x.push(processXDataKeyState.func(state[p.nodeProcess][XDataKeyState]));
         plotsState[i]
           .y
@@ -95,6 +95,7 @@ function Chart({
               : state[p.nodeProcess][p.YDataKey],
           );
 
+        // Trigger the chart to update
         layout.datarevision += 1;
         setDataRevision(dataRevision + 1);
       }

@@ -35,6 +35,9 @@ function DisplayValue({
   showStatus,
   status,
 }) {
+  /** Accessing the neutron1 messages from the socket */
+  const { state } = useContext(Context);
+
   /** The state that manages the component's title */
   const [nameState, setNameState] = useState(name);
   /** Storage for form values */
@@ -43,14 +46,18 @@ function DisplayValue({
       live: true,
     },
   });
-
+  /** Store the form error message. If '', there is no error */
   const [formError, setFormError] = useState('');
-
-  const { state } = useContext(Context);
-
+  /** Storage for the current orbits being displayed */
   const [orbitsState, setOrbitsState] = useState(orbits);
-
+  /** Store to retrieve orbit history by request from Mongo */
   const [retrieveOrbitHistory, setRetrieveOrbitHistory] = useState(null);
+  /** Clock start time */
+  const [start, setStart] = useState(Cesium.JulianDate.now);
+  /** Clock end time */
+  const [stop, setStop] = useState(null);
+  /** Location for camera to fly to */
+  const [cameraFlyTo, setCameraFlyTo] = useState(null);
 
   /** Initialize form slots for each orbit */
   useEffect(() => {
@@ -62,6 +69,7 @@ function DisplayValue({
     }
   }, []);
 
+  /** Retrieve live orbit data */
   useEffect(() => {
     orbitsState.forEach((orbit, i) => {
       if (state[orbit.nodeProcess]
@@ -124,9 +132,6 @@ function DisplayValue({
   //   };
   // }, [orbitsState]);
 
-  const [start, setStart] = useState(Cesium.JulianDate.now);
-  const [stop, setStop] = useState(null);
-  const [cameraFlyTo, setCameraFlyTo] = useState(null);
 
   // useEffect(() => {
   //   const timeout = setTimeout(() => {
@@ -761,7 +766,7 @@ function DisplayValue({
 DisplayValue.propTypes = {
   /** Name of the component to display at the time */
   name: PropTypes.string,
-  /** */
+  /** Default orbits to display */
   orbits: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,

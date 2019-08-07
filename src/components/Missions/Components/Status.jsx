@@ -7,17 +7,24 @@ import socket from '../../../socket';
 
 const ws = socket('live', '/live/list');
 
+/**
+ * Retrieves the agent list and displays it in a table.
+ */
 function Status() {
+  /** Get agent list state from the Context */
+  const { state } = useContext(Context);
+  /** Component's agent list storage */
   const [list, setList] = useState([]);
 
-  const { state } = useContext(Context);
 
+  /** Upon the state.list updating, update the store's list */
   useEffect(() => {
     if (state.list) {
       setList(state.list.agent_list);
     }
   }, [state.list]);
 
+  /** Close the WS on unmount */
   useEffect(() => () => ws.close(1000), []);
 
   return (
@@ -25,7 +32,7 @@ function Status() {
       {
         list.length === 0 ? 'No agents.' : null
       }
-      <table className="">
+      <table>
         <tbody>
           {
             list.map(({

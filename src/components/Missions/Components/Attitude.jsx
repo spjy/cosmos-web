@@ -18,6 +18,9 @@ function DisplayValue({
   showStatus,
   status,
 }) {
+  /** Accessing the neutron1 messages from the socket */
+  const { state } = useContext(Context);
+
   /** The state that manages the component's title */
   const [nameState] = useState(name);
   /** Storage for form values */
@@ -26,9 +29,7 @@ function DisplayValue({
       live: true,
     },
   });
-
-  const { state } = useContext(Context);
-
+  /** Currently displayed attitudes */
   const [attitudesState, setAttitudesState] = useState(attitudes);
 
   /** Initialize form slots for each orbit */
@@ -41,12 +42,13 @@ function DisplayValue({
     }
   }, []);
 
+  /** Update the live attitude display */
   useEffect(() => {
     attitudesState.forEach((attitude, i) => {
       if (state[attitude.nodeProcess]
-          && state[attitude.nodeProcess].node_loc_att_icrf
-          && state[attitude.nodeProcess].node_loc_att_icrf.pos
-          && attitude.live
+        && state[attitude.nodeProcess].node_loc_att_icrf
+        && state[attitude.nodeProcess].node_loc_att_icrf.pos
+        && attitude.live
       ) {
         const tempAttitude = [...attitudesState];
 
@@ -104,7 +106,7 @@ function DisplayValue({
 DisplayValue.propTypes = {
   /** Name of the component to display at the time */
   name: PropTypes.string,
-  /** */
+  /** Currently displayed attitudes */
   attitudes: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,

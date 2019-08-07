@@ -5,7 +5,6 @@ import {
 import PropTypes from 'prop-types';
 
 import ComponentSettings from './ComponentSettings';
-import Divider from './Components/Divider';
 
 /**
  * Contains a card with a header, content and footer.

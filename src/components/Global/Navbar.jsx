@@ -15,13 +15,6 @@ class Navbar extends Component {
   //   });
   // }
 
-  /**
-   * Ground Stations -> MASDIR
-   * Move Missions nuetron1 to satellite
-   * have modules
-   * masdir gs 
-   */
-
   render() {
     const { current } = this.props;
 

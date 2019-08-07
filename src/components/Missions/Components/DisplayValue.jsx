@@ -12,26 +12,27 @@ const { Panel } = Collapse;
 const { TextArea } = Input;
 
 /**
- * Displays a specified value.
+ * Displays a specified live value from an agent.
  */
 function DisplayValue({
   name,
   displayValues,
 }) {
+  /** Accessing the neutron1 messages from the socket */
+  const { state } = useContext(Context);
+
   /** The state that manages the component's title */
   const [nameState, setNameState] = useState(name);
   /** Storage for form values */
   const [form, setForm] = useState({
     newChart: {},
   });
-
+  /** Store the form error message. If '', there is no error */
   const [formError, setFormError] = useState('');
-
+  /** Store the display values here */
   const [displayValuesState, setDisplayValuesState] = useState(displayValues);
-  /** Accessing the neutron1 node process context
-   * and drilling down to the specified node process to look at */
-  const { state } = useContext(Context);
 
+  /** Initialize form components for each display value */
   useEffect(() => {
     // Make an object for each plot's form
     for (let i = 0; i < displayValuesState.length; i += 1) {
@@ -41,12 +42,16 @@ function DisplayValue({
 
   /** Handle new data incoming from the Context */
   useEffect(() => {
+    // Loop through the currently displayed values
     displayValuesState.forEach((v, i) => {
-      if (state[v.nodeProcess] && state[v.nodeProcess][v.dataKey]) {
+      // Check if the state change involves any of the displayed values
+      // by checking the node process and the key it is watching
+      if (state[v.nodeProcess]
+        && state[v.nodeProcess][v.dataKey]
+        && state[v.nodeProcess].utc
+      ) {
+        // If it does, change the value
         displayValuesState[i].value = state[v.nodeProcess][v.dataKey];
-      }
-
-      if (state[v.nodeProcess] && state[v.nodeProcess][v.dataKey] && state[v.nodeProcess].utc) {
         displayValuesState[i].utc = moment.unix((((state[v.nodeProcess].utc + 2400000.5) - 2440587.5) * 86400.0)).format('YYYYMMDDTHH:mm:ss');
       }
     });
@@ -95,6 +100,7 @@ function DisplayValue({
             />
           </Form.Item>
 
+          {/* Current display values */}
           <Collapse
             bordered
           >
@@ -394,6 +400,8 @@ function DisplayValue({
                 </Panel>
               ))
             }
+
+            {/* Adding a display value */}
             <Panel header="Add Value" key="3">
               <Form.Item
                 label="Name"

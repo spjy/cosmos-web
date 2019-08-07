@@ -64,7 +64,7 @@ function SetValues({
     ws.send(`agent masdr ${application} ${component} ${property} ${value}`);
   };
 
-  ws.onmessage = ({ data }) => {
+  ws.onmessage = () => {
 
   };
 
@@ -95,7 +95,10 @@ function SetValues({
               <div className="flex-initial flex-grow p-1">
                 <Form.Item
                   key={propertyName}
-                  hasFeedback={form[application] && form[application][propertyName] && form[application][propertyName].touched}
+                  hasFeedback={form[application]
+                    && form[application][propertyName]
+                    && form[application][propertyName].touched
+                  }
                   validateStatus={form[application] && form[application][propertyName] && form[application][propertyName].changed ? 'success' : ''}
                   className="-mb-1"
                   help={comment}
@@ -141,7 +144,12 @@ function SetValues({
                       && form[application][propertyName]
                       && validate(form[application][propertyName].value)
                     ) {
-                      setParameter(application, component, propertyName, processValue(form[application][propertyName].value));
+                      setParameter(
+                        application,
+                        component,
+                        propertyName,
+                        processValue(form[application][propertyName].value),
+                      );
                       setForm({
                         ...form,
                         [application]: {
@@ -178,7 +186,11 @@ function SetValues({
                 </Button>
               </div>
               <div className="text-red-500 w-full ml-1">
-                {form[application] && form[application][propertyName] && form[application][propertyName].error ? form[application][propertyName].error : null}
+                {form[application]
+                  && form[application][propertyName]
+                  && form[application][propertyName].error
+                  ? form[application][propertyName].error
+                  : null}
               </div>
             </div>
           ))

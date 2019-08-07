@@ -75,7 +75,7 @@ const Commands = React.memo(() => {
 
   /** Watches for changes to selectedAgent. Then sends WS message to get list of commands. */
   useEffect(() => {
-    getRequests(ws);
+    getRequests();
   }, [selectedAgent]);
 
   return (

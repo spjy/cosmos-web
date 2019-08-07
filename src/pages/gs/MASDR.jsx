@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useReducer } from 'react';
-import moment from 'moment-timezone';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
@@ -13,11 +12,8 @@ import socket from '../../socket';
 import Clock from '../../components/Missions/Components/Clock';
 import DisplayValue from '../../components/Missions/Components/DisplayValue';
 import Content from '../../components/Missions/Components/Content';
-import Commands from '../../components/Missions/Components/Commands';
 import Status from '../../components/Missions/Components/Status';
-import Chart from '../../components/Missions/Components/Chart';
 import Globe from '../../components/Missions/Components/Globe';
-import Attitude from '../../components/Missions/Components/Attitude';
 import SetValues from '../../components/Missions/Components/SetValues';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
