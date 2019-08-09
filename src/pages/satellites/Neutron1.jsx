@@ -18,6 +18,7 @@ import Status from '../../components/Missions/Components/Status';
 import Chart from '../../components/Missions/Components/Chart';
 import Globe from '../../components/Missions/Components/Globe';
 import Attitude from '../../components/Missions/Components/Attitude';
+import LayoutManager from '../../components/Missions/Components/LayoutManager';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -98,6 +99,7 @@ function Neutron1() {
         y: 2,
         w: 6,
         h: 22,
+        component: 'brek?',
       },
     ],
   });
@@ -124,13 +126,16 @@ function Neutron1() {
   return (
     <Context.Provider value={{ state, dispatch }}>
       <div className="m-3 mb-32">
+        <div className="mx-3">
+          <LayoutManager />
+        </div>
         <ResponsiveGridLayout
           className="layout"
           breakpoints={{
             lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0,
           }}
           cols={{
-            lg: 12, md: 10, sm: 6, xs: 4, xxs: 2,
+            lg: 12, md: 12, sm: 2, xs: 2, xxs: 2,
           }}
           layouts={layouts}
           margin={[12, 12]}
@@ -139,13 +144,7 @@ function Neutron1() {
           rowHeight={20}
         >
           <div key="a" className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
-            <Content
-              name="Agent Statuses"
-            >
-              <Status
-                statuses={[]}
-              />
-            </Content>
+            <Status />
           </div>
           <div key="b" className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <DisplayValue

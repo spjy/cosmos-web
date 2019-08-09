@@ -19,6 +19,7 @@
     "cesium": "1.59.0",
     "moment-timezone": "0.5.26",
     "plotly.js": "1.49.0",
+    "prismjs": "^1.17.1",
     "prop-types": "15.7.2",
     "react": "16.8.6",
     "react-dom": "16.8.6",
@@ -27,6 +28,7 @@
     "react-plotly.js": "2.3.0",
     "react-resizable": "1.8.0",
     "react-router-dom": "5.0.1",
+    "react-simple-code-editor": "^0.9.14",
     "resium": "1.5.0",
     "whatwg-fetch": "3.0.0"
   },
