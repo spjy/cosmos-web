@@ -4,6 +4,7 @@ import { Badge } from 'antd';
 
 import { Context } from '../../../store/neutron1';
 import socket from '../../../socket';
+import Content from './Content';
 
 const ws = socket('live', '/live/list');
 
@@ -28,7 +29,9 @@ function Status() {
   useEffect(() => () => ws.close(1000), []);
 
   return (
-    <div>
+    <Content
+      name="Agent List"
+    >
       {
         list.length === 0 ? 'No agents.' : null
       }
@@ -58,7 +61,7 @@ function Status() {
           }
         </tbody>
       </table>
-    </div>
+    </Content>
   );
 }
 

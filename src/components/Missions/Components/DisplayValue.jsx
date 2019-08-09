@@ -59,7 +59,6 @@ function DisplayValue({
 
   return (
     <BaseComponent
-      className=""
       name={nameState}
       liveOnly
       showStatus
