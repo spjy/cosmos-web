@@ -11,7 +11,6 @@ import socket from '../../socket';
 
 import Clock from '../../components/Missions/Components/Clock';
 import DisplayValue from '../../components/Missions/Components/DisplayValue';
-import Content from '../../components/Missions/Components/Content';
 import Status from '../../components/Missions/Components/Status';
 import Globe from '../../components/Missions/Components/Globe';
 import SetValues from '../../components/Missions/Components/SetValues';

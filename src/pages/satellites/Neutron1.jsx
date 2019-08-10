@@ -12,7 +12,6 @@ import socket from '../../socket';
 
 import Clock from '../../components/Missions/Components/Clock';
 import DisplayValue from '../../components/Missions/Components/DisplayValue';
-import Content from '../../components/Missions/Components/Content';
 import Commands from '../../components/Missions/Components/Commands';
 import Status from '../../components/Missions/Components/Status';
 import Chart from '../../components/Missions/Components/Chart';
