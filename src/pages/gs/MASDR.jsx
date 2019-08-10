@@ -15,6 +15,7 @@ import Content from '../../components/Missions/Components/Content';
 import Status from '../../components/Missions/Components/Status';
 import Globe from '../../components/Missions/Components/Globe';
 import SetValues from '../../components/Missions/Components/SetValues';
+import UploadTle from '../../components/Missions/Components/UploadTle';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -51,7 +52,7 @@ function Neutron1() {
         i: 'd',
         x: 0,
         y: 1,
-        w: 12,
+        w: 9,
         h: 9,
       },
       {
@@ -63,10 +64,10 @@ function Neutron1() {
       },
       {
         i: 'f',
-        x: 0,
-        y: 3,
-        w: 12,
-        h: 18,
+        x: 9,
+        y: 1,
+        w: 3,
+        h: 9,
       },
       {
         i: 'g',
@@ -136,13 +137,7 @@ function Neutron1() {
           rowHeight={20}
         >
           <div key="a" className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
-            <Content
-              name="Agent Statuses"
-            >
-              <Status
-                statuses={[]}
-              />
-            </Content>
+            <Status />
           </div>
           <div key="b" className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <DisplayValue
@@ -163,6 +158,9 @@ function Neutron1() {
           </div>
           <div key="c" className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <Clock />
+          </div>
+          <div key="f" className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
+            <UploadTle />
           </div>
           <div key="d" className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <SetValues
