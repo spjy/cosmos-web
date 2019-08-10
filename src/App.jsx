@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { Router } from '@reach/router';
 
 import Navbar from './components/Global/Navbar';
 
@@ -9,17 +9,18 @@ import MASDR from './pages/gs/MASDR';
 
 const App = () => (
   <div>
+    <header>
+      <Navbar current="home" />
+    </header>
+    {/* <Switch>
+      <Route exact path="/" component={Home} />
+      <Route exact path="/satellite/neutron1" component={Neutron1} />
+      <Route exact path="/gs/masdir" component={MASDR} />
+    </Switch> */}
     <Router>
-      <div>
-        <header>
-          <Navbar current="home" />
-        </header>
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route exact path="/satellite/neutron1" component={Neutron1} />
-          <Route exact path="/gs/masdir" component={MASDR} />
-        </Switch>
-      </div>
+      <Home path="/" />
+      <Neutron1 path="/satellite/neutron1" />
+      <MASDR path="/gs/masdr" />
     </Router>
   </div>
 );

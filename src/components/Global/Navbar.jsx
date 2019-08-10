@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '@reach/router';
 import PropTypes from 'prop-types';
 import { Menu, Icon } from 'antd';
 
@@ -86,7 +86,7 @@ class Navbar extends Component {
             title="Applications"
           >
             <Menu.Item key="MASDIR">
-              <Link to="/gs/masdir">
+              <Link to="/gs/masdr">
                 <Icon type="cloud" />
                 MASDR
               </Link>
