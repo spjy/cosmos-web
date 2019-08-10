@@ -1,14 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Modal, Input } from 'antd';
+import { Button, Modal, Icon, Popover } from 'antd';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import Editor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs/components/prism-core';
 
-import 'prismjs/components/prism-clike';
 import 'prismjs/components/prism-json';
-import 'prismjs/components/prism-javascript';
-import 'prismjs/components/prism-markup';
 
 import Attitude from './Attitude';
 import Clock from './Clock';
@@ -20,7 +17,6 @@ import Globe from './Globe';
 import SetValues from './SetValues';
 import Status from './Status';
 
-const { TextArea } = Input;
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const components = {
@@ -63,19 +59,21 @@ function LayoutManager() {
     try {
       const json = JSON.parse(layoutObjectForm);
 
+      console.log(json);
+
       if (!json.length) {
         throw new Error('Outer container must be an array.');
       }
 
       json.forEach((component, i) => {
         if (!component
-          || !component.i
-          || !component.x
-          || !component.y
-          || !component.w
-          || !component.h
-          || !component.component
-          || !component.component.name
+          || !('i' in component)
+          || !('x' in component)
+          || !('y' in component)
+          || !('w' in component)
+          || !('h' in component)
+          || !('component' in component)
+          || !('name' in component.component)
         ) {
           throw new Error(`Object number ${i} object must contain a key (i), width (x), height (y) and component (component.name)`);
         }
@@ -87,7 +85,6 @@ function LayoutManager() {
 
       setFormError('');
     } catch (error) {
-      console.log(error);
       setFormError(error.message);
     }
   };
@@ -100,21 +97,87 @@ function LayoutManager() {
         visible={modalOpen}
         onCancel={() => setModalOpen(false)}
         footer={null}
-        style={{ padding: '2em' }}
+        style={{ padding: '2em', top: 20 }}
       >
-        <Editor
-          className="bg-gray-300 mb-3"
-          value={layoutObjectForm}
-          onValueChange={value => setLayoutObjectForm(value)}
-          highlight={code => highlight(code, languages.js)}
-          padding={10}
-        />
-        {/* <TextArea
-          className="mb-3"
-          rows={4}
-          placeholder="Layout Array"
-          onChange={({ target: { value } }) => setLayoutObjectForm(value)}
-        /> */}
+        <pre
+          className="language-json mb-2 h-64 overflow-y-scroll resize-y cursor-text text-white"
+        >
+          <Editor
+            className="font-mono"
+            value={layoutObjectForm}
+            onValueChange={value => setLayoutObjectForm(value)}
+            highlight={code => highlight(code, languages.json)}
+            padding={10}
+          />
+        </pre>
+
+        <div className="mb-2">
+          Enter the layout array in JSON format.
+          &nbsp;
+          <Popover
+            title="Information"
+            placement="right"
+            content={(
+              <div className="text-gray-600">
+                <p>
+                  <span className="font-bold">
+                    Sizing.&nbsp;
+                  </span>
+                  Each row has a length of twelve (12) on large screens
+                  &nbsp;
+                  (&gt;= 996 px) and a length of two (2) on small screens (&lt;= 996 px).
+                </p>
+                <p>
+                  <span className="font-bold">
+                    Formatting.&nbsp;
+                  </span>
+                  You must enter an array of objects. Each object contains a unique:
+                </p>
+                <ul className="list-disc list-inside ml-3">
+                  <li>
+                    Unique key (i)
+                  </li>
+                  <li>
+                    Width (w)
+                  </li>
+                  <li>
+                    Height (h)
+                  </li>
+                  <li>
+                    Horiztonal position (w)
+                  </li>
+                  <li>
+                    Vertical position (y)
+                  </li>
+                  <li>
+                    Component name (component.name)
+                  </li>
+                  <li>
+                    Component props (component.props)
+                  </li>
+                </ul>
+                <p>
+                  <strong>Example</strong>
+                  .
+                  &nbsp;
+                  <br />
+                  <pre
+                    className="language-json"
+                    dangerouslySetInnerHTML={{
+                      __html: highlight(
+                        '[\n  {\n    "i": "a",\n    "x": 0,\n    "y": 0,\n    "w": 4,\n    "h": 7,\n    "component": {\n      "name": "Status",\n      "props": {\n        "name": "Ok"\n      }\n    }\n  }\n]',
+                        languages.json,
+                        'json',
+                      ),
+                    }}
+                  />
+                </p>
+              </div>
+            )}
+          >
+            <Icon className="text-blue-500 cursor-pointer" type="question-circle" />
+          </Popover>
+        </div>
 
         <div className="text-red-500 mb-3">
           {formError}
@@ -143,7 +206,7 @@ function LayoutManager() {
             cols={{
               lg: 12, md: 12, sm: 2, xs: 2, xxs: 2,
             }}
-            layouts={layoutObject ? layoutObject : []}
+            layouts={layoutObject ? layoutObject : {}}
             margin={[12, 12]}
             draggableHandle=".dragHandle"
             draggableCancel=".preventDragHandle"
