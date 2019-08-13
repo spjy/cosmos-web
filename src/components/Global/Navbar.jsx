@@ -1,101 +1,97 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Link } from '@reach/router';
-import PropTypes from 'prop-types';
 import { Menu, Icon } from 'antd';
 
-class Navbar extends Component {
-  static propTypes = {
-    /** Currently selected navigation bar item. */
-    current: PropTypes.string.isRequired,
-  };
+import routes from '../../routes';
 
-  // handleClick = (e) => {
-  //   this.setState({
-  //     current: e.key,
-  //   });
-  // }
+function Navbar() {
+  const [currentRoute] = useState('home');
+  return (
+    <Menu
+      mode="horizontal"
+      selectedKeys={[currentRoute]}
+    >
+      <Menu.Item key="home">
+        <Link to="/">
+          <Icon type="global" />
+          COSMOS Web
+        </Link>
+      </Menu.Item>
+      {
+        routes.map((route) => {
+          if (route.children) {
+            return (
+              <Menu.SubMenu
+                title={(
+                  <span>
+                    {
+                      route.icon ? <Icon type={route.icon} /> : null
+                    }
+                    {route.name}
+                  </span>
+                )}
+                key={route.name}
+                className={route.rightAlign ? 'float-right' : null}
+              >
+                {
+                  route.children.map(child => (
+                    <Menu.ItemGroup
+                      title="Routes"
+                      key={child.name}
+                    >
+                      <Menu.Item>
+                        <Link
+                          to={`/${route.path.split('/')[1]}${child.path}`}
+                        >
+                          {
+                            child.icon ? <Icon type={child.icon} /> : null
+                          }
+                          {child.name}
+                        </Link>
+                      </Menu.Item>
+                    </Menu.ItemGroup>
+                  ))
+                }
+              </Menu.SubMenu>
+            );
+          }
 
-  render() {
-    const { current } = this.props;
-
-    return (
-      <Menu
-        onClick={this.handleClick}
-        selectedKeys={[current]}
-        mode="horizontal"
+          return (
+            <Menu.Item
+              key={route.name}
+              className={route.rightAlign ? 'float-right' : null}
+            >
+              <Link to={route.path}>
+                <Icon type={route.icon} />
+                {route.name}
+              </Link>
+            </Menu.Item>
+          );
+        })
+      }
+      {/* <Menu.SubMenu
+        title={(
+          <span>
+            <Icon type="box-plot" />
+            Modules
+          </span>
+        )}
       >
-        <Menu.Item key="home">
-          <Link to="/">
-            <Icon type="global" />
-            COSMOS Web
-          </Link>
-        </Menu.Item>
-        <Menu.SubMenu
-          title={(
-            <span>
-              <Icon type="box-plot" />
-              Modules
-            </span>
-          )}
-        >
-          <Menu.ItemGroup>
-            <Menu.Item
-              key="Globe"
-            >
-              <Link
-                to="/satellite/globe"
-              >
-                <Icon type="picture" />
-                Globe
-              </Link>
-            </Menu.Item>
-          </Menu.ItemGroup>
-        </Menu.SubMenu>
-        <Menu.SubMenu
-          title={(
-            <span>
-              <Icon type="rocket" />
-              Satellites
-            </span>
-          )}
-        >
-          <Menu.ItemGroup
-            title="Applications"
+        <Menu.ItemGroup>
+          <Menu.Item
+            key="Globe"
           >
-            <Menu.Item
-              key="neutron1"
+            <Link
+              to="/satellite/globe"
             >
-              <Link
-                to="/satellite/neutron1"
-              >
-                <Icon type="heat-map" />
-                neutron1
-              </Link>
-            </Menu.Item>
-          </Menu.ItemGroup>
-        </Menu.SubMenu>
-        <Menu.SubMenu
-          title={(
-            <span>
-              <Icon type="wifi" />
-              Ground Stations
-            </span>
-          )}
-        >
-          <Menu.ItemGroup
-            title="Applications"
-          >
-            <Menu.Item key="MASDIR">
-              <Link to="/gs/masdr">
-                <Icon type="cloud" />
-                MASDR
-              </Link>
-            </Menu.Item>
-          </Menu.ItemGroup>
-        </Menu.SubMenu>
-      </Menu>
-    );
-  }
+              <Icon type="picture" />
+              Globe
+            </Link>
+          </Menu.Item>
+        </Menu.ItemGroup>
+      </Menu.SubMenu> */}
+    </Menu>
+  );
 }
 
 export default Navbar;
