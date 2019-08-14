@@ -10,6 +10,8 @@ import {
 } from '../store/neutron1';
 
 import socket from '../socket';
+// eslint-disable-next-line
+import routes from '../routes';
 
 import AsyncComponent from '../components/Missions/Components/AsyncComponent';
 import LayoutSelector from '../components/Missions/Components/LayoutSelector';
@@ -17,6 +19,7 @@ import LayoutSelector from '../components/Missions/Components/LayoutSelector';
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 function Dashboard({
+  id,
   defaultLayout,
   path,
 }) {
@@ -25,7 +28,13 @@ function Dashboard({
    */
   const [state, dispatch] = useReducer(reducer, {});
 
-  const [layouts, setLayouts] = useState(defaultLayout);
+  const [defaultPageLayout, setDefaultPageLayout] = useState({
+    lg: [],
+  });
+
+  const [layouts, setLayouts] = useState({
+    lg: [],
+  });
 
   useEffect(() => {
     const all = socket('live', '/live/all');
@@ -46,8 +55,39 @@ function Dashboard({
     };
   }, []);
 
+  /** Retrieve default layout for page */
+  useEffect(() => {
+    // By default, set the defaultLayout prop as a fallback if child doesn't have a layout set
+    let layout = defaultLayout;
+
+    // Find child route of dashboard and retrieve default layout
+    routes.forEach((route) => {
+      if (route.path === path && route.children) {
+        route.children.forEach((child) => {
+          if (child.path.split('/')[1] === id && child.defaultLayout) {
+            layout = child.defaultLayout;
+            setDefaultPageLayout(child.defaultLayout);
+          }
+        });
+      }
+    });
+
+    // Set timeout to let the grid initialize; won't work otherwise.
+    setTimeout(() => {
+      setLayouts(layout);
+    }, 100);
+  }, [id]);
+
+  /** Set the layout based on using the LayoutSelector function */
   const selectLayout = (layout) => {
-    setLayouts(layout);
+    if (layout === 'defaultRouteLayout') {
+      setLayouts(defaultLayout);
+    } else if (layout === 'defaultPageLayout') {
+      setLayouts(defaultPageLayout);
+    } else {
+      setLayouts(layout);
+    }
+
     message.success('Successfully changed layout.');
   };
 
@@ -77,18 +117,16 @@ function Dashboard({
           {
             layouts !== null
               && layouts.lg !== null
-              ? layouts.lg.map((layout) => {
-                if (layout && layout.i && layout.component && layout.component.name) {
-                  return (
-                    <div key={layout.i} className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
-                      <AsyncComponent
-                        component={layout.component.name}
-                        props={layout.component.props}
-                      />
-                    </div>
-                  );
-                }
-              }) : null
+              ? layouts.lg
+                .filter(layout => layout && layout.i && layout.component && layout.component.name)
+                .map(layout => (
+                  <div key={layout.i} className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
+                    <AsyncComponent
+                      component={layout.component.name}
+                      props={layout.component.props}
+                    />
+                  </div>
+                )) : null
           }
         </ResponsiveGridLayout>
       </div>
@@ -97,6 +135,7 @@ function Dashboard({
 }
 
 Dashboard.propTypes = {
+  id: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,
   defaultLayout: PropTypes.shape({}).isRequired,
 };
