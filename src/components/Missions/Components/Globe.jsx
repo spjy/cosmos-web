@@ -27,9 +27,9 @@ function getPos(lat, long, height) {
 }
 
 /**
- * Displays a specified value.
+ * Displays a globe with the orbit and orbit history.
  */
-function DisplayValue({
+function CesiumGlobe({
   name,
   orbits,
   showStatus,
@@ -763,7 +763,7 @@ function DisplayValue({
   );
 }
 
-DisplayValue.propTypes = {
+CesiumGlobe.propTypes = {
   /** Name of the component to display at the time */
   name: PropTypes.string,
   /** Default orbits to display */
@@ -796,11 +796,11 @@ DisplayValue.propTypes = {
   },
 };
 
-DisplayValue.defaultProps = {
+CesiumGlobe.defaultProps = {
   name: '',
   orbits: [],
   showStatus: false,
   status: 'error',
 };
 
-export default DisplayValue;
+export default CesiumGlobe;
