@@ -3,12 +3,13 @@ import {
   Card, Col, Row, Icon,
 } from 'antd';
 
+import image from '../public/world.png';
+
 const Home = () => (
   <div>
-    <div style={{ backgroundColor: '#ECECEC' }}>
-      <div style={{ padding: '5em', textAlign: 'center' }}>
-        <h1 className="text-4xl">COSMOS Web</h1>
-      </div>
+    <div className="text-center p-5 flex items-center justify-center">
+      <img className="w-1/6" src={image} alt="World" />
+      <h1 className="font-mono text-4xl">COSMOS Web</h1>
     </div>
     <br />
     <Row gutter={16} type="flex" justify="center">

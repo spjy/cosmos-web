@@ -11,12 +11,6 @@ function Navbar() {
       mode="horizontal"
       selectedKeys={[currentRoute]}
     >
-      <Menu.Item key="home">
-        <Link to="/">
-          <Icon type="global" />
-          COSMOS Web
-        </Link>
-      </Menu.Item>
       {
         routes.map((route) => {
           if (route.children) {

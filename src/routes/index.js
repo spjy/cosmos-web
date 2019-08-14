@@ -1,9 +1,16 @@
 import moment from 'moment-timezone';
 
+import Home from '../pages/Home';
 import Dashboard from '../pages/Dashboard';
 import DashboardManager from '../pages/DashboardManager';
 
 const routes = [
+  {
+    name: 'COSMOS Web',
+    icon: 'global',
+    path: '/',
+    component: Home,
+  },
   {
     name: 'Satellites',
     icon: 'rocket',
@@ -354,7 +361,66 @@ const routes = [
     path: '/gs/:id',
     component: Dashboard,
     props: {
-
+      defaultLayout: {
+        lg: [
+          {
+            i: 'a',
+            x: 0,
+            y: 0,
+            w: 4,
+            h: 7,
+            component: {
+              name: 'Status',
+            },
+          },
+          {
+            i: 'b',
+            x: 4,
+            y: 0,
+            w: 4,
+            h: 7,
+            component: {
+              name: 'DisplayValue',
+              props: {
+                name: 'beagle1 CPU',
+                displayValues: [
+                  {
+                    name: 'CPU Load',
+                    nodeProcess: 'beagle1:cpu',
+                    dataKey: 'device_cpu_load_000',
+                    unit: '%',
+                    processDataKey: x => x.toFixed(2),
+                  },
+                  {
+                    name: 'GiB',
+                    nodeProcess: 'beagle1:cpu',
+                    dataKey: 'device_cpu_gib_000',
+                    unit: 'GiB',
+                    processDataKey: x => x.toFixed(2),
+                  },
+                  {
+                    name: 'Max GiB',
+                    nodeProcess: 'beagle1:cpu',
+                    dataKey: 'device_cpu_maxgib_000',
+                    unit: 'GiB',
+                    processDataKey: x => x.toFixed(2),
+                  },
+                ],
+              },
+            },
+          },
+          {
+            i: 'c',
+            x: 8,
+            y: 0,
+            w: 4,
+            h: 7,
+            component: {
+              name: 'Clock',
+            },
+          },
+        ],
+      },
     },
     children: [
       {
