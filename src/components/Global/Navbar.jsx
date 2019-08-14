@@ -27,13 +27,14 @@ function Navbar() {
                 key={route.name}
                 className={route.rightAlign ? 'float-right' : null}
               >
-                {
-                  route.children.map(child => (
-                    <Menu.ItemGroup
-                      title="Routes"
-                      key={child.name}
-                    >
-                      <Menu.Item>
+                <Menu.ItemGroup
+                  title="Routes"
+                >
+                  {
+                    route.children.map(child => (
+                      <Menu.Item
+                        key={child.name}
+                      >
                         <Link
                           to={`/${route.path.split('/')[1]}${child.path}`}
                         >
@@ -43,9 +44,9 @@ function Navbar() {
                           {child.name}
                         </Link>
                       </Menu.Item>
-                    </Menu.ItemGroup>
-                  ))
-                }
+                    ))
+                  }
+                </Menu.ItemGroup>
               </Menu.SubMenu>
             );
           }
