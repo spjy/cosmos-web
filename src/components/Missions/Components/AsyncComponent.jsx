@@ -10,6 +10,7 @@ import DisplayValue from './DisplayValue';
 import Globe from './Globe';
 import SetValues from './SetValues';
 import Status from './Status';
+import UploadFile from './UploadFile';
 
 const components = {
   Attitude,
@@ -21,6 +22,7 @@ const components = {
   Globe,
   SetValues,
   Status,
+  UploadFile,
 };
 
 function AsyncComponent({ component, props }) {

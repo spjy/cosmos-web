@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Upload, Icon, Button } from 'antd';
+import PropTypes from 'prop-types';
+import {
+  Upload, Icon, Button, message,
+} from 'antd';
 
 import socket from '../../../socket';
 import Content from './Content';
 
-function UploadTle() {
+function UploadFile({
+  node,
+  proc,
+}) {
   /** Maintain list of uploaded files */
   const [files, setFiles] = useState([]);
   /** Loading state indicating when upload is occurring */
   const [loading, setLoading] = useState(false);
   /** Indicating if files are being uploaded or if you want to initiate an upload */
   const [buttonText, setButtonText] = useState('Upload Files');
-  /** Outcome of upload */
-  const [outcome, setOutcome] = useState('');
   /** Intermediary between file uploading and sending content to agent */
   const [fileContentUpload, setFileContentUpload] = useState(null);
 
@@ -60,11 +64,9 @@ function UploadTle() {
 
       setFiles([]);
 
-      setOutcome('Successfully uploaded all files!');
       setButtonText('Upload Files');
     } catch (error) {
-      console.log(error);
-      setOutcome('Error while attempting to upload files.');
+      message.error('Error while attempting to upload files.', 10);
     }
 
     setLoading(false);
@@ -75,23 +77,17 @@ function UploadTle() {
     if (fileContentUpload !== null) {
       const upload = socket('query', '/command');
 
-      // upload.onload = () => {
-      //   upload.send(`masdr nordiasoft ${fileContentUpload}`);
-      // };
+      upload.onload = () => {
+        console.log(`${node} ${proc}`);
+        upload.send(`masdr nordiasoft ${fileContentUpload}`);
+        message.success('Successfully uploaded all files!', 10);
+      };
 
       upload.onmessage = ({ data }) => {
         console.log(data);
       };
     }
   }, [fileContentUpload]);
-
-  /** UI to reflect the outcome of the transaction */
-  useEffect(() => {
-    setTimeout(() => {
-      setOutcome('');
-    }, 5000);
-  }, [outcome]);
-
 
   return (
     <Content
@@ -119,12 +115,14 @@ function UploadTle() {
         >
           {buttonText}
         </Button>
-        <div className="text-gray-500">
-          {outcome}
-        </div>
       </div>
     </Content>
   );
 }
 
-export default UploadTle;
+UploadFile.propTypes = {
+  node: PropTypes.string.isRequired,
+  proc: PropTypes.string.isRequired,
+};
+
+export default UploadFile;
