@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import {
+  message,
   Button,
-  Modal,
   Icon,
   Popover,
   Form,
@@ -23,11 +22,7 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 /**
  * Configurable editor that allows the user to set up the layout of the page
  */
-function LayoutManager({
-  path,
-}) {
-  /** Whether the layout manager is open or not. */
-  const [modalOpen, setModalOpen] = useState(false);
+function LayoutManager() {
   /** Store the layout object here */
   const [layoutObject, setLayoutObject] = useState({
     lg: [],
@@ -71,6 +66,8 @@ function LayoutManager({
         lg: json,
       });
 
+      console.log(json);
+
       setFormError('');
 
       return {
@@ -84,36 +81,36 @@ function LayoutManager({
   };
 
   /** Save the layout to localStorage. */
-  const saveLayout = ({ pathname }) => {
+  const saveLayout = () => {
     const object = processLayoutObject();
 
     if (!form.route || !form.route.value) {
-      formError('"Route" is required.');
+      setFormError('"Route" is required.');
       return;
     }
 
     if (!form.dashboardName || !form.dashboardName.value) {
-      formError('"Dashboard Name" is required.');
+      setFormError('"Dashboard Name" is required.');
       return;
     }
 
     if (object) {
       try {
-        if (!JSON.parse(localStorage.getItem(form.route.value)).isArray) {
-          throw new Error('"Layouts" is not an object.');
+        if (!(typeof JSON.parse(localStorage.getItem(form.route.value)) === 'object') && JSON.parse(localStorage.getItem(form.route.value) !== null)) {
+          throw new Error(`${form.route.value} is not an array.`);
         }
       } catch (error) {
-        localStorage.setItem('layouts', JSON.stringify({}));
+        localStorage.setItem(form.route.value, JSON.stringify({}));
       }
 
-      localStorage.setItem('layouts', JSON.stringify({
-        ...JSON.parse(localStorage.getItem('layouts')),
-        [pathname]: object,
+      localStorage.setItem(form.route.value, JSON.stringify({
+        ...JSON.parse(localStorage.getItem(form.route.value)),
+        [form.dashboardName.value]: object,
       }));
 
-      setOutcome('Layout saved successfully.');
+      message.success('Layout saved successfully.', 10);
     } else {
-      setOutcome('Error saving layout.');
+      setFormError('Error saving layout.');
     }
   };
 
@@ -170,7 +167,7 @@ function LayoutManager({
                 if (dashboardPath[2] === ':id') {
                   return (
                     <Select.Option
-                      value={`/${dashboardPath[1]}`}
+                      value={dashboardPath[1]}
                       key={dashboardPath[1]}
                     >
                       {route.name}
@@ -318,9 +315,6 @@ function LayoutManager({
         style={{ padding: '2em', top: 20 }}
       > */}
 
-      <div className="mb-2">
-      </div>
-
       <div className="text-red-500 mb-3">
         {formError}
       </div>
@@ -334,7 +328,7 @@ function LayoutManager({
       <Button
         className="mb-3"
         type="primary"
-        onClick={() => saveLayout(path)}
+        onClick={() => saveLayout()}
       >
         Save Layout
       </Button>
@@ -349,12 +343,12 @@ function LayoutManager({
         <ResponsiveGridLayout
           className="layout"
           breakpoints={{
-            lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0,
+            lg: 996,
           }}
           cols={{
-            lg: 12, md: 12, sm: 2, xs: 2, xxs: 2,
+            lg: 12,
           }}
-          layouts={layoutObject ? layoutObject : {}}
+          layouts={layoutObject}
           margin={[12, 12]}
           draggableHandle=".dragHandle"
           draggableCancel=".preventDragHandle"
@@ -378,18 +372,8 @@ function LayoutManager({
           }
         </ResponsiveGridLayout>
       </div>
-      {/* </Modal> */}
-      {/* <Button
-        onClick={() => setModalOpen(true)}
-      >
-        Manage Layout
-      </Button> */}
     </div>
   );
 }
-
-LayoutManager.propTypes = {
-  path: PropTypes.string.isRequired,
-};
 
 export default LayoutManager;

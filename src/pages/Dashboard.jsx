@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useReducer } from 'react';
 import PropTypes from 'prop-types';
+import { message } from 'antd';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
@@ -11,6 +12,7 @@ import {
 import socket from '../socket';
 
 import AsyncComponent from '../components/Missions/Components/AsyncComponent';
+import LayoutSelector from '../components/Missions/Components/LayoutSelector';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -24,25 +26,6 @@ function Dashboard({
   const [state, dispatch] = useReducer(reducer, {});
 
   const [layouts, setLayouts] = useState(defaultLayout);
-
-  useEffect(() => {
-    const layout = localStorage.getItem('layouts');
-
-    try {
-      const json = JSON.parse(layout);
-
-      if (json[path]) {
-        // Give time for things to initialize? Won't work without the timeout.
-        setTimeout(() => {
-          setLayouts({
-            lg: json[path].lg,
-          });
-        }, 1000);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
 
   useEffect(() => {
     const all = socket('live', '/live/all');
@@ -63,12 +46,20 @@ function Dashboard({
     };
   }, []);
 
+  const selectLayout = (layout) => {
+    setLayouts(layout);
+    message.success('Successfully changed layout.');
+  };
+
   return (
     <Context.Provider value={{ state, dispatch }}>
       <div className="m-3 mb-32">
-        {/* <div className="mx-3">
-          <LayoutManager path={path} />
-        </div> */}
+        <div className="mx-3">
+          <LayoutSelector
+            path={path}
+            selectLayout={value => selectLayout(value)}
+          />
+        </div>
         <ResponsiveGridLayout
           className="layout"
           breakpoints={{
