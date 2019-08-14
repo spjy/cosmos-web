@@ -3,7 +3,7 @@ import { Router } from '@reach/router';
 
 import Navbar from './components/Global/Navbar';
 
-import Home from './pages/Home';
+import FourOhFour from './pages/404';
 import routes from './routes';
 
 const App = () => (
@@ -12,7 +12,7 @@ const App = () => (
       <Navbar current="home" />
     </header>
     <Router>
-      <Home path="/" />
+      <FourOhFour default />
       {
         routes.map(route => (
           <route.component

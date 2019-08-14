@@ -31,7 +31,7 @@ module.exports = {
     (neutrino) => {
       neutrino.config.module
         .rule('file-loader')
-          .test(/\.(glb|czml|obj)$/)
+          .test(/\.(glb|czml|obj|png)$/)
           .use('file-loader')
             .loader('file-loader')
 
