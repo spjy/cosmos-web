@@ -91,7 +91,7 @@ function SetValues({
             comment,
             processValue,
           }) => (
-            <div key={`${application}`} className="flex w-full flex-wrap">
+            <div key={`${application}${component}`} className="flex w-full flex-wrap">
               <div className="flex-initial flex-grow p-1">
                 <Form.Item
                   key={propertyName}

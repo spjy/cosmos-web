@@ -11,6 +11,7 @@ import {
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import Editor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs/components/prism-core';
+// eslint-disable-next-line
 import routes from '../../../routes';
 
 import 'prismjs/components/prism-json';
@@ -66,8 +67,6 @@ function LayoutManager() {
         lg: json,
       });
 
-      console.log(json);
-
       setFormError('');
 
       return {
@@ -96,7 +95,9 @@ function LayoutManager() {
 
     if (object) {
       try {
-        if (!(typeof JSON.parse(localStorage.getItem(form.route.value)) === 'object') && JSON.parse(localStorage.getItem(form.route.value) !== null)) {
+        if (!(typeof JSON.parse(localStorage.getItem(form.route.value)) === 'object')
+          && JSON.parse(localStorage.getItem(form.route.value) !== null)
+        ) {
           throw new Error(`${form.route.value} is not an array.`);
         }
       } catch (error) {
@@ -211,7 +212,7 @@ function LayoutManager() {
                 changed: false,
               },
             })}
-            onBlur={({ target: { id: item, value } }) => {
+            onBlur={({ target: { id: item } }) => {
               setForm({
                 ...form,
                 [item]: {
@@ -357,18 +358,16 @@ function LayoutManager() {
           {
             layoutObject !== null
               && layoutObject.lg !== null
-              ? layoutObject.lg.map((layout) => {
-                if (layout && layout.i && layout.component && layout.component.name) {
-                  return (
-                    <div key={layout.i} className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
-                      <AsyncComponent
-                        component={layout.component.name}
-                        props={layout.component.props}
-                      />
-                    </div>
-                  );
-                }
-              }) : null
+              ? layoutObject.lg
+                .filter(layout => layout && layout.i && layout.component && layout.component.name)
+                .map(layout => (
+                  <div key={layout.i} className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
+                    <AsyncComponent
+                      component={layout.component.name}
+                      props={layout.component.props}
+                    />
+                  </div>
+                )) : null
           }
         </ResponsiveGridLayout>
       </div>

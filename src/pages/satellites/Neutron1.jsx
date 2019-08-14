@@ -415,18 +415,16 @@ function Neutron1({
           {
             layouts !== null
               && layouts.lg !== null
-              ? layouts.lg.map((layout) => {
-                if (layout && layout.i && layout.component && layout.component.name) {
-                  return (
-                    <div key={layout.i} className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
-                      <AsyncComponent
-                        component={layout.component.name}
-                        props={layout.component.props}
-                      />
-                    </div>
-                  );
-                }
-              }) : null
+              ? layouts.lg
+                .filter(layout => layout && layout.i && layout.component && layout.component.name)
+                .map(layout => (
+                  <div key={layout.i} className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
+                    <AsyncComponent
+                      component={layout.component.name}
+                      props={layout.component.props}
+                    />
+                  </div>
+                )) : null
           }
         </ResponsiveGridLayout>
       </div>
