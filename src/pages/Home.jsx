@@ -3,12 +3,10 @@ import {
   Card, Icon,
 } from 'antd';
 
-import image from '../public/world.png';
-
 const Home = () => (
   <div>
     <div className="text-center p-5 flex items-center justify-center">
-      <img className="w-1/6" src={image} alt="World" />
+      <img className="w-1/6" src="/src/public/world.png" alt="World" />
       <h1 className="font-mono text-4xl">COSMOS Web</h1>
     </div>
     <br />

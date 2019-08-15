@@ -2,12 +2,10 @@ import React from 'react';
 import { Icon } from 'antd';
 import { Link } from '@reach/router';
 
-import image from '../public/void.png';
-
 function FourOhFour() {
   return (
     <div className="flex flex-col h-screen items-center justify-center font-mono text-center">
-      <img className="w-1/5" src={image} alt="Man Looking Into The COSMOS" />
+      <img className="w-1/5" src="/src/public/void.png" alt="Man Looking Into The COSMOS" />
       <div className="mt-4 mb-4 text-4xl text-gray-700">
         404.
       </div>
