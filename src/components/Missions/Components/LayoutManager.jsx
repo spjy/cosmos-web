@@ -7,6 +7,7 @@ import {
   Form,
   Select,
   Input,
+  Table,
 } from 'antd';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import Editor from 'react-simple-code-editor';
@@ -30,12 +31,59 @@ function LayoutManager() {
   });
   /** Store temporary form value here from code editor */
   const [layoutObjectForm, setLayoutObjectForm] = useState('');
+  /** Store form values */
+  const [form, setForm] = useState({});
   /** Store error if there was one from the form. */
   const [formError, setFormError] = useState('');
   /** Other message feedback here */
   const [outcome, setOutcome] = useState('');
+  /** The routes that are currently available to pull from the local storage layouts */
+  const [routeKeys, setRouteKeys] = useState([]);
 
-  const [form, setForm] = useState({});
+  const deleteLayout = (route, name) => {
+    const layouts = localStorage.getItem(route);
+
+    console.log(layouts);
+
+    try {
+      const json = JSON.parse(layouts);
+
+      
+      delete json[name];
+      console.log(json, route, name);
+
+      localStorage.setItem(route, json);
+    } catch (error) {
+      message.error('An error occurred while deleting this layout', 5);
+    }
+  };
+
+  const [columns, setColumns] = useState([
+    {
+      title: 'Route',
+      dataIndex: 'route',
+      key: 'route',
+    },
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: 'Actions',
+      render: (text, { route, name }) => (
+        <Button
+          onClick={() => deleteLayout(route, name)}
+          type="link"
+        >
+          Delete
+        </Button>
+      ),
+    },
+  ]);
+
+  const [data, setData] = useState([]);
+
   /**
    * Checks to see if the layout array's objects contain all of the correct keys.
    *
@@ -80,33 +128,39 @@ function LayoutManager() {
   };
 
   /** Save the layout to localStorage. */
-  const saveLayout = () => {
-    const object = processLayoutObject();
+  const saveLayout = (route, name, layout) => {
+    let object;
 
-    if (!form.route || !form.route.value) {
+    if (!layout) {
+      object = processLayoutObject();
+    } else {
+      object = layout;
+    }
+
+    if (!route) {
       setFormError('"Route" is required.');
       return;
     }
 
-    if (!form.dashboardName || !form.dashboardName.value) {
+    if (!name) {
       setFormError('"Dashboard Name" is required.');
       return;
     }
 
     if (object) {
       try {
-        if (!(typeof JSON.parse(localStorage.getItem(form.route.value)) === 'object')
-          && JSON.parse(localStorage.getItem(form.route.value) !== null)
+        if (!(typeof JSON.parse(localStorage.getItem(route)) === 'object')
+          && JSON.parse(localStorage.getItem(route) !== null)
         ) {
-          throw new Error(`${form.route.value} is not an array.`);
+          throw new Error(`${route} is not an array.`);
         }
       } catch (error) {
-        localStorage.setItem(form.route.value, JSON.stringify({}));
+        localStorage.setItem(route, JSON.stringify({}));
       }
 
-      localStorage.setItem(form.route.value, JSON.stringify({
-        ...JSON.parse(localStorage.getItem(form.route.value)),
-        [form.dashboardName.value]: object,
+      localStorage.setItem(route, JSON.stringify({
+        ...JSON.parse(localStorage.getItem(route)),
+        [name]: object,
       }));
 
       message.success('Layout saved successfully.', 10);
@@ -122,8 +176,65 @@ function LayoutManager() {
     }, 10000);
   }, [outcome]);
 
+  useEffect(() => {
+    const keys = routes
+      .filter(route => route.path.split('/')[2] === ':id')
+      .map(({ path }) => {
+        const [, route] = path.split('/');
+
+        const layouts = localStorage.getItem(route);
+
+        try {
+          const json = JSON.parse(layouts);
+
+          Object.keys(json)
+            .forEach((layout, i) => {
+              data.push({
+                key: i,
+                route,
+                name: layout,
+                configuration: JSON.stringify(json[layout]),
+              });
+            });
+        } catch (error) {
+          console.log(error);
+        }
+        return route;
+      });
+
+    setRouteKeys(keys);
+  }, []);
+
   return (
     <div>
+      <Table
+        columns={columns}
+        dataSource={data}
+        expandedRowRender={({ route, name, key }) => (
+          <div>
+            <pre
+              className="language-json mb-2 h-64 overflow-y-scroll overflow-x-scroll resize-y cursor-text text-white"
+            >
+              <Editor
+                className="font-mono"
+                value={data[key].configuration}
+                onValueChange={(value) => {
+                  const tempData = [...data];
+                  tempData[key].configuration = value;
+                  setData(tempData);
+                }}
+                highlight={code => highlight(code, languages.json)}
+                padding={10}
+              />
+            </pre>
+            <Button
+              onClick={() => saveLayout(route, name, data[key].configuration)}
+            >
+              Save
+            </Button>
+          </div>
+        )}
+      />
       <Form layout="vertical">
         <Form.Item
           required
@@ -163,24 +274,14 @@ function LayoutManager() {
             }}
           >
             {
-              routes.map((route) => {
-                const dashboardPath = route.path.split('/');
-                if (dashboardPath[2] === ':id') {
-                  return (
-                    <Select.Option
-                      value={dashboardPath[1]}
-                      key={dashboardPath[1]}
-                    >
-                      {route.name}
-                      &nbsp;
-                      (/
-                      {dashboardPath[1]}
-                      )
-                    </Select.Option>
-                  );
-                }
-                return null;
-              })
+              routeKeys.map(route => (
+                <Select.Option
+                  value={route}
+                  key={route}
+                >
+                  {route}
+                </Select.Option>
+              ))
             }
           </Select>
         </Form.Item>
@@ -329,10 +430,15 @@ function LayoutManager() {
       <Button
         className="mb-3"
         type="primary"
-        onClick={() => saveLayout()}
+        onClick={() => saveLayout(form.route.value, form.dashboardName.value)}
       >
         Save Layout
       </Button>
+      
+      {
+        // activity log from agents
+        // output whats going out and in the ports
+      }
 
       <div>
         {outcome}
