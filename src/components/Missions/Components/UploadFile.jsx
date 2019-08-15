@@ -10,6 +10,7 @@ import Content from './Content';
 function UploadFile({
   node,
   proc,
+  command,
 }) {
   /** Maintain list of uploaded files */
   const [files, setFiles] = useState([]);
@@ -77,14 +78,18 @@ function UploadFile({
     if (fileContentUpload !== null) {
       const upload = socket('query', '/command');
 
-      upload.onload = () => {
-        console.log(`${node} ${proc}`);
-        upload.send(`masdr nordiasoft ${fileContentUpload}`);
-        message.success('Successfully uploaded all files!', 10);
+      upload.onopen = () => {
+        upload.send(`${node} ${proc} ${command} ${fileContentUpload}`);
       };
 
-      upload.onmessage = ({ data }) => {
-        console.log(data);
+      upload.onmessage = (data) => {
+        if (data) {
+          message.success('Successfully uploaded all files!', 10);
+        }
+
+        setFileContentUpload(null);
+
+        upload.close();
       };
     }
   }, [fileContentUpload]);
@@ -123,6 +128,7 @@ function UploadFile({
 UploadFile.propTypes = {
   node: PropTypes.string.isRequired,
   proc: PropTypes.string.isRequired,
+  command: PropTypes.string.isRequired,
 };
 
 export default UploadFile;
