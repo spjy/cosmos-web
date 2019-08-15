@@ -1,7 +1,8 @@
 import React from 'react';
 import { Icon } from 'antd';
-import image from '../public/void.png';
 import { Link } from '@reach/router';
+
+import image from '../public/void.png';
 
 function FourOhFour() {
   return (

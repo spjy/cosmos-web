@@ -76,7 +76,7 @@ function Dashboard({
     setTimeout(() => {
       setLayouts(layout);
     }, 100);
-  }, [id]);
+  }, [id, path]);
 
   /** Set the layout based on using the LayoutSelector function */
   const selectLayout = (layout) => {
