@@ -29,10 +29,12 @@
     "react-plotly.js": "2.3.0",
     "react-resizable": "1.8.0",
     "react-simple-code-editor": "^0.9.14",
-    "resium": "1.5.0"
+    "resium": "1.5.0",
+    "styled-jsx": "^3.2.1"
   },
   "devDependencies": {
     "@neutrinojs/airbnb": "9.0.0-rc.3",
+    "@neutrinojs/compile-loader": "^8.3.0",
     "@neutrinojs/dev-server": "9.0.0-rc.3",
     "@neutrinojs/eslint": "9.0.0-rc.3",
     "@neutrinojs/jest": "9.0.0-rc.3",
@@ -40,6 +42,7 @@
     "@neutrinojs/react": "9.0.0-rc.3",
     "@neutrinojs/style-loader": "9.0.0-rc.3",
     "autoprefixer": "9.6.1",
+    "babel-merge": "^3.0.0",
     "copy-webpack-plugin": "5.0.3",
     "dotenv-webpack": "1.7.0",
     "eslint": "5.16.0",

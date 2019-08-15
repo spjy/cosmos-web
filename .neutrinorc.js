@@ -5,7 +5,7 @@ const react = require('@neutrinojs/react');
 const airbnb = require('@neutrinojs/airbnb');
 const jest = require('@neutrinojs/jest');
 const devServer = require('@neutrinojs/dev-server');
-const styles = require('@neutrinojs/style-loader');
+const babelMerge = require('babel-merge');
 
 const webpack = require("webpack");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
@@ -29,6 +29,19 @@ module.exports = {
       disableHostCheck: true
     }),
     (neutrino) => {
+      neutrino.config.module
+        .rule('compile')
+        .use('babel')
+        .tap(options =>
+          babelMerge(
+            {
+              plugins: [
+                'styled-jsx/babel'
+              ],
+            },
+            options,
+          ),
+        );
       neutrino.config.module
         .rule('file-loader')
           .test(/\.(glb|czml|obj|png)$/)
