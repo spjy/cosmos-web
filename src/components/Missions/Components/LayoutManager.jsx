@@ -8,6 +8,7 @@ import {
   Select,
   Input,
   Table,
+  Popconfirm,
 } from 'antd';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import Editor from 'react-simple-code-editor';
@@ -40,6 +41,7 @@ function LayoutManager() {
   /** The routes that are currently available to pull from the local storage layouts */
   const [routeKeys, setRouteKeys] = useState([]);
 
+  /** Handle deleting a saved layout from local storage */
   const deleteLayout = (route, name) => {
     const layouts = localStorage.getItem(route);
 
@@ -47,12 +49,13 @@ function LayoutManager() {
 
     try {
       const json = JSON.parse(layouts);
-
       
+      // Delete selected key
       delete json[name];
-      console.log(json, route, name);
 
-      localStorage.setItem(route, json);
+      localStorage.setItem(route, JSON.stringify(json));
+
+      window.location.reload();
     } catch (error) {
       message.error('An error occurred while deleting this layout', 5);
     }
@@ -72,12 +75,18 @@ function LayoutManager() {
     {
       title: 'Actions',
       render: (text, { route, name }) => (
-        <Button
-          onClick={() => deleteLayout(route, name)}
-          type="link"
+        <Popconfirm
+          title="Are you sure you want to delete this layout?"
+          onConfirm={() => deleteLayout(route, name)}
+          okText="Yes"
+          cancelText="No"
         >
-          Delete
-        </Button>
+          <Button
+            type="link"
+          >
+            Delete
+          </Button>
+        </Popconfirm>
       ),
     },
   ]);
