@@ -30,7 +30,7 @@ function LayoutSelector({
       // If all is well, store in state
       setLayouts(json);
     } catch (error) {
-      message.error('Could not retrieve saved layouts.', 10);
+      message.error('Could not retrieve saved layouts.', 5);
     }
   }, []);
 
@@ -38,7 +38,7 @@ function LayoutSelector({
   const changeLayout = () => {
     // Check if the form layout value is non-empty
     if (!form.layout || !form.layout.value) {
-      message.error('Could not change layout.');
+      message.error('Could not change layout.', 10);
       return;
     }
 
