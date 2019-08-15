@@ -26,11 +26,10 @@ cp .env.defaults .env
 ```
 
 ```
-WEB_API=localhost # For the old Node app (deprecated)
 WEBSOCKET_IP=localhost # Agent Mongo IP
 QUERY_WEBSOCKET_PORT=8080 # Port of the WS to access the query endpoints
 LIVE_WEBSOCKET_PORT=8081 # Port of the WS to access the live endpoints
-CESIUM_ION_TOKEN= # Token for the globe simulation
+CESIUM_ION_TOKEN= # Token for the globe simulation (optional)
 ```
 
 If you need to run Agent Mongo, see this repository: https://github.com/spjy/cosmos-mongodb
