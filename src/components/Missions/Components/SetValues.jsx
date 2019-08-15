@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input, Button } from 'antd';
+import {
+  Form, Input, Button, Select,
+} from 'antd';
 
 import BaseComponent from '../BaseComponent';
 import socket from '../../../socket';
@@ -60,12 +62,19 @@ function SetValues({
   /** Status of the live switch */
   const [, setLiveSwitch] = useState();
 
+  const [commandHistory, setCommandHistory] = useState([
+    '➜ agent',
+  ]);
+
   const setParameter = (application, component, property, value) => {
     ws.send(`agent masdr ${application} ${component} ${property} ${value}`);
   };
 
-  ws.onmessage = () => {
-
+  ws.onmessage = ({ data }) => {
+    setCommandHistory([
+      ...commandHistory,
+      data,
+    ]);
   };
 
   return (
@@ -78,6 +87,12 @@ function SetValues({
       formItems={formItems}
       handleLiveSwitchChange={checked => setLiveSwitch(checked)}
     >
+      <div className="border border-gray-300 rounded mb-2 p-4 bg-white font-mono h-32 max-h-full resize-y overflow-y-scroll">
+        {
+          // eslint-disable-next-line
+          commandHistory.map((command, i) => (<div key={i}>{ command }</div>))
+        }
+      </div>
       <Form layout="vertical">
         {
           transmitApplication.map(({
@@ -103,7 +118,32 @@ function SetValues({
                   className="-mb-1"
                   help={comment}
                 >
+
                   <Input
+                    addonBefore={(
+                      <Input.Group compact>
+                        <Select
+                          defaultValue="AX25"
+                          dropdownMatchSelectWidth={false}
+                        >
+                          <Select.Option value="AX25">
+                            AX25Framer
+                          </Select.Option>
+                          <Select.Option value="HDLC">
+                            HDLCEncoder
+                          </Select.Option>
+                        </Select>
+                        &nbsp;&nbsp;&nbsp;
+                        <Select
+                          defaultValue="AX25FRAMER_PROPERTIES"
+                          dropdownMatchSelectWidth={false}
+                        >
+                          <Select.Option value="AX25FRAMER_PROPERTIES">
+                            AX25FRAMER_PROPERTIES
+                          </Select.Option>
+                        </Select>
+                      </Input.Group>
+                    )}
                     placeholder={`${displayName}${unit && unit !== '' ? ` (${unit})` : ''}`}
                     id={propertyName}
                     onFocus={({ target: { id: item } }) => setForm({
@@ -136,6 +176,7 @@ function SetValues({
                   />
                 </Form.Item>
               </div>
+
               <div className="p-1">
                 <Button
                   type="danger"
@@ -185,6 +226,7 @@ function SetValues({
                   }
                 </Button>
               </div>
+
               <div className="text-red-500 w-full ml-1">
                 {form[application]
                   && form[application][propertyName]

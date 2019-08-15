@@ -17,11 +17,6 @@
   color: blue;
 }
 
-.arrow:hover {
-  transition: left 3s;
-  left: 0;
-}
-
 /* PrismJS 1.17.1
 https://prismjs.com/download.html#themes=prism-tomorrow&languages=json */
 /**

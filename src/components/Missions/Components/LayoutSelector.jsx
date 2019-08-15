@@ -30,7 +30,7 @@ function LayoutSelector({
       // If all is well, store in state
       setLayouts(json);
     } catch (error) {
-      message.error('Could not retrieve saved layouts.', 5);
+      message.error('Could not retrieve saved layouts. Resorting to default.', 5);
     }
   }, []);
 
@@ -94,6 +94,7 @@ function LayoutSelector({
           <Select.Option key="defaultRouteLayout" value="defaultRouteLayout">Route Default</Select.Option>
           <Select.Option key="defaultPageLayout" value="defaultPageLayout">Page Default</Select.Option>
         </Select.OptGroup>
+
         <Select.OptGroup
           label="User Defined"
         >
@@ -104,6 +105,7 @@ function LayoutSelector({
           }
         </Select.OptGroup>
       </Select>
+
       <Button
         onClick={() => changeLayout()}
       >

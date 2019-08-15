@@ -20,7 +20,7 @@ const routes = [
       defaultLayout: {
         lg: [
           {
-            i: 'a',
+            i: 'satellite-default-a',
             x: 0,
             y: 0,
             w: 4,
@@ -30,7 +30,7 @@ const routes = [
             },
           },
           {
-            i: 'b',
+            i: 'satellite-default-b',
             x: 4,
             y: 0,
             w: 4,
@@ -66,7 +66,7 @@ const routes = [
             },
           },
           {
-            i: 'c',
+            i: 'satellite-default-c',
             x: 8,
             y: 0,
             w: 4,
@@ -76,7 +76,7 @@ const routes = [
             },
           },
           {
-            i: 'd',
+            i: 'satellite-default-d',
             x: 0,
             y: 1,
             w: 12,
@@ -86,7 +86,7 @@ const routes = [
             },
           },
           {
-            i: 'e',
+            i: 'satellite-default-e',
             x: 0,
             y: 2,
             w: 6,
@@ -116,7 +116,7 @@ const routes = [
             },
           },
           {
-            i: 'f',
+            i: 'satellite-default-f',
             x: 6,
             y: 2,
             w: 6,
@@ -143,7 +143,7 @@ const routes = [
             },
           },
           {
-            i: 'g',
+            i: 'satellite-default-g',
             x: 0,
             y: 3,
             w: 12,
@@ -199,7 +199,7 @@ const routes = [
             },
           },
           {
-            i: 'h',
+            i: 'satellite-default-h',
             x: 0,
             y: 4,
             w: 12,
@@ -252,7 +252,7 @@ const routes = [
             },
           },
           {
-            i: 'i',
+            i: 'satellite-default-i',
             x: 0,
             y: 5,
             w: 12,
@@ -305,7 +305,7 @@ const routes = [
             },
           },
           {
-            i: 'j',
+            i: 'satellite-default-j',
             x: 0,
             y: 6,
             w: 12,
@@ -351,11 +351,11 @@ const routes = [
       {
         name: 'neutron1',
         path: '/neutron1',
-        icon: 'heat-map',
+        icon: 'qrcode',
         defaultLayout: {
           lg: [
             {
-              i: 'a',
+              i: 'satellite-neutron1-a',
               x: 0,
               y: 0,
               w: 4,
@@ -365,7 +365,7 @@ const routes = [
               },
             },
             {
-              i: 'b',
+              i: 'satellite-neutron1-b',
               x: 4,
               y: 0,
               w: 4,
@@ -401,7 +401,7 @@ const routes = [
               },
             },
             {
-              i: 'c',
+              i: 'satellite-neutron1-c',
               x: 8,
               y: 0,
               w: 4,
@@ -411,7 +411,7 @@ const routes = [
               },
             },
             {
-              i: 'd',
+              i: 'satellite-neutron1-d',
               x: 0,
               y: 1,
               w: 12,
@@ -421,7 +421,7 @@ const routes = [
               },
             },
             {
-              i: 'e',
+              i: 'satellite-neutron1-e',
               x: 0,
               y: 2,
               w: 6,
@@ -451,7 +451,7 @@ const routes = [
               },
             },
             {
-              i: 'f',
+              i: 'satellite-neutron1-f',
               x: 6,
               y: 2,
               w: 6,
@@ -478,7 +478,7 @@ const routes = [
               },
             },
             {
-              i: 'g',
+              i: 'satellite-neutron1-g',
               x: 0,
               y: 3,
               w: 12,
@@ -534,7 +534,7 @@ const routes = [
               },
             },
             {
-              i: 'h',
+              i: 'satellite-neutron1-h',
               x: 0,
               y: 4,
               w: 12,
@@ -587,7 +587,7 @@ const routes = [
               },
             },
             {
-              i: 'i',
+              i: 'satellite-neutron1-i',
               x: 0,
               y: 5,
               w: 12,
@@ -640,7 +640,7 @@ const routes = [
               },
             },
             {
-              i: 'j',
+              i: 'satellite-neutron1-j',
               x: 0,
               y: 6,
               w: 12,
@@ -685,11 +685,11 @@ const routes = [
       {
         name: 'hyti',
         path: '/hyti',
-        icon: 'heat-map',
+        icon: 'camera',
         defaultLayout: {
           lg: [
             {
-              i: 'a',
+              i: 'satellite-hyti-a',
               x: 0,
               y: 0,
               w: 4,
@@ -699,7 +699,7 @@ const routes = [
               },
             },
             {
-              i: 'b',
+              i: 'satellite-hyti-bb',
               x: 4,
               y: 0,
               w: 4,
@@ -735,7 +735,7 @@ const routes = [
               },
             },
             {
-              i: 'c',
+              i: 'satellite-hyti-c',
               x: 8,
               y: 0,
               w: 4,
@@ -745,7 +745,7 @@ const routes = [
               },
             },
             {
-              i: 'd',
+              i: 'satellite-hyti-d',
               x: 0,
               y: 1,
               w: 12,
@@ -755,7 +755,7 @@ const routes = [
               },
             },
             {
-              i: 'e',
+              i: 'satellite-hyti-e',
               x: 0,
               y: 2,
               w: 6,
@@ -785,7 +785,7 @@ const routes = [
               },
             },
             {
-              i: 'f',
+              i: 'satellite-hyti-f',
               x: 6,
               y: 2,
               w: 6,
@@ -812,7 +812,7 @@ const routes = [
               },
             },
             {
-              i: 'g',
+              i: 'satellite-hyti-g',
               x: 0,
               y: 3,
               w: 12,
@@ -868,7 +868,7 @@ const routes = [
               },
             },
             {
-              i: 'h',
+              i: 'satellite-hyti-h',
               x: 0,
               y: 4,
               w: 12,
@@ -921,7 +921,7 @@ const routes = [
               },
             },
             {
-              i: 'i',
+              i: 'satellite-hyti-i',
               x: 0,
               y: 5,
               w: 12,
@@ -974,7 +974,7 @@ const routes = [
               },
             },
             {
-              i: 'j',
+              i: 'satellite-hyti-j',
               x: 0,
               y: 6,
               w: 12,
@@ -1027,7 +1027,7 @@ const routes = [
       defaultLayout: {
         lg: [
           {
-            i: 'a',
+            i: 'gs-default-a',
             x: 0,
             y: 0,
             w: 4,
@@ -1037,7 +1037,7 @@ const routes = [
             },
           },
           {
-            i: 'b',
+            i: 'gs-default-b',
             x: 4,
             y: 0,
             w: 4,
@@ -1073,7 +1073,7 @@ const routes = [
             },
           },
           {
-            i: 'c',
+            i: 'gs-default-c',
             x: 8,
             y: 0,
             w: 4,
@@ -1093,20 +1093,20 @@ const routes = [
         defaultLayout: {
           lg: [
             {
-              i: 'a',
+              i: 'gs-masdr-a',
               x: 0,
               y: 0,
-              w: 4,
+              w: 3,
               h: 7,
               component: {
                 name: 'Status',
               },
             },
             {
-              i: 'b',
-              x: 4,
+              i: 'gs-masdr-b',
+              x: 3,
               y: 0,
-              w: 4,
+              w: 3,
               h: 7,
               component: {
                 name: 'DisplayValue',
@@ -1125,21 +1125,21 @@ const routes = [
               },
             },
             {
-              i: 'c',
-              x: 8,
+              i: 'gs-masdr-c',
+              x: 6,
               y: 0,
-              w: 4,
+              w: 3,
               h: 7,
               component: {
                 name: 'Clock',
               },
             },
             {
-              i: 'd',
+              i: 'gs-masdr-d',
               x: 0,
               y: 1,
-              w: 9,
-              h: 9,
+              w: 12,
+              h: 12,
               component: {
                 name: 'SetValues',
                 props: {
@@ -1148,7 +1148,7 @@ const routes = [
               },
             },
             {
-              i: 'e',
+              i: 'gs-masdr-e',
               x: 0,
               y: 2,
               w: 12,
@@ -1178,11 +1178,11 @@ const routes = [
               },
             },
             {
-              i: 'f',
+              i: 'gs-masdr-f',
               x: 9,
-              y: 1,
+              y: 0,
               w: 3,
-              h: 9,
+              h: 7,
               component: {
                 name: 'UploadFile',
                 props: {

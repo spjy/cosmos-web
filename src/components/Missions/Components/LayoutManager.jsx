@@ -49,7 +49,7 @@ function LayoutManager() {
 
     try {
       const json = JSON.parse(layouts);
-      
+
       // Delete selected key
       delete json[name];
 
@@ -61,7 +61,7 @@ function LayoutManager() {
     }
   };
 
-  const [columns, setColumns] = useState([
+  const [columns] = useState([
     {
       title: 'Route',
       dataIndex: 'route',
@@ -84,7 +84,7 @@ function LayoutManager() {
           <Button
             type="link"
           >
-            Delete
+            <Icon type="close" />
           </Button>
         </Popconfirm>
       ),
@@ -217,6 +217,9 @@ function LayoutManager() {
   return (
     <div>
       <Table
+        title={() => 'Saved Layouts'}
+        size="small"
+        className="mb-3"
         columns={columns}
         dataSource={data}
         expandedRowRender={({ route, name, key }) => (
@@ -236,6 +239,7 @@ function LayoutManager() {
                 padding={10}
               />
             </pre>
+
             <Button
               onClick={() => saveLayout(route, name, data[key].configuration)}
             >
@@ -362,7 +366,8 @@ function LayoutManager() {
                     </p>
                     <ul className="list-disc list-inside ml-3">
                       <li>
-                        Unique key (i)
+                        Unique key (i) - to avoid conflicts with other layouts,
+                        &nbsp;use the format: dashboardName-key
                       </li>
                       <li>
                         Width (w)
@@ -390,7 +395,7 @@ function LayoutManager() {
                       className="language-json"
                       dangerouslySetInnerHTML={{
                         __html: highlight(
-                          '[\n  {\n    "i": "a",\n    "x": 0,\n    "y": 0,\n    "w": 4,\n    "h": 7,\n    "component": {\n      "name": "Status",\n      "props": {\n        "name": "Ok"\n      }\n    }\n  }\n]',
+                          '[\n  {\n    "i": "dashboardName-a",\n    "x": 0,\n    "y": 0,\n    "w": 4,\n    "h": 7,\n    "component": {\n      "name": "Status",\n      "props": {\n        "name": "Ok"\n      }\n    }\n  }\n]',
                           languages.json,
                           'json',
                         ),
@@ -443,7 +448,6 @@ function LayoutManager() {
       >
         Save Layout
       </Button>
-      
       {
         // activity log from agents
         // output whats going out and in the ports

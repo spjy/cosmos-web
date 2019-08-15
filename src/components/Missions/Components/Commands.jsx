@@ -22,7 +22,9 @@ const Commands = React.memo(() => {
   /** Agent command arguments */
   const [commandArguments, setCommandArguments] = useState('');
   /** Agent command history (to display in the terminal) */
-  const [commandHistory, setCommandHistory] = useState([]);
+  const [commandHistory, setCommandHistory] = useState([
+    '➜ agent',
+  ]);
 
   /** Manages requests for agent list and agent [node] [process] */
   ws.onmessage = ({ data }) => {
