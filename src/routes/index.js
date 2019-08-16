@@ -1139,11 +1139,93 @@ const routes = [
               x: 0,
               y: 1,
               w: 12,
-              h: 12,
+              h: 9,
               component: {
                 name: 'SetValues',
                 props: {
                   name: 'Set Values',
+                  values: {
+                    HDLCEncoder: [
+                      'HDLC_ENCODER_PROPERTIES:PREAMBLE_LENGTH',
+                      'HDLC_ENCODER_PROPERTIES:POSTAMBLE_LENGTH',
+                      'HDLC_ENCODER_PROPERTIES:WAVEFORM',
+                    ],
+                    GmskModulator: [
+                      'bandwidth',
+                      'samplesPerSymbol',
+                      'symbolsDelay',
+                    ],
+                    MultiStageHalfBandResamplerTx: [
+                      'centerFrequency',
+                      'cutoffFrequency',
+                      'delay',
+                      'resamplingRate',
+                      'stopBandAttenuation',
+                    ],
+                    FirKaiserFilterTx: [
+                      'cutoffFrequency',
+                      'samplingFrequency',
+                      'stopBandAttenuation',
+                      'transitionBand',
+                    ],
+                    NcoMixerTx: [
+                      'dopplerFrequency',
+                      'offsetFrequency',
+                      'samplingFrequency',
+                    ],
+                    USRP_Device_Tx: [
+                      'TBD:',
+                    ],
+                    NcoMixerRx: [
+                      'dopplerFrequency',
+                      'offsetFrequency',
+                      'samplingFrequency',
+                    ],
+                    MultiStageHalfBandResamplerRx: [
+                      'centerFrequency',
+                      'cutoffFrequency',
+                      'delay',
+                      'resamplingRate',
+                      'stopBandAttenuation',
+                    ],
+                    FirKaiserFilterRx: [
+                      'cutoffFrequency',
+                      'samplingFrequency',
+                      'stopBandAttenuation',
+                      'transitionBand',
+                    ],
+                    GmskDemodulator: [
+                      'bandwidth',
+                      'samplesPerSymbol',
+                      'symbolsDelay',
+                    ],
+                    UnpackBits: [
+                      'REPACK_BITS_PROPERTIES:BITS_PER_INPUT_BYTE',
+                      'REPACK_BITS_PROPERTIES:BITS_PER_OUTPUT_BYTE',
+                      'REPACK_BITS_PROPERTIES:ENDIANNESS',
+                    ],
+                    Descrambler: [
+                      'DESCRAMBLER_PROPERTIES:LENGTH',
+                      'DESCRAMBLER_PROPERTIES:MASK',
+                      'DESCRAMBLER_PROPERTIES:SEED',
+                    ],
+                    RepackBits: [
+                      'REPACK_BITS_PROPERTIES:BITS_PER_INPUT_BYTE',
+                      'REPACK_BITS_PROPERTIES:BITS_PER_OUTPUT_BYTE',
+                      'REPACK_BITS_PROPERTIES:ENDIANNESS',
+                    ],
+                    UnpackBits2: [
+                      'REPACK_BITS_PROPERTIES:BITS_PER_INPUT_BYTE',
+                      'REPACK_BITS_PROPERTIES:BITS_PER_OUTPUT_BYTE',
+                      'REPACK_BITS_PROPERTIES:ENDIANNESS',
+                    ],
+                    ParseAX25new: [
+                      'PARSEAX25_PROPERTIES:RXWAVEFORM',
+                    ],
+                    USRP_Device_Rx: [
+                      'TBD:',
+                    ],
+                  },
                 },
               },
             },
