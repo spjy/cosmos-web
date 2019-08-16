@@ -1,48 +1,13 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Form, Input, Button, Select,
+  Form, Input, Button, Select, message,
 } from 'antd';
 
 import BaseComponent from '../BaseComponent';
 import socket from '../../../socket';
 
 const ws = socket('query', '/command/');
-
-const transmitApplication = [
-  {
-    application: 'Transmit Application',
-    component: 'File Source',
-    displayName: 'Destination Call Sign',
-    propertyName: 'destination_call_sign',
-    unit: 'dB',
-    validate: (x) => {
-      if (x || x === '') {
-        return true;
-      }
-      return false;
-    },
-    processValue: x => x,
-    error: 'Must be an integer from 0-20.',
-    comment: 'Only applies to HiakaSat Trasmit Application',
-  },
-  {
-    application: 'Transmit Application',
-    component: 'FIR Filter',
-    displayName: 'Sampling Frequency',
-    propertyName: 'sampling_frequency',
-    unit: 'kHz',
-    validate: (x) => {
-      if (Number(x) >= 0 && Number(x) <= 5000) {
-        return true;
-      }
-      return false;
-    },
-    processValue: x => x / 1000,
-    error: 'Must be float from 0-5000.',
-    comment: 'Reads kHz but passes Hz',
-  },
-];
 
 /**
  * A general purpose component.
@@ -54,6 +19,7 @@ function SetValues({
   showStatus,
   status,
   formItems,
+  values,
 }) {
   /** Form storage */
   const [form, setForm] = useState({
@@ -66,8 +32,39 @@ function SetValues({
     '➜ agent',
   ]);
 
-  const setParameter = (application, component, property, value) => {
-    ws.send(`agent masdr ${application} ${component} ${property} ${value}`);
+  const [selectedComponent, setSelectedComponent] = useState(Object.keys(values)[0]);
+
+  const [selectedProperty, setSelectedProperty] = useState(values[Object.keys(values)[0]][0]);
+
+  const setParameter = () => {
+    try {
+      if (!selectedComponent) {
+        message.error('A component is required.');
+      }
+
+      if (!selectedProperty) {
+        message.error('A property is required.');
+      }
+
+      if (!form.value) {
+        message.error('A value is required.');
+      }
+
+      // ws.send(`agent masdr configure_component PropCubeWaveform ${selectedComponent} ${selectedProperty} ${form.value}`);
+
+      setForm({
+        ...form,
+        success: true,
+      });
+
+      message.success('Successfully sent value!');
+    } catch (error) {
+      setForm({
+        ...form,
+        success: false,
+      });
+      message.error(error.message);
+    }
   };
 
   ws.onmessage = ({ data }) => {
@@ -94,149 +91,75 @@ function SetValues({
         }
       </div>
       <Form layout="vertical">
-        {
-          transmitApplication.map(({
-            application,
-            component,
-            displayName,
-            propertyName,
-            unit,
-            validate,
-            error,
-            comment,
-            processValue,
-          }) => (
-            <div key={`${application}${component}`} className="flex w-full flex-wrap">
-              <div className="flex-initial flex-grow p-1">
-                <Form.Item
-                  key={propertyName}
-                  hasFeedback={form[application]
-                    && form[application][propertyName]
-                    && form[application][propertyName].touched
-                  }
-                  validateStatus={form[application] && form[application][propertyName] && form[application][propertyName].changed ? 'success' : ''}
-                  className="-mb-1"
-                  help={comment}
-                >
-
-                  <Input
-                    addonBefore={(
-                      <Input.Group compact>
-                        <Select
-                          defaultValue="AX25"
-                          dropdownMatchSelectWidth={false}
-                        >
-                          <Select.Option value="AX25">
-                            AX25Framer
+        <div className="flex w-full flex-wrap">
+          <div className="flex-initial flex-grow p-1">
+            <Form.Item
+              hasFeedback={form.value}
+              validateStatus={form.value && form.success ? 'success' : ''}
+              className="-mb-1"
+            >
+              <Input
+                addonBefore={(
+                  <Input.Group compact>
+                    <Select
+                      defaultValue={selectedComponent}
+                      dropdownMatchSelectWidth={false}
+                      onChange={(value) => {
+                        setSelectedComponent(value);
+                        setSelectedProperty(values[value][0]);
+                      }}
+                    >
+                      {
+                        Object.keys(values).map(value => (
+                          <Select.Option
+                            key={value}
+                            value={value}
+                          >
+                            {value}
                           </Select.Option>
-                          <Select.Option value="HDLC">
-                            HDLCEncoder
+                        ))
+                      }
+                    </Select>
+                    &nbsp;&nbsp;&nbsp;
+                    <Select
+                      value={selectedProperty}
+                      dropdownMatchSelectWidth={false}
+                      onChange={value => setSelectedProperty(value)}
+                    >
+                      {
+                        values[selectedComponent].map(property => (
+                          <Select.Option
+                            key={property}
+                            value={property}
+                          >
+                            {property}
                           </Select.Option>
-                        </Select>
-                        &nbsp;&nbsp;&nbsp;
-                        <Select
-                          defaultValue="AX25FRAMER_PROPERTIES"
-                          dropdownMatchSelectWidth={false}
-                        >
-                          <Select.Option value="AX25FRAMER_PROPERTIES">
-                            AX25FRAMER_PROPERTIES
-                          </Select.Option>
-                        </Select>
-                      </Input.Group>
-                    )}
-                    placeholder={`${displayName}${unit && unit !== '' ? ` (${unit})` : ''}`}
-                    id={propertyName}
-                    onFocus={({ target: { id: item } }) => setForm({
-                      ...form,
-                      [application]: {
-                        ...form[application],
-                        [item]: {
-                          ...form[application][item],
-                          touched: true,
-                          changed: false,
-                        },
-                      },
-                    })}
-                    onChange={({ target: { id: item, value } }) => setForm({
-                      ...form,
-                      [item]: {
-                        ...form[item],
-                        value,
-                        changed: false,
-                      },
-                      [application]: {
-                        ...form[application],
-                        [item]: {
-                          ...form[application][item],
-                          value,
-                          changed: false,
-                        },
-                      },
-                    })}
-                  />
-                </Form.Item>
-              </div>
+                        ))
+                      }
+                    </Select>
+                  </Input.Group>
+                )}
+                placeholder="Value"
+                id="value"
+                onChange={({ target: { id: item, value } }) => setForm({
+                  ...form,
+                  [item]: value,
+                  success: false,
+                })}
+                value={form.value}
+              />
+            </Form.Item>
+          </div>
 
-              <div className="p-1">
-                <Button
-                  type="danger"
-                  onClick={() => {
-                    if (form[application]
-                      && form[application][propertyName]
-                      && validate(form[application][propertyName].value)
-                    ) {
-                      setParameter(
-                        application,
-                        component,
-                        propertyName,
-                        processValue(form[application][propertyName].value),
-                      );
-                      setForm({
-                        ...form,
-                        [application]: {
-                          ...form[application],
-                          [propertyName]: {
-                            ...form[application][propertyName],
-                            changed: true,
-                            error: null,
-                          },
-                        },
-                      });
-                    } else {
-                      setForm({
-                        ...form,
-                        [application]: {
-                          ...form[application],
-                          [propertyName]: {
-                            ...form[application][propertyName],
-                            changed: false,
-                            error,
-                          },
-                        },
-                      });
-                    }
-                  }}
-                >
-                  Set
-                  &nbsp;
-                  {displayName}
-                  &nbsp;
-                  {
-                    unit && unit !== '' ? `(${unit})` : null
-                  }
-                </Button>
-              </div>
-
-              <div className="text-red-500 w-full ml-1">
-                {form[application]
-                  && form[application][propertyName]
-                  && form[application][propertyName].error
-                  ? form[application][propertyName].error
-                  : null}
-              </div>
-            </div>
-          ))
-        }
+          <div className="p-1">
+            <Button
+              type="danger"
+              onClick={() => setParameter()}
+            >
+              Set Value
+            </Button>
+          </div>
+        </div>
       </Form>
     </BaseComponent>
   );
@@ -265,6 +188,7 @@ SetValues.propTypes = {
   },
   /** Form node */
   formItems: PropTypes.node,
+  values: PropTypes.shape({}).isRequired,
 };
 
 SetValues.defaultProps = {
