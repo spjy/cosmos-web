@@ -299,8 +299,7 @@ function CesiumGlobe({
                       </span>
                     </span>
                   )}
-                  // eslint-disable-next-line
-                  key={i}
+                  key={`${orbit.nodeProcess}${orbit.dataKey}`}
                   extra={(
                     <div
                       onClick={event => event.stopPropagation()}
