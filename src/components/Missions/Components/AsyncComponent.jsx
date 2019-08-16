@@ -10,6 +10,7 @@ import DisplayValue from './DisplayValue';
 import Globe from './Globe';
 import SetValues from './SetValues';
 import Status from './Status';
+import ThreeD from './ThreeD';
 import UploadFile from './UploadFile';
 
 const components = {
@@ -22,6 +23,7 @@ const components = {
   Globe,
   SetValues,
   Status,
+  ThreeD,
   UploadFile,
 };
 
