@@ -30,7 +30,7 @@ function LayoutSelector({
       // If all is well, store in state
       setLayouts(json);
     } catch (error) {
-      message.error('Could not retrieve saved layouts. Resorting to default.', 5);
+      message.success('Using default layout.', 5);
     }
   }, []);
 
