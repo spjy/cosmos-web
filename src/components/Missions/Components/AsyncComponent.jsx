@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Activity from './Activity';
 import Attitude from './Attitude';
 import Clock from './Clock';
 import Chart from './Chart';
@@ -14,6 +15,7 @@ import ThreeD from './ThreeD';
 import UploadFile from './UploadFile';
 
 const components = {
+  Activity,
   Attitude,
   Clock,
   Chart,

@@ -17,6 +17,7 @@ const routes = [
     path: '/satellite/:id',
     component: Dashboard,
     props: {
+      socketType: 'live',
       defaultLayout: {
         lg: [
           {
@@ -684,9 +685,12 @@ const routes = [
               x: 0,
               y: 6,
               w: 12,
-              h: 18,
+              h: 19,
               component: {
                 name: 'ThreeD',
+                props: {
+                  name: 'Attitude',
+                },
               },
             },
           ],
@@ -1034,6 +1038,7 @@ const routes = [
     path: '/gs/:id',
     component: Dashboard,
     props: {
+      socketType: 'gs',
       defaultLayout: {
         lg: [
           {
@@ -1242,7 +1247,7 @@ const routes = [
             {
               i: 'gs-masdr-e',
               x: 0,
-              y: 2,
+              y: 4,
               w: 12,
               h: 38,
               component: {
@@ -1281,6 +1286,18 @@ const routes = [
                   node: 'masdr',
                   proc: 'nordiasoft',
                   command: 'tle',
+                },
+              },
+            },
+            {
+              i: 'gs-masdr-g',
+              x: 0,
+              y: 3,
+              w: 12,
+              h: 7,
+              component: {
+                name: 'Activity',
+                props: {
                 },
               },
             },
