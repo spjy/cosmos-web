@@ -1,12 +1,10 @@
 import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import Worldview, { Cubes, Axes, Text } from 'regl-worldview';
+import Worldview, { GLTFScene, Axes, Grid, Cubes } from 'regl-worldview';
 
-import {
-  Form,
-} from 'antd';
+import model from '../../../public/Duck.glb';
 
-import BaseComponent from '../BaseComponent';
+import Content from './Content';
 import { Context } from '../../../store/neutron1';
 
 /**
@@ -60,36 +58,27 @@ function DisplayValue({
   }, [state]);
 
   return (
-    <Worldview>
-      <Cubes>
-        {[
-          {
+    <>
+      <div className="flex justify-between p-3 dragHandle cursor-move" style={{ backgroundColor: '#f1f1f1' }}>
+        <div className="font-bold text-lg mr-4">
+          {name}
+        </div>
+        {model}
+      </div>
+      <Worldview style={{ height: '90%', width: '100%', display: 'block' }}>
+        <GLTFScene model={model}>
+          {{
             pose: {
+              position: { x: 0, y: -3, z: 0 },
               orientation: { x: 0, y: 0, z: 0, w: 1 },
-              // position the cube at the center
-              position: { x: 0, y: 0, z: 0 },
             },
-            scale: { x: 10, y: 10, z: 10 },
-            // rgba values are between 0 and 1 (inclusive)
-            color: { r: 1, g: 0, b: 0, a: 1 },
-          },
-        ]}
-      </Cubes>
-      <Axes />
-      <Text autoBackgroundColor>
-        {[
-          {
-            text: "Hello, Worldview!",
-            color: { r: 1, g: 1, b: 1, a: 1 },
-            pose: {
-              orientation: { x: 0, y: 0, z: 0, w: 1 },
-              position: { x: 0, y: 5, z: 10 },
-            },
-            scale: { x: 1, y: 1, z: 1 },
-          },
-        ]}
-      </Text>
-    </Worldview>
+            scale: { x: 3, y: 3, z: 3 },
+          }}
+        </GLTFScene>
+        <Axes />
+        <Grid />
+      </Worldview>
+    </>
   );
 }
 

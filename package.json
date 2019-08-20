@@ -29,7 +29,7 @@
     "react-plotly.js": "2.3.0",
     "react-resizable": "1.8.0",
     "react-simple-code-editor": "^0.9.14",
-    "regl-worldview": "^0.1.5-rc4",
+    "regl-worldview": "^0.2.0",
     "resium": "1.5.0",
     "styled-jsx": "^3.2.1"
   },
