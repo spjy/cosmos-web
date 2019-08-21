@@ -1,8 +1,10 @@
 import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import Worldview, { GLTFScene, Axes, Grid, Cubes } from 'regl-worldview';
+import Worldview, {
+  GLTFScene, Axes, Grid, Cubes,
+} from 'regl-worldview';
 
-import model from '../../../public/Duck.glb';
+import model from '../../../public/cubesat.glb';
 
 import Content from './Content';
 import { Context } from '../../../store/neutron1';
