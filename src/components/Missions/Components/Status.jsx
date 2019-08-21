@@ -6,8 +6,6 @@ import { Context } from '../../../store/neutron1';
 import socket from '../../../socket';
 import Content from './Content';
 
-const ws = socket('live', '/live/list');
-
 /**
  * Retrieves the agent list and displays it in a table.
  */
@@ -17,16 +15,12 @@ function Status() {
   /** Component's agent list storage */
   const [list, setList] = useState([]);
 
-
   /** Upon the state.list updating, update the store's list */
   useEffect(() => {
     if (state.list) {
       setList(state.list.agent_list);
     }
   }, [state.list]);
-
-  /** Close the WS on unmount */
-  useEffect(() => () => ws.close(1000), []);
 
   return (
     <Content
