@@ -33,7 +33,7 @@ CESIUM_ION_TOKEN= # Token for the globe simulation (optional)
 ```
 
 If you need to run Agent Mongo, the server component of COSMOS Web, see this repository: https://github.com/spjy/cosmos-mongodb
-If you need to run Agent Socket, which is Agent Mongo without the database component, see this repository: https://github.com/spjy/cosmos-mongodb
+If you need to run Agent Socket, which is Agent Mongo without the database component, see this repository: https://github.com/spjy/cosmos-socket
 
 ## Running
 
