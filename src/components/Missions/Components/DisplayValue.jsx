@@ -52,7 +52,7 @@ function DisplayValue({
       ) {
         // If it does, change the value
         displayValuesState[i].value = state[v.nodeProcess][v.dataKey];
-        displayValuesState[i].utc = moment.unix((((state[v.nodeProcess].utc + 2400000.5) - 2440587.5) * 86400.0)).format('YYYYMMDDTHH:mm:ss');
+        displayValuesState[i].utc = moment.unix((((state[v.nodeProcess].utc + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss');
       }
     });
   }, [state]);

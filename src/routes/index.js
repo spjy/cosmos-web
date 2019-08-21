@@ -154,7 +154,7 @@ const routes = [
               props: {
                 name: 'Temperature',
                 XDataKey: 'utc',
-                processXDataKey: x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss'),
+                processXDataKey: x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                 plots: [
                   {
                     x: [],
@@ -210,7 +210,7 @@ const routes = [
               props: {
                 name: 'Voltage',
                 XDataKey: 'utc',
-                processXDataKey: x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss'),
+                processXDataKey: x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                 plots: [
                   {
                     x: [],
@@ -263,7 +263,7 @@ const routes = [
               props: {
                 name: 'Amperage',
                 XDataKey: 'utc',
-                processXDataKey: x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss'),
+                processXDataKey: x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                 plots: [
                   {
                     x: [],
@@ -489,7 +489,7 @@ const routes = [
                 props: {
                   name: 'Temperature',
                   XDataKey: 'utc',
-                  processXDataKey: x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss'),
+                  processXDataKey: x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                   plots: [
                     {
                       x: [],
@@ -545,7 +545,7 @@ const routes = [
                 props: {
                   name: 'Voltage',
                   XDataKey: 'utc',
-                  processXDataKey: x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss'),
+                  processXDataKey: x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                   plots: [
                     {
                       x: [],
@@ -598,7 +598,7 @@ const routes = [
                 props: {
                   name: 'Amperage',
                   XDataKey: 'utc',
-                  processXDataKey: x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss'),
+                  processXDataKey: x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                   plots: [
                     {
                       x: [],
@@ -836,7 +836,7 @@ const routes = [
                 props: {
                   name: 'Temperature',
                   XDataKey: 'utc',
-                  processXDataKey: x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss'),
+                  processXDataKey: x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                   plots: [
                     {
                       x: [],
@@ -892,7 +892,7 @@ const routes = [
                 props: {
                   name: 'Voltage',
                   XDataKey: 'utc',
-                  processXDataKey: x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss'),
+                  processXDataKey: x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                   plots: [
                     {
                       x: [],
@@ -945,7 +945,7 @@ const routes = [
                 props: {
                   name: 'Amperage',
                   XDataKey: 'utc',
-                  processXDataKey: x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DD HH:mm:ss'),
+                  processXDataKey: x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                   plots: [
                     {
                       x: [],
