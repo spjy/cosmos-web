@@ -115,15 +115,7 @@ BaseComponent.propTypes = {
   /** Whether to show a circular indicator of the status of the component */
   showStatus: PropTypes.bool,
   /** The type of badge to show if showStatus is true (see the ant design badges component) */
-  status: ({ showStatus }, propName, componentName) => {
-    if (showStatus) {
-      return new Error(
-        `${propName} is required when showStatus is true in ${componentName}.`,
-      );
-    }
-
-    return null;
-  },
+  status: PropTypes.string,
   /** Callback function to launch event when form gets submitted */
   submitForm: PropTypes.func,
   /** The main content of the component */
