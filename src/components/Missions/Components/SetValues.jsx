@@ -50,7 +50,7 @@ function SetValues({
         message.error('A value is required.');
       }
 
-      // ws.send(`agent masdr configure_component PropCubeWaveform ${selectedComponent} ${selectedProperty} ${form.value}`);
+      ws.send(`agent masdr configure_component PropCubeWaveform ${selectedComponent} ${selectedProperty} ${form.value}`);
 
       setForm({
         ...form,
