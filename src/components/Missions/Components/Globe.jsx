@@ -18,7 +18,9 @@ import socket from '../../../socket';
 const { Panel } = Collapse;
 const { RangePicker } = DatePicker;
 
-Cesium.Ion.defaultAccessToken = process.env.CESIUM_ION_TOKEN;
+if (process.env.CESIUM_ION_TOKEN) {
+  Cesium.Ion.defaultAccessToken = process.env.CESIUM_ION_TOKEN;
+}
 
 function getPos(lat, long, height) {
   const pos = Cesium.Cartesian3.fromArray([lat, long, height]);
