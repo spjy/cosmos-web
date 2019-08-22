@@ -1258,7 +1258,7 @@ const routes = [
                     {
                       name: 'neutron1',
                       modelFileName: 'cubesat1.glb',
-                      nodeProcess: 'cubesat1:propagator_simple',
+                      nodeProcess: 'masdr:nordiasoft',
                       live: true,
                       position: [21.289373, 157.917480, 350000.0],
                       orientation: {
