@@ -105,48 +105,11 @@ function CesiumGlobe({
         }
 
         tempOrbit[i].position = state[orbit.nodeProcess].node_loc_pos_eci.pos;
-        tempOrbit[i].orientation = state[orbit.nodeProcess].node_loc_att_icrf.pos;
 
         setOrbitsState(tempOrbit);
       }
     });
   }, [state]);
-
-  // useEffect(() => {
-  //   const t = setTimeout(() => {
-  //     const temp = [...orbitsState];
-
-  //     temp[0].position = [
-  //       temp[0].position[0] += 1,
-  //       temp[0].position[1] += 1,
-  //       temp[0].position[2] += 1,
-  //     ];
-
-  //     setOrbitsState(temp);
-  //   }, 1000);
-
-  //   console.log(orbitsState[0]);
-
-  //   return () => {
-  //     clearTimeout(t);
-  //   };
-  // }, [orbitsState]);
-
-
-  // useEffect(() => {
-  //   const timeout = setTimeout(() => {
-  //     setX(x + 0.5);
-  //     setY(y + 0.5);
-
-  //     console.log(x, y);
-  //   }, 100);
-
-  //   return () => {
-  //     clearTimeout(timeout);
-  //   };
-  // }, [x]);
-
-  // ground track
 
   /** Handle the collection of historical data */
   useEffect(() => {
@@ -680,14 +643,6 @@ function CesiumGlobe({
                 <Entity
                   key={orbit.name}
                   position={orbit.path}
-                  orientation={Cesium.VelocityOrientationProperty(
-                    Cesium.Quaternion(
-                      orbit.orientation.w,
-                      orbit.orientation.d.x,
-                      orbit.orientation.d.y,
-                      orbit.orientation.d.z,
-                    ),
-                  )}
                 >
                   <Model
                     modelMatrix={getPos(orbit.position[0], orbit.position[1], orbit.position[2])}
