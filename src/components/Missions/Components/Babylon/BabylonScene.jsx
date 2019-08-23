@@ -50,7 +50,7 @@ class ThreeD extends Component {
 
   render() {
     return (
-      <canvas className="h-full w-full" id="scene" ref={this.onCanvasLoaded} />
+      <canvas id="scene" ref={this.onCanvasLoaded} />
     );
   }
 }
