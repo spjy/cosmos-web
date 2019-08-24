@@ -1,18 +1,21 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Input, Select, Tooltip } from 'antd';
+import PropTypes from 'prop-types';
+import { Input, Select, Tooltip, Button, Icon, message, } from 'antd';
 
 import { Context } from '../../../store/neutron1';
 import BaseComponent from '../BaseComponent';
 import socket from '../../../socket';
+import Search from 'antd/lib/input/Search';
 
 const ws = socket('query', '/command/');
+// const live = socket('live', '/live/list');
 
 /**
  * Send commands to agents. Simulates a CLI.
  */
 const Commands = React.memo(() => {
   /** Agents */
-  const [agentList, setAgentList] = useState([]);
+  // const [agentList, setAgentList] = useState([]);
   /** Selected agent to get requests from */
   const [selectedAgent, setSelectedAgent] = useState([]);
   /** Requests possible from selectedAgent */
@@ -22,9 +25,7 @@ const Commands = React.memo(() => {
   /** Agent command arguments */
   const [commandArguments, setCommandArguments] = useState('');
   /** Agent command history (to display in the terminal) */
-  const [commandHistory, setCommandHistory] = useState([
-    '➜ agent',
-  ]);
+  const [commandHistory, setCommandHistory] = useState([]);
 
   /** Manages requests for agent list and agent [node] [process] */
   ws.onmessage = ({ data }) => {
@@ -32,27 +33,38 @@ const Commands = React.memo(() => {
 
     try {
       json = JSON.parse(data);
-    } catch (err) {
-      // console.log(err);
-    }
 
-    if (json && json.output && json.output.requests) {
-      // agent node proc
-      setAgentRequests(json.output.requests);
-    } else if (json && json.output) {
-      // agent node proc cmd
-      setCommandHistory([...commandHistory, json.output]);
+      if (json.output && json.output.requests) {
+        // agent node proc
+        setAgentRequests(json.output.requests);
+
+        message.success(`Retrieved agent requests for ${selectedAgent[0]}:${selectedAgent[1]}.`, 5);
+      } else if (json && json.output) {
+        // agent node proc cmd
+        setCommandHistory([...commandHistory, json.output]);
+      }
+    } catch (error) {
+      message.error(error.message);
     }
   };
 
+  // live.onmessage = ({ data }) => {
+  //   try {
+  //     const json = JSON.parse(data);
 
-  const { state } = useContext(Context);
 
-  useEffect(() => {
-    if (state.list) {
-      setAgentList(state.list.agent_list);
-    }
-  }, [state.list]);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
+
+  // const { state } = useContext(Context);
+
+  // useEffect(() => {
+    // if (state.list) {
+    //   setAgentList(state.list.agent_list);
+    // }
+  // }, [state.list]);
 
   /** Close ws on unmount */
   useEffect(() => () => ws.close(), []);
@@ -87,26 +99,39 @@ const Commands = React.memo(() => {
       liveOnly
       showStatus={false}
     >
-      <Select
-        className="w-full mb-2"
-        dropdownMatchSelectWidth={false}
-        onChange={(value) => {
-          setAgentRequests([]);
-          setSelectedAgent(value.split(':'));
-        }}
-        placeholder="Select agent node and process"
-      >
-        {
-          agentList.map(({ agent }) => (
-            <Select.Option
-              key={agent}
-              value={agent}
-            >
-              {agent}
-            </Select.Option>
-          ))
-        }
-      </Select>
+      <div className="flex flex-wrap">
+        {/* <div
+          className="pr-1 w-1/2"
+        >
+          <Select
+            className="block mb-2"
+            dropdownMatchSelectWidth={false}
+            onChange={(value) => {
+              setAgentRequests([]);
+              setSelectedAgent(value.split(':'));
+            }}
+            placeholder="Select agent node and process"
+          >
+            {
+              agentList.map(({ agent }) => (
+                <Select.Option
+                  key={agent}
+                  value={agent}
+                >
+                  {agent}
+                </Select.Option>
+              ))
+            }
+          </Select>
+        </div> */}
+        <div className="w-full py-2">
+          <Search
+            placeholder="Select node:process"
+            onSearch={value => setSelectedAgent(value.split(':'))}
+            enterButton={<Icon type="select" />}
+          />
+        </div>
+      </div>
       <div className="border border-gray-300 rounded mb-2 p-4 bg-white font-mono h-32 max-h-full resize-y overflow-y-scroll">
         {
           // eslint-disable-next-line
@@ -114,6 +139,7 @@ const Commands = React.memo(() => {
         }
       </div>
       <div className="flex">
+
         <Input
           addonBefore={(
             <Select
