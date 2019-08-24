@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { Input, Select, Tooltip, Button, Icon, message, } from 'antd';
+import { Input, Select, Tooltip, Button, Icon, message } from 'antd';
 
 import { Context } from '../../../store/neutron1';
 import BaseComponent from '../BaseComponent';
@@ -26,13 +26,13 @@ const Commands = React.memo(() => {
   const [commandArguments, setCommandArguments] = useState('');
   /** Agent command history (to display in the terminal) */
   const [commandHistory, setCommandHistory] = useState([]);
+  
+  const cliEl = useRef(null);
 
   /** Manages requests for agent list and agent [node] [process] */
   ws.onmessage = ({ data }) => {
-    let json;
-
     try {
-      json = JSON.parse(data);
+      const json = JSON.parse(data);
 
       if (json.output && json.output.requests) {
         // agent node proc
@@ -41,7 +41,24 @@ const Commands = React.memo(() => {
         message.success(`Retrieved agent requests for ${selectedAgent[0]}:${selectedAgent[1]}.`, 5);
       } else if (json && json.output) {
         // agent node proc cmd
-        setCommandHistory([...commandHistory, json.output]);
+
+        const jsonOutput = JSON.stringify(json.output);
+
+        if (jsonOutput) {
+          setCommandHistory([
+            ...commandHistory,
+            jsonOutput,
+          ]);
+        } else {
+          setCommandHistory([
+            ...commandHistory,
+            json.output,
+          ]);
+        }
+
+        cliEl.current.scrollTop = cliEl.current.scrollHeight;
+      } else if (json.error) {
+        throw new Error(json.error);
       }
     } catch (error) {
       message.error(error.message);
@@ -73,11 +90,19 @@ const Commands = React.memo(() => {
   const sendCommand = () => {
     if (selectedRequest === '> agent') {
       ws.send(commandArguments);
-      setCommandHistory([...commandHistory, `➜ agent ${commandArguments}`]);
+      setCommandHistory([
+        ...commandHistory,
+        `➜ agent ${commandArguments}`,
+      ]);
     } else {
       ws.send(`${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${commandArguments}`);
-      setCommandHistory([...commandHistory, `➜ agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${commandArguments}`]);
+      setCommandHistory([
+        ...commandHistory,
+        `➜ agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${commandArguments}`,
+      ]);
     }
+
+    cliEl.current.scrollTop = cliEl.current.scrollHeight;
   };
 
   /** Get the possible requests for selected agent */
@@ -94,7 +119,7 @@ const Commands = React.memo(() => {
 
   return (
     <BaseComponent
-      name="Agent Commands"
+      name="Commands"
       subheader=""
       liveOnly
       showStatus={false}
@@ -132,14 +157,16 @@ const Commands = React.memo(() => {
           />
         </div>
       </div>
-      <div className="border border-gray-300 rounded mb-2 p-4 bg-white font-mono h-32 max-h-full resize-y overflow-y-scroll">
+      <div
+        className="border border-gray-300 rounded mb-2 p-4 bg-white font-mono h-32 max-h-full resize-y overflow-y-scroll"
+        ref={cliEl}
+      >
         {
           // eslint-disable-next-line
           commandHistory.map((command, i) => (<div key={i}>{ command }</div>))
         }
       </div>
       <div className="flex">
-
         <Input
           addonBefore={(
             <Select
@@ -153,6 +180,7 @@ const Commands = React.memo(() => {
                   ➜ agent
                 </Tooltip>
               </Select.Option>
+
               {
                 agentRequests.map(({ token, synopsis, description }) => (
                   <Select.Option value={token} key={token}>

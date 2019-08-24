@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Form, Input, Button, Select, message,
+  Form, Input, Button, Select, message, Card,
 } from 'antd';
 
 import BaseComponent from '../BaseComponent';
@@ -20,59 +20,105 @@ function SetValues({
   status,
   formItems,
   values,
+  node,
+  proc,
 }) {
   /** Form storage */
-  const [form, setForm] = useState({
-    'Transmit Application': {},
-  });
+  const [form, setForm] = useState({});
   /** Status of the live switch */
   const [, setLiveSwitch] = useState();
 
-  const [commandHistory, setCommandHistory] = useState([
-    '➜ agent',
-  ]);
+  const [commandHistory, setCommandHistory] = useState([]);
 
   const [selectedComponent, setSelectedComponent] = useState(Object.keys(values)[0]);
 
   const [selectedProperty, setSelectedProperty] = useState(values[Object.keys(values)[0]][0]);
 
-  const setParameter = () => {
-    try {
-      if (!selectedComponent) {
-        message.error('A component is required.');
-      }
+  const [liveValues, setLiveValues] = useState([]);
 
-      if (!selectedProperty) {
-        message.error('A property is required.');
-      }
-
-      if (!form.value) {
-        message.error('A value is required.');
-      }
-
-      ws.send(`agent masdr configure_component PropCubeWaveform ${selectedComponent} ${selectedProperty} ${form.value}`);
-
-      setForm({
-        ...form,
-        success: true,
-      });
-
-      message.success('Successfully sent value!');
-    } catch (error) {
-      setForm({
-        ...form,
-        success: false,
-      });
-      message.error(error.message);
-    }
-  };
+  const cliEl = useRef(null);
 
   ws.onmessage = ({ data }) => {
     setCommandHistory([
       ...commandHistory,
       data,
     ]);
+
+    cliEl.current.scrollTop = cliEl.current.scrollHeight;
   };
+
+  const setParameter = () => {
+    try {
+      if (!selectedComponent) {
+        throw new Error('A component is required.');
+      }
+
+      if (!selectedProperty) {
+        throw new Error('A property is required.');
+      }
+
+      if (!form.value || form.value === '') {
+        throw new Error('A value is required.');
+      }
+
+      ws.send(`${node} ${proc} configure_component PropCubeWaveform ${selectedComponent} ${selectedProperty} ${form.value}`);
+
+      setCommandHistory([
+        ...commandHistory,
+        `➜ agent ${node} ${proc} configure_component PropCubeWaveform ${selectedComponent} ${selectedProperty} ${form.value}`,
+      ]);
+
+      cliEl.current.scrollTop = cliEl.current.scrollHeight;
+
+      setForm({
+        ...form,
+        value: '',
+        success: true,
+      });
+    } catch (error) {
+      setForm({
+        ...form,
+        success: false,
+      });
+
+      message.error(error.message);
+    }
+  };
+
+  const getValue = () => {
+    const components = socket('query', '/command/');
+
+    components.onopen = () => {
+      components.send(`${node} ${proc} component PropCubeWaveform ${selectedComponent}`);
+
+      components.onmessage = ({ data }) => {
+        try {
+          const json = JSON.parse(data);
+
+          if (json.output && json.output.properties) {
+            setLiveValues(json.output.properties);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+
+        components.close();
+      };
+    };
+  };
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      getValue();
+    }, 1000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [liveValues, selectedComponent]);
+
+  /** Close ws on unmount */
+  useEffect(() => () => ws.close(), []);
 
   return (
     <BaseComponent
@@ -84,7 +130,10 @@ function SetValues({
       formItems={formItems}
       handleLiveSwitchChange={checked => setLiveSwitch(checked)}
     >
-      <div className="border border-gray-300 rounded mb-2 p-4 bg-white font-mono h-32 max-h-full resize-y overflow-y-scroll">
+      <div
+        className="border border-gray-300 rounded mb-2 p-4 bg-white font-mono h-32 max-h-full resize-y overflow-y-scroll"
+        ref={cliEl}
+      >
         {
           // eslint-disable-next-line
           commandHistory.map((command, i) => (<div key={i}>{ command }</div>))
@@ -92,9 +141,9 @@ function SetValues({
       </div>
       <Form layout="vertical">
         <div className="flex w-full flex-wrap">
-          <div className="flex-initial flex-grow p-1">
+          <div className="flex-initial flex-grow pr-2">
             <Form.Item
-              hasFeedback={form.value}
+              hasFeedback={form.value ? true : false}
               validateStatus={form.value && form.success ? 'success' : ''}
               className="-mb-1"
             >
@@ -141,26 +190,62 @@ function SetValues({
                 )}
                 placeholder="Value"
                 id="value"
-                onChange={({ target: { id: item, value } }) => setForm({
-                  ...form,
-                  [item]: value,
-                  success: false,
-                })}
+                onChange={({ target: { value } }) => {
+                  setForm({
+                    ...form,
+                    value,
+                  });
+                }}
                 value={form.value}
+                onPressEnter={() => setParameter()}
               />
             </Form.Item>
           </div>
 
-          <div className="p-1">
-            <Button
-              type="danger"
-              onClick={() => setParameter()}
-            >
-              Set Value
-            </Button>
-          </div>
+          <Button
+            type="danger"
+            onClick={() => setParameter()}
+          >
+            Set Value
+          </Button>
         </div>
       </Form>
+
+      <Card className="my-1">
+        <table>
+          <tbody>
+            {
+              liveValues.map(({ id, type, value }) => (
+                <div key={id}>
+                  {
+                    type === 'sequence'
+                      ? value.map(val => (
+                        <tr key={`${id}${val.id}`}>
+                          <td className="pr-2">
+                            {id}:{val.id}
+                          </td>
+                          <td className="text-gray-500">
+                            {val.value}
+                          </td>
+                        </tr>
+                      ))
+                      : (
+                        <tr key={id}>
+                          <td className="pr-2">
+                            {id}
+                          </td>
+                          <td className="text-gray-500">
+                            {value}
+                          </td>
+                        </tr>
+                      )
+                  }
+                </div>
+              ))
+            }
+          </tbody>
+        </table>
+      </Card>
     </BaseComponent>
   );
 }
@@ -189,6 +274,8 @@ SetValues.propTypes = {
   /** Form node */
   formItems: PropTypes.node,
   values: PropTypes.shape({}).isRequired,
+  node: PropTypes.string.isRequired,
+  proc: PropTypes.string.isRequired,
 };
 
 SetValues.defaultProps = {
