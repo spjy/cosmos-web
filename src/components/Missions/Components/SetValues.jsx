@@ -216,13 +216,15 @@ function SetValues({
           <tbody>
             {
               liveValues.map(({ id, type, value }) => (
-                <div key={id}>
+                <>
                   {
                     type === 'sequence'
                       ? value.map(val => (
                         <tr key={`${id}${val.id}`}>
                           <td className="pr-2">
-                            {id}:{val.id}
+                            {id}
+                            :
+                            {val.id}
                           </td>
                           <td className="text-gray-500">
                             {val.value}
@@ -240,7 +242,7 @@ function SetValues({
                         </tr>
                       )
                   }
-                </div>
+                </>
               ))
             }
           </tbody>

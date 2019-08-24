@@ -176,7 +176,7 @@ const Commands = React.memo(() => {
               onChange={value => setSelectedRequest(value)}
             >
               <Select.Option value="> agent">
-                <Tooltip placement="topLeft" title="node process [arguments]">
+                <Tooltip placement="right" title="node process [arguments]">
                   ➜ agent
                 </Tooltip>
               </Select.Option>
@@ -184,7 +184,7 @@ const Commands = React.memo(() => {
               {
                 agentRequests.map(({ token, synopsis, description }) => (
                   <Select.Option value={token} key={token}>
-                    <Tooltip placement="topLeft" title={`${synopsis ? `${synopsis} ` : ''}${description}`}>
+                    <Tooltip placement="right" title={`${synopsis ? `${synopsis} ` : ''}${description}`}>
                       { token }
                     </Tooltip>
                   </Select.Option>
