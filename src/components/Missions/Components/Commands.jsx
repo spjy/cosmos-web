@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
-import PropTypes from 'prop-types';
-import { Input, Select, Tooltip, Button, Icon, message } from 'antd';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  Input, Select, Tooltip, Icon, message,
+} from 'antd';
+
+import Search from 'antd/lib/input/Search';
 
 import { Context } from '../../../store/neutron1';
 import BaseComponent from '../BaseComponent';
 import socket from '../../../socket';
-import Search from 'antd/lib/input/Search';
 
 const ws = socket('query', '/command/');
 // const live = socket('live', '/live/list');
@@ -26,7 +28,7 @@ const Commands = React.memo(() => {
   const [commandArguments, setCommandArguments] = useState('');
   /** Agent command history (to display in the terminal) */
   const [commandHistory, setCommandHistory] = useState([]);
-  
+
   const cliEl = useRef(null);
 
   /** Manages requests for agent list and agent [node] [process] */
@@ -61,6 +63,11 @@ const Commands = React.memo(() => {
         throw new Error(json.error);
       }
     } catch (error) {
+      setCommandHistory([
+        ...commandHistory,
+        data,
+      ]);
+
       message.error(error.message);
     }
   };
