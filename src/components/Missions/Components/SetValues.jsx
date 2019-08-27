@@ -97,6 +97,8 @@ function SetValues({
 
           if (json.output && json.output.properties) {
             setLiveValues(json.output.properties);
+          } else if (json.output && json.output.error) {
+            setLiveValues([{ id: json.output.error }]);
           }
         } catch (error) {
           console.log(error);
