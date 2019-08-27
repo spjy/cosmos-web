@@ -1108,30 +1108,20 @@ const routes = [
         defaultLayout: {
           lg: [
             {
-              i: 'gs-masdr-a',
+              i: 'gs-masdr-b',
               x: 0,
               y: 0,
-              w: 3,
-              h: 7,
-              component: {
-                name: 'Status',
-              },
-            },
-            {
-              i: 'gs-masdr-b',
-              x: 3,
-              y: 0,
-              w: 3,
+              w: 4,
               h: 7,
               component: {
                 name: 'DisplayValue',
                 props: {
-                  name: 'Ground Station Values',
+                  name: 'GS Values',
                   displayValues: [
                     {
-                      name: 'Doppler Shift',
-                      nodeProcess: 'masdir:groundstation',
-                      dataKey: '',
+                      name: 'Frequency',
+                      nodeProcess: 'masdr:nordiasoft',
+                      dataKey: 'device_tcv_freq_000',
                       unit: 'Hz',
                       processDataKey: x => x.toFixed(2),
                     },
@@ -1141,24 +1131,36 @@ const routes = [
             },
             {
               i: 'gs-masdr-c',
-              x: 6,
+              x: 4,
               y: 0,
-              w: 3,
+              w: 4,
               h: 7,
               component: {
                 name: 'Clock',
               },
             },
             {
-              i: 'gs-masdr-d',
+              i: 'gs-masdr-h',
               x: 0,
               y: 1,
+              w: 12,
+              h: 10,
+              component: {
+                name: 'Commands',
+              },
+            },
+            {
+              i: 'gs-masdr-d',
+              x: 0,
+              y: 2,
               w: 12,
               h: 9,
               component: {
                 name: 'SetValues',
                 props: {
                   name: 'Set Values',
+                  node: 'masdr',
+                  proc: 'nordiasoft',
                   values: {
                     HDLCEncoder: [
                       'HDLC_ENCODER_PROPERTIES:PREAMBLE_LENGTH',
@@ -1247,7 +1249,7 @@ const routes = [
             {
               i: 'gs-masdr-e',
               x: 0,
-              y: 4,
+              y: 5,
               w: 12,
               h: 38,
               component: {
@@ -1276,9 +1278,9 @@ const routes = [
             },
             {
               i: 'gs-masdr-f',
-              x: 9,
+              x: 8,
               y: 0,
-              w: 3,
+              w: 4,
               h: 7,
               component: {
                 name: 'UploadFile',
@@ -1292,7 +1294,7 @@ const routes = [
             {
               i: 'gs-masdr-g',
               x: 0,
-              y: 3,
+              y: 4,
               w: 12,
               h: 7,
               component: {
