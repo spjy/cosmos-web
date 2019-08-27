@@ -7,6 +7,7 @@ import Worldview, {
 import model from '../../../public/cubesat.glb';
 
 import Content from './Content';
+import BaseComponent from '../BaseComponent';
 import { Context } from '../../../store/neutron1';
 
 /**
@@ -61,13 +62,13 @@ function DisplayValue({
 
   return (
     <>
-      <div className="flex justify-between p-3 dragHandle cursor-move" style={{ backgroundColor: '#f1f1f1' }}>
+      {/* <div className="flex justify-between p-3 dragHandle cursor-move" style={{ backgroundColor: '#f1f1f1' }}>
         <div className="font-bold text-lg mr-4">
           {name}
         </div>
         {model}
-      </div>
-      <Worldview style={{ height: '90%', width: '100%', display: 'block' }}>
+      </div> */}
+      <Worldview>
         <GLTFScene model={model}>
           {{
             pose: {
