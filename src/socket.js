@@ -7,7 +7,6 @@ function socket(type, endpoint) {
   let ws = new WebSocket(`ws://${process.env.WEBSOCKET_IP}:${type === 'query' ? process.env.QUERY_WEBSOCKET_PORT : ''}${type === 'live' ? process.env.LIVE_WEBSOCKET_PORT : ''}${endpoint}`);
 
   ws.onclose = (error) => {
-    console.log(`closed ws://${process.env.WEBSOCKET_IP}:${type === 'query' ? process.env.QUERY_WEBSOCKET_PORT : ''}${type === 'live' ? process.env.LIVE_WEBSOCKET_PORT : ''}${endpoint}`);
     switch (error.code) {
       case 1000:
         // Closed peacefully

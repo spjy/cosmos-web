@@ -113,7 +113,6 @@ const Commands = React.memo(({
           const json = JSON.parse(data);
           
           if (json.output && json.output.instantiated) {
-            console.log(json);
             setMacros(json.output.instantiated);
           }
         } catch (error) {
@@ -127,14 +126,7 @@ const Commands = React.memo(({
 
   useEffect(() => {
     getValue();
-    console.log('run');
-    const timeout = setTimeout(() => {
-    }, 5000);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [updateMacros, macros]);
+  }, [updateMacros]);
 
   /** Close ws on unmount */
   useEffect(() => () => ws.close(), []);
@@ -148,7 +140,6 @@ const Commands = React.memo(({
         `➜ agent ${commandArguments}`,
       ]);
     } else {
-      console.log(`${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${macro ? `${macro} ` : ''}${commandArguments}`);
       ws.send(`${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${macro ? `${macro} ` : ''}${commandArguments}`);
       setCommandHistory([
         ...commandHistory,
@@ -213,7 +204,7 @@ const Commands = React.memo(({
       </div>
       <div className="flex">
         <Select
-          className="flex-initial flex-grow mb-2 pr-1"
+          className="flex-initial flex-grow mb-2 pr-2"
           dropdownMatchSelectWidth={false}
           onChange={(value) => {
             setMacro(value);
