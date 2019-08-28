@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 import {
-  Input, Select, Tooltip, Icon, message,
+  Input, Select, Tooltip, Icon, message, Button,
 } from 'antd';
 
 import Search from 'antd/lib/input/Search';
@@ -15,7 +16,9 @@ const ws = socket('query', '/command/');
 /**
  * Send commands to agents. Simulates a CLI.
  */
-const Commands = React.memo(() => {
+const Commands = React.memo(({
+  // macros,
+}) => {
   /** Agents */
   // const [agentList, setAgentList] = useState([]);
   /** Selected agent to get requests from */
@@ -28,6 +31,14 @@ const Commands = React.memo(() => {
   const [commandArguments, setCommandArguments] = useState('');
   /** Agent command history (to display in the terminal) */
   const [commandHistory, setCommandHistory] = useState([]);
+  /** Save the last sent argument value */
+  const [lastArgument, setLastArgument] = useState(null);
+  /** For quickly using frequently used values in command */
+  const [macro, setMacro] = useState('');
+
+  const [macros, setMacros] = useState([]);
+
+  const [updateMacros, setUpdateMacros] = useState(false);
 
   const cliEl = useRef(null);
 
@@ -90,6 +101,41 @@ const Commands = React.memo(() => {
     // }
   // }, [state.list]);
 
+
+  const getValue = () => {
+    const installed = socket('query', '/command/');
+
+    installed.onopen = () => {
+      installed.send('masdr nordiasoft list_applications');
+
+      installed.onmessage = ({ data }) => {
+        try {
+          const json = JSON.parse(data);
+          
+          if (json.output && json.output.instantiated) {
+            console.log(json);
+            setMacros(json.output.instantiated);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+
+        installed.close();
+      };
+    };
+  };
+
+  useEffect(() => {
+    getValue();
+    console.log('run');
+    const timeout = setTimeout(() => {
+    }, 5000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [updateMacros, macros]);
+
   /** Close ws on unmount */
   useEffect(() => () => ws.close(), []);
 
@@ -102,10 +148,11 @@ const Commands = React.memo(() => {
         `➜ agent ${commandArguments}`,
       ]);
     } else {
-      ws.send(`${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${commandArguments}`);
+      console.log(`${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${macro ? `${macro} ` : ''}${commandArguments}`);
+      ws.send(`${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${macro ? `${macro} ` : ''}${commandArguments}`);
       setCommandHistory([
         ...commandHistory,
-        `➜ agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${commandArguments}`,
+        `➜ agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${macro ? `${macro} ` : ''}${commandArguments}`,
       ]);
     }
 
@@ -163,6 +210,30 @@ const Commands = React.memo(() => {
             enterButton={<Icon type="select" />}
           />
         </div>
+      </div>
+      <div className="flex">
+        <Select
+          className="flex-initial flex-grow mb-2 pr-1"
+          dropdownMatchSelectWidth={false}
+          onChange={(value) => {
+            setMacro(value);
+          }}
+          placeholder="Select macro"
+        >
+          {
+            macros.map(name => (
+              <Select.Option
+                key={name}
+                value={name}
+              >
+                {name}
+              </Select.Option>
+            ))
+          }
+        </Select>
+        <Button className="mb-2" onClick={() => setUpdateMacros(!updateMacros)}>
+          Update Macros
+        </Button>
       </div>
       <div
         className="border border-gray-300 rounded mb-2 p-4 bg-white font-mono h-32 max-h-full resize-y overflow-y-scroll"
@@ -225,5 +296,17 @@ const Commands = React.memo(() => {
     </BaseComponent>
   );
 });
+
+// Commands.propTypes = {
+//   macros: PropTypes.arrayOf(
+//     PropTypes.shape({
+//       name: PropTypes.name,
+//     }),
+//   ),
+// };
+
+// Commands.defaultProps = {
+//   macros: [],
+// }
 
 export default Commands;
