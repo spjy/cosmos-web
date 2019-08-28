@@ -1144,7 +1144,7 @@ const routes = [
               x: 0,
               y: 1,
               w: 12,
-              h: 10,
+              h: 12,
               component: {
                 name: 'Commands',
               },
@@ -1154,7 +1154,7 @@ const routes = [
               x: 0,
               y: 2,
               w: 12,
-              h: 9,
+              h: 14,
               component: {
                 name: 'SetValues',
                 props: {
