@@ -4,9 +4,8 @@
 
 ### Requirements
 
-1. Node.js
-2. NPM
-3. [Agent Socket](https://github.com/spjy/cosmos-socket)
+1. [Node.js 10.x](https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions)
+2. [Agent Socket](https://github.com/spjy/cosmos-socket)
 
 ### Installing
 
@@ -38,7 +37,7 @@ Agent Socket, the server portion of COSMOS Web, handles the incoming UDP data an
 ### Requirements
 
 1. C++17
-2. GCC/G++ 7.4.0+
+2. [GCC/G++ 7.4.0+](https://gist.github.com/jlblancoc/99521194aba975286c80f93e47966dc5)
 3. [Crypto](https://github.com/openssl/openssl)
 4. [Boost](https://www.boost.org/doc/libs/1_66_0/more/getting_started/unix-variants.html)
 
