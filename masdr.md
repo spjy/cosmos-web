@@ -31,9 +31,6 @@ LIVE_WEBSOCKET_PORT=8081 # Port of the WS to access the live endpoints
 CESIUM_ION_TOKEN= # Token for the globe simulation (optional)
 ```
 
-## Running
-
-
 ## Agent Socket
 
 Agent Socket, the server portion of COSMOS Web, handles the incoming UDP data and retrieves data from other agents. It then manipulates the data and sends it to COSMOS Web via a Websocket.
@@ -152,3 +149,5 @@ This displays the values sent to Agent Socket's UDP server.
 This displays the live position of the satellite.
 
 1. Be sure Agent Socket and Agent Nordiasoft are running.
+
+
