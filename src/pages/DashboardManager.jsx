@@ -1,8 +1,8 @@
 import React, { useEffect, useReducer } from 'react';
 
-import Content from '../components/Missions/Components/Content';
+import Content from '../components/Dashboard/Content';
 // eslint-disable-next-line
-import LayoutManager from '../components/Missions/Components/LayoutManager';
+import LayoutManager from '../components/Dashboard/LayoutManager';
 
 import socket from '../socket';
 

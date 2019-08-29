@@ -1,14 +1,13 @@
 import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import Worldview, {
-  GLTFScene, Axes, Grid, Cubes,
-} from 'regl-worldview';
 
-import model from '../../../public/cubesat.glb';
+import {
+  Form,
+} from 'antd';
 
-import Content from './Content';
 import BaseComponent from '../BaseComponent';
-import { Context } from '../../../store/neutron1';
+import AttitudeThreeD from './Babylon/AttitudeThreeD';
+import { Context } from '../../store/neutron1';
 
 /**
  * Displays a specified value.
@@ -61,27 +60,46 @@ function DisplayValue({
   }, [state]);
 
   return (
-    <>
-      {/* <div className="flex justify-between p-3 dragHandle cursor-move" style={{ backgroundColor: '#f1f1f1' }}>
-        <div className="font-bold text-lg mr-4">
-          {name}
-        </div>
-        {model}
-      </div> */}
-      <Worldview>
-        <GLTFScene model={model}>
-          {{
-            pose: {
-              position: { x: 0, y: -3, z: 0 },
-              orientation: { x: 0, y: 0, z: 0, w: 1 },
-            },
-            scale: { x: 3, y: 3, z: 3 },
-          }}
-        </GLTFScene>
-        <Axes />
-        <Grid />
-      </Worldview>
-    </>
+    <BaseComponent
+      name={nameState}
+      subheader={attitudesState.length === 0 ? 'No orbits to display.' : null}
+      liveOnly
+      showStatus={showStatus}
+      status={status}
+      formItems={(
+        <Form layout="vertical">
+          ok
+        </Form>
+      )}
+    >
+      <AttitudeThreeD
+        data={attitudesState[0].quaternions}
+      />
+      <div className="overflow-x-scroll">
+        <table className="mt-4 w-full">
+          <tbody>
+            <tr className="bg-gray-200 border-b border-gray-400">
+              <td className="p-2 pr-8">Name</td>
+              <td className="p-2 pr-8">x</td>
+              <td className="p-2 pr-8">y</td>
+              <td className="p-2 pr-8">z</td>
+              <td className="p-2 pr-8">w</td>
+            </tr>
+            {
+            attitudesState.map(attitude => (
+              <tr className="text-gray-700 border-b border-gray-400" key={attitude.name}>
+                <td className="p-2 pr-8">{attitude.name}</td>
+                <td className="p-2 pr-8">{attitude.quaternions.d && attitude.quaternions.d.x ? attitude.quaternions.d.x : '-'}</td>
+                <td className="p-2 pr-8">{attitude.quaternions.d && attitude.quaternions.d.y ? attitude.quaternions.d.y : '-'}</td>
+                <td className="p-2 pr-8">{attitude.quaternions.d && attitude.quaternions.d.z ? attitude.quaternions.d.z : '-'}</td>
+                <td className="p-2 pr-8">{attitude.quaternions.d && attitude.quaternions.w ? attitude.quaternions.w : '-'}</td>
+              </tr>
+            ))
+          }
+          </tbody>
+        </table>
+      </div>
+    </BaseComponent>
   );
 }
 

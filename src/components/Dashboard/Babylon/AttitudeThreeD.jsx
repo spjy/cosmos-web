@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as BABYLON from 'babylonjs';
 import 'babylonjs-loaders';
-import cubesat from '../../../../public/cubesat.obj';
+import cubesat from '../../../public/cubesat.obj';
 
 import BabylonScene from './BabylonScene';
 

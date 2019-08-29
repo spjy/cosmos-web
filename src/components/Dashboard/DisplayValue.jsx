@@ -6,7 +6,7 @@ import {
 import moment from 'moment-timezone';
 
 import BaseComponent from '../BaseComponent';
-import { Context } from '../../../store/neutron1';
+import { Context } from '../../store/neutron1';
 
 const { Panel } = Collapse;
 const { TextArea } = Input;

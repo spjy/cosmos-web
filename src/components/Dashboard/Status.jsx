@@ -2,8 +2,8 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Badge } from 'antd';
 // import moment from 'moment-timezone';
 
-import { Context } from '../../../store/neutron1';
-import socket from '../../../socket';
+import { Context } from '../../store/neutron1';
+import socket from '../../socket';
 import Content from './Content';
 
 /**

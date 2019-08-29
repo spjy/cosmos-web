@@ -5,7 +5,7 @@ import {
 } from 'antd';
 
 import BaseComponent from '../BaseComponent';
-import socket from '../../../socket';
+import socket from '../../socket';
 
 const ws = socket('query', '/command/');
 

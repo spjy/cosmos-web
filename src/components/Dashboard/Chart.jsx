@@ -6,8 +6,8 @@ import {
 import Plot from 'react-plotly.js';
 
 import BaseComponent from '../BaseComponent';
-import { Context } from '../../../store/neutron1';
-import socket from '../../../socket';
+import { Context } from '../../store/neutron1';
+import socket from '../../socket';
 
 const { RangePicker } = DatePicker;
 const { Panel } = Collapse;

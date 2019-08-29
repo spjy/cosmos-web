@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Badge } from 'antd';
 import moment from 'moment-timezone';
 
-import { Context } from '../../../store/neutron1';
+import { Context } from '../../store/neutron1';
 import Content from './Content';
 
 function Activity() {
@@ -14,10 +14,12 @@ function Activity() {
   /** Upon the state.list updating, update the store's list */
   useEffect(() => {
     if (state.activity) {
+      const { activity: event, utc } = state.activity;
+
       setActivity([
         {
-          activity: state.activity.activity,
-          utc: state.activity.utc,
+          activity: event,
+          utc,
         },
         ...activity,
       ]);

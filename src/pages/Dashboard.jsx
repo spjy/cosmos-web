@@ -13,8 +13,8 @@ import socket from '../socket';
 // eslint-disable-next-line
 import routes from '../routes';
 
-import AsyncComponent from '../components/Missions/Components/AsyncComponent';
-import LayoutSelector from '../components/Missions/Components/LayoutSelector';
+import AsyncComponent from '../components/Dashboard/AsyncComponent';
+import LayoutSelector from '../components/Dashboard/LayoutSelector';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -120,7 +120,7 @@ function Dashboard({
               ? layouts.lg
                 .filter(layout => layout && layout.i && layout.component && layout.component.name)
                 .map(layout => (
-                  <div key={layout.i} className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
+                  <div key={layout.i} className="shadow overflow-y-auto" style={{ backgroundColor: '#fbfbfb' }}>
                     <AsyncComponent
                       component={layout.component.name}
                       props={layout.component.props}

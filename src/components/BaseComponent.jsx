@@ -29,7 +29,7 @@ function BaseComponent({
   }, []);
 
   return (
-    <div className="overflow-y-hidden">
+    <div>
       <ComponentSettings
         visible={openSettings}
         /** Closes the modal. */
