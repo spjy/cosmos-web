@@ -38,22 +38,35 @@ module.exports = {
       disableHostCheck: true
     }),
     (neutrino) => {
+      neutrino.config
+        .externals({
+          cesium: 'Cesium'
+        });
+
       neutrino.config.module
         .rule('compile')
-        .use('babel')
-        .tap(options =>
-          babelMerge(
-            {
-              plugins: [
-                'styled-jsx/babel'
-              ],
-            },
-            options,
-          ),
-        );
+          .test(/\.(js|jsx)$/)
+          .exclude
+            .add(/node_modules/)
+            .end()
+          .use('babel')
+          .tap(options =>
+            babelMerge(
+              {
+                plugins: [
+                  'styled-jsx/babel'
+                ],
+              },
+              options,
+            ),
+          );
+
       neutrino.config.module
         .rule('file-loader')
           .test(/\.(glb|czml|obj|png)$/)
+          .exclude
+            .add(/node_modules/)
+            .end()
           .use('file-loader')
             .loader('file-loader')
 
@@ -87,11 +100,6 @@ module.exports = {
                   CESIUM_BASE_URL: JSON.stringify("/cesium"),
                 }])
                 .end()
-
-      neutrino.config
-        .externals({
-          cesium: 'Cesium'
-        });
     },
   ]
 };
