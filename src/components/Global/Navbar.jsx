@@ -4,8 +4,13 @@ import { Menu, Icon } from 'antd';
 
 import routes from '../../routes';
 
+/**
+ * Automatically generated navgation bar, configured in the routes/index file.
+ */
 function Navbar() {
+  /** Route that the user is currently on to display an accent denoting it as such */
   const [currentRoute] = useState('home');
+  
   return (
     <Menu
       mode="horizontal"
@@ -64,27 +69,6 @@ function Navbar() {
           );
         })
       }
-      {/* <Menu.SubMenu
-        title={(
-          <span>
-            <Icon type="box-plot" />
-            Modules
-          </span>
-        )}
-      >
-        <Menu.ItemGroup>
-          <Menu.Item
-            key="Globe"
-          >
-            <Link
-              to="/satellite/globe"
-            >
-              <Icon type="picture" />
-              Globe
-            </Link>
-          </Menu.Item>
-        </Menu.ItemGroup>
-      </Menu.SubMenu> */}
     </Menu>
   );
 }

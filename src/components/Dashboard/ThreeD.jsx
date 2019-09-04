@@ -11,9 +11,9 @@ import BaseComponent from '../BaseComponent';
 import { Context } from '../../store/neutron1';
 
 /**
- * Displays a specified value.
+ * Displays a 3D model.
  */
-function DisplayValue({
+function ThreeD({
   name,
   attitudes,
   showStatus,

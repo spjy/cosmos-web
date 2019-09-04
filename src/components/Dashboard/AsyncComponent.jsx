@@ -14,6 +14,7 @@ import Status from './Status';
 import ThreeD from './ThreeD';
 import UploadFile from './UploadFile';
 
+/** Store all of the components into an object */
 const components = {
   Activity,
   Attitude,
@@ -29,14 +30,22 @@ const components = {
   UploadFile,
 };
 
+/**
+ * A wrapper component for dynamically rendering components into the layout.
+ * @param {String} component The string representation of the component
+ * @param {Object} props The props to pass into the component to render
+ */
 function AsyncComponent({ component, props }) {
+  // Dynamically choose the component to render based on the component prop being passed in
   const Component = components[component];
 
   return <Component {...props} />;
 }
 
 AsyncComponent.propTypes = {
+  /** The name of the component to render */
   component: PropTypes.string.isRequired,
+  /** The props to pass into the component on render */
   props: PropTypes.shape({}),
 };
 

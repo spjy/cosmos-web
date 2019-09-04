@@ -8,6 +8,7 @@ import Content from './Content';
 
 /**
  * Retrieves the agent list and displays it in a table.
+ * Also displays the timestamp of the agent's last heartbeat.
  */
 function Status() {
   /** Get agent list state from the Context */

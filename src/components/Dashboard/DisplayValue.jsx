@@ -739,10 +739,15 @@ DisplayValue.propTypes = {
   /** */
   displayValues: PropTypes.arrayOf(
     PropTypes.shape({
+      /** Display name of the value */
       name: PropTypes.string,
+      /** the node:process to pull the value from */
       nodeProcess: PropTypes.string,
+      /** The data key to pull the value from */
       dataKey: PropTypes.string,
+      /** The function to put the value through to manipulate it */
       processDataKey: PropTypes.func,
+      /** The unit of the  */
       unit: PropTypes.string,
     }),
   ),

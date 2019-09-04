@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import ComponentSettings from './ComponentSettings';
 
 /**
- * Contains a card with a header, content and footer.
+ * The wrapper component that has a header, content and settings modal.
  */
 function BaseComponent({
   name,

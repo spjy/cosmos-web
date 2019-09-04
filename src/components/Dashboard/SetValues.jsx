@@ -10,7 +10,7 @@ import socket from '../../socket';
 const ws = socket('query', '/command/');
 
 /**
- * A general purpose component.
+ * Component to conveniently send values via an agent command.
  */
 function SetValues({
   name,
@@ -27,17 +27,19 @@ function SetValues({
   const [form, setForm] = useState({});
   /** Status of the live switch */
   const [, setLiveSwitch] = useState();
-
+  /** Store the previously send commands and their outputs */
   const [commandHistory, setCommandHistory] = useState([]);
-
+  /** The currently selected component to change */
   const [selectedComponent, setSelectedComponent] = useState(Object.keys(values)[0]);
-
+  /** The currently selected property to change */
   const [selectedProperty, setSelectedProperty] = useState(values[Object.keys(values)[0]][0]);
-
+  /** The live values to display from the agent */
   const [liveValues, setLiveValues] = useState([]);
 
+  /** DOM element selector for  */
   const cliEl = useRef(null);
 
+  /** Listen for command outputs and append them to the command history. Also force scroll to the bottom. */
   ws.onmessage = ({ data }) => {
     setCommandHistory([
       ...commandHistory,
@@ -47,6 +49,7 @@ function SetValues({
     cliEl.current.scrollTop = cliEl.current.scrollHeight;
   };
 
+  /** Send the agent command with the selected value to change. */
   const setParameter = () => {
     try {
       if (!selectedComponent) {
@@ -85,12 +88,16 @@ function SetValues({
     }
   };
 
+  /** Get the live values from the agent */
   const getValue = () => {
     const components = socket('query', '/command/');
 
+    // Open socket
     components.onopen = () => {
+      // Send request for the values
       components.send(`${node} ${proc} component PropCubeWaveform ${selectedComponent}`);
 
+      // Update the values on return of output
       components.onmessage = ({ data }) => {
         try {
           const json = JSON.parse(data);
@@ -109,6 +116,7 @@ function SetValues({
     };
   };
 
+  /** Poll every second for the values */
   useEffect(() => {
     const timeout = setTimeout(() => {
       getValue();
@@ -261,8 +269,6 @@ SetValues.propTypes = {
   subheader: PropTypes.string,
   /** Whether the component can display only live data. Hides/shows the live/past switch. */
   liveOnly: PropTypes.bool,
-  /** Function is run when the live/past switch is toggled. */
-  // handleLiveSwitchChange: PropTypes.func,
   /** Whether to show a circular indicator of the status of the component */
   showStatus: PropTypes.bool,
   /** The type of badge to show if showStatus is true (see the ant design badges component) */
@@ -277,8 +283,11 @@ SetValues.propTypes = {
   },
   /** Form node */
   formItems: PropTypes.node,
+  /** Values to change */
   values: PropTypes.shape({}).isRequired,
+  /** The node of the agent to set the values */
   node: PropTypes.string.isRequired,
+  /** The process of the agent to set the values */
   proc: PropTypes.string.isRequired,
 };
 
@@ -287,7 +296,6 @@ SetValues.defaultProps = {
   subheader: null,
   showStatus: false,
   liveOnly: true,
-  // handleLiveSwitchChange: () => {},
   status: 'error',
   formItems: null,
 };

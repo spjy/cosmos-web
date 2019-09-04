@@ -61,6 +61,7 @@ function LayoutManager() {
     }
   };
 
+  /** Columns of the table */
   const [columns] = useState([
     {
       title: 'Route',
@@ -102,10 +103,12 @@ function LayoutManager() {
     try {
       const json = JSON.parse(layoutObjectForm);
 
+      // Check if pass in an array of objects
       if (!json.length) {
         throw new Error('Outer container must be an array.');
       }
 
+      // Validate the required fields
       json.forEach((component, i) => {
         if (!component
           || !('i' in component)
@@ -120,10 +123,12 @@ function LayoutManager() {
         }
       });
 
+      // If all valid, set the layout object
       setLayoutObject({
         lg: json,
       });
 
+      // Reset form error message
       setFormError('');
 
       return {
@@ -141,11 +146,14 @@ function LayoutManager() {
     let object;
 
     if (!layout) {
+      // If previewing, process the layout from the layoutObject state variable
       object = processLayoutObject();
     } else {
+      // If saving, set layout passed in directly
       object = layout;
     }
 
+    // Validate the required fields
     if (!route) {
       setFormError('"Route" is required.');
       return;
@@ -156,17 +164,21 @@ function LayoutManager() {
       return;
     }
 
+    // Store the layout into localStorage
     if (object) {
       try {
+        // Check if the route already has an object to store the saved layout
         if (!(typeof JSON.parse(localStorage.getItem(route)) === 'object')
           && JSON.parse(localStorage.getItem(route) !== null)
         ) {
           throw new Error(`${route} is not an array.`);
         }
       } catch (error) {
+        // If not, set it to an empty object
         localStorage.setItem(route, JSON.stringify({}));
       }
 
+      // Store the layout based on the name given
       localStorage.setItem(route, JSON.stringify({
         ...JSON.parse(localStorage.getItem(route)),
         [name]: object,
@@ -185,7 +197,9 @@ function LayoutManager() {
     }, 10000);
   }, [outcome]);
 
+  /** Retrieve the keys that you can have settings for */
   useEffect(() => {
+    // Get keys from routes configuration file and extract ones with `:id`
     const keys = routes
       .filter(route => route.path.split('/')[2] === ':id')
       .map(({ path }) => {

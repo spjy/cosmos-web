@@ -18,10 +18,17 @@ import socket from '../../socket';
 const { Panel } = Collapse;
 const { RangePicker } = DatePicker;
 
+// Set Cesium Ion token only if it is defined in the .env file
 if (process.env.CESIUM_ION_TOKEN) {
   Cesium.Ion.defaultAccessToken = process.env.CESIUM_ION_TOKEN;
 }
 
+/**
+ * Convert from latitude, longitude, altitude to cartesian coordinates
+ * @param {*} lat 
+ * @param {*} long 
+ * @param {*} height 
+ */
 function getPos(lat, long, height) {
   const pos = Cesium.Cartesian3.fromArray([lat, long, height]);
 

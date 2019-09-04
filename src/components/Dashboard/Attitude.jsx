@@ -10,9 +10,9 @@ import AttitudeThreeD from './Babylon/AttitudeThreeD';
 import { Context } from '../../store/neutron1';
 
 /**
- * Displays a specified value.
+ * Visualizes the attitude of an object.
  */
-function DisplayValue({
+function Attitude({
   name,
   attitudes,
   showStatus,
@@ -103,7 +103,7 @@ function DisplayValue({
   );
 }
 
-DisplayValue.propTypes = {
+Attitude.propTypes = {
   /** Name of the component to display at the time */
   name: PropTypes.string,
   /** Currently displayed attitudes */
@@ -127,11 +127,11 @@ DisplayValue.propTypes = {
   },
 };
 
-DisplayValue.defaultProps = {
+Attitude.defaultProps = {
   name: '',
   attitudes: [],
   showStatus: false,
   status: 'error',
 };
 
-export default DisplayValue;
+export default Attitude;
