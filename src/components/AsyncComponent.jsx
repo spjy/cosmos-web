@@ -1,18 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Activity from './Activity';
-import Attitude from './Attitude';
-import Clock from './Clock';
-import Chart from './Chart';
-import Commands from './Commands';
-import Content from './Content';
-import DisplayValue from './DisplayValue';
-import Globe from './Globe';
-import SetValues from './SetValues';
-import Status from './Status';
-import ThreeD from './ThreeD';
-import UploadFile from './UploadFile';
+import Activity from './Dashboard/Activity';
+import Attitude from './Dashboard/Attitude';
+import Clock from './Dashboard/Clock';
+import Chart from './Dashboard/Chart';
+import Commands from './Dashboard/Commands';
+import Content from './Dashboard/Content';
+import DisplayValue from './Dashboard/DisplayValue';
+import Globe from './Dashboard/Globe';
+import SetValues from './Dashboard/SetValues';
+import Status from './Dashboard/Status';
+import ThreeD from './Dashboard/ThreeD';
+import UploadFile from './Dashboard/UploadFile';
 
 /** Store all of the components into an object */
 const components = {
@@ -32,8 +32,6 @@ const components = {
 
 /**
  * A wrapper component for dynamically rendering components into the layout.
- * @param {String} component The string representation of the component
- * @param {Object} props The props to pass into the component to render
  */
 function AsyncComponent({ component, props }) {
   // Dynamically choose the component to render based on the component prop being passed in

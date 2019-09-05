@@ -14,7 +14,7 @@ import { Responsive, WidthProvider } from 'react-grid-layout';
 import Editor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs/components/prism-core';
 // eslint-disable-next-line
-import routes from '../../routes';
+import routes from '../routes';
 
 import 'prismjs/components/prism-json';
 

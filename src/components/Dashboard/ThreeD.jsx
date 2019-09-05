@@ -85,7 +85,7 @@ function ThreeD({
   );
 }
 
-DisplayValue.propTypes = {
+ThreeD.propTypes = {
   /** Name of the component to display at the time */
   name: PropTypes.string,
   /** Currently displayed attitudes */
@@ -109,11 +109,11 @@ DisplayValue.propTypes = {
   },
 };
 
-DisplayValue.defaultProps = {
+ThreeD.defaultProps = {
   name: '',
   attitudes: [],
   showStatus: false,
   status: 'error',
 };
 
-export default DisplayValue;
+export default ThreeD;

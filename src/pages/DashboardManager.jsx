@@ -2,7 +2,7 @@ import React, { useEffect, useReducer } from 'react';
 
 import Content from '../components/Dashboard/Content';
 // eslint-disable-next-line
-import LayoutManager from '../components/Dashboard/LayoutManager';
+import LayoutManager from '../components/LayoutManager';
 
 import socket from '../socket';
 

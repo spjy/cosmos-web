@@ -84,6 +84,7 @@ function Clock({
 }
 
 Clock.propTypes = {
+  /** The selected local timezone */
   timezone: PropTypes.string,
 };
 

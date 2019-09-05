@@ -80,16 +80,20 @@ function UploadFile({
 
       upload.onopen = () => {
         upload.send(`${node} ${proc} ${command} ${fileContentUpload}`);
-      };
 
-      upload.onmessage = (data) => {
-        if (data) {
-          message.success('Successfully uploaded all files!', 10);
-        }
+        upload.onmessage = (data) => {
+          if (data) {
+            message.success('Successfully uploaded all files!', 10);
+          }
 
-        setFileContentUpload(null);
+          setFileContentUpload(null);
 
-        upload.close();
+          upload.close();
+        };
+
+        upload.error = () => {
+          message.error('Error while attempting to upload files.', 10);
+        };
       };
     }
   }, [fileContentUpload]);

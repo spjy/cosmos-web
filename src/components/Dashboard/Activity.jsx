@@ -6,7 +6,7 @@ import { Context } from '../../store/neutron1';
 import Content from './Content';
 
 /**
- * Displays an event along with the timestamp.
+ * Retrieves data from a web socket. Displays an event along with the timestamp.
  */
 function Activity() {
   /** Get agent list state from the Context */

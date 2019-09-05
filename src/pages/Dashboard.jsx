@@ -13,8 +13,8 @@ import socket from '../socket';
 // eslint-disable-next-line
 import routes from '../routes';
 
-import AsyncComponent from '../components/Dashboard/AsyncComponent';
-import LayoutSelector from '../components/Dashboard/LayoutSelector';
+import AsyncComponent from '../components/AsyncComponent';
+import LayoutSelector from '../components/LayoutSelector';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 

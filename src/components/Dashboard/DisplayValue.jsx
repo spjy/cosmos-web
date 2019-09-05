@@ -736,7 +736,7 @@ function DisplayValue({
 DisplayValue.propTypes = {
   /** Name of the component to display at the time */
   name: PropTypes.string,
-  /** */
+  /** The values to display */
   displayValues: PropTypes.arrayOf(
     PropTypes.shape({
       /** Display name of the value */

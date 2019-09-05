@@ -109,7 +109,9 @@ Attitude.propTypes = {
   /** Currently displayed attitudes */
   attitudes: PropTypes.arrayOf(
     PropTypes.shape({
+      /** Name of the attitude display */
       name: PropTypes.string,
+      /** node:process to look at for retrieving attitude data */
       nodeProcess: PropTypes.string,
     }),
   ),

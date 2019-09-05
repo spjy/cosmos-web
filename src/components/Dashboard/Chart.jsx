@@ -1562,26 +1562,27 @@ Chart.propTypes = {
   /** Plot options for each chart */
   plots: PropTypes.arrayOf(
     PropTypes.shape({
-      /** Chart y values */
+      /** Array of chart y values */
       x: PropTypes.arrayOf(PropTypes.any),
-      /** Chart x values */
+      /** Array of chart x values */
       y: PropTypes.arrayOf(PropTypes.any),
-      /** Chart type */
+      /** Plot.ly chart type */
       type: PropTypes.string,
-      /** Chart marker color */
       marker: PropTypes.shape({
+        /** Chart marker color */
         color: PropTypes.string,
       }),
-      /** Chart mode */
+      /** Plot.ly chart mode */
       mode: PropTypes.string,
-      /** Chart name */
+      /** Chart name/title */
       name: PropTypes.string,
-      /** Name of the node process to listen to */
+      /** Name of the node:process to listen to */
       nodeProcess: PropTypes.string,
       /** Data key to plot on the y-axis */
       YDataKey: PropTypes.string,
       /** Whether the chart displays live values */
       live: PropTypes.bool,
+      /** Function to modify the Y Data key */
       processYDataKey: PropTypes.func,
     }),
   ),
