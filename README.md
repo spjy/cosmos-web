@@ -86,3 +86,89 @@ This folder contains the React Context global store and reducer logic.
 ### Commit Style
 
 Follow the [AngularJS commit style](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-guidelines).
+
+# Application Usage
+
+## Home Page
+
+The splash page with a little bit of information.
+
+## Dashboard Manager
+
+The page to manage saved page layouts for routes such as satellites or ground stations.
+
+### Modifying a Pre-existing Layout
+
+On this page, there is a table to view the currently saved layouts on the computer. Modify it by clicking the `+` on the left or delete it using the `X` on the right.
+
+### Creating a New Layout
+
+To create a new layout, use the form below and fill out:
+
+#### Route
+
+The routes that are able to have saved layouts. For instance, you can select the layout to be saved under 'Ground Stations' or 'Satellites'.
+
+#### Dashboard Name
+
+The name of the layout for a certain route. Differentiate between other layout names.
+
+#### Layout Array
+
+*Sizing*. Each row has a width (w) of twelve (12).
+
+*Formatting*. You must enter an array of objects. Each object contains a unique:
+
+- Unique key (i) - to avoid conflicts with other layouts,  use the format: dashboardName-key
+- Width (w)
+- Height (h)
+- Horiztonal position (w)
+- Vertical position (y)
+- Component name (component.name)
+- Component props (component.props)
+
+*Example*.
+```json
+[
+  {
+    "i": "dashboardName-a",
+    "x": 0,
+    "y": 0,
+    "w": 6,
+    "h": 7,
+    "component": {
+      "name": "Status",
+      "props": {
+        "name": "Ok"
+      }
+    }
+  },
+    {
+    "i": "dashboardName-b",
+    "x": 6,
+    "y": 0,
+    "w": 6,
+    "h": 7,
+    "component": {
+      "name": "DisplayValues",
+      "displayValues": [
+        {
+          "name": "CPU Load",
+          "nodeProcess": "beagle1:cpu",
+          "dataKey": "device_cpu_load_000",
+          "unit": "%",
+        }
+      ]
+    }
+  },
+]
+```
+
+Click *Preview* to see the layout.
+
+Click *Save Layout* to save it.
+
+### Switching Layouts
+
+On top of each Dashboard page, e.g. Sattelites or Ground Stations, a dropdown menu coupled with a button exist to allow for quickly switching between pre-defined layouts.
+
