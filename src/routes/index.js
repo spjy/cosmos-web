@@ -1108,7 +1108,7 @@ const routes = [
         defaultLayout: {
           lg: [
             {
-              i: 'gs-masdr-b',
+              i: 'gs-masdr-a',
               x: 0,
               y: 0,
               w: 4,
@@ -1130,7 +1130,7 @@ const routes = [
               },
             },
             {
-              i: 'gs-masdr-c',
+              i: 'gs-masdr-b',
               x: 4,
               y: 0,
               w: 4,
@@ -1140,144 +1140,7 @@ const routes = [
               },
             },
             {
-              i: 'gs-masdr-h',
-              x: 0,
-              y: 1,
-              w: 12,
-              h: 12,
-              component: {
-                name: 'Commands',
-              },
-            },
-            {
-              i: 'gs-masdr-d',
-              x: 0,
-              y: 2,
-              w: 12,
-              h: 14,
-              component: {
-                name: 'SetValues',
-                props: {
-                  name: 'Set Values',
-                  node: 'masdr',
-                  proc: 'nordiasoft',
-                  values: {
-                    HDLCEncoder: [
-                      'HDLC_ENCODER_PROPERTIES:PREAMBLE_LENGTH',
-                      'HDLC_ENCODER_PROPERTIES:POSTAMBLE_LENGTH',
-                      'HDLC_ENCODER_PROPERTIES:WAVEFORM',
-                    ],
-                    GmskModulator: [
-                      'bandwidth',
-                      'samplesPerSymbol',
-                      'symbolsDelay',
-                    ],
-                    MultiStageHalfBandResamplerTx: [
-                      'centerFrequency',
-                      'cutoffFrequency',
-                      'delay',
-                      'resamplingRate',
-                      'stopBandAttenuation',
-                    ],
-                    FirKaiserFilterTx: [
-                      'cutoffFrequency',
-                      'samplingFrequency',
-                      'stopBandAttenuation',
-                      'transitionBand',
-                    ],
-                    NcoMixerTx: [
-                      'dopplerFrequency',
-                      'offsetFrequency',
-                      'samplingFrequency',
-                    ],
-                    USRP_Device_Tx: [
-                      'TBD:',
-                    ],
-                    NcoMixerRx: [
-                      'dopplerFrequency',
-                      'offsetFrequency',
-                      'samplingFrequency',
-                    ],
-                    MultiStageHalfBandResamplerRx: [
-                      'centerFrequency',
-                      'cutoffFrequency',
-                      'delay',
-                      'resamplingRate',
-                      'stopBandAttenuation',
-                    ],
-                    FirKaiserFilterRx: [
-                      'cutoffFrequency',
-                      'samplingFrequency',
-                      'stopBandAttenuation',
-                      'transitionBand',
-                    ],
-                    GmskDemodulator: [
-                      'bandwidth',
-                      'samplesPerSymbol',
-                      'symbolsDelay',
-                    ],
-                    UnpackBits: [
-                      'REPACK_BITS_PROPERTIES:BITS_PER_INPUT_BYTE',
-                      'REPACK_BITS_PROPERTIES:BITS_PER_OUTPUT_BYTE',
-                      'REPACK_BITS_PROPERTIES:ENDIANNESS',
-                    ],
-                    Descrambler: [
-                      'DESCRAMBLER_PROPERTIES:LENGTH',
-                      'DESCRAMBLER_PROPERTIES:MASK',
-                      'DESCRAMBLER_PROPERTIES:SEED',
-                    ],
-                    RepackBits: [
-                      'REPACK_BITS_PROPERTIES:BITS_PER_INPUT_BYTE',
-                      'REPACK_BITS_PROPERTIES:BITS_PER_OUTPUT_BYTE',
-                      'REPACK_BITS_PROPERTIES:ENDIANNESS',
-                    ],
-                    UnpackBits2: [
-                      'REPACK_BITS_PROPERTIES:BITS_PER_INPUT_BYTE',
-                      'REPACK_BITS_PROPERTIES:BITS_PER_OUTPUT_BYTE',
-                      'REPACK_BITS_PROPERTIES:ENDIANNESS',
-                    ],
-                    ParseAX25new: [
-                      'PARSEAX25_PROPERTIES:RXWAVEFORM',
-                    ],
-                    USRP_Device_Rx: [
-                      'TBD:',
-                    ],
-                  },
-                },
-              },
-            },
-            {
-              i: 'gs-masdr-e',
-              x: 0,
-              y: 5,
-              w: 12,
-              h: 38,
-              component: {
-                name: 'Globe',
-                props: {
-                  name: 'Orbit',
-                  orbits: [
-                    {
-                      name: 'neutron1',
-                      modelFileName: 'cubesat1.glb',
-                      nodeProcess: 'masdr:nordiasoft',
-                      live: true,
-                      position: [21.289373, 157.917480, 350000.0],
-                      orientation: {
-                        d: {
-                          x: 0,
-                          y: 0,
-                          z: 0,
-                        },
-                        w: 0,
-                      },
-                    },
-                  ],
-                },
-              },
-            },
-            {
-              i: 'gs-masdr-f',
+              i: 'gs-masdr-c',
               x: 8,
               y: 0,
               w: 4,
@@ -1292,9 +1155,162 @@ const routes = [
               },
             },
             {
-              i: 'gs-masdr-g',
+              i: 'gs-masdr-s',
+              x: 0,
+              y: 1,
+              w: 12,
+              h: 5,
+              component: {
+                name: 'Macro',
+              },
+            },
+            {
+              i: 'gs-masdr-h',
+              x: 0,
+              y: 2,
+              w: 12,
+              h: 10,
+              component: {
+                name: 'MASDRCommands',
+              },
+            },
+            {
+              i: 'gs-masdr-d',
+              x: 0,
+              y: 3,
+              w: 12,
+              h: 14,
+              component: {
+                name: 'SetValues',
+                props: {
+                  name: 'Set Values',
+                  node: 'masdr',
+                  proc: 'nordiasoft',
+                  values: {
+                    Descrambler: [
+                      'DESCRAMBLER_PROPERTIES:LENGTH',
+                      'DESCRAMBLER_PROPERTIES:MASK',
+                      'DESCRAMBLER_PROPERTIES:SEED',
+                    ],
+                    GmskDemodulator: [
+                      'bandwidth',
+                      'samplesPerSymbol',
+                      'symbolsDelay',
+                    ],
+                    GmskModulator: [
+                      'bandwidth',
+                      'samplesPerSymbol',
+                      'symbolsDelay',
+                    ],
+                    FirKaiserFilterRx: [
+                      'cutoffFrequency',
+                      'samplingFrequency',
+                      'stopBandAttenuation',
+                      'transitionBand',
+                    ],
+                    FirKaiserFilterTx: [
+                      'cutoffFrequency',
+                      'samplingFrequency',
+                      'stopBandAttenuation',
+                      'transitionBand',
+                    ],
+                    HDLCEncoder: [
+                      'HDLC_ENCODER_PROPERTIES:PREAMBLE_LENGTH',
+                      'HDLC_ENCODER_PROPERTIES:POSTAMBLE_LENGTH',
+                      'HDLC_ENCODER_PROPERTIES:WAVEFORM',
+                    ],
+                    MultiStageHalfBandResamplerRx: [
+                      'centerFrequency',
+                      'cutoffFrequency',
+                      'delay',
+                      'resamplingRate',
+                      'stopBandAttenuation',
+                    ],
+                    MultiStageHalfBandResamplerTx: [
+                      'centerFrequency',
+                      'cutoffFrequency',
+                      'delay',
+                      'resamplingRate',
+                      'stopBandAttenuation',
+                    ],
+                    NcoMixerRx: [
+                      'dopplerFrequency',
+                      'offsetFrequency',
+                      'samplingFrequency',
+                    ],
+                    NcoMixerTx: [
+                      'dopplerFrequency',
+                      'offsetFrequency',
+                      'samplingFrequency',
+                    ],
+                    ParseAX25new: [
+                      'PARSEAX25_PROPERTIES:RXWAVEFORM',
+                    ],
+                    RepackBits: [
+                      'REPACK_BITS_PROPERTIES:BITS_PER_INPUT_BYTE',
+                      'REPACK_BITS_PROPERTIES:BITS_PER_OUTPUT_BYTE',
+                      'REPACK_BITS_PROPERTIES:ENDIANNESS',
+                    ],
+                    USRP_Device_Rx: [
+                      'TBD:',
+                    ],
+                    UnpackBits: [
+                      'REPACK_BITS_PROPERTIES:BITS_PER_INPUT_BYTE',
+                      'REPACK_BITS_PROPERTIES:BITS_PER_OUTPUT_BYTE',
+                      'REPACK_BITS_PROPERTIES:ENDIANNESS',
+                    ],
+                    UnpackBits2: [
+                      'REPACK_BITS_PROPERTIES:BITS_PER_INPUT_BYTE',
+                      'REPACK_BITS_PROPERTIES:BITS_PER_OUTPUT_BYTE',
+                      'REPACK_BITS_PROPERTIES:ENDIANNESS',
+                    ],
+                    USRP_Device_Tx: [
+                      'TBD:',
+                    ],
+                  },
+                },
+              },
+            },
+            {
+              i: 'gs-masdr-e',
               x: 0,
               y: 4,
+              w: 12,
+              h: 38,
+              component: {
+                name: 'Globe',
+                props: {
+                  name: 'Orbit',
+                  coordinateSystem: 'geodetic',
+                  orbits: [
+                    {
+                      name: 'MASDR',
+                      modelFileName: 'cubesat1.glb',
+                      nodeProcess: 'masdr:nordiasoft',
+                      live: true,
+                      position: [21.289373, 157.917480, 350000.0],
+                      geodetic: {
+                        latitude: 10,
+                        longitude: 10,
+                      },
+                      orientation: {
+                        d: {
+                          x: 0,
+                          y: 0,
+                          z: 0,
+                        },
+                        w: 0,
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+
+            {
+              i: 'gs-masdr-g',
+              x: 0,
+              y: 5,
               w: 12,
               h: 7,
               component: {
