@@ -24,15 +24,27 @@ if (process.env.CESIUM_ION_TOKEN) {
 }
 
 /**
- * Convert from latitude, longitude, altitude to cartesian coordinates
- * @param {*} lat 
- * @param {*} long 
- * @param {*} height 
+ * Convert from x, y, z to Matrix 4x4
+ * @param {*} x meters
+ * @param {*} y meters
+ * @param {*} z meters
  */
-function getPos(lat, long, height) {
-  const pos = Cesium.Cartesian3.fromArray([lat, long, height]);
+function getPos(x, y, z) {
+  const pos = Cesium.Cartesian3.fromArray([x, y, z]);
 
-  return Cesium.Transforms.eastNorthUpToFixedFrame(pos);
+  return Cesium.Transforms.northUpEastToFixedFrame(pos);
+}
+
+/**
+ * Parse latitude, longtiude, altitude to map Matrix 4x4
+ * @param {Number} longitude degrees
+ * @param {Number} latitude degrees
+ * @param {Number} altitude meters
+ */
+function getPosFromSpherical(longitude, latitude, altitude) {
+  const pos = Cesium.Cartesian3.fromDegrees(longitude, latitude, altitude);
+
+  return Cesium.Transforms.northUpEastToFixedFrame(pos);
 }
 
 /**
@@ -43,6 +55,7 @@ function CesiumGlobe({
   orbits,
   showStatus,
   status,
+  coordinateSystem,
 }) {
   /** Accessing the neutron1 messages from the socket */
   const { state } = useContext(Context);
@@ -82,9 +95,9 @@ function CesiumGlobe({
   useEffect(() => {
     orbitsState.forEach((orbit, i) => {
       if (state[orbit.nodeProcess]
-          && state[orbit.nodeProcess].node_loc_pos_eci
-          && state[orbit.nodeProcess].node_loc_pos_eci.pos
-          && orbit.live
+        && state[orbit.nodeProcess].node_loc_pos_eci
+        && state[orbit.nodeProcess].node_loc_pos_eci.pos
+        && orbit.live
       ) {
         const tempOrbit = [...orbitsState];
 
@@ -92,7 +105,8 @@ function CesiumGlobe({
           tempOrbit[i].path = new Cesium.SampledPositionProperty();
         }
 
-        if (state[orbit.nodeProcess].utc && state[orbit.nodeProcess].node_loc_pos_eci) {
+        if (state[orbit.nodeProcess].utc
+          && (state[orbit.nodeProcess].node_loc_pos_eci || state[orbit.nodeProcess].node_loc_pos_geod_s_lat)) {
           const date = Cesium
             .JulianDate
             .fromDate(
@@ -100,20 +114,43 @@ function CesiumGlobe({
                 .unix((((state[orbit.nodeProcess].utc + 2400000.5) - 2440587.5) * 86400.0))
                 .toDate(),
             );
-          const pos = Cesium
-            .Cartesian3
-            .fromArray(
-              [
-                state[orbit.nodeProcess].node_loc_pos_eci.pos[0],
-                state[orbit.nodeProcess].node_loc_pos_eci.pos[1],
-                state[orbit.nodeProcess].node_loc_pos_eci.pos[2],
-              ],
-            );
+          
+          let pos;
 
-          tempOrbit[i].path.addSample(date, pos);
+          if (coordinateSystem === 'cartesian') {
+            pos = Cesium
+              .Cartesian3
+              .fromArray(
+                [
+                  state[orbit.nodeProcess].node_loc_pos_eci.pos[0],
+                  state[orbit.nodeProcess].node_loc_pos_eci.pos[1],
+                  state[orbit.nodeProcess].node_loc_pos_eci.pos[2],
+                ],
+              );
+            tempOrbit[i].path.addSample(date, pos);
+          }
+          // else if (coordinateSystem === 'geodetic') {
+          //   pos = Cesium.Cartesian3.fromDegrees(
+          //     state[orbit.nodeProcess].node_loc_pos_geod_s_lat * (180 / Math.PI),
+          //     state[orbit.nodeProcess].node_loc_pos_geod_s_lon * (180 / Math.PI),
+          //     state[orbit.nodeProcess].node_loc_pos_geod_s_h,
+          //   );
+          // }
         }
 
         tempOrbit[i].position = state[orbit.nodeProcess].node_loc_pos_eci.pos;
+
+        if (coordinateSystem === 'geodetic'
+          && state[orbit.nodeProcess].node_loc_pos_geod_s_lat
+          && state[orbit.nodeProcess].node_loc_pos_geod_s_lon
+          && state[orbit.nodeProcess].node_loc_pos_geod_s_h
+        ) {
+          tempOrbit[i].geodetic = {
+            latitude: state[orbit.nodeProcess].node_loc_pos_geod_s_lat,
+            longitude: state[orbit.nodeProcess].node_loc_pos_geod_s_lon,
+            altitude: state[orbit.nodeProcess].node_loc_pos_geod_s_h,
+          };
+        }
 
         setOrbitsState(tempOrbit);
       }
@@ -121,6 +158,7 @@ function CesiumGlobe({
   }, [state]);
 
   /** Handle the collection of historical data */
+  /** TODO: UPDATE RETRIEVAL FOR GEODETIC COORDINATES */
   useEffect(() => {
     if (retrieveOrbitHistory !== null) {
       const query = socket('query', '/query/');
@@ -654,7 +692,11 @@ function CesiumGlobe({
                   position={orbit.path}
                 >
                   <Model
-                    modelMatrix={getPos(orbit.position[0], orbit.position[1], orbit.position[2])}
+                    modelMatrix={
+                      coordinateSystem === 'cartesian'
+                        ? getPos(orbit.position[0], orbit.position[1], orbit.position[2])
+                        : getPosFromSpherical(orbit.geodetic.longitude * (180 / Math.PI), orbit.geodetic.latitude * (180 / Math.PI), 1000)
+                    }
                     url={model}
                     minimumPixelSize={35}
                   />
@@ -697,13 +739,12 @@ function CesiumGlobe({
           <tbody className="w-10">
             <tr className="bg-gray-200 border-b border-gray-400">
               <td className="p-2 pr-8">Name</td>
-              <td className="p-2 pr-8">Latitude</td>
-              <td className="p-2 pr-8">Longitude</td>
-              <td className="p-2 pr-8">Altitude</td>
-              <td className="p-2 pr-8">x</td>
-              <td className="p-2 pr-8">y</td>
-              <td className="p-2 pr-8">z</td>
-              <td className="p-2 pr-8">w</td>
+              <td className="p-2 pr-8">x (m)</td>
+              <td className="p-2 pr-8">y (m)</td>
+              <td className="p-2 pr-8">z (m)</td>
+              <td className="p-2 pr-8">Latitude (rad)</td>
+              <td className="p-2 pr-8">Longitude (rad)</td>
+              <td className="p-2 pr-8">Altitude (m)</td>
             </tr>
             {
             orbitsState.map(orbit => (
@@ -712,10 +753,9 @@ function CesiumGlobe({
                 <td className="p-2 pr-8">{orbit.position[0]}</td>
                 <td className="p-2 pr-8">{orbit.position[1]}</td>
                 <td className="p-2 pr-8">{orbit.position[2]}</td>
-                <td className="p-2 pr-8">{orbit.orientation.d.x}</td>
-                <td className="p-2 pr-8">{orbit.orientation.d.y}</td>
-                <td className="p-2 pr-8">{orbit.orientation.d.z}</td>
-                <td className="p-2 pr-8">{orbit.orientation.w}</td>
+                <td className="p-2 pr-8">{orbit.geodetic ? orbit.geodetic.latitude : 0}</td>
+                <td className="p-2 pr-8">{orbit.geodetic ? orbit.geodetic.longitude : 0}</td>
+                <td className="p-2 pr-8">{orbit.geodetic ? orbit.geodetic.altitude : 0}</td>
               </tr>
             ))
           }
@@ -757,6 +797,7 @@ CesiumGlobe.propTypes = {
 
     return null;
   },
+  coordinateSystem: PropTypes.string,
 };
 
 CesiumGlobe.defaultProps = {
@@ -764,6 +805,7 @@ CesiumGlobe.defaultProps = {
   orbits: [],
   showStatus: false,
   status: 'error',
+  coordinateSystem: 'cartesian',
 };
 
 export default CesiumGlobe;
