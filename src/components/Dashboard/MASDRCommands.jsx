@@ -19,11 +19,12 @@ const ws = socket('query', '/command/');
 const Commands = React.memo(({
   // macros,
 }) => {
+
   const { state } = useContext(Context);
   /** Agents */
   // const [agentList, setAgentList] = useState([]);
   /** Selected agent to get requests from */
-  const [selectedAgent, setSelectedAgent] = useState([]);
+  const [selectedAgent, setSelectedAgent] = useState(['masdr', 'nordiasoft']);
   /** Requests possible from selectedAgent */
   const [agentRequests, setAgentRequests] = useState({});
 
@@ -104,6 +105,12 @@ const Commands = React.memo(({
   /** Close ws on unmount */
   useEffect(() => () => ws.close(), []);
 
+  /** Update height of the history log */
+  useEffect(() => {
+    cliEl.current.scrollTop = cliEl.current.scrollHeight;
+    setUpdateLog(null);
+  }, [updateLog])
+
   /** Handle submission of agent command */
   const sendCommand = () => {
     if (selectedRequest === '> agent') {
@@ -138,12 +145,6 @@ const Commands = React.memo(({
     getRequests();
   }, [selectedAgent]);
 
-  /** Update height of the history log */
-  useEffect(() => {
-    cliEl.current.scrollTop = cliEl.current.scrollHeight;
-    setUpdateLog(null);
-  }, [updateLog]);
-
   return (
     <BaseComponent
       name="Commands"
@@ -177,11 +178,9 @@ const Commands = React.memo(({
           </Select>
         </div> */}
         <div className="w-full py-2">
-          <Search
-            placeholder="Select node:process"
-            onSearch={value => setSelectedAgent(value.split(':'))}
-            enterButton={<Icon type="select" />}
-          />
+          <Button>
+            Retrieve Agent Nordiasoft Requests
+          </Button>
         </div>
       </div>
       <div

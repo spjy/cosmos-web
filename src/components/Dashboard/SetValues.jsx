@@ -1,8 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
   Form, Input, Button, Select, message, Card,
 } from 'antd';
+
+import { Context } from '../../store/neutron1';
+
 
 import BaseComponent from '../BaseComponent';
 import socket from '../../socket';
@@ -23,6 +26,7 @@ function SetValues({
   node,
   proc,
 }) {
+  const { state } = useContext(Context);
   /** Form storage */
   const [form, setForm] = useState({});
   /** Status of the live switch */
@@ -35,8 +39,10 @@ function SetValues({
   const [selectedProperty, setSelectedProperty] = useState(values[Object.keys(values)[0]][0]);
   /** The live values to display from the agent */
   const [liveValues, setLiveValues] = useState([]);
+  /** Auto scroll the history log to the bottom */
+  const [updateLog, setUpdateLog] = useState(null);
 
-  /** DOM element selector for  */
+  /** DOM element selector for history log */
   const cliEl = useRef(null);
 
   /** Listen for command outputs and append them to the command history. Also force scroll to the bottom. */
@@ -46,7 +52,7 @@ function SetValues({
       data,
     ]);
 
-    cliEl.current.scrollTop = cliEl.current.scrollHeight;
+    setUpdateLog(true);
   };
 
   /** Send the agent command with the selected value to change. */
@@ -64,14 +70,14 @@ function SetValues({
         throw new Error('A value is required.');
       }
 
-      ws.send(`${node} ${proc} configure_component PropCubeWaveform ${selectedComponent} ${selectedProperty} ${form.value}`);
+      ws.send(`${node} ${proc} configure_component ${state.macro ? `${state.macro} ` : ''}${selectedComponent} ${selectedProperty} ${form.value}`);
 
       setCommandHistory([
         ...commandHistory,
-        `➜ agent ${node} ${proc} configure_component PropCubeWaveform ${selectedComponent} ${selectedProperty} ${form.value}`,
+        `➜ agent ${node} ${proc} configure_component ${state.macro ? `${state.macro} ` : ''}${selectedComponent} ${selectedProperty} ${form.value}`,
       ]);
 
-      cliEl.current.scrollTop = cliEl.current.scrollHeight;
+      setUpdateLog(true);
 
       setForm({
         ...form,
@@ -83,7 +89,7 @@ function SetValues({
         ...form,
         success: false,
       });
-
+      
       message.error(error.message);
     }
   };
@@ -95,7 +101,7 @@ function SetValues({
     // Open socket
     components.onopen = () => {
       // Send request for the values
-      components.send(`${node} ${proc} component PropCubeWaveform ${selectedComponent}`);
+      components.send(`${node} ${proc} component ${state.macro ? `${state.macro} ` : ''}${selectedComponent}`);
 
       // Update the values on return of output
       components.onmessage = ({ data }) => {
@@ -130,6 +136,12 @@ function SetValues({
   /** Close ws on unmount */
   useEffect(() => () => ws.close(), []);
 
+  /** Update height of the history log */
+  useEffect(() => {
+    cliEl.current.scrollTop = cliEl.current.scrollHeight;
+    setUpdateLog(null);
+  }, [updateLog])
+
   return (
     <BaseComponent
       name={name}
@@ -161,6 +173,7 @@ function SetValues({
                 addonBefore={(
                   <Input.Group compact>
                     <Select
+                      showSearch
                       defaultValue={selectedComponent}
                       dropdownMatchSelectWidth={false}
                       onChange={(value) => {
@@ -181,6 +194,7 @@ function SetValues({
                     </Select>
                     &nbsp;&nbsp;&nbsp;
                     <Select
+                      showSearch
                       value={selectedProperty}
                       dropdownMatchSelectWidth={false}
                       onChange={value => setSelectedProperty(value)}

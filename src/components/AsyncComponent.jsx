@@ -9,6 +9,8 @@ import Commands from './Dashboard/Commands';
 import Content from './Dashboard/Content';
 import DisplayValue from './Dashboard/DisplayValue';
 import Globe from './Dashboard/Globe';
+import Macro from './Dashboard/Macro';
+import MASDRCommands from './Dashboard/MASDRCommands';
 import SetValues from './Dashboard/SetValues';
 import Status from './Dashboard/Status';
 import ThreeD from './Dashboard/ThreeD';
@@ -24,6 +26,8 @@ const components = {
   Content,
   DisplayValue,
   Globe,
+  Macro,
+  MASDRCommands,
   SetValues,
   Status,
   ThreeD,
