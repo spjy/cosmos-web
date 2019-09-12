@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
-import PropTypes from 'prop-types';
+import React, {
+  useState, useEffect, useRef, useContext,
+} from 'react';
 import {
   Input, Select, Tooltip, message, Button,
 } from 'antd';
@@ -14,10 +15,7 @@ const ws = socket('query', '/command/');
 /**
  * Send commands to agents. Simulates a CLI.
  */
-const Commands = React.memo(({
-  // macros,
-}) => {
-
+const Commands = React.memo(() => {
   const { state } = useContext(Context);
   /** Agents */
   // const [agentList, setAgentList] = useState([]);
@@ -33,8 +31,6 @@ const Commands = React.memo(({
   const [commandArguments, setCommandArguments] = useState('');
   /** Agent command history (to display in the terminal) */
   const [commandHistory, setCommandHistory] = useState([]);
-  /** Save the last sent argument value */
-  const [lastArgument, setLastArgument] = useState(null);
   /** Auto scroll the history log to the bottom */
   const [updateLog, setUpdateLog] = useState(null);
 

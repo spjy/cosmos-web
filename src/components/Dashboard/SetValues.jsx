@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, {
+  useState, useEffect, useRef, useContext,
+} from 'react';
 import PropTypes from 'prop-types';
 import {
   Form, Input, Button, Select, message, Card,
 } from 'antd';
 
 import { Context } from '../../store/neutron1';
-
 
 import BaseComponent from '../BaseComponent';
 import socket from '../../socket';
@@ -45,7 +46,9 @@ function SetValues({
   /** DOM element selector for history log */
   const cliEl = useRef(null);
 
-  /** Listen for command outputs and append them to the command history. Also force scroll to the bottom. */
+  /** Listen for command outputs and append them to the command history.
+   * Force scroll to the bottom.
+   */
   ws.onmessage = ({ data }) => {
     setCommandHistory([
       ...commandHistory,
@@ -89,7 +92,7 @@ function SetValues({
         ...form,
         success: false,
       });
-      
+
       message.error(error.message);
     }
   };

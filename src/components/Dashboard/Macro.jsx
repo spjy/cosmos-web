@@ -11,20 +11,23 @@ import Content from './Content';
  */
 function Macro() {
   /** Get agent list state from the Context */
-  const { state, dispatch } = useContext(Context);
-  /** Component's agent list storage */
-  const [list, setList] = useState([]);
+  const { dispatch } = useContext(Context);
 
+  /** Currently selected macro */
   const [macro, setMacro] = useState('');
-
+  /** Possible list of macros */
   const [macros, setMacros] = useState([]);
-
+  /** Watcher variable to listen when to update the list */
   const [updateMacros, setUpdateMacros] = useState(false);
 
+  /** Store selected macro in React Context */
   useEffect(() => {
     dispatch(actions.get('macro', macro));
   }, [macro]);
 
+  /**
+   * Retrieve the possible macros from Nordiasoft applications
+   */
   const getValue = () => {
     const installed = socket('query', '/command/');
 
