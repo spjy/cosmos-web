@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Input, Select, Tooltip, Icon, message, Button,
+  Input, Select, Tooltip, message, Button,
 } from 'antd';
-
-import Search from 'antd/lib/input/Search';
 
 import { Context } from '../../store/neutron1';
 import BaseComponent from '../BaseComponent';
@@ -24,10 +22,10 @@ const Commands = React.memo(({
   /** Agents */
   // const [agentList, setAgentList] = useState([]);
   /** Selected agent to get requests from */
-  const [selectedAgent, setSelectedAgent] = useState(['masdr', 'nordiasoft']);
+  const [selectedAgent] = useState(['masdr', 'nordiasoft']);
   /** Requests possible from selectedAgent */
   const [agentRequests, setAgentRequests] = useState({});
-
+  /** Agent requests alphabetized */
   const [sortedAgentRequests, setSortedAgentRequests] = useState([]);
   /** Selected agent request */
   const [selectedRequest, setSelectedRequest] = useState('> agent');
@@ -109,7 +107,7 @@ const Commands = React.memo(({
   useEffect(() => {
     cliEl.current.scrollTop = cliEl.current.scrollHeight;
     setUpdateLog(null);
-  }, [updateLog])
+  }, [updateLog]);
 
   /** Handle submission of agent command */
   const sendCommand = () => {
@@ -120,10 +118,10 @@ const Commands = React.memo(({
         `➜ agent ${commandArguments}`,
       ]);
     } else {
-      ws.send(`${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro ? `${state.macro} ` : ''}${commandArguments}`);
+      ws.send(`${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro && selectedRequest.startsWith('app_') ? `${state.macro} ` : ''}${commandArguments}`);
       setCommandHistory([
         ...commandHistory,
-        `➜ agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro ? `${state.macro} ` : ''}${commandArguments}`,
+        `➜ agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro && selectedRequest.startsWith('app_') ? `${state.macro} ` : ''}${commandArguments}`,
       ]);
     }
 

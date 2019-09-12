@@ -70,11 +70,11 @@ function SetValues({
         throw new Error('A value is required.');
       }
 
-      ws.send(`${node} ${proc} configure_component ${state.macro ? `${state.macro} ` : ''}${selectedComponent} ${selectedProperty} ${form.value}`);
+      ws.send(`${node} ${proc} app_configure_component ${state.macro ? `${state.macro} ` : ''}${selectedComponent} ${selectedProperty} ${form.value}`);
 
       setCommandHistory([
         ...commandHistory,
-        `➜ agent ${node} ${proc} configure_component ${state.macro ? `${state.macro} ` : ''}${selectedComponent} ${selectedProperty} ${form.value}`,
+        `➜ agent ${node} ${proc} app_configure_component ${state.macro ? `${state.macro} ` : ''}${selectedComponent} ${selectedProperty} ${form.value}`,
       ]);
 
       setUpdateLog(true);
@@ -101,7 +101,7 @@ function SetValues({
     // Open socket
     components.onopen = () => {
       // Send request for the values
-      components.send(`${node} ${proc} component ${state.macro ? `${state.macro} ` : ''}${selectedComponent}`);
+      components.send(`${node} ${proc} app_component ${state.macro ? `${state.macro} ` : ''}${selectedComponent}`);
 
       // Update the values on return of output
       components.onmessage = ({ data }) => {
