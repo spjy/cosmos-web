@@ -14,6 +14,7 @@ function Content({
   status,
   children,
   formItems,
+  movable,
 }) {
   /** Status of the live switch */
   const [, setLiveSwitch] = useState();
@@ -27,6 +28,7 @@ function Content({
       status={status}
       formItems={formItems}
       handleLiveSwitchChange={checked => setLiveSwitch(checked)}
+      movable={movable}
     >
       {children}
     </BaseComponent>
@@ -58,6 +60,8 @@ Content.propTypes = {
   children: PropTypes.node,
   /** Form node */
   formItems: PropTypes.node,
+  /** Draggable layout component */
+  movable: PropTypes.bool,
 };
 
 Content.defaultProps = {
@@ -69,6 +73,7 @@ Content.defaultProps = {
   status: 'error',
   children: null,
   formItems: null,
+  movable: false,
 };
 
 export default Content;

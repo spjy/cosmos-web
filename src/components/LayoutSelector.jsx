@@ -57,7 +57,7 @@ function LayoutSelector({
   return (
     <div className="flex justify-center">
       <Select
-        className="w-1/4 mr-3"
+        className="w-3/4 mr-3"
         defaultActiveFirstOption
         dropdownMatchSelectWidth={false}
         showSearch

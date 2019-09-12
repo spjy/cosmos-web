@@ -20,6 +20,7 @@ function BaseComponent({
   formItems,
   handleLiveSwitchChange,
   toolsSlot,
+  movable,
 }) {
   /** Handler for the widget settings modal */
   const [openSettings, setOpenSettings] = useState(false);
@@ -43,7 +44,7 @@ function BaseComponent({
         {formItems}
       </ComponentSettings>
 
-      <div className="flex justify-between p-3 dragHandle cursor-move" style={{ backgroundColor: '#f1f1f1' }}>
+      <div className={`flex justify-between p-3 dragHandle ${movable ? 'cursor-move' : ''}`} style={{ backgroundColor: '#f1f1f1' }}>
         <div className="flex flex-row flex-shrink-0">
           {showStatus ? (
             <div style={{ marginTop: '0.2em' }}>
@@ -124,6 +125,8 @@ BaseComponent.propTypes = {
   formItems: PropTypes.node,
   /** Top right slot in header */
   toolsSlot: PropTypes.node,
+  /** Draggable layout component */
+  movable: PropTypes.bool,
 };
 
 BaseComponent.defaultProps = {
@@ -137,6 +140,7 @@ BaseComponent.defaultProps = {
   children: null,
   formItems: null,
   toolsSlot: null,
+  movable: true,
 };
 
 export default BaseComponent;

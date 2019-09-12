@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useReducer } from 'react';
 import PropTypes from 'prop-types';
-import { message } from 'antd';
+import { message, Typography, Icon } from 'antd';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
@@ -15,6 +15,7 @@ import routes from '../routes';
 
 import AsyncComponent from '../components/AsyncComponent';
 import LayoutSelector from '../components/LayoutSelector';
+import Content from '../components/Dashboard/Content';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -28,14 +29,19 @@ function Dashboard({
    */
   const [state, dispatch] = useReducer(reducer, {});
 
+  /** Store the default page layout in case user wants to switch to it */
   const [defaultPageLayout, setDefaultPageLayout] = useState({
     lg: [],
   });
 
+  /** Currently selected layout in use */
   const [layouts, setLayouts] = useState({
     lg: [],
   });
 
+  const [socketStatus, setSocketStatus] = useState('error');
+
+  /** Get socket data from the agent */
   useEffect(() => {
     const all = socket('live', '/live/all');
 
@@ -48,6 +54,14 @@ function Dashboard({
       } catch (err) {
         // console.log(err);
       }
+    };
+
+    all.onclose = () => {
+      setSocketStatus('error');
+    };
+
+    all.onopen = () => {
+      setSocketStatus('success');
     };
 
     return () => {
@@ -94,11 +108,44 @@ function Dashboard({
   return (
     <Context.Provider value={{ state, dispatch }}>
       <div className="m-3 mb-32">
-        <div className="mx-3">
-          <LayoutSelector
-            path={path}
-            selectLayout={value => selectLayout(value)}
-          />
+        <div className="flex">
+          <div className="w-1/2 m-3 shadow overflow-y-auto" style={{ backgroundColor: '#fbfbfb' }}>
+            <Content
+              name="Layout Selection"
+              movable={false}
+            >
+              <LayoutSelector
+                path={path}
+                selectLayout={value => selectLayout(value)}
+              />
+            </Content>
+          </div>
+          <div className="w-1/2 m-3 shadow overflow-y-auto" style={{ backgroundColor: '#fbfbfb' }}>
+            <Content
+              // showStatus
+              // status={socketStatus}
+              name="Socket Status"
+              movable={false}
+            >
+              <Typography.Text type="secondary">
+                {
+                  socketStatus === 'success'
+                    ? (
+                      <span>
+                        <Icon type="check-circle" theme="twoTone" twoToneColor="#52c41a" />
+                        &nbsp;Connected and operational.
+                      </span>
+                    )
+                    : (
+                      <span>
+                        <Icon type="close-circle" theme="twoTone" twoToneColor="#d80000" />
+                        &nbsp;&nbsp;No connection available. Attempting to reconnect.
+                      </span>
+                    )
+                }
+              </Typography.Text>
+            </Content>
+          </div>
         </div>
         <ResponsiveGridLayout
           className="layout"

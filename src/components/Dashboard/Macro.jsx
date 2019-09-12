@@ -54,6 +54,7 @@ function Macro() {
   return (
     <Content
       name="Macros"
+      movable
     >
       <div className="flex">
         <Select

@@ -101,6 +101,7 @@ function UploadFile({
   return (
     <Content
       name="Upload"
+      movable
     >
       <Upload.Dragger
         fileList={files}

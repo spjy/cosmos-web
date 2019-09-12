@@ -32,6 +32,7 @@ function Activity() {
   return (
     <Content
       name="Activity"
+      movable
     >
       {
         activity.length === 0 ? 'No activity.' : null
