@@ -690,6 +690,21 @@ const routes = [
                 name: 'ThreeD',
                 props: {
                   name: 'Attitude',
+                  attitudes: [
+                    {
+                      name: 'n1',
+                      nodeProcess: 'cubesat1:propagator_simple',
+                      quaternions: {
+                        d: {
+                          x: 0,
+                          y: 0,
+                          z: 0,
+                        },
+                        w: 0,
+                      },
+                      live: true,
+                    },
+                  ],
                 },
               },
             },
@@ -1276,6 +1291,18 @@ const routes = [
               x: 0,
               y: 4,
               w: 12,
+              h: 7,
+              component: {
+                name: 'Activity',
+                props: {
+                },
+              },
+            },
+            {
+              i: 'gs-masdr-f',
+              x: 0,
+              y: 5,
+              w: 12,
               h: 38,
               component: {
                 name: 'Globe',
@@ -1307,18 +1334,6 @@ const routes = [
               },
             },
 
-            {
-              i: 'gs-masdr-g',
-              x: 0,
-              y: 5,
-              w: 12,
-              h: 7,
-              component: {
-                name: 'Activity',
-                props: {
-                },
-              },
-            },
           ],
         },
       },
