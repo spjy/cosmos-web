@@ -115,6 +115,10 @@ function SetValues({
           }
         } catch (error) {
           console.log(error);
+
+          setLiveValues([{ id: 'Unable to retrieve component properties.' }]);
+
+          message.error(error);
         }
 
         components.close();
@@ -131,7 +135,7 @@ function SetValues({
     return () => {
       clearTimeout(timeout);
     };
-  }, [liveValues, selectedComponent]);
+  }, [liveValues, selectedComponent, state.macro]);
 
   /** Close ws on unmount */
   useEffect(() => () => ws.close(), []);
@@ -140,7 +144,7 @@ function SetValues({
   useEffect(() => {
     cliEl.current.scrollTop = cliEl.current.scrollHeight;
     setUpdateLog(null);
-  }, [updateLog])
+  }, [updateLog]);
 
   return (
     <BaseComponent
@@ -180,6 +184,7 @@ function SetValues({
                         setSelectedComponent(value);
                         setSelectedProperty(values[value][0]);
                       }}
+                      style={{ minWidth: '5em' }}
                     >
                       {
                         Object.keys(values).map(value => (
@@ -198,6 +203,7 @@ function SetValues({
                       value={selectedProperty}
                       dropdownMatchSelectWidth={false}
                       onChange={value => setSelectedProperty(value)}
+                      style={{ minWidth: '5em' }}
                     >
                       {
                         values[selectedComponent].map(property => (
