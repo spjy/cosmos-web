@@ -1127,7 +1127,7 @@ const routes = [
               x: 0,
               y: 0,
               w: 4,
-              h: 7,
+              h: 5,
               component: {
                 name: 'DisplayValue',
                 props: {
@@ -1149,9 +1149,9 @@ const routes = [
               x: 4,
               y: 0,
               w: 4,
-              h: 7,
+              h: 5,
               component: {
-                name: 'Clock',
+                name: 'Macro',
               },
             },
             {
@@ -1159,28 +1159,13 @@ const routes = [
               x: 8,
               y: 0,
               w: 4,
-              h: 7,
-              component: {
-                name: 'UploadFile',
-                props: {
-                  node: 'masdr',
-                  proc: 'nordiasoft',
-                  command: 'tle',
-                },
-              },
-            },
-            {
-              i: 'gs-masdr-s',
-              x: 0,
-              y: 1,
-              w: 12,
               h: 5,
               component: {
-                name: 'Macro',
+                name: 'Clock',
               },
             },
             {
-              i: 'gs-masdr-h',
+              i: 'gs-masdr-d',
               x: 0,
               y: 2,
               w: 12,
@@ -1190,7 +1175,7 @@ const routes = [
               },
             },
             {
-              i: 'gs-masdr-d',
+              i: 'gs-masdr-e',
               x: 0,
               y: 3,
               w: 12,
@@ -1287,7 +1272,7 @@ const routes = [
               },
             },
             {
-              i: 'gs-masdr-e',
+              i: 'gs-masdr-f',
               x: 0,
               y: 4,
               w: 12,
@@ -1299,7 +1284,7 @@ const routes = [
               },
             },
             {
-              i: 'gs-masdr-f',
+              i: 'gs-masdr-g',
               x: 0,
               y: 5,
               w: 12,
