@@ -134,7 +134,7 @@ function SetValues({
   /** Poll every second for the values */
   useEffect(() => {
     getValue();
-    
+
     setQueryValues(null);
   }, [queryValues]);
 

@@ -12,6 +12,86 @@ import socket from '../../socket';
 const ws = socket('query', '/command/');
 // const live = socket('live', '/live/list');
 
+const commands = [
+  {
+    name: 'app_configure',
+  },
+  {
+    name: 'app_component',
+  },
+  {
+    name: 'app_configure_component',
+  },
+  {
+    name: 'app_install',
+  },
+  {
+    name: 'app_list_components',
+  },
+  {
+    name: 'app_query_properties',
+  },
+  {
+    name: 'configure_device',
+  },
+  {
+    name: 'connect',
+  },
+  {
+    name: 'device_properties',
+  },
+  {
+    name: 'doppler',
+  },
+  {
+    name: 'get_doppler_config',
+  },
+  {
+    name: 'get_gs_location',
+  },
+  {
+    name: 'help',
+  },
+  {
+    name: 'initialize',
+  },
+  {
+    name: 'list_applications',
+  },
+  {
+    name: 'list_devices',
+  },
+  {
+    name: 'list_tracks',
+  },
+  {
+    name: 'set_doppler_config',
+  },
+  {
+    name: 'set_frequency',
+  },
+  {
+    name: 'set_gs_location',
+  },
+  {
+    name: 'set_track',
+  },
+  {
+    name: 'update_tle',
+  },
+];
+
+const buttons = [
+  'initialize',
+  'app_launch',
+  'app_start',
+  'app_stop',
+  'app_shutdown',
+  'app_uninstall',
+  'shutdown',
+  'list_applications',
+];
+
 /**
  * Send commands to agents. Simulates a CLI.
  */
@@ -172,9 +252,24 @@ const Commands = React.memo(() => {
           </Select>
         </div> */}
         <div className="w-full py-2">
-          <Button>
-            Retrieve Agent Nordiasoft Requests
-          </Button>
+          {
+            buttons.map(button => (
+              <Button
+                className="m-1"
+                onClick={() => {
+                  ws.send(`${selectedAgent[0]} ${selectedAgent[1]} ${button} ${state.macro && button.startsWith('app_') ? `${state.macro} ` : ''}`);
+                  setCommandHistory([
+                    ...commandHistory,
+                    `➜ agent ${selectedAgent[0]} ${selectedAgent[1]} ${button} ${state.macro && button.startsWith('app_') ? `${state.macro} ` : ''}`,
+                  ]);
+
+                  setUpdateLog(true);
+                }}
+              >
+                {button}
+              </Button>
+            ))
+          }
         </div>
       </div>
       <div
@@ -195,7 +290,6 @@ const Commands = React.memo(() => {
               defaultValue="> agent"
               dropdownMatchSelectWidth={false}
               onChange={value => setSelectedRequest(value)}
-              value={selectedRequest}
               style={{ minWidth: '5em' }}
             >
               <Select.Option value="> agent">
@@ -205,11 +299,9 @@ const Commands = React.memo(() => {
               </Select.Option>
 
               {
-                sortedAgentRequests.map(token => (
-                  <Select.Option value={token} key={token}>
-                    <Tooltip placement="right" title={`${agentRequests[token] && agentRequests[token].synopsis ? `${agentRequests[token].synopsis} ` : ''}${agentRequests[token].description}`}>
-                      { token }
-                    </Tooltip>
+                commands.map(token => (
+                  <Select.Option value={token.name} key={token.name}>
+                    { token.name }
                   </Select.Option>
                 ))
               }
