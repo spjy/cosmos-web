@@ -106,7 +106,9 @@ function CesiumGlobe({
         }
 
         if (state[orbit.nodeProcess].utc
-          && (state[orbit.nodeProcess].node_loc_pos_eci || state[orbit.nodeProcess].node_loc_pos_geod_s_lat)) {
+          && (state[orbit.nodeProcess].node_loc_pos_eci
+          || state[orbit.nodeProcess].node_loc_pos_geod_s_lat)
+        ) {
           const date = Cesium
             .JulianDate
             .fromDate(
@@ -114,7 +116,7 @@ function CesiumGlobe({
                 .unix((((state[orbit.nodeProcess].utc + 2400000.5) - 2440587.5) * 86400.0))
                 .toDate(),
             );
-          
+
           let pos;
 
           if (coordinateSystem === 'cartesian') {
@@ -695,7 +697,11 @@ function CesiumGlobe({
                     modelMatrix={
                       coordinateSystem === 'cartesian'
                         ? getPos(orbit.position[0], orbit.position[1], orbit.position[2])
-                        : getPosFromSpherical(orbit.geodetic.longitude * (180 / Math.PI), orbit.geodetic.latitude * (180 / Math.PI), 1000)
+                        : getPosFromSpherical(
+                          orbit.geodetic.longitude * (180 / Math.PI),
+                          orbit.geodetic.latitude * (180 / Math.PI),
+                          1000,
+                        )
                     }
                     url={model}
                     minimumPixelSize={35}
