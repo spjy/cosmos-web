@@ -42,6 +42,8 @@ function SetValues({
   const [liveValues, setLiveValues] = useState([]);
   /** Auto scroll the history log to the bottom */
   const [updateLog, setUpdateLog] = useState(null);
+  /**  */
+  const [queryValues, setQueryValues] = useState(null);
 
   /** DOM element selector for history log */
   const cliEl = useRef(null);
@@ -131,14 +133,10 @@ function SetValues({
 
   /** Poll every second for the values */
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      getValue();
-    }, 1000);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [liveValues, selectedComponent, state.macro]);
+    getValue();
+    
+    setQueryValues(null);
+  }, [queryValues]);
 
   /** Close ws on unmount */
   useEffect(() => () => ws.close(), []);
@@ -245,6 +243,13 @@ function SetValues({
       </Form>
 
       <Card className="my-1">
+        <Button
+          onClick={() => setQueryValues(true)}
+        >
+          Query Properties
+        </Button>
+        <br />
+        <br />
         <table>
           <tbody>
             {
