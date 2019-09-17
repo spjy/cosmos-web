@@ -109,7 +109,7 @@ function Dashboard({
     <Context.Provider value={{ state, dispatch }}>
       <div className="m-3 mb-32">
         <div className="flex">
-          <div className="w-1/2 m-3 shadow overflow-y-auto" style={{ backgroundColor: '#fbfbfb' }}>
+          <div className="w-1/2 ml-3 shadow overflow-y-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <Content
               name="Layout Selection"
               movable={false}
@@ -120,7 +120,7 @@ function Dashboard({
               />
             </Content>
           </div>
-          <div className="w-1/2 m-3 shadow overflow-y-auto" style={{ backgroundColor: '#fbfbfb' }}>
+          <div className="w-1/2 ml-3 mr-3 shadow overflow-y-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <Content
               // showStatus
               // status={socketStatus}

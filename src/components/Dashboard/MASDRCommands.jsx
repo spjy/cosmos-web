@@ -194,10 +194,10 @@ const Commands = React.memo(() => {
         `➜ agent ${commandArguments}`,
       ]);
     } else {
-      ws.send(`${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro && selectedRequest.startsWith('app_') ? `${state.macro} ` : ''}${commandArguments}`);
+      ws.send(`${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro && (selectedRequest.startsWith('app_') || selectedRequest === 'set_doppler_config') ? `${state.macro} ` : ''}${commandArguments}`);
       setCommandHistory([
         ...commandHistory,
-        `➜ agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro && selectedRequest.startsWith('app_') ? `${state.macro} ` : ''}${commandArguments}`,
+        `➜ agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro && (selectedRequest.startsWith('app_') || selectedRequest === 'set_doppler_config') ? `${state.macro} ` : ''}${commandArguments}`,
       ]);
     }
 
