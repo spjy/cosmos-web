@@ -255,6 +255,7 @@ const Commands = React.memo(() => {
           {
             buttons.map(button => (
               <Button
+                key={button}
                 className="m-1"
                 onClick={() => {
                   ws.send(`${selectedAgent[0]} ${selectedAgent[1]} ${button} ${state.macro && button.startsWith('app_') ? `${state.macro} ` : ''}`);
@@ -300,7 +301,10 @@ const Commands = React.memo(() => {
 
               {
                 commands.map(token => (
-                  <Select.Option value={token.name} key={token.name}>
+                  <Select.Option
+                    value={token.name}
+                    key={token.name}
+                  >
                     { token.name }
                   </Select.Option>
                 ))

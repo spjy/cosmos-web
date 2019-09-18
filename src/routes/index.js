@@ -1175,20 +1175,6 @@ const routes = [
               },
             },
             {
-              i: 'satellite-hyti-d',
-              x: 0,
-              y: 7,
-              w: 12,
-              h: 10,
-              component: {
-                name: 'UploadFile',
-                props: {
-                  node: '',
-                  proc: '',
-                }
-              },
-            },
-            {
               i: 'gs-masdr-e',
               x: 0,
               y: 3,
