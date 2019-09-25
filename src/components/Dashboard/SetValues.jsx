@@ -171,7 +171,7 @@ function SetValues({
         <div className="flex w-full flex-wrap">
           <div className="flex-initial flex-grow pr-2">
             <Form.Item
-              hasFeedback={form.value ? true : false}
+              hasFeedback={form.value}
               validateStatus={form.value && form.success ? 'success' : ''}
               className="-mb-1"
             >
