@@ -59,7 +59,7 @@ function Clock({
         </Form>
       )}
     >
-      <table>
+      <table className="text-2xl">
         <tbody>
           <tr>
             <td className="pr-4 text-gray-500">

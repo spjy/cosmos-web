@@ -111,6 +111,8 @@ const Commands = React.memo(() => {
   const [commandArguments, setCommandArguments] = useState('');
   /** Agent command history (to display in the terminal) */
   const [commandHistory, setCommandHistory] = useState([]);
+  /** Save the last sent argument value */
+  const [lastArgument, setLastArgument] = useState('');
   /** Auto scroll the history log to the bottom */
   const [updateLog, setUpdateLog] = useState(null);
 
@@ -187,6 +189,8 @@ const Commands = React.memo(() => {
 
   /** Handle submission of agent command */
   const sendCommand = () => {
+    setLastArgument(commandArguments);
+
     if (selectedRequest === '> agent') {
       ws.send(commandArguments);
       setCommandHistory([
@@ -330,6 +334,11 @@ const Commands = React.memo(() => {
           onPressEnter={() => {
             sendCommand();
             setCommandArguments('');
+          }}
+          onKeyDown={(e) => {
+            if (e.keyCode === 38) {
+              setCommandArguments(lastArgument);
+            }
           }}
           value={commandArguments}
         />

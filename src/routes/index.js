@@ -1126,12 +1126,34 @@ const routes = [
               i: 'gs-masdr-a',
               x: 0,
               y: 0,
-              w: 4,
+              w: 6,
               h: 5,
               component: {
                 name: 'DisplayValue',
                 props: {
-                  name: 'GS Values',
+                  name: 'Uplink',
+                  displayValues: [
+                    {
+                      name: 'Frequency',
+                      nodeProcess: 'masdr:nordiasoft',
+                      dataKey: 'device_tcv_freq_000',
+                      unit: 'Hz',
+                      processDataKey: x => x.toFixed(2),
+                    },
+                  ],
+                },
+              },
+            },
+            {
+              i: 'gs-masdr-aa',
+              x: 6,
+              y: 0,
+              w: 6,
+              h: 5,
+              component: {
+                name: 'DisplayValue',
+                props: {
+                  name: 'Downlink',
                   displayValues: [
                     {
                       name: 'Frequency',
@@ -1146,20 +1168,20 @@ const routes = [
             },
             {
               i: 'gs-masdr-b',
-              x: 4,
-              y: 0,
-              w: 4,
-              h: 5,
+              x: 6,
+              y: 1,
+              w: 6,
+              h: 6,
               component: {
                 name: 'Macro',
               },
             },
             {
               i: 'gs-masdr-c',
-              x: 8,
-              y: 0,
-              w: 4,
-              h: 5,
+              x: 0,
+              y: 1,
+              w: 6,
+              h: 6,
               component: {
                 name: 'Clock',
               },
