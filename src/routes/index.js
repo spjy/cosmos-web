@@ -1134,9 +1134,16 @@ const routes = [
                   name: 'Uplink',
                   displayValues: [
                     {
+                      name: 'Base Frequency',
+                      nodeProcess: 'masdr:nordiasoft',
+                      dataKey: 'device_txr_freq_000',
+                      unit: 'Hz',
+                      processDataKey: x => x.toFixed(2),
+                    },
+                    {
                       name: 'Frequency',
                       nodeProcess: 'masdr:nordiasoft',
-                      dataKey: 'device_tcv_freq_000',
+                      dataKey: 'dopplerTx',
                       unit: 'Hz',
                       processDataKey: x => x.toFixed(2),
                     },
@@ -1156,9 +1163,16 @@ const routes = [
                   name: 'Downlink',
                   displayValues: [
                     {
+                      name: 'Base Frequency',
+                      nodeProcess: 'masdr:nordiasoft',
+                      dataKey: 'device_rxr_freq_000',
+                      unit: 'Hz',
+                      processDataKey: x => x.toFixed(2),
+                    },
+                    {
                       name: 'Frequency',
                       nodeProcess: 'masdr:nordiasoft',
-                      dataKey: 'device_tcv_freq_000',
+                      dataKey: 'dopplerRx',
                       unit: 'Hz',
                       processDataKey: x => x.toFixed(2),
                     },
