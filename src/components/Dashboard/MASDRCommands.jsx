@@ -74,6 +74,12 @@ const commands = [
     name: 'set_gs_location',
   },
   {
+    name: 'set_receive_freq',
+  },
+  {
+    name: 'set_transmit_freq',
+  },
+  {
     name: 'set_track',
   },
   {

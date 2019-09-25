@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Form, Input, Button, Select, message, Card,
+  Form, Input, Button, Select, message, Card, Switch,
 } from 'antd';
 
 import { Context } from '../../store/neutron1';
@@ -44,6 +44,9 @@ function SetValues({
   const [updateLog, setUpdateLog] = useState(null);
   /**  */
   const [queryValues, setQueryValues] = useState(null);
+
+  const [txrxSwitch, setTxrxSwitch] = useState('rx');
+  const [dopplerSwitch, setDopplerSwitch] = useState(0);
 
   /** DOM element selector for history log */
   const cliEl = useRef(null);
@@ -98,6 +101,24 @@ function SetValues({
       message.error(error.message);
     }
   };
+
+  // const setTxRx = () => {
+  //   ws.send(`${node} ${proc} set_doppler_config ${state.macro ? `${state.macro} ` : ''}${selectedComponent} ${selectedProperty} ${frequency} ${txrx}`);
+
+  //   setCommandHistory([
+  //     ...commandHistory,
+  //     `➜ agent ${node} ${proc} set_doppler_config ${state.macro ? `${state.macro} ` : ''}${selectedComponent} ${frequency} ${txrx}`,
+  //   ]);
+  // };
+
+  useEffect(() => {
+    ws.send(`${node} ${proc} set_doppler_config ${state.macro ? `${state.macro} ` : ''}${selectedComponent} ${selectedProperty} ${dopplerSwitch} ${txrxSwitch}`);
+
+    setCommandHistory([
+      ...commandHistory,
+      `➜ agent ${node} ${proc} set_doppler_config ${state.macro ? `${state.macro} ` : ''}${selectedComponent} ${selectedProperty} ${dopplerSwitch} ${txrxSwitch}`,
+    ]);
+  }, [txrxSwitch, dopplerSwitch]);
 
   /** Get the live values from the agent */
   const getValue = () => {
@@ -158,6 +179,22 @@ function SetValues({
       formItems={formItems}
       handleLiveSwitchChange={checked => setLiveSwitch(checked)}
     >
+      TX/RX Switching
+      <Switch
+        className="ml-2 mr-2"
+        checkedChildren="tx"
+        unCheckedChildren="rx"
+        onChange={checked => checked ? setTxrxSwitch('tx') : setTxrxSwitch('rx')}
+      />
+      Doppler Offset / Offset+Base Frequency
+      <Switch
+        className="ml-2 mr-2"
+        checkedChildren="1"
+        unCheckedChildren="0"
+        onChange={checked => checked ? setDopplerSwitch(1) : setDopplerSwitch(0)}
+      />
+      <br />
+      <br />
       <div
         className="border border-gray-300 rounded mb-2 p-4 bg-white font-mono h-32 max-h-full resize-y overflow-y-scroll"
         ref={cliEl}
