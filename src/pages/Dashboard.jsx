@@ -120,7 +120,7 @@ function Dashboard({
               />
             </Content>
           </div>
-          <div className="w-1/2 ml-3 mr-3 shadow overflow-y-auto" style={{ backgroundColor: '#fbfbfb' }}>
+          <div className="w-1/2 ml-3 shadow overflow-y-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <Content
               // showStatus
               // status={socketStatus}
