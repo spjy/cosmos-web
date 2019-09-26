@@ -47,7 +47,7 @@ function DisplayValue({
       // Check if the state change involves any of the displayed values
       // by checking the node process and the key it is watching
       if (state[v.nodeProcess]
-        && state[v.nodeProcess][v.dataKey]
+        && state[v.nodeProcess][v.dataKey] !== undefined
         && state[v.nodeProcess].utc
       ) {
         // If it does, change the value
@@ -719,7 +719,7 @@ function DisplayValue({
                   {label}
                 </td>
                 <td className="pr-2">
-                  {displayValuesState[i].value ? `${displayValuesState[i].processDataKey ? displayValuesState[i].processDataKey(displayValuesState[i].value) : displayValuesState[i].value}${u}` : '-'}
+                  {displayValuesState[i].value !== undefined ? `${displayValuesState[i].processDataKey ? displayValuesState[i].processDataKey(displayValuesState[i].value) : displayValuesState[i].value}${u}` : '-'}
                 </td>
                 <td className="text-gray-500">
                   {displayValuesState[i].utc ? displayValuesState[i].utc : '-'}
