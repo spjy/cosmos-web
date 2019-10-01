@@ -151,7 +151,7 @@ The name of the layout for a certain route. Differentiate between other layout n
     "h": 7,
     "component": {
       "name": "DisplayValues",
-      "displayValues": [
+      "props": [
         {
           "name": "CPU Load",
           "nodeProcess": "beagle1:cpu",
@@ -163,6 +163,8 @@ The name of the layout for a certain route. Differentiate between other layout n
   },
 ]
 ```
+
+*Component Name and Props*: For a list of components that are available to be used and each component's props, see [components.md](https://github.com/spjy/cosmos-web/blob/master/components.md).
 
 Click *Preview* to see the layout.
 
