@@ -37,6 +37,8 @@ const Commands = React.memo(() => {
   const [lastArgument, setLastArgument] = useState('');
   /** Auto scroll the history log to the bottom */
   const [updateLog, setUpdateLog] = useState(null);
+  /** Store autocompletions */
+  const [autocompletions, setAutocompletions] = useState([]);
 
   /** DOM Element selector for history log */
   const cliEl = useRef(null);
@@ -108,13 +110,13 @@ const Commands = React.memo(() => {
     setLastArgument(commandArguments);
 
     if (selectedRequest === '> agent') {
-      ws.send(commandArguments);
+      ws.send(`${process.env.COSMOS_BIN}/agent ${commandArguments}`);
       setCommandHistory([
         ...commandHistory,
         `➜ agent ${commandArguments}`,
       ]);
     } else {
-      ws.send(`${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro ? `${state.macro} ` : ''}${commandArguments}`);
+      ws.send(`${process.env.COSMOS_BIN}/agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro ? `${state.macro} ` : ''}${commandArguments}`);
       setCommandHistory([
         ...commandHistory,
         `➜ agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro ? `${state.macro} ` : ''}${commandArguments}`,
@@ -130,9 +132,37 @@ const Commands = React.memo(() => {
     setAgentRequests({});
 
     if (selectedAgent.length > 0) {
-      ws.send(`${selectedAgent[0]} ${selectedAgent[1]} help_json`);
+      ws.send(`agent ${selectedAgent[0]} ${selectedAgent[1]} help_json`);
     }
   };
+
+  const getAutocomplete = (autocomplete) => {
+    const complete = socket('query', '/command/');
+
+    complete.onopen = () => {
+      complete.send(`compgen -c ${autocomplete}`);
+
+      complete.onmessage = ({ data }) => {
+        setAutocompletions(data.split('\n'));
+
+        complete.close();
+      };
+    };
+  };
+
+  /** Autocomplete if it's the only one in the array */
+  useEffect(() => {
+    console.log(autocompletions);
+    if (autocompletions.length === 2) {
+      const args = commandArguments.split(' ');
+
+      args[args.length - 1] = autocompletions[0];
+
+      setCommandArguments(args.join(' '));
+
+      setAutocompletions([]);
+    }
+  }, [autocompletions]);
 
   /** Watches for changes to selectedAgent. Then sends WS message to get list of commands. */
   useEffect(() => {
@@ -193,6 +223,16 @@ const Commands = React.memo(() => {
           // eslint-disable-next-line
           commandHistory.map((command, i) => (<div key={i}>{ command }</div>))
         }
+        {
+          autocompletions.length > 1 ? <Icon onClick={() => setAutocompletions([])} className="text-red-500" type="close" /> : ''
+        }
+        {
+          autocompletions.map(autocompletion => (
+            <span className="text-blue-500 p-2" key={autocompletion}>
+              {autocompletion}
+            </span>
+          ))
+        }
       </div>
       <div className="flex">
         <Input
@@ -211,7 +251,6 @@ const Commands = React.memo(() => {
                   ➜ agent
                 </Tooltip>
               </Select.Option>
-
               {
                 sortedAgentRequests.map(token => (
                   <Select.Option value={token} key={token}>
@@ -246,6 +285,10 @@ const Commands = React.memo(() => {
           onKeyDown={(e) => {
             if (e.keyCode === 38) {
               setCommandArguments(lastArgument);
+            } else if (e.keyCode === 9) {
+              e.preventDefault();
+
+              getAutocomplete(commandArguments.split(' ')[commandArguments.split(' ').length - 1]);
             }
           }}
           value={commandArguments}

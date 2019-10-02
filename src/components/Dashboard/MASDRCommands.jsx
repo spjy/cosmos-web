@@ -198,13 +198,13 @@ const Commands = React.memo(() => {
     setLastArgument(commandArguments);
 
     if (selectedRequest === '> agent') {
-      ws.send(commandArguments);
+      ws.send(`agent ${commandArguments}`);
       setCommandHistory([
         ...commandHistory,
         `➜ agent ${commandArguments}`,
       ]);
     } else {
-      ws.send(`${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro && (selectedRequest.startsWith('app_') || selectedRequest === 'set_doppler_config') ? `${state.macro} ` : ''}${commandArguments}`);
+      ws.send(`agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro && (selectedRequest.startsWith('app_') || selectedRequest === 'set_doppler_config') ? `${state.macro} ` : ''}${commandArguments}`);
       setCommandHistory([
         ...commandHistory,
         `➜ agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro && (selectedRequest.startsWith('app_') || selectedRequest === 'set_doppler_config') ? `${state.macro} ` : ''}${commandArguments}`,
@@ -220,7 +220,7 @@ const Commands = React.memo(() => {
     setAgentRequests({});
 
     if (selectedAgent.length > 0) {
-      ws.send(`${selectedAgent[0]} ${selectedAgent[1]} help_json`);
+      ws.send(`agent ${selectedAgent[0]} ${selectedAgent[1]} help_json`);
     }
   };
 
@@ -268,7 +268,7 @@ const Commands = React.memo(() => {
                 key={button}
                 className="m-1"
                 onClick={() => {
-                  ws.send(`${selectedAgent[0]} ${selectedAgent[1]} ${button} ${state.macro && button.startsWith('app_') ? `${state.macro} ` : ''}`);
+                  ws.send(`agent ${selectedAgent[0]} ${selectedAgent[1]} ${button} ${state.macro && button.startsWith('app_') ? `${state.macro} ` : ''}`);
                   setCommandHistory([
                     ...commandHistory,
                     `➜ agent ${selectedAgent[0]} ${selectedAgent[1]} ${button} ${state.macro && button.startsWith('app_') ? `${state.macro} ` : ''}`,

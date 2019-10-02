@@ -32,7 +32,7 @@ function Macro() {
     const installed = socket('query', '/command/');
 
     installed.onopen = () => {
-      installed.send('masdr nordiasoft list_applications');
+      installed.send('agent masdr nordiasoft list_applications');
 
       installed.onmessage = ({ data }) => {
         try {

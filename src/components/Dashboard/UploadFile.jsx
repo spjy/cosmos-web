@@ -79,7 +79,7 @@ function UploadFile({
       const upload = socket('query', '/command');
 
       upload.onopen = () => {
-        upload.send(`${node} ${proc} ${command} ${fileContentUpload}`);
+        upload.send(`agent ${node} ${proc} ${command} ${fileContentUpload}`);
 
         upload.onmessage = (data) => {
           if (data) {
