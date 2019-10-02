@@ -42,7 +42,9 @@ const Commands = React.memo(() => {
 
   /** DOM Element selector for history log */
   const cliEl = useRef(null);
-
+  /** DOM Element selector for argument input */
+  const inputEl = useRef(null);
+  
   /** Manages requests for agent list and agent [node] [process] */
   ws.onmessage = ({ data }) => {
     try {
@@ -132,7 +134,7 @@ const Commands = React.memo(() => {
     setAgentRequests({});
 
     if (selectedAgent.length > 0) {
-      ws.send(`agent ${selectedAgent[0]} ${selectedAgent[1]} help_json`);
+      ws.send(`${process.env.COSMOS_BIN}/agent ${selectedAgent[0]} ${selectedAgent[1]} help_json`);
     }
   };
 
@@ -152,7 +154,6 @@ const Commands = React.memo(() => {
 
   /** Autocomplete if it's the only one in the array */
   useEffect(() => {
-    console.log(autocompletions);
     if (autocompletions.length === 2) {
       const args = commandArguments.split(' ');
 
@@ -228,7 +229,19 @@ const Commands = React.memo(() => {
         }
         {
           autocompletions.map(autocompletion => (
-            <span className="text-blue-500 p-2" key={autocompletion}>
+            <span
+              onClick={() => {
+                // Change the last array element of the command arguments to have selected autocompeleted path
+                const args = commandArguments.split(' ');
+                
+                args[args.length - 1] = autocompletion;
+                setCommandArguments(args.join(' '));
+
+                inputEl.current.focus();
+              }}
+              className="text-blue-500 p-2"
+              key={autocompletion}
+            >
               {autocompletion}
             </span>
           ))
@@ -292,6 +305,7 @@ const Commands = React.memo(() => {
             }
           }}
           value={commandArguments}
+          el={inputEl}
         />
       </div>
     </BaseComponent>

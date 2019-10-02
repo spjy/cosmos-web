@@ -2,7 +2,7 @@ import React, {
   useState, useEffect, useRef, useContext,
 } from 'react';
 import {
-  Input, Select, Tooltip, message, Button,
+  Input, Select, Tooltip, message, Button, Icon,
 } from 'antd';
 
 import { Context } from '../../store/neutron1';
@@ -68,9 +68,6 @@ const commands = [
     name: 'set_doppler_config',
   },
   {
-    name: 'set_frequency',
-  },
-  {
     name: 'set_gs_location',
   },
   {
@@ -121,9 +118,13 @@ const Commands = React.memo(() => {
   const [lastArgument, setLastArgument] = useState('');
   /** Auto scroll the history log to the bottom */
   const [updateLog, setUpdateLog] = useState(null);
+  /** Store autocompletions */
+  const [autocompletions, setAutocompletions] = useState([]);
 
   /** DOM Element selector for history log */
   const cliEl = useRef(null);
+  /** DOM Element selector for argument input */
+  const inputEl = useRef(null);
 
   /** Manages requests for agent list and agent [node] [process] */
   ws.onmessage = ({ data }) => {
@@ -198,13 +199,13 @@ const Commands = React.memo(() => {
     setLastArgument(commandArguments);
 
     if (selectedRequest === '> agent') {
-      ws.send(`agent ${commandArguments}`);
+      ws.send(`${process.env.COSMOS_BIN}/agent ${commandArguments}`);
       setCommandHistory([
         ...commandHistory,
         `➜ agent ${commandArguments}`,
       ]);
     } else {
-      ws.send(`agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro && (selectedRequest.startsWith('app_') || selectedRequest === 'set_doppler_config') ? `${state.macro} ` : ''}${commandArguments}`);
+      ws.send(`${process.env.COSMOS_BIN}/agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro && (selectedRequest.startsWith('app_') || selectedRequest === 'set_doppler_config') ? `${state.macro} ` : ''}${commandArguments}`);
       setCommandHistory([
         ...commandHistory,
         `➜ agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro && (selectedRequest.startsWith('app_') || selectedRequest === 'set_doppler_config') ? `${state.macro} ` : ''}${commandArguments}`,
@@ -220,9 +221,39 @@ const Commands = React.memo(() => {
     setAgentRequests({});
 
     if (selectedAgent.length > 0) {
-      ws.send(`agent ${selectedAgent[0]} ${selectedAgent[1]} help_json`);
+      ws.send(`${process.env.COSMOS_BIN}/agent ${selectedAgent[0]} ${selectedAgent[1]} help_json`);
     }
   };
+
+  /** Query for autocompleted paths */
+  const getAutocomplete = (autocomplete) => {
+    const complete = socket('query', '/command/');
+
+    complete.onopen = () => {
+      complete.send(`compgen -c ${autocomplete}`);
+
+      complete.onmessage = ({ data }) => {
+        setAutocompletions(data.split('\n'));
+
+        complete.close();
+      };
+    };
+  };
+
+  /** Autocomplete if it's the only one in the array */
+  useEffect(() => {
+    if (autocompletions.length === 2) {
+      // Change the last array element of the command arguments to have selected autocompeleted path
+      const args = commandArguments.split(' ');
+
+      args[args.length - 1] = autocompletions[0];
+
+      setCommandArguments(args.join(' '));
+
+      // Clear autocompletions once chosen the autocompeleted path
+      setAutocompletions([]);
+    }
+  }, [autocompletions]);
 
   /** Watches for changes to selectedAgent. Then sends WS message to get list of commands. */
   useEffect(() => {
@@ -291,6 +322,28 @@ const Commands = React.memo(() => {
           // eslint-disable-next-line
           commandHistory.map((command, i) => (<div key={i}>{ command }</div>))
         }
+        {
+          autocompletions.length > 1 ? <Icon onClick={() => setAutocompletions([])} className="text-red-500" type="close" /> : ''
+        }
+        {
+          autocompletions.map(autocompletion => (
+            <span
+              onClick={() => {
+                // Change the last array element of the command arguments to have selected autocompeleted path
+                const args = commandArguments.split(' ');
+                
+                args[args.length - 1] = autocompletion;
+                setCommandArguments(args.join(' '));
+
+                inputEl.current.focus();
+              }}
+              className="text-blue-500 p-2 hover:underline cursor-pointer"
+              key={autocompletion}
+            >
+              {autocompletion}
+            </span>
+          ))
+        }
       </div>
       <div className="flex">
         <Input
@@ -344,9 +397,14 @@ const Commands = React.memo(() => {
           onKeyDown={(e) => {
             if (e.keyCode === 38) {
               setCommandArguments(lastArgument);
+            } else if (e.keyCode === 9) {
+              e.preventDefault();
+
+              getAutocomplete(commandArguments.split(' ')[commandArguments.split(' ').length - 1]);
             }
           }}
           value={commandArguments}
+          ref={inputEl}
         />
       </div>
     </BaseComponent>
