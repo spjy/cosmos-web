@@ -1141,7 +1141,7 @@ const routes = [
                       processDataKey: x => x.toFixed(7),
                     },
                     {
-                      name: 'Frequency',
+                      name: 'Doppler Frequency',
                       nodeProcess: 'masdr:nordiasoft',
                       dataKey: 'dopplerTx',
                       unit: 'Hz',
@@ -1150,7 +1150,7 @@ const routes = [
                     {
                       name: 'Doppler Offset',
                       nodeProcess: 'masdr:nordiasoft',
-                      dataKey: 'RxFrequency',
+                      dataKey: 'TxFrequency',
                       unit: 'Hz',
                       processDataKey: x => x.toFixed(7),
                     },
@@ -1177,7 +1177,7 @@ const routes = [
                       processDataKey: x => x.toFixed(7),
                     },
                     {
-                      name: 'Frequency',
+                      name: 'Doppler Frequency',
                       nodeProcess: 'masdr:nordiasoft',
                       dataKey: 'dopplerRx',
                       unit: 'Hz',
@@ -1186,7 +1186,7 @@ const routes = [
                     {
                       name: 'Doppler Offset',
                       nodeProcess: 'masdr:nordiasoft',
-                      dataKey: 'TxFrequency',
+                      dataKey: 'RxFrequency',
                       unit: 'Hz',
                       processDataKey: x => x.toFixed(7),
                     },
