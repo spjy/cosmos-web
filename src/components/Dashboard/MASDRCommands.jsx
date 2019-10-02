@@ -299,7 +299,7 @@ const Commands = React.memo(() => {
                 key={button}
                 className="m-1"
                 onClick={() => {
-                  ws.send(`agent ${selectedAgent[0]} ${selectedAgent[1]} ${button} ${state.macro && button.startsWith('app_') ? `${state.macro} ` : ''}`);
+                  ws.send(`${process.env.COSMOS_BIN}/agent ${selectedAgent[0]} ${selectedAgent[1]} ${button} ${state.macro && button.startsWith('app_') ? `${state.macro} ` : ''}`);
                   setCommandHistory([
                     ...commandHistory,
                     `➜ agent ${selectedAgent[0]} ${selectedAgent[1]} ${button} ${state.macro && button.startsWith('app_') ? `${state.macro} ` : ''}`,
