@@ -1237,6 +1237,9 @@ const routes = [
                   node: 'masdr',
                   proc: 'nordiasoft',
                   values: {
+                    AX25Framer: [
+                      '',
+                    ],
                     Descrambler: [
                       'DESCRAMBLER_PROPERTIES:LENGTH',
                       'DESCRAMBLER_PROPERTIES:MASK',
@@ -1269,14 +1272,14 @@ const routes = [
                       'HDLC_ENCODER_PROPERTIES:POSTAMBLE_LENGTH',
                       'HDLC_ENCODER_PROPERTIES:WAVEFORM',
                     ],
-                    MultiStageHalfBandResamplerRx: [
+                    MultiStageArbResamplerRx: [
                       'centerFrequency',
                       'cutoffFrequency',
                       'delay',
                       'resamplingRate',
                       'stopBandAttenuation',
                     ],
-                    MultiStageHalfBandResamplerTx: [
+                    MultiStageArbResamplerTx: [
                       'centerFrequency',
                       'cutoffFrequency',
                       'delay',
@@ -1311,11 +1314,14 @@ const routes = [
                       'REPACK_BITS_PROPERTIES:BITS_PER_OUTPUT_BYTE',
                       'REPACK_BITS_PROPERTIES:ENDIANNESS',
                     ],
+                    USRP_UHD_Device: [
+                      '',
+                    ],
                     USRP_Device_Rx: [
-                      'TBD:',
+                      '',
                     ],
                     USRP_Device_Tx: [
-                      'TBD:',
+                      '',
                     ],
                   },
                 },
