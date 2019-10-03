@@ -44,7 +44,7 @@ function BaseComponent({
         {formItems}
       </ComponentSettings>
 
-      <div className={`flex justify-between p-3 dragHandle ${movable ? 'cursor-move' : ''}`} style={{ backgroundColor: '#f1f1f1' }}>
+      <div className={`sticky top-0 z-50 flex justify-between p-3 dragHandle ${movable ? 'cursor-move' : ''}`} style={{ backgroundColor: '#f1f1f1' }}>
         <div className="flex flex-row flex-shrink-0">
           {showStatus ? (
             <div style={{ marginTop: '0.2em' }}>

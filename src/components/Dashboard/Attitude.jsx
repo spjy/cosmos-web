@@ -75,7 +75,7 @@ function Attitude({
       <AttitudeThreeD
         data={attitudesState[0].quaternions}
       />
-      <div className="overflow-x-scroll">
+      <div className="overflow-x-auto">
         <table className="mt-4 w-full">
           <tbody>
             <tr className="bg-gray-200 border-b border-gray-400">

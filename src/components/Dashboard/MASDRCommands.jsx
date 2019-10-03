@@ -315,7 +315,7 @@ const Commands = React.memo(() => {
         </div>
       </div>
       <div
-        className="border border-gray-300 rounded mb-2 p-4 bg-white font-mono h-32 max-h-full resize-y overflow-y-scroll"
+        className="border border-gray-300 rounded mb-2 p-4 bg-white font-mono h-32 max-h-full resize-y overflow-y-auto"
         ref={cliEl}
       >
         {
