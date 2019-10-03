@@ -104,10 +104,6 @@ const Commands = React.memo(() => {
   // const [agentList, setAgentList] = useState([]);
   /** Selected agent to get requests from */
   const [selectedAgent] = useState(['masdr', 'nordiasoft']);
-  /** Requests possible from selectedAgent */
-  const [agentRequests, setAgentRequests] = useState({});
-  /** Agent requests alphabetized */
-  const [sortedAgentRequests, setSortedAgentRequests] = useState([]);
   /** Selected agent request */
   const [selectedRequest, setSelectedRequest] = useState('> agent');
   /** Agent command arguments */
@@ -328,15 +324,19 @@ const Commands = React.memo(() => {
         {
           autocompletions.map(autocompletion => (
             <span
+              tabIndex={0}
+              role="link"
               onClick={() => {
-                // Change the last array element of the command arguments to have selected autocompeleted path
+                // Change the last array element of the command arguments
+                // to have selected autocompeleted path
                 const args = commandArguments.split(' ');
-                
+
                 args[args.length - 1] = autocompletion;
                 setCommandArguments(args.join(' '));
 
                 inputEl.current.focus();
               }}
+              onKeyDown={() => {}}
               className="text-blue-500 p-2 hover:underline cursor-pointer"
               key={autocompletion}
             >

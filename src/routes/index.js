@@ -1374,7 +1374,267 @@ const routes = [
                 },
               },
             },
-
+          ],
+        },
+      },
+      {
+        name: 'MC3',
+        path: '/mc3',
+        icon: 'cloud',
+        defaultLayout: {
+          lg: [
+            {
+              i: 'gs-mc3-a',
+              x: 0,
+              y: 0,
+              w: 6,
+              h: 6,
+              component: {
+                name: 'DisplayValue',
+                props: {
+                  name: 'Uplink',
+                  displayValues: [
+                    {
+                      name: 'Base Frequency',
+                      nodeProcess: 'masdr:nordiasoft',
+                      dataKey: 'device_txr_freq_000',
+                      unit: 'Hz',
+                      processDataKey: x => x.toFixed(7),
+                    },
+                    {
+                      name: 'Doppler Frequency',
+                      nodeProcess: 'masdr:nordiasoft',
+                      dataKey: 'dopplerTx',
+                      unit: 'Hz',
+                      processDataKey: x => x.toFixed(7),
+                    },
+                    {
+                      name: 'Doppler Offset',
+                      nodeProcess: 'masdr:nordiasoft',
+                      dataKey: 'TxFrequency',
+                      unit: 'Hz',
+                      processDataKey: x => x.toFixed(7),
+                    },
+                  ],
+                },
+              },
+            },
+            {
+              i: 'gs-mc3-aa',
+              x: 6,
+              y: 0,
+              w: 6,
+              h: 6,
+              component: {
+                name: 'DisplayValue',
+                props: {
+                  name: 'Downlink',
+                  displayValues: [
+                    {
+                      name: 'Base Frequency',
+                      nodeProcess: 'masdr:nordiasoft',
+                      dataKey: 'device_rxr_freq_000',
+                      unit: 'Hz',
+                      processDataKey: x => x.toFixed(7),
+                    },
+                    {
+                      name: 'Doppler Frequency',
+                      nodeProcess: 'masdr:nordiasoft',
+                      dataKey: 'dopplerRx',
+                      unit: 'Hz',
+                      processDataKey: x => x.toFixed(7),
+                    },
+                    {
+                      name: 'Doppler Offset',
+                      nodeProcess: 'masdr:nordiasoft',
+                      dataKey: 'RxFrequency',
+                      unit: 'Hz',
+                      processDataKey: x => x.toFixed(7),
+                    },
+                  ],
+                },
+              },
+            },
+            {
+              i: 'gs-mc3-b',
+              x: 6,
+              y: 1,
+              w: 6,
+              h: 6,
+              component: {
+                name: 'Macro',
+              },
+            },
+            {
+              i: 'gs-mc3-c',
+              x: 0,
+              y: 1,
+              w: 6,
+              h: 6,
+              component: {
+                name: 'Clock',
+              },
+            },
+            {
+              i: 'gs-mc3-d',
+              x: 0,
+              y: 2,
+              w: 12,
+              h: 10,
+              component: {
+                name: 'MASDRCommands',
+              },
+            },
+            {
+              i: 'gs-mc3-e',
+              x: 0,
+              y: 3,
+              w: 12,
+              h: 14,
+              component: {
+                name: 'SetValues',
+                props: {
+                  name: 'Set Values',
+                  node: 'masdr',
+                  proc: 'nordiasoft',
+                  values: {
+                    AX25Framer: [
+                      '',
+                    ],
+                    Descrambler: [
+                      'DESCRAMBLER_PROPERTIES:LENGTH',
+                      'DESCRAMBLER_PROPERTIES:MASK',
+                      'DESCRAMBLER_PROPERTIES:SEED',
+                    ],
+                    GmskDemodulator: [
+                      'bandwidth',
+                      'samplesPerSymbol',
+                      'symbolsDelay',
+                    ],
+                    GmskModulator: [
+                      'bandwidth',
+                      'samplesPerSymbol',
+                      'symbolsDelay',
+                    ],
+                    FirKaiserFilterRx: [
+                      'cutoffFrequency',
+                      'samplingFrequency',
+                      'stopBandAttenuation',
+                      'transitionBand',
+                    ],
+                    FirKaiserFilterTx: [
+                      'cutoffFrequency',
+                      'samplingFrequency',
+                      'stopBandAttenuation',
+                      'transitionBand',
+                    ],
+                    HDLCEncoder: [
+                      'HDLC_ENCODER_PROPERTIES:PREAMBLE_LENGTH',
+                      'HDLC_ENCODER_PROPERTIES:POSTAMBLE_LENGTH',
+                      'HDLC_ENCODER_PROPERTIES:WAVEFORM',
+                    ],
+                    MultiStageArbResamplerRx: [
+                      'centerFrequency',
+                      'cutoffFrequency',
+                      'delay',
+                      'resamplingRate',
+                      'stopBandAttenuation',
+                    ],
+                    MultiStageArbResamplerTx: [
+                      'centerFrequency',
+                      'cutoffFrequency',
+                      'delay',
+                      'resamplingRate',
+                      'stopBandAttenuation',
+                    ],
+                    NcoMixerRx: [
+                      'dopplerFrequency',
+                      'offsetFrequency',
+                      'samplingFrequency',
+                    ],
+                    NcoMixerTx: [
+                      'dopplerFrequency',
+                      'offsetFrequency',
+                      'samplingFrequency',
+                    ],
+                    ParseAX25new: [
+                      'PARSEAX25_PROPERTIES:RXWAVEFORM',
+                    ],
+                    RepackBits: [
+                      'REPACK_BITS_PROPERTIES:BITS_PER_INPUT_BYTE',
+                      'REPACK_BITS_PROPERTIES:BITS_PER_OUTPUT_BYTE',
+                      'REPACK_BITS_PROPERTIES:ENDIANNESS',
+                    ],
+                    UnpackBits: [
+                      'REPACK_BITS_PROPERTIES:BITS_PER_INPUT_BYTE',
+                      'REPACK_BITS_PROPERTIES:BITS_PER_OUTPUT_BYTE',
+                      'REPACK_BITS_PROPERTIES:ENDIANNESS',
+                    ],
+                    UnpackBits2: [
+                      'REPACK_BITS_PROPERTIES:BITS_PER_INPUT_BYTE',
+                      'REPACK_BITS_PROPERTIES:BITS_PER_OUTPUT_BYTE',
+                      'REPACK_BITS_PROPERTIES:ENDIANNESS',
+                    ],
+                    USRP_UHD_Device: [
+                      '',
+                    ],
+                    USRP_Device_Rx: [
+                      '',
+                    ],
+                    USRP_Device_Tx: [
+                      '',
+                    ],
+                  },
+                },
+              },
+            },
+            {
+              i: 'gs-mc3-f',
+              x: 0,
+              y: 4,
+              w: 12,
+              h: 7,
+              component: {
+                name: 'Activity',
+                props: {
+                },
+              },
+            },
+            {
+              i: 'gs-mc3-g',
+              x: 0,
+              y: 5,
+              w: 12,
+              h: 38,
+              component: {
+                name: 'Globe',
+                props: {
+                  name: 'Orbit',
+                  coordinateSystem: 'geodetic',
+                  orbits: [
+                    {
+                      name: 'MASDR',
+                      modelFileName: 'cubesat1.glb',
+                      nodeProcess: 'masdr:nordiasoft',
+                      live: true,
+                      position: [21.289373, 157.917480, 350000.0],
+                      geodetic: {
+                        latitude: 10,
+                        longitude: 10,
+                      },
+                      orientation: {
+                        d: {
+                          x: 0,
+                          y: 0,
+                          z: 0,
+                        },
+                        w: 0,
+                      },
+                    },
+                  ],
+                },
+              },
+            },
           ],
         },
       },

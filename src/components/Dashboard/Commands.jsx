@@ -44,7 +44,7 @@ const Commands = React.memo(() => {
   const cliEl = useRef(null);
   /** DOM Element selector for argument input */
   const inputEl = useRef(null);
-  
+
   /** Manages requests for agent list and agent [node] [process] */
   ws.onmessage = ({ data }) => {
     try {
@@ -230,15 +230,19 @@ const Commands = React.memo(() => {
         {
           autocompletions.map(autocompletion => (
             <span
+              tabIndex={0}
+              role="link"
               onClick={() => {
-                // Change the last array element of the command arguments to have selected autocompeleted path
+                // Change the last array element of the command arguments
+                // to have selected autocompeleted path
                 const args = commandArguments.split(' ');
-                
+
                 args[args.length - 1] = autocompletion;
                 setCommandArguments(args.join(' '));
 
                 inputEl.current.focus();
               }}
+              onKeyDown={() => {}}
               className="text-blue-500 p-2 hover:underline cursor-pointer"
               key={autocompletion}
             >
