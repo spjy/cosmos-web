@@ -104,6 +104,10 @@ const Commands = React.memo(() => {
   // const [agentList, setAgentList] = useState([]);
   /** Selected agent to get requests from */
   const [selectedAgent] = useState(['masdr', 'nordiasoft']);
+  /** Requests possible from selectedAgent */
+  const [agentRequests, setAgentRequests] = useState({});
+  /** Agent requests alphabetized */
+  const [sortedAgentRequests, setSortedAgentRequests] = useState([]);
   /** Selected agent request */
   const [selectedRequest, setSelectedRequest] = useState('> agent');
   /** Agent command arguments */

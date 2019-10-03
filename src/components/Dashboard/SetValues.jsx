@@ -102,15 +102,6 @@ function SetValues({
     }
   };
 
-  // const setTxRx = () => {
-  //   ws.send(`${node} ${proc} set_doppler_config ${state.macro ? `${state.macro} ` : ''}${selectedComponent} ${selectedProperty} ${frequency} ${txrx}`);
-
-  //   setCommandHistory([
-  //     ...commandHistory,
-  //     `➜ agent ${node} ${proc} set_doppler_config ${state.macro ? `${state.macro} ` : ''}${selectedComponent} ${frequency} ${txrx}`,
-  //   ]);
-  // };
-
   useEffect(() => {
     ws.send(`${process.env.COSMOS_BIN}/agent ${node} ${proc} set_doppler_config ${state.macro ? `${state.macro} ` : ''}${selectedComponent} ${selectedProperty} ${dopplerSwitch} ${txrxSwitch}`);
 
