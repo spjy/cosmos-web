@@ -239,7 +239,7 @@ const Commands = React.memo(() => {
 
                 inputEl.current.focus();
               }}
-              className="text-blue-500 p-2"
+              className="text-blue-500 p-2 hover:underline cursor-pointer"
               key={autocompletion}
             >
               {autocompletion}
@@ -305,7 +305,7 @@ const Commands = React.memo(() => {
             }
           }}
           value={commandArguments}
-          el={inputEl}
+          ref={inputEl}
         />
       </div>
     </BaseComponent>
