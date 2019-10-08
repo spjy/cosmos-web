@@ -48,6 +48,8 @@ function LayoutSelector({
       selectLayout('defaultRouteLayout');
     } else if (form.layout.value === 'defaultPageLayout') {
       selectLayout('defaultPageLayout');
+    } else if (form.layout.value === 'defaultPageLayoutSimple') {
+      selectLayout('defaultPageLayoutSimple');
     } else {
       // If not, send the saved layout object to dashboard
       selectLayout(layouts[form.layout.value]);
@@ -93,6 +95,7 @@ function LayoutSelector({
         >
           <Select.Option key="defaultRouteLayout" value="defaultRouteLayout">Route Default</Select.Option>
           <Select.Option key="defaultPageLayout" value="defaultPageLayout">Page Default</Select.Option>
+          <Select.Option key="defaultPageLayoutSimple" value="defaultPageLayoutSimple">Page Default Simple</Select.Option>
         </Select.OptGroup>
 
         <Select.OptGroup

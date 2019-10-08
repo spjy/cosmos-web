@@ -22,6 +22,7 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 function Dashboard({
   id,
   defaultLayout,
+  defaultLayoutSimple,
   path,
 }) {
   /**
@@ -31,6 +32,10 @@ function Dashboard({
 
   /** Store the default page layout in case user wants to switch to it */
   const [defaultPageLayout, setDefaultPageLayout] = useState({
+    lg: [],
+  });
+
+  const [defaultPageLayoutSimple, setDefaultPageLayoutSimple] = useState({
     lg: [],
   });
 
@@ -78,9 +83,15 @@ function Dashboard({
     routes.forEach((route) => {
       if (route.path === path && route.children) {
         route.children.forEach((child) => {
+          // Get page layout from route config and save it into the state
           if (child.path.split('/')[1] === id && child.defaultLayout) {
             layout = child.defaultLayout;
             setDefaultPageLayout(child.defaultLayout);
+          }
+
+          // Get page layout simple from route config and save it into the state
+          if (child.path.split('/')[1] === id && child.defaultLayoutSimple) {
+            setDefaultPageLayoutSimple(child.defaultLayoutSimple);
           }
         });
       }
@@ -98,6 +109,8 @@ function Dashboard({
       setLayouts(defaultLayout);
     } else if (layout === 'defaultPageLayout') {
       setLayouts(defaultPageLayout);
+    } else if (layout === 'defaultPageLayoutSimple') {
+      setLayouts(defaultPageLayoutSimple);
     } else {
       setLayouts(layout);
     }
