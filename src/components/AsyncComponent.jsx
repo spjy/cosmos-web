@@ -11,6 +11,7 @@ import DisplayValue from './Dashboard/DisplayValue';
 import Globe from './Dashboard/Globe';
 import Macro from './Dashboard/Macro';
 import MASDRCommands from './Dashboard/MASDRCommands';
+import SatellitePasses from './Dashboard/SatellitePasses';
 import SetValues from './Dashboard/SetValues';
 import Status from './Dashboard/Status';
 import ThreeD from './Dashboard/ThreeD';
@@ -28,6 +29,7 @@ const components = {
   Globe,
   Macro,
   MASDRCommands,
+  SatellitePasses,
   SetValues,
   Status,
   ThreeD,
