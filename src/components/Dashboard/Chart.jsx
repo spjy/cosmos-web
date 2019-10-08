@@ -18,6 +18,7 @@ const { TextArea } = Input;
  */
 function Chart({
   name,
+  dataLimit,
   plots,
   polar,
   XDataKey,
@@ -33,6 +34,8 @@ function Chart({
   });
   /** The state that manages the component's title */
   const [nameState, setNameState] = useState(name);
+  /** Specify a limit on the number of data poitns displayed */
+  const [dataLimitState, setDataLimitState] = useState(dataLimit);
   /** The state that manages the component's X-axis data key displayed */
   const [XDataKeyState, setXDataKeyState] = useState(XDataKey);
   /** Form values */
@@ -107,6 +110,14 @@ function Chart({
                 ? plotsState[i].processYDataKey(state[p.nodeProcess][p.YDataKey])
                 : state[p.nodeProcess][p.YDataKey],
             );
+        }
+
+        // Upon insertion, check if the length of y exceeds the data limit.
+        // If so, shift (remove first array element) in x and y arrays
+
+        if (plotsState[i].y > dataLimit) {
+          plotsState[i].x.shift();
+          plotsState[i].y.shift();
         }
 
         // Trigger the chart to update
@@ -1573,6 +1584,8 @@ function Chart({
 Chart.propTypes = {
   /** Name of the component to display at the time */
   name: PropTypes.string,
+  /** Specify limit on how many data points can be displayed */
+  dataLimit: PropTypes.number,
   /** Plot options for each chart */
   plots: PropTypes.arrayOf(
     PropTypes.shape({
@@ -1612,6 +1625,7 @@ Chart.propTypes = {
 
 Chart.defaultProps = {
   name: '',
+  dataLimit: 1000,
   polar: false,
   plots: [],
   XDataKey: null,
