@@ -10,7 +10,7 @@ import routes from '../../routes';
 function Navbar() {
   /** Route that the user is currently on to display an accent denoting it as such */
   const [currentRoute] = useState('home');
-  
+
   return (
     <Menu
       mode="horizontal"

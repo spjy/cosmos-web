@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Badge, Form, Button } from 'antd';
 import moment from 'moment-timezone';
-import Editor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs/components/prism-core';
 
 import { Context } from '../../store/neutron1';
@@ -33,7 +32,7 @@ function Activity() {
       setPackets(savedPackets);
       setExportPackets(null);
     }
-  }, [exportPackets])
+  }, [exportPackets]);
 
   /** Upon the state.list updating, update the store's list */
   useEffect(() => {

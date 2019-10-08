@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Badge } from 'antd';
 
 function Table({
   fullWidth,
@@ -8,7 +7,7 @@ function Table({
   data,
 }) {
   return (
-    <table className="w-full">
+    <table className={`${fullWidth ? 'w-full' : ''}`}>
       <style jsx>
         {`
           th, td {
@@ -47,7 +46,7 @@ Table.propTypes = {
   data: PropTypes.arrayOf(
     PropTypes.shape({}),
   ),
-}
+};
 
 Table.defaultProps = {
   fullWidth: true,

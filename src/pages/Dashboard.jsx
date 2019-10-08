@@ -22,7 +22,6 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 function Dashboard({
   id,
   defaultLayout,
-  defaultLayoutSimple,
   path,
 }) {
   /**

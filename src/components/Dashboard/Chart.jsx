@@ -115,7 +115,7 @@ function Chart({
         // Upon insertion, check if the length of y exceeds the data limit.
         // If so, shift (remove first array element) in x and y arrays
 
-        if (plotsState[i].y > dataLimit) {
+        if (plotsState[i].y > dataLimitState) {
           plotsState[i].x.shift();
           plotsState[i].y.shift();
         }
