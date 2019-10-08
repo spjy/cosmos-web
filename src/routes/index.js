@@ -1589,9 +1589,50 @@ const routes = [
               },
             },
             {
+              i: 'gs-mc3-bb',
+              x: 0,
+              y: 1,
+              w: 12,
+              h: 7,
+              component: {
+                name: 'SatellitePasses',
+              },
+            },
+            {
+              i: 'gs-mc3-bbb',
+              x: 0,
+              y: 2,
+              w: 12,
+              h: 20,
+              component: {
+                name: 'Chart',
+                props: {
+                  name: 'Satellite Pass',
+                  XDataKey: 'utc',
+                  processXDataKey: x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                  plots: [
+                    {
+                      r: [5, 4, 3, 2, 1, 0.5, 0, 5],
+                      theta: [90, 80, 70, 60, 50, 40, 0, 180],
+                      mode: 'markers+lines',
+                      type: 'scatterpolar',
+                      marker: {
+                        color: 'red',
+                      },
+                      name: '1',
+                      YDataKey: 'device_tsen_temp_001',
+                      processYDataKey: y => y - 273.15,
+                      nodeProcess: 'beagle1:eps',
+                      live: true,
+                    },
+                  ],
+                },
+              },
+            },
+            {
               i: 'gs-mc3-b',
               x: 6,
-              y: 1,
+              y: 3,
               w: 6,
               h: 6,
               component: {
@@ -1601,7 +1642,7 @@ const routes = [
             {
               i: 'gs-mc3-c',
               x: 0,
-              y: 1,
+              y: 4,
               w: 6,
               h: 6,
               component: {
@@ -1611,7 +1652,7 @@ const routes = [
             {
               i: 'gs-mc3-d',
               x: 0,
-              y: 2,
+              y: 4,
               w: 12,
               h: 10,
               component: {
@@ -1621,7 +1662,7 @@ const routes = [
             {
               i: 'gs-mc3-e',
               x: 0,
-              y: 3,
+              y: 5,
               w: 12,
               h: 14,
               component: {
@@ -1724,7 +1765,7 @@ const routes = [
             {
               i: 'gs-mc3-f',
               x: 0,
-              y: 4,
+              y: 6,
               w: 12,
               h: 7,
               component: {
@@ -1736,7 +1777,7 @@ const routes = [
             {
               i: 'gs-mc3-g',
               x: 0,
-              y: 5,
+              y: 7,
               w: 12,
               h: 38,
               component: {
