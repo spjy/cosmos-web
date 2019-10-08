@@ -19,6 +19,7 @@ const { TextArea } = Input;
 function Chart({
   name,
   plots,
+  polar,
   XDataKey,
   processXDataKey,
   children,
@@ -57,7 +58,7 @@ function Chart({
     },
     margin: {
       r: 10,
-      t: 10,
+      t: 20,
       b: 15,
     },
   });
@@ -86,14 +87,27 @@ function Chart({
         && p.live
       ) {
         // If so, push to arrays and update data
-        plotsState[i].x.push(processXDataKeyState.func(state[p.nodeProcess][XDataKeyState]));
-        plotsState[i]
-          .y
-          .push(
-            plotsState[i].processYDataKey
-              ? plotsState[i].processYDataKey(state[p.nodeProcess][p.YDataKey])
-              : state[p.nodeProcess][p.YDataKey],
-          );
+
+        // Check if polar or not
+        if (polar) {
+          plotsState[i].r.push(processXDataKeyState.func(state[p.nodeProcess][XDataKeyState]));
+          plotsState[i]
+            .theta
+            .push(
+              plotsState[i].processThetaDataKey
+                ? plotsState[i].processThetaDataKey(state[p.nodeProcess][p.YDataKey])
+                : state[p.nodeProcess][p.ThetaDataKey],
+            );
+        } else {
+          plotsState[i].x.push(processXDataKeyState.func(state[p.nodeProcess][XDataKeyState]));
+          plotsState[i]
+            .y
+            .push(
+              plotsState[i].processYDataKey
+                ? plotsState[i].processYDataKey(state[p.nodeProcess][p.YDataKey])
+                : state[p.nodeProcess][p.YDataKey],
+            );
+        }
 
         // Trigger the chart to update
         layout.datarevision += 1;
@@ -1580,12 +1594,14 @@ Chart.propTypes = {
       nodeProcess: PropTypes.string,
       /** Data key to plot on the y-axis */
       YDataKey: PropTypes.string,
-      /** Whether the chart displays live values */
-      live: PropTypes.bool,
       /** Function to modify the Y Data key */
       processYDataKey: PropTypes.func,
+      /** Whether the chart displays live values */
+      live: PropTypes.bool,
     }),
   ),
+  /** Specify whether this chart is a polar or cartesian plot */
+  polar: PropTypes.bool,
   /** X-axis key to display from the data JSON object above */
   XDataKey: PropTypes.string,
   /** Function to process the X-axis key */
@@ -1596,6 +1612,7 @@ Chart.propTypes = {
 
 Chart.defaultProps = {
   name: '',
+  polar: false,
   plots: [],
   XDataKey: null,
   processXDataKey: x => x,
