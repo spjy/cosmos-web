@@ -45,8 +45,6 @@ function LayoutManager() {
   const deleteLayout = (route, name) => {
     const layouts = localStorage.getItem(route);
 
-    console.log(layouts);
-
     try {
       const json = JSON.parse(layouts);
 

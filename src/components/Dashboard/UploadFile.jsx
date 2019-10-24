@@ -56,8 +56,6 @@ function UploadFile({
           const result = await getFileContents(file.originFileObj);
 
           setFileContentUpload(result);
-
-          console.log(result);
         } catch (error) {
           console.log(error);
         }

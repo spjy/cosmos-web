@@ -52,7 +52,7 @@ function SatellitePasses() {
             elevation: '1.15',
             range: '2654',
             footprint: '5236',
-          }
+          },
         ]}
       />
     </Content>

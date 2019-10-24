@@ -157,6 +157,7 @@ const Commands = React.memo(() => {
     if (autocompletions.length === 2) {
       const args = commandArguments.split(' ');
 
+      // eslint-disable-next-line prefer-destructuring
       args[args.length - 1] = autocompletions[0];
 
       setCommandArguments(args.join(' '));

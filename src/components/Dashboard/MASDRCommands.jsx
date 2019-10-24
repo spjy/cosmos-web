@@ -105,9 +105,9 @@ const Commands = React.memo(() => {
   /** Selected agent to get requests from */
   const [selectedAgent] = useState(['masdr', 'nordiasoft']);
   /** Requests possible from selectedAgent */
-  const [agentRequests, setAgentRequests] = useState({});
+  const [, setAgentRequests] = useState({});
   /** Agent requests alphabetized */
-  const [sortedAgentRequests, setSortedAgentRequests] = useState([]);
+  const [, setSortedAgentRequests] = useState([]);
   /** Selected agent request */
   const [selectedRequest, setSelectedRequest] = useState('> agent');
   /** Agent command arguments */
@@ -246,6 +246,7 @@ const Commands = React.memo(() => {
       // Change the last array element of the command arguments to have selected autocompeleted path
       const args = commandArguments.split(' ');
 
+      // eslint-disable-next-line prefer-destructuring
       args[args.length - 1] = autocompletions[0];
 
       setCommandArguments(args.join(' '));

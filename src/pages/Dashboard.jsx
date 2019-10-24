@@ -172,6 +172,7 @@ function Dashboard({
           draggableHandle=".dragHandle"
           draggableCancel=".preventDragHandle"
           rowHeight={20}
+          onResize={(e) => console.log(e)}
         >
           {
             layouts !== null
