@@ -119,7 +119,7 @@ function Dashboard({
 
   return (
     <Context.Provider value={{ state, dispatch }}>
-      <div className="mt-5 mx-32 mb-32">
+      <div className="mt-5 mx-16 mb-16">
         <div className="flex">
           <div className="w-1/2 ml-3 shadow overflow-y-auto" style={{ backgroundColor: '#fbfbfb' }}>
             <Content
