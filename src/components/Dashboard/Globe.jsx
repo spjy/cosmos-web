@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment-timezone';
 import {
-  Viewer, Entity, Model, Globe, Clock, CameraFlyTo, PathGraphics,
+  Viewer, Entity, Model, Globe, Clock, CameraFlyTo, PathGraphics, GeoJsonDataSource,
 } from 'resium';
 import Cesium from 'cesium';
 
@@ -53,6 +53,7 @@ function getPosFromSpherical(longitude, latitude, altitude) {
 function CesiumGlobe({
   name,
   orbits,
+  overlays,
   showStatus,
   status,
   coordinateSystem,
@@ -72,6 +73,8 @@ function CesiumGlobe({
   const [formError, setFormError] = useState('');
   /** Storage for the current orbits being displayed */
   const [orbitsState, setOrbitsState] = useState(orbits);
+  /** GeoJson objects */
+  const [overlaysState, setOverlaysState] = useState(overlays);
   /** Store to retrieve orbit history by request from Mongo */
   const [retrieveOrbitHistory, setRetrieveOrbitHistory] = useState(null);
   /** Clock start time */
@@ -678,6 +681,13 @@ function CesiumGlobe({
       <Viewer
         fullscreenButton={false}
       >
+        {overlaysState.map(overlay => (
+          <GeoJsonDataSource
+            data={overlay.geoJson}
+            fill={Cesium.Color.fromAlpha(Cesium.Color[overlay.color ? overlay.color.toUpperCase() : 'BLACK'], 0.2)}
+            stroke={Cesium.Color[overlay.color ? overlay.color.toUpperCase() : 'BLACK']}
+          />
+        ))}
         <Globe enableLighting />
         <Clock
           startTime={start}
@@ -791,6 +801,12 @@ CesiumGlobe.propTypes = {
       ),
     }),
   ),
+  overlays: PropTypes.arrayOf(
+    PropTypes.shape({
+      color: PropTypes.string,
+      geoJson: PropTypes.shape({}),
+    }),
+  ),
   /** Whether to show a circular indicator of the status of the component */
   showStatus: PropTypes.bool,
   /** The type of badge to show if showStatus is true (see the ant design badges component) */
@@ -809,6 +825,7 @@ CesiumGlobe.propTypes = {
 CesiumGlobe.defaultProps = {
   name: '',
   orbits: [],
+  overlays: [],
   showStatus: false,
   status: 'error',
   coordinateSystem: 'cartesian',

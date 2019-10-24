@@ -113,6 +113,17 @@ const routes = [
                     },
                   },
                 ],
+                overlays: [
+                  {
+                    markerColor: 'RED',
+                    geoJson: {
+                      type: 'Polygon',
+                      coordinates: [
+                        [[30, 10], [40, 40], [20, 40], [10, 20], [30, 10]],
+                      ],
+                    },
+                  },
+                ],
               },
             },
           },
@@ -445,6 +456,17 @@ const routes = [
                           z: 0,
                         },
                         w: 0,
+                      },
+                    },
+                  ],
+                  overlays: [
+                    {
+                      color: 'CRIMSON',
+                      geoJson: {
+                        type: 'Polygon',
+                        coordinates: [
+                          [[30, 10], [40, 40], [20, 40], [10, 20], [30, 10]],
+                        ],
                       },
                     },
                   ],
@@ -1117,8 +1139,8 @@ const routes = [
     },
     children: [
       {
-        name: 'MASDR',
-        path: '/masdr',
+        name: 'KCC',
+        path: '/kcc',
         icon: 'cloud',
         defaultLayout: {
           lg: [
@@ -1238,7 +1260,8 @@ const routes = [
                   proc: 'nordiasoft',
                   values: {
                     AX25Framer: [
-                      '',
+                      'DESTINATION_CALL_SIGN',
+                      'SOURCE_CALL_SIGN',
                     ],
                     Descrambler: [
                       'DESCRAMBLER_PROPERTIES:LENGTH',
@@ -1273,18 +1296,12 @@ const routes = [
                       'HDLC_ENCODER_PROPERTIES:WAVEFORM',
                     ],
                     MultiStageArbResamplerRx: [
-                      'centerFrequency',
-                      'cutoffFrequency',
-                      'delay',
                       'resamplingRate',
-                      'stopBandAttenuation',
+                      'stopBandAttentuation',
                     ],
                     MultiStageArbResamplerTx: [
-                      'centerFrequency',
-                      'cutoffFrequency',
-                      'delay',
                       'resamplingRate',
-                      'stopBandAttenuation',
+                      'stopBandAttentuation',
                     ],
                     NcoMixerRx: [
                       'dopplerFrequency',
@@ -1315,13 +1332,40 @@ const routes = [
                       'REPACK_BITS_PROPERTIES:ENDIANNESS',
                     ],
                     USRP_UHD_Device: [
-                      '',
+                      'RF_MODE',
+                      'TX_CENTER_FREQUENCY',
+                      'TX_HARDWARE_SAMPLE_RATE',
+                      'TX_GAIN',
+                      'TX_ANTENNA',
+                      'RX_BUFFER_SIZE',
+                      'RX_CENTER_FREQUENCY',
+                      'RX_HARDWARE_SAMPLE_RATE',
+                      'RX_GAIN',
+                      'RX_ANTENNA',
                     ],
                     USRP_Device_Rx: [
-                      '',
+                      'RF_MODE',
+                      'TX_CENTER_FREQUENCY',
+                      'TX_HARDWARE_SAMPLE_RATE',
+                      'TX_GAIN',
+                      'TX_ANTENNA',
+                      'RX_BUFFER_SIZE',
+                      'RX_CENTER_FREQUENCY',
+                      'RX_HARDWARE_SAMPLE_RATE',
+                      'RX_GAIN',
+                      'RX_ANTENNA',
                     ],
                     USRP_Device_Tx: [
-                      '',
+                      'RF_MODE',
+                      'TX_CENTER_FREQUENCY',
+                      'TX_HARDWARE_SAMPLE_RATE',
+                      'TX_GAIN',
+                      'TX_ANTENNA',
+                      'RX_BUFFER_SIZE',
+                      'RX_CENTER_FREQUENCY',
+                      'RX_HARDWARE_SAMPLE_RATE',
+                      'RX_GAIN',
+                      'RX_ANTENNA',
                     ],
                   },
                 },
@@ -1620,9 +1664,9 @@ const routes = [
                         color: 'red',
                       },
                       name: '1',
-                      YDataKey: 'device_tsen_temp_001',
+                      YDataKey: 'predicted_path',
                       processYDataKey: y => y - 273.15,
-                      nodeProcess: 'beagle1:eps',
+                      nodeProcess: 'beagle1:propagator',
                       live: true,
                     },
                   ],
@@ -1897,13 +1941,54 @@ const routes = [
             },
             {
               i: 'gs-mc3-f',
-              x: 0,
-              y: 4,
-              w: 12,
-              h: 7,
+              x: 6,
+              y: 1,
+              w: 6,
+              h: 6,
               component: {
                 name: 'Activity',
                 props: {
+                },
+              },
+            },
+            {
+              i: 'gs-mc3-bb',
+              x: 0,
+              y: 2,
+              w: 12,
+              h: 7,
+              component: {
+                name: 'SatellitePasses',
+              },
+            },
+            {
+              i: 'gs-mc3-bbb',
+              x: 0,
+              y: 3,
+              w: 12,
+              h: 20,
+              component: {
+                name: 'Chart',
+                props: {
+                  name: 'Satellite Pass',
+                  XDataKey: 'utc',
+                  processXDataKey: x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                  plots: [
+                    {
+                      r: [5, 4, 3, 2, 1, 0.5, 0, 5],
+                      theta: [90, 80, 70, 60, 50, 40, 0, 180],
+                      mode: 'markers+lines',
+                      type: 'scatterpolar',
+                      marker: {
+                        color: 'red',
+                      },
+                      name: '1',
+                      YDataKey: 'predicted_path',
+                      processYDataKey: y => y - 273.15,
+                      nodeProcess: 'beagle1:propagator',
+                      live: true,
+                    },
+                  ],
                 },
               },
             },
