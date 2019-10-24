@@ -45,7 +45,6 @@ function SetValues({
   /**  */
   const [queryValues, setQueryValues] = useState(null);
 
-  const [txrxSwitch, setTxrxSwitch] = useState('rx');
   const [dopplerSwitch, setDopplerSwitch] = useState(0);
 
   /** DOM element selector for history log */
@@ -103,18 +102,19 @@ function SetValues({
   };
 
   useEffect(() => {
-    ws.send(`${process.env.COSMOS_BIN}/agent ${node} ${proc} set_doppler_config ${state.macro ? `${state.macro} ` : ''}${selectedComponent} ${selectedProperty} ${dopplerSwitch} ${txrxSwitch}`);
+    ws.send(`${process.env.COSMOS_BIN}/agent ${node} ${proc} doppler ${dopplerSwitch}`);
 
     setCommandHistory([
       ...commandHistory,
-      `➜ agent ${node} ${proc} set_doppler_config ${state.macro ? `${state.macro} ` : ''}${selectedComponent} ${selectedProperty} ${dopplerSwitch} ${txrxSwitch}`,
+      `➜ agent ${node} ${proc} doppler ${dopplerSwitch}`,
     ]);
-  }, [txrxSwitch, dopplerSwitch]);
+
+    setUpdateLog(true);
+  }, [dopplerSwitch]);
 
   /** Get the live values from the agent */
   const getValue = () => {
     const components = socket('query', '/command/');
-
     // Open socket
     components.onopen = () => {
       // Send request for the values
@@ -169,14 +169,7 @@ function SetValues({
       formItems={formItems}
       handleLiveSwitchChange={checked => setLiveSwitch(checked)}
     >
-      TX/RX Switching
-      <Switch
-        className="ml-2 mr-2"
-        checkedChildren="tx"
-        unCheckedChildren="rx"
-        onChange={checked => checked ? setTxrxSwitch('tx') : setTxrxSwitch('rx')}
-      />
-      Doppler Offset / Offset+Base Frequency
+      Doppler On / Doppler Off
       <Switch
         className="ml-2 mr-2"
         checkedChildren="1"
