@@ -261,6 +261,57 @@ function Chart({
           </Form.Item>
 
           <Form.Item
+            label="Data Limit"
+            key="dataLimit"
+            hasFeedback={form.dataLimit && form.dataLimit.touched}
+            validateStatus={form.dataLimit && form.dataLimit.changed ? 'success' : ''}
+          >
+            <InputNumber
+              className="mr-2"
+              placeholder="Data Limit"
+              id="dataLimit"
+              min={0}
+              onFocus={({ target: { id: item } }) => setForm({
+                ...form,
+                [item]: {
+                  ...form[item],
+                  touched: true,
+                  changed: false,
+                },
+              })}
+              onChange={value => setForm({
+                ...form,
+                YRangeMin: {
+                  ...form.YRangeMin,
+                  value,
+                  changed: false,
+                },
+              })}
+              onBlur={({ target: { id: item, value } }) => {
+                if (form.YRangeMax && value < form.YRangeMax.value) {
+                  setForm({
+                    ...form,
+                    [item]: {
+                      ...form[item],
+                      changed: true,
+                    },
+                  });
+                }
+
+                setForm({
+                  ...form,
+                  [item]: {
+                    ...form[item],
+                    changed: false,
+                  },
+                });
+
+                setDataLimitState(value);
+              }}
+            />
+          </Form.Item>
+
+          <Form.Item
             label="X Data Key"
             key="XDataKey"
             hasFeedback={form.XDataKey && form.XDataKey.touched}
@@ -335,7 +386,6 @@ function Chart({
                   });
                   // Convert currently existing values
                   plotsState.forEach((plot, i) => {
-                    console.log(plot);
                     if (plotsState[i].x.length > 0) {
                       // eslint-disable-next-line
                       plotsState[i].x = plotsState[i]
