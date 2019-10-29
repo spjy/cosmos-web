@@ -96,6 +96,7 @@ const routes = [
               name: 'Globe',
               props: {
                 name: 'Orbit',
+                dataKey: 'node_loc_pos_eci',
                 orbits: [
                   {
                     name: 'neutron1',
@@ -442,6 +443,7 @@ const routes = [
                 name: 'Globe',
                 props: {
                   name: 'Orbit',
+                  dataKey: 'node_loc_pos_eci',
                   orbits: [
                     {
                       name: 'neutron1',
@@ -815,6 +817,7 @@ const routes = [
                 name: 'Globe',
                 props: {
                   name: 'Orbit',
+                  dataKey: 'node_loc_pos_eci',
                   orbits: [
                     {
                       name: 'neutron1',
@@ -1393,6 +1396,7 @@ const routes = [
                 name: 'Globe',
                 props: {
                   name: 'Orbit',
+                  dataKey: 'target_loc_pos_eci',
                   coordinateSystem: 'geodetic',
                   orbits: [
                     {
@@ -1526,6 +1530,7 @@ const routes = [
                 name: 'Globe',
                 props: {
                   name: 'Orbit',
+                  dataKey: 'target_loc_pos_eci',
                   coordinateSystem: 'geodetic',
                   orbits: [
                     {
@@ -1637,9 +1642,21 @@ const routes = [
               x: 0,
               y: 1,
               w: 12,
-              h: 7,
+              h: 10,
               component: {
-                name: 'SatellitePasses',
+                name: 'Sequence',
+                props: {
+                  sequences: [
+                    {
+                      button: 'Start',
+                      sequence: [
+                        'beagle1 eps get_tlm_12v',
+                        'beagle1 eps get_tlm_vbat',
+                        'beagle1 eps mjd',
+                      ],
+                    },
+                  ],
+                },
               },
             },
             {
@@ -1856,6 +1873,7 @@ const routes = [
                 name: 'Globe',
                 props: {
                   name: 'Orbit',
+                  dataKey: 'target_loc_pos_eci',
                   coordinateSystem: 'geodetic',
                   orbits: [
                     {
@@ -1986,7 +2004,7 @@ const routes = [
               w: 12,
               h: 7,
               component: {
-                name: 'SatellitePasses',
+                name: 'Sequence',
               },
             },
             {
@@ -2030,6 +2048,7 @@ const routes = [
                 name: 'Globe',
                 props: {
                   name: 'Orbit',
+                  dataKey: 'target_loc_pos_eci',
                   coordinateSystem: 'geodetic',
                   orbits: [
                     {

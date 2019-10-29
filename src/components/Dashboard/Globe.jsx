@@ -52,6 +52,7 @@ function getPosFromSpherical(longitude, latitude, altitude) {
  */
 function CesiumGlobe({
   name,
+  dataKey,
   orbits,
   overlays,
   showStatus,
@@ -98,8 +99,8 @@ function CesiumGlobe({
   useEffect(() => {
     orbitsState.forEach((orbit, i) => {
       if (state[orbit.nodeProcess]
-        && state[orbit.nodeProcess].target_loc_pos_eci
-        && state[orbit.nodeProcess].target_loc_pos_eci.pos
+        && state[orbit.nodeProcess][dataKey]
+        && state[orbit.nodeProcess][dataKey].pos
         && orbit.live
       ) {
         const tempOrbit = [...orbitsState];
@@ -109,7 +110,7 @@ function CesiumGlobe({
         }
 
         if (state[orbit.nodeProcess].utc
-          && (state[orbit.nodeProcess].target_loc_pos_eci
+          && (state[orbit.nodeProcess][dataKey]
           || state[orbit.nodeProcess].target_loc_pos_geod_s_lat)
         ) {
           const date = Cesium
@@ -127,9 +128,9 @@ function CesiumGlobe({
               .Cartesian3
               .fromArray(
                 [
-                  state[orbit.nodeProcess].target_loc_pos_eci.pos[0],
-                  state[orbit.nodeProcess].target_loc_pos_eci.pos[1],
-                  state[orbit.nodeProcess].target_loc_pos_eci.pos[2],
+                  state[orbit.nodeProcess][dataKey].pos[0],
+                  state[orbit.nodeProcess][dataKey].pos[1],
+                  state[orbit.nodeProcess][dataKey].pos[2],
                 ],
               );
             tempOrbit[i].path.addSample(date, pos);
@@ -143,7 +144,7 @@ function CesiumGlobe({
           // }
         }
 
-        tempOrbit[i].position = state[orbit.nodeProcess].target_loc_pos_eci.pos;
+        tempOrbit[i].position = state[orbit.nodeProcess][dataKey].pos;
 
         if (coordinateSystem === 'geodetic'
           && state[orbit.nodeProcess].target_loc_pos_geod_s_lat
@@ -209,15 +210,15 @@ function CesiumGlobe({
                     .unix((((json[json.length - 1].utc + 2400000.5) - 2440587.5) * 86400.0))
                     .toDate(),
                 );
-              startOrbitPosition = json[0].target_loc_pos_eci.pos;
+              startOrbitPosition = json[0][dataKey].pos;
             }
 
             const sampledPosition = new Cesium.SampledPositionProperty();
 
             json.forEach((orbit) => {
-              const p = orbit.target_loc_pos_eci.pos;
+              const p = orbit[dataKey].pos;
 
-              if (orbit.utc && orbit.target_loc_pos_eci) {
+              if (orbit.utc && orbit[dataKey]) {
                 const date = Cesium
                   .JulianDate
                   .fromDate(
@@ -785,6 +786,8 @@ function CesiumGlobe({
 CesiumGlobe.propTypes = {
   /** Name of the component to display at the time */
   name: PropTypes.string,
+  /** Key to look at for orbit */
+  dataKey: PropTypes.string,
   /** Default orbits to display */
   orbits: PropTypes.arrayOf(
     PropTypes.shape({
@@ -824,6 +827,7 @@ CesiumGlobe.propTypes = {
 
 CesiumGlobe.defaultProps = {
   name: '',
+  dataKey: 'node_loc_pos_eci',
   orbits: [],
   overlays: [],
   showStatus: false,

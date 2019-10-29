@@ -115,12 +115,11 @@ function SetValues({
   /** Get the live values from the agent */
   const getValue = () => {
     const components = socket('query', '/command/');
-    
+
     // Open socket
     components.onopen = () => {
       // Send request for the values
       components.send(`${process.env.COSMOS_BIN}/agent ${node} ${proc} ${selectedComponent === 'USRP_UHD_Device' || selectedComponent === 'USRP_Device_Tx' || selectedComponent === 'USRP_Device_Rx' ? 'device_properties' : 'app_component'} ${state.macro ? `${state.macro} ` : ''}${selectedComponent}`);
-
 
       // Update the values on return of output
       components.onmessage = ({ data }) => {

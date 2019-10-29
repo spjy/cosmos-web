@@ -13,6 +13,7 @@ import Macro from './Dashboard/Macro';
 import MASDRCommands from './Dashboard/MASDRCommands';
 import SatellitePasses from './Dashboard/SatellitePasses';
 import SetValues from './Dashboard/SetValues';
+import Sequence from './Dashboard/Sequence';
 import Status from './Dashboard/Status';
 import ThreeD from './Dashboard/ThreeD';
 import UploadFile from './Dashboard/UploadFile';
@@ -31,6 +32,7 @@ const components = {
   MASDRCommands,
   SatellitePasses,
   SetValues,
+  Sequence,
   Status,
   ThreeD,
   UploadFile,
