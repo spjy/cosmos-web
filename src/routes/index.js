@@ -1648,11 +1648,29 @@ const routes = [
                 props: {
                   sequences: [
                     {
-                      button: 'Start',
+                      button: 'Get Values',
                       sequence: [
                         'beagle1 eps get_tlm_12v',
                         'beagle1 eps get_tlm_vbat',
                         'beagle1 eps mjd',
+                      ],
+                    },
+                    {
+                      button: 'Initialize Nordiasoft',
+                      sequence: [
+                        'masdr nordiasoft initialize',
+                        'masdr nordiasoft app_install ~/runtime_propcube_loopback/PropCubeWaveform',
+                        'masdr nordiasoft list_applications',
+                        'masdr nordiasoft app_launch PropCubeWaveform',
+                        'masdr nordiasoft app_start PropCubeWaveform',
+                      ],
+                    },
+                    {
+                      button: 'Shutdown Nordiasoft',
+                      sequence: [
+                        'masdr nordiasoft app_stop PropCubeWaveform',
+                        'masdr nordiasoft app_uninstall PropCubeWaveform',
+                        'masdr nordiasoft app_shutdown PropCubeWaveform',
                       ],
                     },
                   ],
