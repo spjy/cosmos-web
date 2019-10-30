@@ -68,43 +68,46 @@ function Sequence({
     <Content
       name="Sequence"
     >
-      {
-        sequences.map(sequence => (
-          <div>
-            <Button.Group>
-              <Button
-                onClick={() => {
-                  execute(sequence.sequence);
-                }}
-              >
-                {sequence.button}
-              </Button>
-              <Popover
-                content={(
-                  <div className="font-mono">
-                    {
-                      sequence.sequence.map(s => (
-                        <div>
-                          {s}
-                        </div>
-                      ))
-                    }
-                  </div>
-                )}
-                title="Sequence"
-                trigger="click"
-                placement="topLeft"
-              >
-                <Button>
-                  <Icon type="question" />
+      <div className="flex">
+        {
+          sequences.map(sequence => (
+            <div className="m-1">
+              <Button.Group>
+                <Button
+                  onClick={() => {
+                    execute(sequence.sequence);
+                  }}
+                >
+                  {sequence.button}
                 </Button>
-              </Popover>
-            </Button.Group>
-          </div>
-        ))
-      }
+                <Popover
+                  content={(
+                    <div className="font-mono">
+                      {
+                        sequence.sequence.map(s => (
+                          <div>
+                            ➜ agent&nbsp;
+                            {s}
+                          </div>
+                        ))
+                      }
+                    </div>
+                  )}
+                  title="Sequence"
+                  trigger="click"
+                  placement="topLeft"
+                >
+                  <Button>
+                    <Icon type="question" />
+                  </Button>
+                </Popover>
+              </Button.Group>
+            </div>
+          ))
+        }
+      </div>
       <div
-        className="border border-gray-300 rounded mb-2 p-4 bg-white font-mono h-32 max-h-full resize-y overflow-y-auto mt-2"
+        className="m-1 border border-gray-300 rounded mb-2 p-4 bg-white font-mono h-32 max-h-full resize-y overflow-y-auto mt-2"
         ref={cliEl}
       >
         {
