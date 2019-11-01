@@ -87,6 +87,89 @@ This folder contains the React Context global store and reducer logic.
 
 Follow the [AngularJS commit style](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-guidelines).
 
+
+# Developer Configurations
+
+## Configuring Routes
+
+You can configure the routes through `/src/routes/index.js`. Each top level object within the routes array corresponds to a page.
+
+Each object has a `name`, `icon`, `component`, `path` and `props`. 
+
+Name is the name that will show up on the navigation bar, the icon is the icon that will show up on the navigation bar, and the component is the component that will be shown on the route. 
+
+The path is the route that corresponds to the page. You can add `/:id` at the end to specify that it is layout enabled. Props are optional; within the props object, you can provide the default layout of the page.
+
+For the path
+
+For example:
+
+```javascript
+const routes = [
+  {
+    name: 'Satellites',
+    icon: 'rocket',
+    path: '/satellite/:id',
+    component: Dashboard,
+    props: {
+      defaultLayout: {
+        lg: [
+          {
+            i: 'satellite-default-f',
+            x: 6,
+            y: 2,
+            w: 6,
+            h: 21,
+            component: {
+              name: 'Attitude',
+              props: {
+                attitudes: [
+                  {
+                    name: 'n1',
+                    nodeProcess: 'cubesat1:propagator_simple',
+                    quaternions: {
+                      d: {
+                        x: 0,
+                        y: 0,
+                        z: 0,
+                      },
+                      w: 0,
+                    },
+                    live: true,
+                  },
+                ],
+              },
+            },
+          },
+        ]
+      }
+    }
+  }
+]
+```
+
+## General Components
+
+### AsyncComponent.jsx
+
+AsyncComponent is the component that brings together dashboard components. It allows the dashboard components to be rendered via the `routes.js` file by name.
+
+### BaseComponent.jsx 
+
+BaseComponent is the component that contains common functionality and user interfaces across other components. For instance, it contains a header, configuration form modal, and content area for other componenents.
+
+### ComponentSettings.jsx
+
+ComponentSettings contains the configuration form modal used in BaseComponent.
+
+### LayoutManager.jsx
+
+LayoutManager is page that allows users to create layouts and add them to pages.
+
+### LayoutSelector.jsx
+
+LayoutSelector is the dropdown menu located at the top of layout enabled pages, and it allows selection of a certain layout for a certain page. 
+
 # Application Usage
 
 ## Home Page
@@ -173,4 +256,3 @@ Click *Save Layout* to save it.
 ### Switching Layouts
 
 On top of each Dashboard page, e.g. Sattelites or Ground Stations, a dropdown menu coupled with a button exist to allow for quickly switching between pre-defined layouts.
-
