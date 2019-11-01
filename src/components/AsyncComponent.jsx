@@ -8,6 +8,7 @@ import Chart from './Dashboard/Chart';
 import Commands from './Dashboard/Commands';
 import Content from './Dashboard/Content';
 import DisplayValue from './Dashboard/DisplayValue';
+import Events from './Dashboard/Events';
 import Globe from './Dashboard/Globe';
 import Macro from './Dashboard/Macro';
 import MASDRCommands from './Dashboard/MASDRCommands';
@@ -15,6 +16,7 @@ import SatellitePasses from './Dashboard/SatellitePasses';
 import SetValues from './Dashboard/SetValues';
 import Sequence from './Dashboard/Sequence';
 import Status from './Dashboard/Status';
+import Subsystem from './Dashboard/Subsystem';
 import ThreeD from './Dashboard/ThreeD';
 import UploadFile from './Dashboard/UploadFile';
 
@@ -27,6 +29,7 @@ const components = {
   Commands,
   Content,
   DisplayValue,
+  Events,
   Globe,
   Macro,
   MASDRCommands,
@@ -34,6 +37,7 @@ const components = {
   SetValues,
   Sequence,
   Status,
+  Subsystem,
   ThreeD,
   UploadFile,
 };
