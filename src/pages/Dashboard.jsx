@@ -64,6 +64,10 @@ function Dashboard({
       setSocketStatus('error');
     };
 
+    all.onerror = () => {
+      setSocketStatus('error');
+    };
+
     all.onopen = () => {
       setSocketStatus('success');
     };

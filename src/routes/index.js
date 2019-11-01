@@ -1644,7 +1644,7 @@ const routes = [
               w: 12,
               h: 10,
               component: {
-                name: 'Sequence',
+                name: 'Subsystem',
                 props: {
                   sequences: [
                     {

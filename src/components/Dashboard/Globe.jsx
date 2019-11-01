@@ -48,7 +48,11 @@ function getPosFromSpherical(longitude, latitude, altitude) {
 }
 
 /**
- * Displays a globe with the orbit and orbit history.
+ * Displays a globe with the orbit and orbit history using Resium (Cesium).
+ * Retrieves location data and displays a model in the location.
+ * Stores the location data and displays the path taken by the model.
+ * Can overlay shapes over an area of the globe.
+ * At the bottom, displays the current location.
  */
 function CesiumGlobe({
   name,

@@ -6,7 +6,7 @@ import { Form, Select } from 'antd';
 import BaseComponent from '../BaseComponent';
 
 /**
- * Display a specified local time and UTC time.
+ * Display a specified local time and UTC time from the year to the second.
  */
 function Clock({
   timezone,

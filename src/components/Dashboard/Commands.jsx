@@ -16,6 +16,8 @@ const ws = socket('query', '/command/');
 
 /**
  * Send commands to agents. Simulates a CLI.
+ * Gives the ability to select commonly used node:process; appends this value to after the `agent` command.
+ * Allows for running agent commands. Logs inputs and ouputs in the white box above the input box.
  */
 const Commands = React.memo(() => {
   const { state } = useContext(Context);
@@ -25,7 +27,7 @@ const Commands = React.memo(() => {
   const [selectedAgent, setSelectedAgent] = useState([]);
   /** Requests possible from selectedAgent */
   const [agentRequests, setAgentRequests] = useState({});
-
+  /** List of sorted agent requests */
   const [sortedAgentRequests, setSortedAgentRequests] = useState([]);
   /** Selected agent request */
   const [selectedRequest, setSelectedRequest] = useState('> agent');

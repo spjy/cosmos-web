@@ -10,7 +10,9 @@ import AttitudeThreeD from './Babylon/AttitudeThreeD';
 import { Context } from '../../store/neutron1';
 
 /**
- * Visualizes the attitude of an object.
+ * Visualizes the attitude of an object through a Babylon.js simulation.
+ * It contains a mesh sphere around a model of the satellite, along with XYZ axes.
+ * On the bottom, it displays a table containing the current x, y, z and w vector values.
  */
 function Attitude({
   name,

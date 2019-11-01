@@ -13,6 +13,7 @@ const { TextArea } = Input;
 
 /**
  * Displays a specified live value from an agent.
+ * Updates values every agent heartbeat.
  */
 function DisplayValue({
   name,

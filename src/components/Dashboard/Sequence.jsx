@@ -6,7 +6,9 @@ import { Button, Popover, Icon, message } from 'antd';
 import Content from './Content';
 import socket from '../../socket';
 
-
+/**
+ * Component to handle pre-defined sequences of commands to run agent commands.
+ */
 function Sequence({
   sequences,
 }) {
@@ -71,7 +73,10 @@ function Sequence({
       <div className="flex">
         {
           sequences.map(sequence => (
-            <div className="m-1">
+            <div
+              className="m-1"
+              key={sequence.button}
+            >
               <Button.Group>
                 <Button
                   onClick={() => {

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import BaseComponent from '../BaseComponent';
 
 /**
- * A general purpose component.
+ * A general purpose component. Quickly build components without many required props.
  */
 function Content({
   name,

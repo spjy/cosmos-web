@@ -3,6 +3,9 @@ import React from 'react';
 import Content from './Content';
 import Table from '../Global/Table';
 
+/**
+ * Displays required data for a future pass of a satellite.
+ */
 function SatellitePasses() {
   return (
     <Content

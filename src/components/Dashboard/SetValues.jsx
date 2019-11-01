@@ -14,7 +14,7 @@ import socket from '../../socket';
 const ws = socket('query', '/command/');
 
 /**
- * Component to conveniently send values via an agent command.
+ * Component to conveniently get and set values via an agent command.
  */
 function SetValues({
   name,
