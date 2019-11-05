@@ -33,6 +33,7 @@ CESIUM_ION_TOKEN= # Token for the globe simulation (optional)
 ```
 
 If you need to run Agent Mongo, the server component of COSMOS Web, see this repository: https://github.com/spjy/cosmos-mongodb
+
 If you need to run Agent Socket, which is Agent Mongo without the database component, see this repository: https://github.com/spjy/cosmos-socket
 
 ## Running
@@ -170,6 +171,10 @@ LayoutManager is page that allows users to create layouts and add them to pages.
 
 LayoutSelector is the dropdown menu located at the top of layout enabled pages, and it allows selection of a certain layout for a certain page. 
 
+## Other Components
+
+See [this page](https://github.com/spjy/cosmos-web/blob/master/components.md).
+
 # Application Usage
 
 ## Home Page
@@ -226,7 +231,7 @@ The name of the layout for a certain route. Differentiate between other layout n
       }
     }
   },
-    {
+  {
     "i": "dashboardName-b",
     "x": 6,
     "y": 0,
