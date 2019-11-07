@@ -1638,23 +1638,15 @@ const routes = [
               },
             },
             {
-              i: 'gs-mc3-bb',
+              i: 'gs-mc3-bbbbb',
               x: 0,
-              y: 1,
+              y: 3,
               w: 12,
               h: 10,
               component: {
-                name: 'Subsystem',
+                name: 'Sequence',
                 props: {
                   sequences: [
-                    {
-                      button: 'Get Values',
-                      sequence: [
-                        'beagle1 eps get_tlm_12v',
-                        'beagle1 eps get_tlm_vbat',
-                        'beagle1 eps mjd',
-                      ],
-                    },
                     {
                       button: 'Initialize Nordiasoft',
                       sequence: [
@@ -1678,40 +1670,9 @@ const routes = [
               },
             },
             {
-              i: 'gs-mc3-bbb',
-              x: 0,
-              y: 2,
-              w: 12,
-              h: 20,
-              component: {
-                name: 'Chart',
-                props: {
-                  name: 'Satellite Pass',
-                  XDataKey: 'utc',
-                  processXDataKey: x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
-                  plots: [
-                    {
-                      r: [5, 4, 3, 2, 1, 0.5, 0, 5],
-                      theta: [90, 80, 70, 60, 50, 40, 0, 180],
-                      mode: 'markers+lines',
-                      type: 'scatterpolar',
-                      marker: {
-                        color: 'red',
-                      },
-                      name: '1',
-                      YDataKey: 'predicted_path',
-                      processYDataKey: y => y - 273.15,
-                      nodeProcess: 'beagle1:propagator',
-                      live: true,
-                    },
-                  ],
-                },
-              },
-            },
-            {
               i: 'gs-mc3-b',
               x: 6,
-              y: 3,
+              y: 2,
               w: 6,
               h: 6,
               component: {
@@ -1721,7 +1682,7 @@ const routes = [
             {
               i: 'gs-mc3-c',
               x: 0,
-              y: 4,
+              y: 2,
               w: 6,
               h: 6,
               component: {
@@ -2016,46 +1977,68 @@ const routes = [
               },
             },
             {
-              i: 'gs-mc3-bb',
+              i: 'gs-mc3-bbbbb',
               x: 0,
               y: 2,
               w: 12,
-              h: 7,
+              h: 10,
               component: {
                 name: 'Sequence',
-              },
-            },
-            {
-              i: 'gs-mc3-bbb',
-              x: 0,
-              y: 3,
-              w: 12,
-              h: 20,
-              component: {
-                name: 'Chart',
                 props: {
-                  name: 'Satellite Pass',
-                  XDataKey: 'utc',
-                  processXDataKey: x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
-                  plots: [
+                  sequences: [
                     {
-                      r: [5, 4, 3, 2, 1, 0.5, 0, 5],
-                      theta: [90, 80, 70, 60, 50, 40, 0, 180],
-                      mode: 'markers+lines',
-                      type: 'scatterpolar',
-                      marker: {
-                        color: 'red',
-                      },
-                      name: '1',
-                      YDataKey: 'predicted_path',
-                      processYDataKey: y => y - 273.15,
-                      nodeProcess: 'beagle1:propagator',
-                      live: true,
+                      button: 'Initialize Nordiasoft',
+                      sequence: [
+                        'masdr nordiasoft initialize',
+                        'masdr nordiasoft app_install ~/runtime_propcube_loopback/PropCubeWaveform',
+                        'masdr nordiasoft list_applications',
+                        'masdr nordiasoft app_launch PropCubeWaveform',
+                        'masdr nordiasoft app_start PropCubeWaveform',
+                      ],
+                    },
+                    {
+                      button: 'Shutdown Nordiasoft',
+                      sequence: [
+                        'masdr nordiasoft app_stop PropCubeWaveform',
+                        'masdr nordiasoft app_uninstall PropCubeWaveform',
+                        'masdr nordiasoft app_shutdown PropCubeWaveform',
+                      ],
                     },
                   ],
                 },
               },
             },
+            // {
+            //   i: 'gs-mc3-bbb',
+            //   x: 0,
+            //   y: 3,
+            //   w: 12,
+            //   h: 20,
+            //   component: {
+            //     name: 'Chart',
+            //     props: {
+            //       name: 'Satellite Pass',
+            //       XDataKey: 'utc',
+            //       processXDataKey: x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+            //       plots: [
+            //         {
+            //           r: [5, 4, 3, 2, 1, 0.5, 0, 5],
+            //           theta: [90, 80, 70, 60, 50, 40, 0, 180],
+            //           mode: 'markers+lines',
+            //           type: 'scatterpolar',
+            //           marker: {
+            //             color: 'red',
+            //           },
+            //           name: '1',
+            //           YDataKey: 'predicted_path',
+            //           processYDataKey: y => y - 273.15,
+            //           nodeProcess: 'beagle1:propagator',
+            //           live: true,
+            //         },
+            //       ],
+            //     },
+            //   },
+            // },
             {
               i: 'gs-mc3-g',
               x: 0,
