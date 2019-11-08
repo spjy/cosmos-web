@@ -35,7 +35,8 @@ module.exports = {
       moduleFileExtensions: ['jsx', 'js'],
     }),
     devServer({
-      disableHostCheck: true
+      disableHostCheck: true,
+      host: '0.0.0.0'
     }),
     (neutrino) => {
       neutrino.config
