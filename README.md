@@ -44,12 +44,25 @@ npm start
 
 ## Docker Development Image
 
+Docker is a quick way to get started with running applications with ease.
+
+### Self Build
+
 If you want to run the COSMOS Web development image through Docker:
 
 ```
+cd /path/to/cosmos-web
 docker build . -t cosmos_web
 docker run 3000:3000 cosmos_web
 ```
+
+### Pulling Built Image
+
+```bash
+docker pull spencerpjy/cosmos-web
+docker run 3000:3000 cosmos-web
+```
+
 ## Standards
 
 ### Filesystem
