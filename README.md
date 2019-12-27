@@ -25,10 +25,10 @@ cp .env.defaults .env
 ```
 
 ```
-WEBSOCKET_IP=localhost # Agent Mongo IP
-QUERY_WEBSOCKET_PORT=8080 # Port of the WS to access the query endpoints
-LIVE_WEBSOCKET_PORT=8081 # Port of the WS to access the live endpoints
-CESIUM_ION_TOKEN= # Token for the globe simulation (optional)
+WEBSOCKET_IP=localhost # Agent Mongo IP. Set this to the IP of the Agent MongoDB instance you are trying to connect to.
+QUERY_WEBSOCKET_PORT=8080 # Port of the WebSocket to access the query endpoints
+LIVE_WEBSOCKET_PORT=8081 # Port of the WebSocket to access the live endpoints
+CESIUM_ION_TOKEN= # Token for the globe simulation (optional). Get a token here -> https://cesium.com/ion/signup?gs=true
 ```
 
 If you need to run Agent Mongo, the server component of COSMOS Web, see this repository: https://github.com/spjy/cosmos-mongodb
