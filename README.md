@@ -6,8 +6,7 @@ See https://github.com/spjy/cosmos-mongodb for the server component of COSMOS We
 
 ## Requirements
 
-1. Node.js
-2. NPM
+1. Node.js / NPM (NPM is installed with Node.js)
 
 ## Installing
 
