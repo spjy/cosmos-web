@@ -1,6 +1,7 @@
 import moment from 'moment-timezone';
 
 import Home from '../pages/Home';
+import CEO from '../pages/ceo';
 import Dashboard from '../pages/Dashboard';
 import DashboardManager from '../pages/DashboardManager';
 
@@ -10,6 +11,12 @@ const routes = [
     icon: 'global',
     path: '/',
     component: Home,
+  },
+  {
+    name: 'CEO',
+    icon: 'apartment',
+    path: '/ceo',
+    component: CEO
   },
   {
     name: 'Satellites',
@@ -164,7 +171,7 @@ const routes = [
             component: {
               name: 'Chart',
               props: {
-                name: 'Temperature',
+                name: 'CPU',
                 XDataKey: 'utc',
                 processXDataKey: x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                 plots: [
@@ -176,9 +183,9 @@ const routes = [
                       color: 'red',
                     },
                     name: '1',
-                    YDataKey: 'device_tsen_temp_001',
-                    processYDataKey: y => y - 273.15,
-                    nodeProcess: 'beagle1:eps',
+                    YDataKey: 'device_cpu_load_000',
+                    processYDataKey: y => y,
+                    nodeProcess: 'beagle1:cpu',
                     live: true,
                   },
                   {
@@ -189,9 +196,9 @@ const routes = [
                       color: 'blue',
                     },
                     name: '2',
-                    YDataKey: 'device_tsen_temp_002',
-                    processYDataKey: y => y - 273.15,
-                    nodeProcess: 'beagle1:eps',
+                    YDataKey: 'device_cpu_gib_000',
+                    processYDataKey: y => y,
+                    nodeProcess: 'beagle1:cpu',
                     live: true,
                   },
                   {
@@ -202,9 +209,9 @@ const routes = [
                       color: 'orange',
                     },
                     name: '3',
-                    YDataKey: 'device_tsen_temp_003',
-                    processYDataKey: y => y - 273.15,
-                    nodeProcess: 'beagle1:eps',
+                    YDataKey: 'device_cpu_maxgib_000',
+                    processYDataKey: y => y,
+                    nodeProcess: 'beagle1:cpu',
                     live: true,
                   },
                 ],
@@ -511,7 +518,7 @@ const routes = [
               component: {
                 name: 'Chart',
                 props: {
-                  name: 'Temperature',
+                  name: 'CPU',
                   XDataKey: 'utc',
                   processXDataKey: x => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                   plots: [
@@ -523,9 +530,9 @@ const routes = [
                         color: 'red',
                       },
                       name: '1',
-                      YDataKey: 'device_tsen_temp_001',
-                      processYDataKey: y => y - 273.15,
-                      nodeProcess: 'beagle1:eps',
+                      YDataKey: 'device_cpu_load_000',
+                      processYDataKey: y => y,
+                      nodeProcess: 'beagle1:cpu',
                       live: true,
                     },
                     {
@@ -536,9 +543,9 @@ const routes = [
                         color: 'blue',
                       },
                       name: '2',
-                      YDataKey: 'device_tsen_temp_002',
-                      processYDataKey: y => y - 273.15,
-                      nodeProcess: 'beagle1:eps',
+                      YDataKey: 'device_cpu_gib_000',
+                      processYDataKey: y => y,
+                      nodeProcess: 'beagle1:cpu',
                       live: true,
                     },
                     {
@@ -549,9 +556,9 @@ const routes = [
                         color: 'orange',
                       },
                       name: '3',
-                      YDataKey: 'device_tsen_temp_003',
-                      processYDataKey: y => y - 273.15,
-                      nodeProcess: 'beagle1:eps',
+                      YDataKey: 'device_cpu_maxgib_000',
+                      processYDataKey: y => y,
+                      nodeProcess: 'beagle1:cpu',
                       live: true,
                     },
                   ],
@@ -698,34 +705,6 @@ const routes = [
                       name: 'Charge',
                       YDataKey: 'device_batt_charge_000',
                       nodeProcess: 'neutron1:eps',
-                      live: true,
-                    },
-                  ],
-                },
-              },
-            },
-            {
-              i: 'satellite-neutron1-k',
-              x: 0,
-              y: 6,
-              w: 12,
-              h: 19,
-              component: {
-                name: 'ThreeD',
-                props: {
-                  name: 'Attitude',
-                  attitudes: [
-                    {
-                      name: 'n1',
-                      nodeProcess: 'cubesat1:propagator_simple',
-                      quaternions: {
-                        d: {
-                          x: 0,
-                          y: 0,
-                          z: 0,
-                        },
-                        w: 0,
-                      },
                       live: true,
                     },
                   ],
