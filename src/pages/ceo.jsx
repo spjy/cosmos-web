@@ -84,7 +84,6 @@ function Dashboard({
       });
 
       setNodes(currentNodes);
-      console.log();
     }
   }, [state]);
 
@@ -93,7 +92,7 @@ function Dashboard({
       <div className="mt-5 mx-16 mb-16">
         {
           nodes.map(node => (
-            <div className="inline-block shadow overflow-y-auto p-4 m-1 bg-white lg:w-1/4">
+            <div className="inline-block shadow overflow-y-auto p-4 m-1 bg-white">
               <div>
                 <Badge status="success" />
                 <span className="text-lg font-bold">
@@ -102,7 +101,16 @@ function Dashboard({
               </div>
               <div className="flex-col pl-3 pt-2">
                 <div>
-                  <span class="text-gray-500">load</span>
+                  <span className="text-gray-500">ip</span>
+                  &nbsp;
+                  {
+                    state[`${node}:cpu`].node_ip
+                  }
+                </div>
+              </div>
+              <div className="flex-col pl-3 pt-2">
+                <div>
+                  <span className="text-gray-500">load</span>
                   &nbsp;
                   {
                     state[`${node}:cpu`].device_cpu_load_000
