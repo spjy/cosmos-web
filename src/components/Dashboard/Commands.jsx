@@ -165,6 +165,8 @@ const Commands = React.memo(() => {
       setCommandArguments(args.join(' '));
 
       setAutocompletions([]);
+
+      setUpdateLog(true);
     }
   }, [autocompletions]);
 
