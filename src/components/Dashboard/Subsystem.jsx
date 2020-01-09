@@ -2,12 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { Badge, Icon } from 'antd';
+import DisplayValue from './DisplayValue';
+import Content from './Content';
 
 function Subsystem({
   name,
 }) {
   return (
-    <div
+    <Content
+      movable
       className="flex-col p-4"
     >
       <div className="flex">
@@ -15,7 +18,7 @@ function Subsystem({
           <div>
             <Badge status="success" />
             <span className="text-lg font-bold">
-              mongo
+              eps
             </span>
           </div>
           <div className="flex-col pl-3 pt-2">
@@ -34,7 +37,23 @@ function Subsystem({
           </div>
         </div>
       </div>
-    </div>
+      <div className="flex m-1">
+        <div
+          className="w-1/2 mr-2"
+        >
+          <DisplayValue
+            name="Temperature"
+          />
+        </div>
+        <div
+          className="w-1/2"
+        >
+          <DisplayValue
+            name="Voltages and Currents"
+          />
+        </div>
+      </div>
+    </Content>
   );
 }
 
