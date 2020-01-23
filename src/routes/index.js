@@ -16,7 +16,7 @@ const routes = [
     name: 'CEO',
     icon: 'apartment',
     path: '/ceo',
-    component: CEO
+    component: CEO,
   },
   {
     name: 'Satellites',
@@ -679,6 +679,46 @@ const routes = [
               h: 18,
               component: {
                 name: 'Chart',
+                props: {
+                  name: 'Battery Health',
+                  plots: [
+                    {
+                      x: [],
+                      y: [],
+                      type: 'scatter',
+                      marker: {
+                        color: 'red',
+                      },
+                      name: 'Battery Percentage',
+                      YDataKey: 'device_batt_percentage_000',
+                      nodeProcess: 'neutron1:eps',
+                      live: true,
+                    },
+                    {
+                      x: [],
+                      y: [],
+                      type: 'scatter',
+                      mode: 'marker',
+                      marker: {
+                        color: 'blue',
+                      },
+                      name: 'Charge',
+                      YDataKey: 'device_batt_charge_000',
+                      nodeProcess: 'neutron1:eps',
+                      live: true,
+                    },
+                  ],
+                },
+              },
+            },
+            {
+              i: 'satellite-neutron1-k',
+              x: 0,
+              y: 7,
+              w: 12,
+              h: 10,
+              component: {
+                name: 'Events',
                 props: {
                   name: 'Battery Health',
                   plots: [
