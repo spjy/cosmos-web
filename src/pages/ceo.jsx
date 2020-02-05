@@ -91,8 +91,14 @@ function Dashboard({
     <Context.Provider value={{ state, dispatch }}>
       <div className="mt-5 mx-16 mb-16">
         {
+          nodes.length === 0 ? 'Searching for nodes...' : null
+        }
+        {
           nodes.map(node => (
-            <div className="inline-block shadow overflow-y-auto p-4 m-1 bg-white">
+            <div
+              className="inline-block shadow overflow-y-auto p-4 m-1 bg-white"
+              key={node}
+            >
               <div>
                 <Badge status="success" />
                 <span className="text-lg font-bold">
