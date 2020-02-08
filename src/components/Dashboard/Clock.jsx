@@ -62,7 +62,7 @@ function Clock({
       <table className="text-2xl">
         <tbody>
           <tr>
-            <td className="pr-4 text-gray-500">
+            <td className="pr-4 text-gray-500 text-right">
               {timezoneState.split('/')[1]}
             </td>
             <td className="pr-2">
@@ -70,7 +70,7 @@ function Clock({
             </td>
           </tr>
           <tr>
-            <td className="pr-4 text-gray-500">
+            <td className="pr-4 text-gray-500 text-right">
               UTC
             </td>
             <td className="pr-2">
