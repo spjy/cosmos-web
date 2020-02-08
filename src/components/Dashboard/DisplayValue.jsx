@@ -716,7 +716,7 @@ function DisplayValue({
           {
             displayValuesState.map(({ name: label, unit: u }, i) => (
               <tr key={label}>
-                <td className="pr-2 text-gray-500">
+                <td className="pr-2 text-gray-500 text-right">
                   {label}
                 </td>
                 <td className="pr-2">
