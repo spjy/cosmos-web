@@ -39,16 +39,16 @@ function Status() {
                 <td>
                   {<Badge status="success" />}
                 </td>
-                <td className="pr-4">
-                  {agent}
-                </td>
-                <td className="text-gray-500">
+                <td className="text-gray-500 pr-2">
                   {utc}
                   {/* {
                     moment
                       .unix((((utc + 2400000.5) - 2440587.5) * 86400.0))
                       .format('YYYY-MM-DD HH:mm:ss')
                   } */}
+                </td>
+                <td>
+                  {agent}
                 </td>
               </tr>
             ))
