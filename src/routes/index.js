@@ -1,9 +1,10 @@
 import moment from 'moment-timezone';
 
-import Home from '../pages/Home';
-import CEO from '../pages/ceo';
+import CEO from '../pages/CEO';
 import Dashboard from '../pages/Dashboard';
 import DashboardManager from '../pages/DashboardManager';
+import Home from '../pages/Home';
+import Scheduler from '../pages/Scheduler';
 
 const routes = [
   {
@@ -17,6 +18,12 @@ const routes = [
     icon: 'apartment',
     path: '/ceo',
     component: CEO,
+  },
+  {
+    name: 'Scheduler',
+    icon: 'calendar',
+    path: '/scheduler',
+    component: Scheduler,
   },
   {
     name: 'Satellites',
