@@ -125,7 +125,7 @@ function Dashboard({
     <Context.Provider value={{ state, dispatch }}>
       <div className="mt-5 mx-16 mb-16">
         <div className="flex">
-          <div className="w-1/2 ml-3 shadow overflow-y-auto" style={{ backgroundColor: '#fbfbfb' }}>
+          <div className="w-1/2 ml-3 shadow overflow-y-auto rounded" style={{ backgroundColor: '#fbfbfb' }}>
             <Content
               name="Layout Selection"
               movable={false}
@@ -136,7 +136,7 @@ function Dashboard({
               />
             </Content>
           </div>
-          <div className="w-1/2 ml-3 shadow overflow-y-auto" style={{ backgroundColor: '#fbfbfb' }}>
+          <div className="w-1/2 ml-3 shadow overflow-y-auto rounded" style={{ backgroundColor: '#fbfbfb' }}>
             <Content
               // showStatus
               // status={socketStatus}
@@ -183,7 +183,7 @@ function Dashboard({
               ? layouts.lg
                 .filter(layout => layout && layout.i && layout.component && layout.component.name)
                 .map(layout => (
-                  <div key={layout.i} className="shadow overflow-y-auto" style={{ backgroundColor: '#fbfbfb' }}>
+                  <div key={layout.i} className="shadow overflow-y-auto rounded" style={{ backgroundColor: '#fbfbfb' }}>
                     <AsyncComponent
                       component={layout.component.name}
                       props={layout.component.props}

@@ -44,7 +44,7 @@ function BaseComponent({
         {formItems}
       </ComponentSettings>
 
-      <div className={`sticky top-0 z-50 flex justify-between p-3 dragHandle ${movable ? 'cursor-move' : ''}`} style={{ backgroundColor: '#eaeaea' }}>
+      <div className={`sticky top-0 z-50 flex justify-between px-3 py-2 dragHandle ${movable ? 'cursor-move' : ''}`}>
         <div className="flex flex-row flex-shrink-0">
           {showStatus ? (
             <div style={{ marginTop: '0.2em' }}>
@@ -53,7 +53,7 @@ function BaseComponent({
           ) : null}
 
           <div>
-            <div className="font-bold text-lg mr-4">
+            <div className="font-bold text-base">
               {name}
             </div>
 
@@ -89,7 +89,7 @@ function BaseComponent({
         </div>
       </div>
 
-      <div className="p-4 overflow-y-scroll h-full">
+      <div className="px-4 py-1 overflow-y-scroll h-full">
         {children}
       </div>
     </div>
