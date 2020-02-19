@@ -25,6 +25,7 @@ function Status() {
   return (
     <Content
       name="Agent List"
+      movable
     >
       {
         list.length === 0 ? 'No agents.' : null
