@@ -15,6 +15,7 @@ import socket from '../socket';
 // eslint-disable-next-line
 import routes from '../routes';
 
+import Events from '../components/Dashboard/Events';
 import AsyncComponent from '../components/AsyncComponent';
 import LayoutSelector from '../components/LayoutSelector';
 import Content from '../components/Dashboard/Content';
@@ -89,6 +90,7 @@ function Dashboard({
 
   return (
     <Context.Provider value={{ state, dispatch }}>
+      <Events />
       <div className="mt-5 mx-16 mb-16">
         Scheduler
       </div>
