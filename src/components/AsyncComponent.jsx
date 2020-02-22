@@ -12,6 +12,7 @@ import Events from './Dashboard/Events';
 import Globe from './Dashboard/Globe';
 import Macro from './Dashboard/Macro';
 import MASDRCommands from './Dashboard/MASDRCommands';
+import Replacement from './Dashboard/Replacement';
 import SatellitePasses from './Dashboard/SatellitePasses';
 import SetValues from './Dashboard/SetValues';
 import Sequence from './Dashboard/Sequence';
@@ -33,6 +34,7 @@ const components = {
   Globe,
   Macro,
   MASDRCommands,
+  Replacement,
   SatellitePasses,
   SetValues,
   Sequence,

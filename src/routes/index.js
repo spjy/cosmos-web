@@ -434,7 +434,7 @@ const routes = [
               w: 4,
               h: 7,
               component: {
-                name: 'Clock',
+                name: 'Replacement',
               },
             },
             {
@@ -1262,7 +1262,7 @@ const routes = [
               w: 6,
               h: 6,
               component: {
-                name: 'Clock',
+                name: 'Replacement',
               },
             },
             {
