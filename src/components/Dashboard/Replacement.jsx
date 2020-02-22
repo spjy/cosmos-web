@@ -17,9 +17,8 @@ function Status() {
 
   /** Upon the state.list updating, update the store's list */
   useEffect(() => {
-    console.log(state);
     if (state.file_list) {
-      setList(state.file_list.output.incoming);
+      setList(state.file_list.output.outgoing);
     }
   }, [state.file_list]);
 
