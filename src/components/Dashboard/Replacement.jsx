@@ -3,7 +3,7 @@ import { Badge } from 'antd';
 // import moment from 'moment-timezone';
 
 import { Context } from '../../store/neutron1';
-import Content from './Content';
+import BaseComponent from '../BaseComponent';
 
 /**
  * Retrieves the agent list and displays it in a table.
@@ -23,40 +23,41 @@ function Status() {
   }, [state.file_list]);
 
   return (
-    <Content
+    <BaseComponent
       name="Radio"
       movable
     >
       {
         list.length === 0 ? 'No files.' : null
       }
-      <table> 
-        <tbody> 
-          {       
+      <table>
+        <tbody>
+          {
             list.map(({
-              node, count, files
-            }) => (
-		count > 0 ?
-		files.map(({
-		  name, bytes, size
-		}, i) => (
-		      <tr key={node + i}>
-			<td>    
-			  {<Badge status={bytes / size < 1 ? "processing" : "success"} />}
-			</td>   
-			<td className="text-gray-500 pr-1">
-			  {Math.round(bytes / size * 100) / 100}%
-			</td>   
-			<td> 
-			  {name}
-			</td>   
-		      </tr>   
-		)) : null
-            ))      
-          }       
+              node, count, files,
+            }, i) => (
+              count > 0
+                ? files.map(({
+                  name, bytes, size,
+                }) => (
+                  <tr key={node + name + i}>
+                    <td>
+                      <Badge status={bytes / size < 1 ? 'processing' : 'success'} />
+                    </td>
+                    <td className="text-gray-500 pr-1">
+                      {Math.round(bytes / size * 100) / 100}
+                      %
+                    </td>
+                    <td>
+                      {name}
+                    </td>
+                  </tr>
+                )) : null
+            ))
+          }
         </tbody>
       </table>
-    </Content>
+    </BaseComponent>
   );
 }
 
