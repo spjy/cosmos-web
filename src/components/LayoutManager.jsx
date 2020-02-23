@@ -492,7 +492,7 @@ function LayoutManager() {
               ? layoutObject.lg
                 .filter(layout => layout && layout.i && layout.component && layout.component.name)
                 .map(layout => (
-                  <div key={layout.i} className="shadow overflow-x-auto" style={{ backgroundColor: '#fbfbfb' }}>
+                  <div key={layout.i} className="shadow overflow-x-auto component-color">
                     <AsyncComponent
                       component={layout.component.name}
                       props={layout.component.props}

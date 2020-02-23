@@ -9,7 +9,7 @@ function LayoutCard({
   children,
 }) {
   return (
-    <div className={`${flex} p-3 shadow overflow-x-auto`} style={{ backgroundColor: '#fbfbfb' }}>
+    <div className={`${flex} p-3 shadow overflow-x-auto component-color`}>
       {children}
     </div>
   );
