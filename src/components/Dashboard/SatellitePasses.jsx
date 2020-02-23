@@ -13,6 +13,7 @@ function SatellitePasses({
   return (
     <BaseComponent
       name="Satellite Passes"
+      height={height}
     >
       <Table
         columns={[

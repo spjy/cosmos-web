@@ -102,6 +102,7 @@ function UploadFile({
     <BaseComponent
       name="Upload"
       movable
+      height={height}
     >
       <Upload.Dragger
         fileList={files}

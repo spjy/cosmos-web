@@ -19,7 +19,7 @@ const { TextArea } = Input;
 function DisplayValue({
   name,
   displayValues,
-  height
+  height,
 }) {
   /** Accessing the neutron1 messages from the socket */
   const { state } = useContext(Context);

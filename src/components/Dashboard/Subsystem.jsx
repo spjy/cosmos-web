@@ -13,6 +13,7 @@ function Subsystem({
     <BaseComponent
       movable
       className="flex-col p-4"
+      height={height}
     >
       <div className="flex">
         <div className="flex-col shadow overflow-y-auto p-4 m-1 bg-white w-full lg:w-1/4">

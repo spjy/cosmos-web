@@ -12,17 +12,18 @@ import BaseComponent from '../BaseComponent';
  * Retrieves data from a web socket. Displays an event along with the timestamp in a table.
  */
 function Activity({
-  height
+  height,
 }) {
   /** Get agent list state from the Context */
   const { state } = useContext(Context);
   /** Component's agent list storage */
   const [activity, setActivity] = useState([]);
-
+  /** Packets currently sent in this session */
   const [packets, setPackets] = useState('');
-
+  /** Option to export packets */
   const [exportPackets, setExportPackets] = useState(null);
 
+  /** Handle the packet saving */
   useEffect(() => {
     if (exportPackets !== null) {
       setPackets('');
