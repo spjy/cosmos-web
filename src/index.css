@@ -7,3 +7,25 @@
 #scene {
   width: 100%;
 }
+
+/* width */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #fbfbfb;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #fc9d9d;
+  border-radius: 25px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #ea728c;
+}
