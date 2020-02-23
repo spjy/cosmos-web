@@ -81,7 +81,7 @@ function CesiumGlobe({
   /** Storage for the current orbits being displayed */
   const [orbitsState, setOrbitsState] = useState(orbits);
   /** GeoJson objects */
-  const [overlaysState, setOverlaysState] = useState(overlays);
+  const [overlaysState] = useState(overlays);
   /** Store to retrieve orbit history by request from Mongo */
   const [retrieveOrbitHistory, setRetrieveOrbitHistory] = useState(null);
   /** Clock start time */
@@ -325,7 +325,7 @@ function CesiumGlobe({
                   key={`${orbit.nodeProcess}${orbit.dataKey}`}
                   extra={(
                     <div
-                      onClick={event => event.stopPropagation()}
+                      onClick={(event) => event.stopPropagation()}
                       onKeyDown={() => {}}
                       role="button"
                       tabIndex={-1}
@@ -374,7 +374,7 @@ function CesiumGlobe({
                       showTime
                       format="YYYY-MM-DD HH:mm:ss"
                       disabled={form[i] && form[i].live}
-                      onChange={m => setForm({
+                      onChange={(m) => setForm({
                         ...form,
                         [i]: {
                           ...form[i],
@@ -497,7 +497,7 @@ function CesiumGlobe({
                 checkedChildren="Live"
                 unCheckedChildren="Past"
                 defaultChecked
-                onChange={checked => setForm({
+                onChange={(checked) => setForm({
                   ...form,
                   newOrbit: {
                     ...form.newOrbit,
@@ -520,7 +520,7 @@ function CesiumGlobe({
                   showTime
                   format="YYYY-MM-DD HH:mm:ss"
                   disabled={form.newOrbit.live}
-                  onChange={m => setForm({
+                  onChange={(m) => setForm({
                     ...form,
                     newOrbit: {
                       ...form.newOrbit,
@@ -656,7 +656,7 @@ function CesiumGlobe({
                     name: form.newOrbit.name.value,
                     nodeProcess: form.newOrbit.nodeProcess.value,
                     modelFileName: form.newOrbit.modelFileName.value === '' ? form.newOrbit.modelFileName.value : 'cubesat1.glb',
-                    processDataKey: form.newOrbit.processDataKey && form.newOrbit.processDataKey.value && (form.newOrbit.processDataKey.value.includes('return') || form.newOrbit.processDataKey.value.includes('=>')) ? form.newOrbit.processDataKey.value : x => x,
+                    processDataKey: form.newOrbit.processDataKey && form.newOrbit.processDataKey.value && (form.newOrbit.processDataKey.value.includes('return') || form.newOrbit.processDataKey.value.includes('=>')) ? form.newOrbit.processDataKey.value : (x) => x,
                     live: form.newOrbit.live,
                     position: [21.289373, 157.917480, 350000.0],
                     orientation: {
@@ -689,7 +689,7 @@ function CesiumGlobe({
       <Viewer
         fullscreenButton={false}
       >
-        {overlaysState.map(overlay => (
+        {overlaysState.map((overlay) => (
           <GeoJsonDataSource
             data={overlay.geoJson}
             fill={Cesium.Color.fromAlpha(Cesium.Color[overlay.color ? overlay.color.toUpperCase() : 'BLACK'], 0.2)}
@@ -771,7 +771,7 @@ function CesiumGlobe({
               <td className="p-2 pr-8">Altitude (m)</td>
             </tr>
             {
-            orbitsState.map(orbit => (
+            orbitsState.map((orbit) => (
               <tr className="text-gray-700 border-b border-gray-400" key={orbit.name}>
                 <td className="p-2 pr-8">{orbit.name}</td>
                 <td className="p-2 pr-8">{orbit.position[0]}</td>

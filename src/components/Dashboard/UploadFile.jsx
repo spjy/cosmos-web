@@ -24,7 +24,7 @@ function UploadFile({
   const [fileContentUpload, setFileContentUpload] = useState(null);
 
   /** File reader to get contents of uploaded file */
-  const getFileContents = file => new Promise((resolve, reject) => {
+  const getFileContents = (file) => new Promise((resolve, reject) => {
     const reader = new FileReader();
 
     reader.onload = () => {
@@ -39,7 +39,7 @@ function UploadFile({
   /** See if file was read successfully */
   const checkUpload = (request) => {
     setTimeout(() => {
-      if (files.filter(file => (file.uid === request.file.uid))) {
+      if (files.filter((file) => (file.uid === request.file.uid))) {
         request.onSuccess(null, request.file);
       } else {
         checkUpload(request);
@@ -109,7 +109,7 @@ function UploadFile({
         onChange={(file) => {
           setFiles([...file.fileList]);
         }}
-        customRequest={request => checkUpload(request)}
+        customRequest={(request) => checkUpload(request)}
       >
         <Icon type="upload" />
         &nbsp;

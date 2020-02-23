@@ -74,7 +74,7 @@ function BaseComponent({
                 checkedChildren="Live"
                 unCheckedChildren="Past"
                 defaultChecked
-                onChange={checked => handleLiveSwitchChange(checked)}
+                onChange={(checked) => handleLiveSwitchChange(checked)}
               />
               &nbsp;
               &nbsp;

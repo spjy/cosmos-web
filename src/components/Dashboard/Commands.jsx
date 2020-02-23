@@ -223,7 +223,7 @@ const Commands = React.memo(({
         <div className="w-full py-2">
           <Search
             placeholder="Select node:process"
-            onSearch={value => setSelectedAgent(value.split(':'))}
+            onSearch={(value) => setSelectedAgent(value.split(':'))}
             enterButton={<Icon type="select" />}
           />
         </div>
@@ -240,7 +240,7 @@ const Commands = React.memo(({
           autocompletions.length > 1 ? <Icon onClick={() => setAutocompletions([])} className="text-red-500" type="close" /> : ''
         }
         {
-          autocompletions.map(autocompletion => (
+          autocompletions.map((autocompletion) => (
             <span
               tabIndex={0}
               role="link"
@@ -271,7 +271,7 @@ const Commands = React.memo(({
               className="w-auto"
               defaultValue="> agent"
               dropdownMatchSelectWidth={false}
-              onChange={value => setSelectedRequest(value)}
+              onChange={(value) => setSelectedRequest(value)}
               value={selectedRequest}
               style={{ minWidth: '5em' }}
             >
@@ -281,7 +281,7 @@ const Commands = React.memo(({
                 </Tooltip>
               </Select.Option>
               {
-                sortedAgentRequests.map(token => (
+                sortedAgentRequests.map((token) => (
                   <Select.Option value={token} key={token}>
                     <Tooltip placement="right" title={`${agentRequests[token] && agentRequests[token].synopsis ? `${agentRequests[token].synopsis} ` : ''}${agentRequests[token].description}`}>
                       { token }

@@ -199,7 +199,7 @@ function LayoutManager() {
   useEffect(() => {
     // Get keys from routes configuration file and extract ones with `:id`
     const keys = routes
-      .filter(route => route.path.split('/')[2] === ':id')
+      .filter((route) => route.path.split('/')[2] === ':id')
       .map(({ path }) => {
         const [, route] = path.split('/');
 
@@ -247,7 +247,7 @@ function LayoutManager() {
                   tempData[key].configuration = value;
                   setData(tempData);
                 }}
-                highlight={code => highlight(code, languages.json)}
+                highlight={(code) => highlight(code, languages.json)}
                 padding={10}
               />
             </pre>
@@ -280,7 +280,7 @@ function LayoutManager() {
                 changed: false,
               },
             })}
-            onChange={value => setForm({
+            onChange={(value) => setForm({
               ...form,
               route: {
                 ...form.route,
@@ -299,7 +299,7 @@ function LayoutManager() {
             }}
           >
             {
-              routeKeys.map(route => (
+              routeKeys.map((route) => (
                 <Select.Option
                   value={route}
                   key={route}
@@ -405,6 +405,7 @@ function LayoutManager() {
                     <br />
                     <pre
                       className="language-json"
+                      // eslint-disable-next-line react/no-danger
                       dangerouslySetInnerHTML={{
                         __html: highlight(
                           '[\n  {\n    "i": "dashboardName-a",\n    "x": 0,\n    "y": 0,\n    "w": 4,\n    "h": 7,\n    "component": {\n      "name": "Status",\n      "props": {\n        "name": "Ok"\n      }\n    }\n  }\n]',
@@ -427,8 +428,8 @@ function LayoutManager() {
             <Editor
               className="font-mono"
               value={layoutObjectForm}
-              onValueChange={value => setLayoutObjectForm(value)}
-              highlight={code => highlight(code, languages.json)}
+              onValueChange={(value) => setLayoutObjectForm(value)}
+              highlight={(code) => highlight(code, languages.json)}
               padding={10}
             />
           </pre>
@@ -490,8 +491,8 @@ function LayoutManager() {
             layoutObject !== null
               && layoutObject.lg !== null
               ? layoutObject.lg
-                .filter(layout => layout && layout.i && layout.component && layout.component.name)
-                .map(layout => (
+                .filter((layout) => layout && layout.i && layout.component && layout.component.name)
+                .map((layout) => (
                   <div key={layout.i} className="shadow overflow-x-auto component-color">
                     <AsyncComponent
                       component={layout.component.name}

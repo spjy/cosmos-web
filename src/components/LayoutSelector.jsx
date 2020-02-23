@@ -72,7 +72,7 @@ function LayoutSelector({
             changed: false,
           },
         })}
-        onChange={value => setForm({
+        onChange={(value) => setForm({
           ...form,
           layout: {
             ...form.layout,
@@ -102,7 +102,7 @@ function LayoutSelector({
           label="User Defined"
         >
           {
-            Object.keys(layouts).map(layout => (
+            Object.keys(layouts).map((layout) => (
               <Select.Option key={layout} value={layout}>{layout}</Select.Option>
             ))
           }

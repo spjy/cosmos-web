@@ -136,7 +136,7 @@ function Dashboard({
             >
               <LayoutSelector
                 path={path}
-                selectLayout={value => selectLayout(value)}
+                selectLayout={(value) => selectLayout(value)}
               />
             </BaseComponent>
           </div>
@@ -183,7 +183,7 @@ function Dashboard({
             layouts !== null
               && layouts.lg !== null
               ? layouts.lg
-                .filter(layout => layout && layout.i && layout.component && layout.component.name)
+                .filter((layout) => layout && layout.i && layout.component && layout.component.name)
                 .map((layout, i) => (
                   <div
                     className="shadow overflow-hidden rounded component-color"

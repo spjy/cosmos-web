@@ -87,7 +87,7 @@ function Sequence({
     >
       <div className="flex">
         {
-          sequences.map(sequence => (
+          sequences.map((sequence) => (
             <div
               className="m-1"
               key={sequence.button}
@@ -104,7 +104,7 @@ function Sequence({
                   content={(
                     <div className="font-mono">
                       {
-                        sequence.sequence.map(s => (
+                        sequence.sequence.map((s) => (
                           <div>
                             ➜ agent&nbsp;
                             {s}

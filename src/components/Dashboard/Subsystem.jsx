@@ -11,6 +11,7 @@ function Subsystem({
 }) {
   return (
     <BaseComponent
+      name={name}
       movable
       className="flex-col p-4"
       height={height}

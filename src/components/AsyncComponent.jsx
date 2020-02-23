@@ -49,6 +49,7 @@ function AsyncComponent({ component, props, height }) {
   // Dynamically choose the component to render based on the component prop being passed in
   const Component = components[component];
 
+  // eslint-disable-next-line react/jsx-props-no-spreading
   return <Component {...props} height={height} />;
 }
 

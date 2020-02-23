@@ -691,7 +691,7 @@ function DisplayValue({
                     name: form.newChart.name && form.newChart.name.value ? form.newChart.name.value : '',
                     nodeProcess: form.newChart.nodeProcess.value,
                     dataKey: form.newChart.dataKey.value,
-                    processDataKey: form.newChart.processDataKey && form.newChart.processDataKey.value && (form.newChart.processDataKey.value.includes('return') || form.newChart.processDataKey.value.includes('=>')) ? form.newChart.processDataKey.value : x => x,
+                    processDataKey: form.newChart.processDataKey && form.newChart.processDataKey.value && (form.newChart.processDataKey.value.includes('return') || form.newChart.processDataKey.value.includes('=>')) ? form.newChart.processDataKey.value : (x) => x,
                     unit: form.newChart.unit && form.newChart.unit.value ? form.newChart.unit.value : '',
                   });
 

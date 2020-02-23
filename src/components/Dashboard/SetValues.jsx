@@ -123,7 +123,7 @@ function SetValues({
     components.onopen = () => {
       // Send request for the values
       components.send(`${process.env.COSMOS_BIN}/agent ${node} ${proc} ${selectedComponent === 'USRP_UHD_Device' || selectedComponent === 'USRP_Device_Tx' || selectedComponent === 'USRP_Device_Rx' ? 'device_properties' : 'app_component'} ${state.macro && !(selectedComponent === 'USRP_UHD_Device' || selectedComponent === 'USRP_Device_Tx' || selectedComponent === 'USRP_Device_Rx') ? `${state.macro} ` : ''}${selectedComponent}`);
-      
+
       // Update the values on return of output
       components.onmessage = ({ data }) => {
         try {
@@ -171,7 +171,7 @@ function SetValues({
       showStatus={showStatus}
       status={status}
       formItems={formItems}
-      handleLiveSwitchChange={checked => setLiveSwitch(checked)}
+      handleLiveSwitchChange={(checked) => setLiveSwitch(checked)}
       height={height}
     >
       Doppler On / Doppler Off
@@ -179,7 +179,7 @@ function SetValues({
         className="ml-2 mr-2"
         checkedChildren="1"
         unCheckedChildren="0"
-        onChange={checked => checked ? setDopplerSwitch(1) : setDopplerSwitch(0)}
+        onChange={(checked) => (checked ? setDopplerSwitch(1) : setDopplerSwitch(0))}
       />
       <br />
       <br />
@@ -214,7 +214,7 @@ function SetValues({
                       style={{ minWidth: '5em' }}
                     >
                       {
-                        Object.keys(values).map(value => (
+                        Object.keys(values).map((value) => (
                           <Select.Option
                             key={value}
                             value={value}
@@ -229,11 +229,11 @@ function SetValues({
                       showSearch
                       value={selectedProperty}
                       dropdownMatchSelectWidth={false}
-                      onChange={value => setSelectedProperty(value)}
+                      onChange={(value) => setSelectedProperty(value)}
                       style={{ minWidth: '5em' }}
                     >
                       {
-                        values[selectedComponent].map(property => (
+                        values[selectedComponent].map((property) => (
                           <Select.Option
                             key={property}
                             value={property}
@@ -283,7 +283,7 @@ function SetValues({
                 <>
                   {
                     type === 'sequence'
-                      ? value.map(val => (
+                      ? value.map((val) => (
                         <tr key={`${id}${val.id}`}>
                           <td className="pr-2">
                             {id}

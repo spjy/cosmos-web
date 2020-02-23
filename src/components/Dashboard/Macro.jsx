@@ -82,7 +82,7 @@ function Macro({
             None
           </Select.Option>
           {
-            macros.map(name => (
+            macros.map((name) => (
               <Select.Option
                 key={name}
                 value={name}

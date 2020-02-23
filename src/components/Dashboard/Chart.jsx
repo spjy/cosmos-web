@@ -199,7 +199,7 @@ function Chart({
             plotsState.length > 0 ? <Divider type="vertical" /> : null
           }
           {
-            plotsState.map(plot => (
+            plotsState.map((plot) => (
               <span key={`${plot.nodeProcess}${plot.YDataKey}`}>
                 <span
                   className="inline-block rounded-full mr-2 indicator"
@@ -285,7 +285,7 @@ function Chart({
                   changed: false,
                 },
               })}
-              onChange={value => setForm({
+              onChange={(value) => setForm({
                 ...form,
                 YRangeMin: {
                   ...form.YRangeMin,
@@ -396,7 +396,7 @@ function Chart({
                       // eslint-disable-next-line
                       plotsState[i].x = plotsState[i]
                         .x
-                        .map(x => processXDataKeyState.func(x));
+                        .map((x) => processXDataKeyState.func(x));
 
                       layout.datarevision += 1;
                       setDataRevision(dataRevision + 1);
@@ -444,7 +444,7 @@ function Chart({
                   changed: false,
                 },
               })}
-              onChange={value => setForm({
+              onChange={(value) => setForm({
                 ...form,
                 YRangeMin: {
                   ...form.YRangeMin,
@@ -488,7 +488,7 @@ function Chart({
                   changed: false,
                 },
               })}
-              onChange={value => setForm({
+              onChange={(value) => setForm({
                 ...form,
                 YRangeMax: {
                   ...form.YRangeMax,
@@ -562,7 +562,7 @@ function Chart({
                   changed: false,
                 },
               })}
-              onChange={value => setForm({
+              onChange={(value) => setForm({
                 ...form,
                 XRangeMin: {
                   ...form.XRangeMin,
@@ -606,7 +606,7 @@ function Chart({
                   changed: false,
                 },
               })}
-              onChange={value => setForm({
+              onChange={(value) => setForm({
                 ...form,
                 XRangeMax: {
                   ...form.XRangeMax,
@@ -692,7 +692,7 @@ function Chart({
                   key={`${plot.nodeProcess}${plot.YDataKey}`}
                   extra={(
                     <div
-                      onClick={event => event.stopPropagation()}
+                      onClick={(event) => event.stopPropagation()}
                       onKeyDown={() => {}}
                       role="button"
                       tabIndex={0}
@@ -742,7 +742,7 @@ function Chart({
                       showTime
                       format="YYYY-MM-DD HH:mm:ss"
                       disabled={form[i] && form[i].live}
-                      onChange={moment => setForm({
+                      onChange={(moment) => setForm({
                         ...form,
                         [i]: {
                           ...form[i],
@@ -1008,8 +1008,7 @@ function Chart({
                     key="processYDataKey"
                     hasFeedback={form[i]
                       && form[i].processYDataKey
-                      && form[i].processYDataKey.touched
-                    }
+                      && form[i].processYDataKey.touched}
                     validateStatus={form[i] && form[i].processYDataKey && form[i].processYDataKey.changed ? 'success' : ''}
                     help={form[i] && form[i].processYDataKey && form[i].processYDataKey.help ? form[i].processYDataKey.help : 'Define the function body (in JavaScript) here to process the variable "x".'}
                   >
@@ -1048,7 +1047,7 @@ function Chart({
                           if (plotsState[i].y.length > 0) {
                             plotsState[i].y = plotsState[i]
                               .y
-                              .map(y => plotsState[i].processYDataKey(y));
+                              .map((y) => plotsState[i].processYDataKey(y));
 
                             layout.datarevision += 1;
                             setDataRevision(dataRevision + 1);
@@ -1138,7 +1137,7 @@ function Chart({
                 checkedChildren="Live"
                 unCheckedChildren="Past"
                 defaultChecked
-                onChange={checked => setForm({
+                onChange={(checked) => setForm({
                   ...form,
                   newValue: {
                     ...form.newValue,
@@ -1161,7 +1160,7 @@ function Chart({
                   showTime
                   format="YYYY-MM-DD HH:mm:ss"
                   disabled={form.newValue.live}
-                  onChange={moment => setForm({
+                  onChange={(moment) => setForm({
                     ...form,
                     newValue: {
                       ...form.newValue,
@@ -1242,7 +1241,7 @@ function Chart({
                       },
                     },
                   })}
-                  onChange={value => setForm({
+                  onChange={(value) => setForm({
                     ...form,
                     newValue: {
                       ...form.newValue,
@@ -1314,7 +1313,7 @@ function Chart({
                       },
                     },
                   })}
-                  onChange={value => setForm({
+                  onChange={(value) => setForm({
                     ...form,
                     newValue: {
                       ...form.newValue,
@@ -1592,7 +1591,7 @@ function Chart({
                       ? form.newValue.chartMode.value : null,
                     name: form.newValue.name && form.newValue.name.value ? form.newValue.name.value : '',
                     YDataKey: form.newValue.YDataKey.value,
-                    processYDataKey: form.newValue.processYDataKey && form.newValue.processYDataKey.value.includes('return') ? form.newValue.processYDataKey.value : x => x,
+                    processYDataKey: form.newValue.processYDataKey && form.newValue.processYDataKey.value.includes('return') ? form.newValue.processYDataKey.value : (x) => x,
                     nodeProcess: form.newValue.nodeProcess.value,
                   });
 
@@ -1686,7 +1685,7 @@ Chart.defaultProps = {
   polar: false,
   plots: [],
   XDataKey: null,
-  processXDataKey: x => x,
+  processXDataKey: (x) => x,
   children: null,
 };
 

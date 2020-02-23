@@ -50,7 +50,7 @@ function Status({
                       <Badge status={bytes / size < 1 ? 'processing' : 'success'} />
                     </td>
                     <td className="text-gray-500 pr-1">
-                      {Math.round(bytes / size * 100) / 100}
+                      {Math.round((bytes / size) * 100) / 100}
                       %
                     </td>
                     <td>
@@ -68,6 +68,6 @@ function Status({
 
 Status.propTypes = {
   height: PropTypes.number.isRequired,
-}
+};
 
 export default Status;

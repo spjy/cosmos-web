@@ -300,7 +300,7 @@ const Commands = React.memo(({
         </div> */}
         <div className="w-full py-2">
           {
-            buttons.map(button => (
+            buttons.map((button) => (
               <Button
                 key={button}
                 className="m-1"
@@ -332,7 +332,7 @@ const Commands = React.memo(({
           autocompletions.length > 1 ? <Icon onClick={() => setAutocompletions([])} className="text-red-500" type="close" /> : ''
         }
         {
-          autocompletions.map(autocompletion => (
+          autocompletions.map((autocompletion) => (
             <span
               tabIndex={0}
               role="link"
@@ -363,7 +363,7 @@ const Commands = React.memo(({
               className="w-auto"
               defaultValue="> agent"
               dropdownMatchSelectWidth={false}
-              onChange={value => setSelectedRequest(value)}
+              onChange={(value) => setSelectedRequest(value)}
               style={{ minWidth: '5em' }}
             >
               <Select.Option value="> agent">
@@ -373,7 +373,7 @@ const Commands = React.memo(({
               </Select.Option>
 
               {
-                commands.map(token => (
+                commands.map((token) => (
                   <Select.Option
                     value={token.name}
                     key={token.name}

@@ -68,7 +68,7 @@ function Activity({
           </Form>
           <pre
             className="language-json"
-            // eslint-disable-next-line
+            // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{
               __html: highlight(
                 packets,
