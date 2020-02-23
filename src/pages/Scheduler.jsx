@@ -1,9 +1,5 @@
 import React, { useState, useEffect, useReducer } from 'react';
-import PropTypes from 'prop-types';
-import {
-  message, Typography, Icon, Badge,
-} from 'antd';
-import { Responsive, WidthProvider } from 'react-grid-layout';
+// import PropTypes from 'prop-types';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
@@ -16,17 +12,8 @@ import socket from '../socket';
 import routes from '../routes';
 
 import Events from '../components/Dashboard/Events';
-import AsyncComponent from '../components/AsyncComponent';
-import LayoutSelector from '../components/LayoutSelector';
-import Content from '../components/Dashboard/Content';
 
-const ResponsiveGridLayout = WidthProvider(Responsive);
-
-function Dashboard({
-  id,
-  defaultLayout,
-  path,
-}) {
+function Scheduler() {
   /**
    * Store the agent statuses in the global store.
    */
@@ -98,10 +85,6 @@ function Dashboard({
   );
 }
 
-Dashboard.propTypes = {
-  id: PropTypes.string.isRequired,
-  path: PropTypes.string.isRequired,
-  defaultLayout: PropTypes.shape({}).isRequired,
-};
+Scheduler.propTypes = {};
 
-export default Dashboard;
+export default Scheduler;
