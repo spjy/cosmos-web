@@ -6,7 +6,6 @@ import Worldview, {
 
 import model from '../../public/cubesat.glb';
 
-import Content from './Content';
 import { Context } from '../../store/neutron1';
 
 /**

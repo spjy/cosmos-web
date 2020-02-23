@@ -3,7 +3,7 @@ import { Badge } from 'antd';
 // import moment from 'moment-timezone';
 
 import { Context } from '../../store/neutron1';
-import Content from './Content';
+import BaseComponent from '../BaseComponent';
 
 /**
  * Retrieves the agent list and displays it in a table.
@@ -23,7 +23,7 @@ function Status() {
   }, [state.list]);
 
   return (
-    <Content
+    <BaseComponent
       name="Agent List"
       movable
     >
@@ -56,7 +56,7 @@ function Status() {
           }
         </tbody>
       </table>
-    </Content>
+    </BaseComponent>
   );
 }
 

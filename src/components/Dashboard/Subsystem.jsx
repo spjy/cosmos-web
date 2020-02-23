@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 
 import { Badge, Icon } from 'antd';
 import DisplayValue from './DisplayValue';
-import Content from './Content';
+import BaseComponent from '../BaseComponent';
 
 function Subsystem({
   name,
 }) {
   return (
-    <Content
+    <BaseComponent
       movable
       className="flex-col p-4"
     >
@@ -53,7 +53,7 @@ function Subsystem({
           />
         </div>
       </div>
-    </Content>
+    </BaseComponent>
   );
 }
 

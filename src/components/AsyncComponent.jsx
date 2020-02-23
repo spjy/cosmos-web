@@ -6,7 +6,6 @@ import Attitude from './Dashboard/Attitude';
 import Clock from './Dashboard/Clock';
 import Chart from './Dashboard/Chart';
 import Commands from './Dashboard/Commands';
-import Content from './Dashboard/Content';
 import DisplayValue from './Dashboard/DisplayValue';
 import Events from './Dashboard/Events';
 import Globe from './Dashboard/Globe';
@@ -28,7 +27,6 @@ const components = {
   Clock,
   Chart,
   Commands,
-  Content,
   DisplayValue,
   Events,
   Globe,
@@ -47,11 +45,11 @@ const components = {
 /**
  * A wrapper component for dynamically rendering components into the layout.
  */
-function AsyncComponent({ component, props }) {
+function AsyncComponent({ component, props, height }) {
   // Dynamically choose the component to render based on the component prop being passed in
   const Component = components[component];
 
-  return <Component {...props} />;
+  return <Component {...props} height={height} />;
 }
 
 AsyncComponent.propTypes = {
@@ -59,10 +57,13 @@ AsyncComponent.propTypes = {
   component: PropTypes.string.isRequired,
   /** The props to pass into the component on render */
   props: PropTypes.shape({}),
+
+  height: PropTypes.number,
 };
 
 AsyncComponent.defaultProps = {
   props: {},
+  height: 300,
 };
 
 export default AsyncComponent;

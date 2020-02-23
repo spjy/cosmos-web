@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, {
+  useState, useEffect, useReducer, useRef,
+} from 'react';
 import PropTypes from 'prop-types';
 import { message, Typography, Icon } from 'antd';
 import { Responsive, WidthProvider } from 'react-grid-layout';
@@ -15,7 +17,7 @@ import routes from '../routes';
 
 import AsyncComponent from '../components/AsyncComponent';
 import LayoutSelector from '../components/LayoutSelector';
-import Content from '../components/Dashboard/Content';
+import BaseComponent from '../components/BaseComponent';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -44,6 +46,8 @@ function Dashboard({
   });
 
   const [socketStatus, setSocketStatus] = useState('error');
+
+  const componentRefs = useRef([]);
 
   /** Get socket data from the agent */
   useEffect(() => {
@@ -104,7 +108,7 @@ function Dashboard({
     setTimeout(() => {
       setLayouts(layout);
     }, 100);
-  }, [id, path]);
+  }, [defaultLayout, id, path]);
 
   /** Set the layout based on using the LayoutSelector function */
   const selectLayout = (layout) => {
@@ -125,8 +129,8 @@ function Dashboard({
     <Context.Provider value={{ state, dispatch }}>
       <div className="mt-5 mx-16 mb-16">
         <div className="flex">
-          <div className="w-1/2 ml-3 shadow overflow-y-auto rounded" style={{ backgroundColor: '#fbfbfb' }}>
-            <Content
+          <div className="w-1/2 shadow overflow-y-auto rounded" style={{ backgroundColor: '#fbfbfb' }}>
+            <BaseComponent
               name="Layout Selection"
               movable={false}
             >
@@ -134,10 +138,10 @@ function Dashboard({
                 path={path}
                 selectLayout={value => selectLayout(value)}
               />
-            </Content>
+            </BaseComponent>
           </div>
           <div className="w-1/2 ml-3 shadow overflow-y-auto rounded" style={{ backgroundColor: '#fbfbfb' }}>
-            <Content
+            <BaseComponent
               // showStatus
               // status={socketStatus}
               name="Socket Status"
@@ -160,7 +164,7 @@ function Dashboard({
                     )
                 }
               </Typography.Text>
-            </Content>
+            </BaseComponent>
           </div>
         </div>
         <ResponsiveGridLayout
@@ -182,11 +186,12 @@ function Dashboard({
               && layouts.lg !== null
               ? layouts.lg
                 .filter(layout => layout && layout.i && layout.component && layout.component.name)
-                .map(layout => (
-                  <div key={layout.i} className="shadow overflow-y-auto rounded" style={{ backgroundColor: '#fbfbfb' }}>
+                .map((layout, i) => (
+                  <div className="shadow overflow-y-auto rounded" ref={el => { componentRefs.current[i] = el }} key={layout.i} style={{ backgroundColor: '#fbfbfb' }}>
                     <AsyncComponent
                       component={layout.component.name}
                       props={layout.component.props}
+                      height={componentRefs && componentRefs.current[i] ? componentRefs.current[i].clientHeight : '100'}
                     />
                   </div>
                 )) : null

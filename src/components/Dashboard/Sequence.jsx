@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 
-import { Button, Popover, Icon, message } from 'antd';
+import {
+  Button, Popover, Icon, message,
+} from 'antd';
 
-import Content from './Content';
+import BaseComponent from '../BaseComponent';
 import socket from '../../socket';
 
 /**
@@ -67,7 +69,7 @@ function Sequence({
   }, [updateLog]);
 
   return (
-    <Content
+    <BaseComponent
       name="Sequence"
     >
       <div className="flex">
@@ -120,7 +122,7 @@ function Sequence({
           commandHistory.map((command, i) => (<div key={i}>{ command }</div>))
         }
       </div>
-    </Content>
+    </BaseComponent>
   );
 }
 

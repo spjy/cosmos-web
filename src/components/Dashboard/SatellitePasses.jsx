@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Content from './Content';
+import BaseComponent from '../BaseComponent';
 import Table from '../Global/Table';
 
 /**
@@ -8,7 +8,7 @@ import Table from '../Global/Table';
  */
 function SatellitePasses() {
   return (
-    <Content
+    <BaseComponent
       name="Satellite Passes"
     >
       <Table
@@ -58,7 +58,7 @@ function SatellitePasses() {
           },
         ]}
       />
-    </Content>
+    </BaseComponent>
   );
 }
 

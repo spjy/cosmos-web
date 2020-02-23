@@ -3,7 +3,7 @@ import { Select, Button } from 'antd';
 
 import { Context, actions } from '../../store/neutron1';
 import socket from '../../socket';
-import Content from './Content';
+import BaseComponent from '../BaseComponent';
 
 /**
  * Retrieves the agent list and displays it in a table.
@@ -55,7 +55,7 @@ function Macro() {
   }, [updateMacros]);
 
   return (
-    <Content
+    <BaseComponent
       name="Macros"
       movable
     >
@@ -90,7 +90,7 @@ function Macro() {
           Update Macros
         </Button>
       </div>
-    </Content>
+    </BaseComponent>
   );
 }
 

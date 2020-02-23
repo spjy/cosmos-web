@@ -1,6 +1,6 @@
 import React, { useEffect, useReducer } from 'react';
 
-import Content from '../components/Dashboard/Content';
+import BaseComponent from '../components/BaseComponent';
 // eslint-disable-next-line
 import LayoutManager from '../components/LayoutManager';
 
@@ -38,11 +38,11 @@ function DashboardManager() {
   return (
     <Context.Provider value={{ state, dispatch }}>
       <div className="m-3 shadow">
-        <Content
+        <BaseComponent
           name="Dashboard Manager"
         >
           <LayoutManager />
-        </Content>
+        </BaseComponent>
       </div>
     </Context.Provider>
   );

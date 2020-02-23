@@ -5,7 +5,7 @@ import {
 } from 'antd';
 
 import socket from '../../socket';
-import Content from './Content';
+import BaseComponent from '../BaseComponent';
 
 function UploadFile({
   node,
@@ -97,7 +97,7 @@ function UploadFile({
   }, [fileContentUpload]);
 
   return (
-    <Content
+    <BaseComponent
       name="Upload"
       movable
     >
@@ -124,7 +124,7 @@ function UploadFile({
           {buttonText}
         </Button>
       </div>
-    </Content>
+    </BaseComponent>
   );
 }
 
