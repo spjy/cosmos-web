@@ -19,6 +19,7 @@ function Attitude({
   attitudes,
   showStatus,
   status,
+  height,
 }) {
   /** Accessing the neutron1 messages from the socket */
   const { state } = useContext(Context);
@@ -68,6 +69,7 @@ function Attitude({
       liveOnly
       showStatus={showStatus}
       status={status}
+      height={height}
       formItems={(
         <Form layout="vertical">
           ok
@@ -129,6 +131,7 @@ Attitude.propTypes = {
 
     return null;
   },
+  height: PropTypes.number.isRequired,
 };
 
 Attitude.defaultProps = {

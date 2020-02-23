@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
+
 import moment from 'moment-timezone';
 import {
   Viewer, Entity, Model, Globe, Clock, CameraFlyTo, PathGraphics, GeoJsonDataSource,
@@ -62,6 +63,7 @@ function CesiumGlobe({
   showStatus,
   status,
   coordinateSystem,
+  height,
 }) {
   /** Accessing the neutron1 messages from the socket */
   const { state } = useContext(Context);
@@ -265,6 +267,7 @@ function CesiumGlobe({
       name={nameState}
       subheader={orbitsState.length === 0 ? 'No orbits to display.' : null}
       liveOnly
+      height={height}
       showStatus={showStatus}
       status={status}
       formItems={(
@@ -827,6 +830,7 @@ CesiumGlobe.propTypes = {
     return null;
   },
   coordinateSystem: PropTypes.string,
+  height: PropTypes.number.isRequired,
 };
 
 CesiumGlobe.defaultProps = {

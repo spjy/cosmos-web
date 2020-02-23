@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
+
 import {
   Form, Input, InputNumber, DatePicker, Button, Switch, Collapse, Divider, Select,
 } from 'antd';
@@ -27,6 +28,7 @@ function Chart({
   XDataKey,
   processXDataKey,
   children,
+  height,
 }) {
   /** Accessing the neutron1 node process context and drilling down */
   const { state } = useContext(Context);
@@ -222,6 +224,7 @@ function Chart({
         </span>
       )}
       liveOnly
+      height={height}
       formItems={(
         <Form layout="vertical">
           <Form.Item
@@ -1674,6 +1677,7 @@ Chart.propTypes = {
   processXDataKey: PropTypes.func,
   /** Children node */
   children: PropTypes.node,
+  height: PropTypes.number.isRequired,
 };
 
 Chart.defaultProps = {

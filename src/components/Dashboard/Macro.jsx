@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
+import PropTypes from 'prop-types';
+
 import { Select, Button } from 'antd';
 
 import { Context, actions } from '../../store/neutron1';
@@ -9,7 +11,9 @@ import BaseComponent from '../BaseComponent';
  * Retrieves the agent list and displays it in a table.
  * Also displays the timestamp of the agent's last heartbeat.
  */
-function Macro() {
+function Macro({
+  height,
+}) {
   /** Get agent list state from the Context */
   const { dispatch } = useContext(Context);
 
@@ -58,6 +62,7 @@ function Macro() {
     <BaseComponent
       name="Macros"
       movable
+      height={height}
     >
       <div className="flex">
         <Select
@@ -93,5 +98,9 @@ function Macro() {
     </BaseComponent>
   );
 }
+
+Macro.propTypes = {
+  height: PropTypes.number.isRequired,
+};
 
 export default Macro;

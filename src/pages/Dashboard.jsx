@@ -187,7 +187,7 @@ function Dashboard({
               ? layouts.lg
                 .filter(layout => layout && layout.i && layout.component && layout.component.name)
                 .map((layout, i) => (
-                  <div className="shadow overflow-y-auto rounded" ref={el => { componentRefs.current[i] = el }} key={layout.i} style={{ backgroundColor: '#fbfbfb' }}>
+                  <div className="shadow overflow-hidden rounded" ref={el => { componentRefs.current[i] = el }} key={layout.i} style={{ backgroundColor: '#fbfbfb' }}>
                     <AsyncComponent
                       component={layout.component.name}
                       props={layout.component.props}

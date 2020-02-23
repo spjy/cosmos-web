@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
+import PropTypes from 'prop-types';
+
 import { Badge } from 'antd';
 // import moment from 'moment-timezone';
 
@@ -9,7 +11,9 @@ import BaseComponent from '../BaseComponent';
  * Retrieves the agent list and displays it in a table.
  * Also displays the timestamp of the agent's last heartbeat.
  */
-function Status() {
+function Status({
+  height,
+}) {
   /** Get agent list state from the Context */
   const { state } = useContext(Context);
   /** Component's agent list storage */
@@ -26,6 +30,7 @@ function Status() {
     <BaseComponent
       name="Radio"
       movable
+      height={height}
     >
       {
         list.length === 0 ? 'No files.' : null
@@ -59,6 +64,10 @@ function Status() {
       </table>
     </BaseComponent>
   );
+}
+
+Status.propTypes = {
+  height: PropTypes.number.isRequired,
 }
 
 export default Status;

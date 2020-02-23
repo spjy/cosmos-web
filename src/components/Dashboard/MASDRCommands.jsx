@@ -1,6 +1,8 @@
 import React, {
   useState, useEffect, useRef, useContext,
 } from 'react';
+import PropTypes from 'prop-types';
+
 import {
   Input, Select, Tooltip, message, Button, Icon,
 } from 'antd';
@@ -98,7 +100,9 @@ const buttons = [
 /**
  * Send commands to agents. Simulates a CLI.
  */
-const Commands = React.memo(() => {
+const Commands = React.memo(({
+  height,
+}) => {
   const { state } = useContext(Context);
   /** Agents */
   // const [agentList, setAgentList] = useState([]);
@@ -267,6 +271,7 @@ const Commands = React.memo(() => {
       subheader=""
       liveOnly
       showStatus={false}
+      height={height}
     >
       <div className="flex flex-wrap">
         {/* <div
@@ -416,16 +421,8 @@ const Commands = React.memo(() => {
   );
 });
 
-// Commands.propTypes = {
-//   macros: PropTypes.arrayOf(
-//     PropTypes.shape({
-//       name: PropTypes.name,
-//     }),
-//   ),
-// };
-
-// Commands.defaultProps = {
-//   macros: [],
-// }
+Commands.propTypes = {
+  height: PropTypes.number.isRequired,
+};
 
 export default Commands;

@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
+
 import Worldview, {
   GLTFScene, Axes,
 } from 'regl-worldview';
@@ -14,6 +15,7 @@ import { Context } from '../../store/neutron1';
 function ThreeD({
   name,
   attitudes,
+  height,
 }) {
   /** Accessing the neutron1 messages from the socket */
   const { state } = useContext(Context);
@@ -132,6 +134,10 @@ ThreeD.propTypes = {
     return null;
   },
 };
+
+ThreeD.propTypes = {
+  height: PropTypes.number.isRequired,
+}
 
 ThreeD.defaultProps = {
   name: '',

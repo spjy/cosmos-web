@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
+import PropTypes from 'prop-types';
+
 import { Badge } from 'antd';
-// import moment from 'moment-timezone';
+import moment from 'moment-timezone';
 
 import { Context } from '../../store/neutron1';
 import BaseComponent from '../BaseComponent';
@@ -9,7 +11,9 @@ import BaseComponent from '../BaseComponent';
  * Retrieves the agent list and displays it in a table.
  * Also displays the timestamp of the agent's last heartbeat.
  */
-function Status() {
+function Status({
+  height,
+}) {
   /** Get agent list state from the Context */
   const { state } = useContext(Context);
   /** Component's agent list storage */
@@ -26,6 +30,7 @@ function Status() {
     <BaseComponent
       name="Agent List"
       movable
+      height={height}
     >
       {
         list.length === 0 ? 'No agents.' : null
@@ -38,7 +43,7 @@ function Status() {
             }) => (
               <tr key={agent}>
                 <td>
-                  {<Badge status="success" />}
+                  <Badge status="success" />
                 </td>
                 <td className="text-gray-500 pr-2">
                   {utc}
@@ -59,5 +64,9 @@ function Status() {
     </BaseComponent>
   );
 }
+
+Status.propTypes = {
+  height: PropTypes.number.isRequired,
+};
 
 export default Status;

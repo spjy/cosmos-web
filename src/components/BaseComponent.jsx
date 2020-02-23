@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Icon, Switch, Button, Badge,
 } from 'antd';
@@ -21,9 +21,12 @@ function BaseComponent({
   handleLiveSwitchChange,
   toolsSlot,
   movable,
+  height,
 }) {
   /** Handler for the widget settings modal */
   const [openSettings, setOpenSettings] = useState(false);
+
+  const headerRef = useRef(null);
 
   useEffect(() => {
     handleLiveSwitchChange(true);
@@ -44,7 +47,7 @@ function BaseComponent({
         {formItems}
       </ComponentSettings>
 
-      <div className={`sticky top-0 z-50 flex justify-between px-3 py-2 dragHandle ${movable ? 'cursor-move' : ''}`}>
+      <div className={`sticky top-0 z-50 flex justify-between px-3 py-2 dragHandle z-0 ${movable ? 'cursor-move' : ''}`} ref={headerRef}>
         <div className="flex flex-row flex-shrink-0">
           {showStatus ? (
             <div style={{ marginTop: '0.2em' }}>
@@ -89,7 +92,7 @@ function BaseComponent({
         </div>
       </div>
 
-      <div className="px-4 py-1 overflow-y-scroll h-full">
+      <div className="px-4 py-1 overflow-y-auto" style={{ height: headerRef && headerRef.current ? height - headerRef.current.clientHeight : height }}>
         {children}
       </div>
     </div>
@@ -127,13 +130,15 @@ BaseComponent.propTypes = {
   toolsSlot: PropTypes.node,
   /** Draggable layout component */
   movable: PropTypes.bool,
+  /** Height to control child content */
+  height: PropTypes.number,
 };
 
 BaseComponent.defaultProps = {
   name: '',
   subheader: null,
   showStatus: false,
-  liveOnly: false,
+  liveOnly: true,
   handleLiveSwitchChange: () => {},
   submitForm: () => {},
   status: 'error',
@@ -141,6 +146,7 @@ BaseComponent.defaultProps = {
   formItems: null,
   toolsSlot: null,
   movable: true,
+  height: 100,
 };
 
 export default BaseComponent;

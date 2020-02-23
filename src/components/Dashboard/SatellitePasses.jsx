@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import BaseComponent from '../BaseComponent';
 import Table from '../Global/Table';
@@ -6,7 +7,9 @@ import Table from '../Global/Table';
 /**
  * Displays required data for a future pass of a satellite.
  */
-function SatellitePasses() {
+function SatellitePasses({
+  height,
+}) {
   return (
     <BaseComponent
       name="Satellite Passes"
@@ -61,5 +64,9 @@ function SatellitePasses() {
     </BaseComponent>
   );
 }
+
+SatellitePasses.propTypes = {
+  height: PropTypes.number.isRequired,
+};
 
 export default SatellitePasses;

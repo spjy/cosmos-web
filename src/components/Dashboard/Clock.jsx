@@ -10,6 +10,7 @@ import BaseComponent from '../BaseComponent';
  */
 function Clock({
   timezone,
+  height,
 }) {
   /** Storage for form values */
   const [time, setTime] = useState('');
@@ -37,6 +38,7 @@ function Clock({
       name="Time"
       liveOnly
       showStatus
+      height={height}
       status="success"
       formItems={(
         <Form layout="vertical">
@@ -86,6 +88,7 @@ function Clock({
 Clock.propTypes = {
   /** The selected local timezone */
   timezone: PropTypes.string,
+  height: PropTypes.number.isRequired,
 };
 
 Clock.defaultProps = {

@@ -2,6 +2,7 @@ import React, {
   useState, useEffect, useRef, useContext,
 } from 'react';
 import PropTypes from 'prop-types';
+
 import {
   Form, Input, Button, Select, message, Card, Switch,
 } from 'antd';
@@ -26,6 +27,7 @@ function SetValues({
   values,
   node,
   proc,
+  height,
 }) {
   const { state } = useContext(Context);
   /** Form storage */
@@ -169,6 +171,7 @@ function SetValues({
       status={status}
       formItems={formItems}
       handleLiveSwitchChange={checked => setLiveSwitch(checked)}
+      height={height}
     >
       Doppler On / Doppler Off
       <Switch
@@ -339,6 +342,7 @@ SetValues.propTypes = {
   node: PropTypes.string.isRequired,
   /** The process of the agent to set the values */
   proc: PropTypes.string.isRequired,
+  height: PropTypes.number.isRequired,
 };
 
 SetValues.defaultProps = {

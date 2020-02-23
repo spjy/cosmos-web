@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+
 import {
   Upload, Icon, Button, message,
 } from 'antd';
@@ -11,6 +12,7 @@ function UploadFile({
   node,
   proc,
   command,
+  height
 }) {
   /** Maintain list of uploaded files */
   const [files, setFiles] = useState([]);
@@ -132,6 +134,7 @@ UploadFile.propTypes = {
   node: PropTypes.string.isRequired,
   proc: PropTypes.string.isRequired,
   command: PropTypes.string.isRequired,
+  height: PropTypes.number.isRequired,
 };
 
 export default UploadFile;

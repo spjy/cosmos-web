@@ -7,6 +7,7 @@ import BaseComponent from '../BaseComponent';
 
 function Subsystem({
   name,
+  height,
 }) {
   return (
     <BaseComponent
@@ -59,6 +60,7 @@ function Subsystem({
 
 Subsystem.propTypes = {
   name: PropTypes.string.isRequired,
+  height: PropTypes.number.isRequired,
 };
 
 export default Subsystem;

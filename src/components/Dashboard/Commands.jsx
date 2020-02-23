@@ -1,6 +1,8 @@
 import React, {
   useState, useEffect, useRef, useContext,
 } from 'react';
+import PropTypes from 'prop-types';
+
 import {
   Input, Select, Tooltip, Icon, message,
 } from 'antd';
@@ -20,7 +22,9 @@ const ws = socket('query', '/command/');
  * command.
  * Allows for running agent commands. Logs inputs and ouputs in the white box above the input box.
  */
-const Commands = React.memo(() => {
+const Commands = React.memo(({
+  height,
+}) => {
   const { state } = useContext(Context);
   /** Agents */
   // const [agentList, setAgentList] = useState([]);
@@ -187,6 +191,7 @@ const Commands = React.memo(() => {
       name="Commands"
       subheader=""
       liveOnly
+      height={height}
       showStatus={false}
     >
       <div className="flex flex-wrap">
@@ -322,16 +327,8 @@ const Commands = React.memo(() => {
   );
 });
 
-// Commands.propTypes = {
-//   macros: PropTypes.arrayOf(
-//     PropTypes.shape({
-//       name: PropTypes.name,
-//     }),
-//   ),
-// };
-
-// Commands.defaultProps = {
-//   macros: [],
-// }
+Commands.propTypes = {
+  height: PropTypes.number.isRequired,
+};
 
 export default Commands;

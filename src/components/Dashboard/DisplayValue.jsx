@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
+
 import {
   Form, Input, Collapse, Button,
 } from 'antd';
@@ -18,6 +19,7 @@ const { TextArea } = Input;
 function DisplayValue({
   name,
   displayValues,
+  height
 }) {
   /** Accessing the neutron1 messages from the socket */
   const { state } = useContext(Context);
@@ -63,6 +65,7 @@ function DisplayValue({
       name={nameState}
       liveOnly
       showStatus
+      height={height}
       status={displayValuesState.length === 0 ? 'default' : 'success'}
       formItems={(
         <Form layout="vertical">
@@ -752,6 +755,7 @@ DisplayValue.propTypes = {
       unit: PropTypes.string,
     }),
   ),
+  height: PropTypes.number.isRequired,
 };
 
 DisplayValue.defaultProps = {

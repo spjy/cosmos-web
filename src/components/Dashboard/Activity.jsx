@@ -1,4 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
+import PropTypes from 'prop-types';
+
 import { Badge, Form, Button } from 'antd';
 import moment from 'moment-timezone';
 import { highlight, languages } from 'prismjs/components/prism-core';
@@ -9,7 +11,9 @@ import BaseComponent from '../BaseComponent';
 /**
  * Retrieves data from a web socket. Displays an event along with the timestamp in a table.
  */
-function Activity() {
+function Activity({
+  height
+}) {
   /** Get agent list state from the Context */
   const { state } = useContext(Context);
   /** Component's agent list storage */
@@ -53,6 +57,7 @@ function Activity() {
     <BaseComponent
       name="Activity"
       liveOnly
+      height={height}
       formItems={(
         <div>
           <Form layout="vertical">
@@ -103,5 +108,9 @@ function Activity() {
     </BaseComponent>
   );
 }
+
+Activity.propTypes = {
+  height: PropTypes.number.isRequired,
+};
 
 export default Activity;
