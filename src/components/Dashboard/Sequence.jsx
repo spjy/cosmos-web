@@ -18,7 +18,7 @@ function Sequence({
   /** Auto scroll the history log to the bottom */
   const [updateLog, setUpdateLog] = useState(false);
   /** Agent command history (to display in the terminal) */
-  const [commandHistory, setCommandHistory] = useState([]);
+  const [commandHistory] = useState([]);
 
   /** DOM Element selector for history log */
   const cliEl = useRef(null);
@@ -32,19 +32,25 @@ function Sequence({
     await Promise.all(sequence.map(async (command) => {
       const ws = socket('query', '/command/');
 
+      // Query command in sequence and wait for response from socket
       await new Promise((resolve) => {
         ws.onopen = () => {
           ws.send(`${process.env.COSMOS_BIN}/agent ${command}`);
 
           ws.onmessage = ({ data }) => {
+            // User feedback indicating command just sent
             commandHistory.push(`➜ agent ${command}`);
 
+            // Force scroll to bottom
             setUpdateLog(true);
 
+            // Add to command history for reusing in future
             commandHistory.push(data);
 
+            // Force scroll to bottom
             setUpdateLog(true);
 
+            // Resolve promise and close websocket
             resolve();
             ws.close();
           };
@@ -55,15 +61,20 @@ function Sequence({
       });
     }));
 
+    // Destory user indicator that sequence is done.
     message.destroy();
 
+    // Indicate in window that sequence has ended
     commandHistory.push('--- End of sequence. ---');
 
+    // Force scroll to bottom
     setUpdateLog(true);
 
+    // Indicate message that sequence finished
     message.success('Finished sequence.', 5);
   };
 
+  /** Force window to scroll to the bottom of window */
   useEffect(() => {
     cliEl.current.scrollTop = cliEl.current.scrollHeight;
     setUpdateLog(null);

@@ -137,7 +137,7 @@ ThreeD.propTypes = {
 
 ThreeD.propTypes = {
   height: PropTypes.number.isRequired,
-}
+};
 
 ThreeD.defaultProps = {
   name: '',

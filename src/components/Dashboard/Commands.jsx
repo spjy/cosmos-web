@@ -145,6 +145,7 @@ const Commands = React.memo(({
     }
   };
 
+  /** Retrieve file autocompletion */
   const getAutocomplete = (autocomplete) => {
     const complete = socket('query', '/command/');
 

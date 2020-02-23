@@ -26,6 +26,7 @@ function BaseComponent({
   /** Handler for the widget settings modal */
   const [openSettings, setOpenSettings] = useState(false);
 
+  /** Ref to obtain the height of header to subtract from whole component height */
   const headerRef = useRef(null);
 
   useEffect(() => {

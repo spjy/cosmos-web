@@ -16,6 +16,7 @@ function LayoutCard({
 }
 
 LayoutCard.propTypes = {
+  /** Specify if using flexbox */
   flex: PropTypes.string.isRequired,
   children: PropTypes.node.isRequired,
 };

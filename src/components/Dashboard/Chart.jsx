@@ -75,7 +75,7 @@ function Chart({
   /** Plot data storage */
   const [plotsState, setPlotsState] = useState(plots);
 
-  /** Initialize form slots for each plot */
+  /** Initialize form slots for each plot to avoid crashing */
   useEffect(() => {
     // Make an object for each plot's form
     for (let i = 0; i < plotsState.length; i += 1) {

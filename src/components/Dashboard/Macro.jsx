@@ -54,6 +54,7 @@ function Macro({
     };
   };
 
+  /** Retreive values upon user wanting to get new macro values from Nordiasoft */
   useEffect(() => {
     getValue();
   }, [updateMacros]);

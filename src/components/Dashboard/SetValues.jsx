@@ -67,6 +67,7 @@ function SetValues({
   /** Send the agent command with the selected value to change. */
   const setParameter = () => {
     try {
+      // Error handlers
       if (!selectedComponent) {
         throw new Error('A component is required.');
       }
@@ -156,7 +157,7 @@ function SetValues({
   /** Close ws on unmount */
   useEffect(() => () => ws.close(), []);
 
-  /** Update height of the history log */
+  /** Update height of the history log to bottom of window */
   useEffect(() => {
     cliEl.current.scrollTop = cliEl.current.scrollHeight;
     setUpdateLog(null);

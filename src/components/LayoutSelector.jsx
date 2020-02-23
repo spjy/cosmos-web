@@ -119,7 +119,9 @@ function LayoutSelector({
 }
 
 LayoutSelector.propTypes = {
+  /** Current path the user is at */
   path: PropTypes.string.isRequired,
+  /** The path the user would like to change to */
   selectLayout: PropTypes.func,
 };
 

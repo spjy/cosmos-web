@@ -811,6 +811,7 @@ CesiumGlobe.propTypes = {
       ),
     }),
   ),
+  /** Store overlays on map (geocoloring) */
   overlays: PropTypes.arrayOf(
     PropTypes.shape({
       color: PropTypes.string,

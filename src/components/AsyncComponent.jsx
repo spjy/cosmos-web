@@ -20,7 +20,7 @@ import Subsystem from './Dashboard/Subsystem';
 import ThreeD from './Dashboard/ThreeD';
 import UploadFile from './Dashboard/UploadFile';
 
-/** Store all of the components into an object */
+/** Store all of the available components into an object */
 const components = {
   Activity,
   Attitude,

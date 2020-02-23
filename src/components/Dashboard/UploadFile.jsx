@@ -12,7 +12,7 @@ function UploadFile({
   node,
   proc,
   command,
-  height
+  height,
 }) {
   /** Maintain list of uploaded files */
   const [files, setFiles] = useState([]);
