@@ -16,7 +16,8 @@ const { TextArea } = Input;
 /**
  * Display data on a chart using plot.ly. Allows for various plot.ly configurations.
  * On the top bar, it displays the data that is currently being displayed on the chart.
- * It allows for custom configuration such as the chart name, data limit amount and the data key to display on the x axis.
+ * It allows for custom configuration such as the chart name,
+ * data limit amount and the data key to display on the x axis.
  */
 function Chart({
   name,

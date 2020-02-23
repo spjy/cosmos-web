@@ -62,6 +62,7 @@ function Activity() {
           </Form>
           <pre
             className="language-json"
+            // eslint-disable-next-line
             dangerouslySetInnerHTML={{
               __html: highlight(
                 packets,
@@ -82,7 +83,7 @@ function Activity() {
             activity.map(({ activity: event, utc }) => (
               <tr className="truncate ..." key={utc}>
                 <td>
-                  {<Badge status="default" />}
+                  <Badge status="default" />
                 </td>
                 <td className="pr-4 text-gray-500">
                   {

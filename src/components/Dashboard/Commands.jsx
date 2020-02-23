@@ -16,7 +16,8 @@ const ws = socket('query', '/command/');
 
 /**
  * Send commands to agents. Simulates a CLI.
- * Gives the ability to select commonly used node:process; appends this value to after the `agent` command.
+ * Gives the ability to select commonly used node:process; appends this value to after the `agent`
+ * command.
  * Allows for running agent commands. Logs inputs and ouputs in the white box above the input box.
  */
 const Commands = React.memo(() => {
