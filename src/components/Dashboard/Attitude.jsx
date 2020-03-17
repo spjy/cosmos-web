@@ -90,7 +90,7 @@ function Attitude({
               <td className="p-2 pr-8">w</td>
             </tr>
             {
-            attitudesState.map(attitude => (
+            attitudesState.map((attitude) => (
               <tr className="text-gray-700 border-b border-gray-400" key={attitude.name}>
                 <td className="p-2 pr-8">{attitude.name}</td>
                 <td className="p-2 pr-8">{attitude.quaternions.d && attitude.quaternions.d.x ? attitude.quaternions.d.x : '-'}</td>

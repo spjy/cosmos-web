@@ -27,7 +27,7 @@ function Example() {
           </Form.Item>
         </Form>
       )}
-      handleLiveSwitchChange={checked => setLiveSwitch(checked)}
+      handleLiveSwitchChange={(checked) => setLiveSwitch(checked)}
     >
       Hi
     </BaseComponent>
