@@ -10,7 +10,7 @@ import {
 import { Context } from '../../store/neutron1';
 
 import BaseComponent from '../BaseComponent';
-import socket from '../../socket';
+import { socket } from '../../socket';
 
 const ws = socket('query', '/command/');
 

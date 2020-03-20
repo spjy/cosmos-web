@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Select, Button } from 'antd';
 
 import { Context, actions } from '../../store/neutron1';
-import socket from '../../socket';
+import { socket } from '../../socket';
 import BaseComponent from '../BaseComponent';
 
 /**

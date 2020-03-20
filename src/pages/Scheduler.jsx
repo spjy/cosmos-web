@@ -7,7 +7,7 @@ import {
   Context, actions, reducer,
 } from '../store/neutron1';
 
-import socket from '../socket';
+import { live } from '../socket';
 // eslint-disable-next-line
 import routes from '../routes';
 
@@ -21,16 +21,14 @@ function Scheduler() {
 
   /** Store the default page layout in case user wants to switch to it */
 
-  const [socketStatus, setSocketStatus] = useState('error');
+  const [, setSocketStatus] = useState('error');
 
-  const [nodes, setNodes] = useState([]);
+  const [, setNodes] = useState([]);
 
   /** Get socket data from the agent */
   useEffect(() => {
-    const all = socket('live', '/live/all');
-
     /** Get latest data from neutron1_exec */
-    all.onmessage = ({ data }) => {
+    live.onmessage = ({ data }) => {
       try {
         const json = JSON.parse(data);
 
@@ -40,20 +38,20 @@ function Scheduler() {
       }
     };
 
-    all.onclose = () => {
+    live.onclose = () => {
       setSocketStatus('error');
     };
 
-    all.onerror = () => {
+    live.onerror = () => {
       setSocketStatus('error');
     };
 
-    all.onopen = () => {
+    live.onopen = () => {
       setSocketStatus('success');
     };
 
     return () => {
-      all.close(1000);
+      live.close(1000);
     };
   }, []);
 
@@ -65,7 +63,8 @@ function Scheduler() {
       state.list.agent_list.forEach(({ agent }) => {
         const node = agent.split(':')[0];
 
-        // Check if node was previously added; if not, append to array. Also check if it has agent cpu running
+        // Check if node was previously added; if not, append to array.
+        // Also check if it has agent cpu running
         if (!currentNodes.includes(node) && state.hasOwnProperty(`${node}:cpu`)) {
           currentNodes.push(node);
         }

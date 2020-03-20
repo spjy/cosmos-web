@@ -5,7 +5,7 @@ import {
   Upload, Icon, Button, message,
 } from 'antd';
 
-import socket from '../../socket';
+import { socket } from '../../socket';
 import BaseComponent from '../BaseComponent';
 
 function UploadFile({

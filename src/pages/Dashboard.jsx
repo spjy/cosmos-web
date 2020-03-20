@@ -11,7 +11,7 @@ import {
   Context, actions, reducer,
 } from '../store/neutron1';
 
-import socket from '../socket';
+import { live } from '../socket';
 // eslint-disable-next-line
 import routes from '../routes';
 
@@ -51,10 +51,8 @@ function Dashboard({
 
   /** Get socket data from the agent */
   useEffect(() => {
-    const all = socket('live', '/live/all');
-
     /** Get latest data from neutron1_exec */
-    all.onmessage = ({ data }) => {
+    live.onmessage = ({ data }) => {
       try {
         const json = JSON.parse(data);
 
@@ -64,26 +62,26 @@ function Dashboard({
       }
     };
 
-    all.onclose = () => {
+    live.onclose = () => {
       setSocketStatus('error');
     };
 
-    all.onerror = () => {
+    live.onerror = () => {
       setSocketStatus('error');
     };
 
-    all.onopen = () => {
+    live.onopen = () => {
       setSocketStatus('success');
     };
 
     return () => {
-      all.close(1000);
+      live.close(1000);
     };
   }, []);
 
   /** Retrieve default layout for page */
   useEffect(() => {
-    // By default, set the defaultLayout prop as a fallback if child doesn't have a layout set
+    // By default, set the defaultLayout prop as a flive.ack if child doesn't have a layout set
     let layout = defaultLayout;
 
     // Find child route of dashboard and retrieve default layout
@@ -126,45 +124,45 @@ function Dashboard({
   };
 
   return (
-    <Context.Provider value={{ state, dispatch }}>
-      <div className="mt-5 mx-16 mb-16">
-        <div className="flex">
-          <div className="w-1/2 shadow overflow-y-auto rounded component-color">
-            <BaseComponent
-              name="Layout Selection"
-              movable={false}
-            >
-              <LayoutSelector
-                path={path}
-                selectLayout={(value) => selectLayout(value)}
-              />
-            </BaseComponent>
-          </div>
-          <div className="w-1/2 ml-3 shadow overflow-y-auto rounded component-color">
-            <BaseComponent
-              name="Socket Status"
-              movable={false}
-            >
-              <Typography.Text type="secondary">
-                {
-                  socketStatus === 'success'
-                    ? (
-                      <span>
-                        <Icon type="check-circle" theme="twoTone" twoToneColor="#52c41a" />
-                        &nbsp;Connected and operational.
-                      </span>
-                    )
-                    : (
-                      <span>
-                        <Icon type="close-circle" theme="twoTone" twoToneColor="#d80000" />
-                        &nbsp;&nbsp;No connection available. Attempting to reconnect.
-                      </span>
-                    )
-                }
-              </Typography.Text>
-            </BaseComponent>
-          </div>
+    <div className="mt-5 mx-16 mb-16">
+      <div className="flex">
+        <div className="w-1/2 shadow overflow-y-auto rounded component-color">
+          <BaseComponent
+            name="Layout Selection"
+            movable={false}
+          >
+            <LayoutSelector
+              path={path}
+              selectLayout={(value) => selectLayout(value)}
+            />
+          </BaseComponent>
         </div>
+        <div className="w-1/2 ml-3 shadow overflow-y-auto rounded component-color">
+          <BaseComponent
+            name="Socket Status"
+            movable={false}
+          >
+            <Typography.Text type="secondary">
+              {
+                socketStatus === 'success'
+                  ? (
+                    <span>
+                      <Icon type="check-circle" theme="twoTone" twoToneColor="#52c41a" />
+                      &nbsp;Connected and operational.
+                    </span>
+                  )
+                  : (
+                    <span>
+                      <Icon type="close-circle" theme="twoTone" twoToneColor="#d80000" />
+                      &nbsp;&nbsp;No connection available. Attempting to reconnect.
+                    </span>
+                  )
+              }
+            </Typography.Text>
+          </BaseComponent>
+        </div>
+      </div>
+      <Context.Provider value={{ state, dispatch }}>
         <ResponsiveGridLayout
           className="layout"
           breakpoints={{
@@ -195,14 +193,18 @@ function Dashboard({
                     <AsyncComponent
                       component={layout.component.name}
                       props={layout.component.props}
-                      height={componentRefs && componentRefs.current[i] ? componentRefs.current[i].clientHeight : '100'}
+                      height={
+                        componentRefs && componentRefs.current[i]
+                          ? componentRefs.current[i].clientHeight
+                          : 100
+                      }
                     />
                   </div>
                 )) : null
           }
         </ResponsiveGridLayout>
-      </div>
-    </Context.Provider>
+      </Context.Provider>
+    </div>
   );
 }
 

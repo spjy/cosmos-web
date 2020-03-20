@@ -14,7 +14,7 @@ import {
 import BaseComponent from '../BaseComponent';
 import { Context } from '../../store/neutron1';
 import model from '../../public/cubesat.glb';
-import socket from '../../socket';
+import { socket } from '../../socket';
 
 const { Panel } = Collapse;
 const { RangePicker } = DatePicker;

@@ -6,7 +6,7 @@ import {
 } from 'antd';
 
 import BaseComponent from '../BaseComponent';
-import socket from '../../socket';
+import { socket } from '../../socket';
 
 /**
  * Component to handle pre-defined sequences of commands to run agent commands.

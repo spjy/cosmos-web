@@ -8,7 +8,7 @@ import Plot from 'react-plotly.js';
 
 import BaseComponent from '../BaseComponent';
 import { Context } from '../../store/neutron1';
-import socket from '../../socket';
+import { query } from '../../socket';
 
 const { RangePicker } = DatePicker;
 const { Panel } = Collapse;
@@ -135,9 +135,7 @@ function Chart({
   /** Handle the collection of historical data */
   useEffect(() => {
     if (retrievePlotHistory !== null) {
-      const query = socket('query', '/query/');
-
-      query.onopen = () => {
+      if (query.OPEN) {
         // Check to see if user chose a range of dates
         if (form[retrievePlotHistory].dateRange.value.length === 2) {
           // Unix time to modified julian date
@@ -183,7 +181,7 @@ function Chart({
             console.log(err);
           }
         };
-      };
+      }
     }
   }, [retrievePlotHistory]);
 
