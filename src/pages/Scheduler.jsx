@@ -7,7 +7,7 @@ import {
   Context, actions, reducer,
 } from '../store/neutron1';
 
-import { live } from '../socket';
+import { socket } from '../socket';
 // eslint-disable-next-line
 import routes from '../routes';
 
@@ -27,6 +27,8 @@ function Scheduler() {
 
   /** Get socket data from the agent */
   useEffect(() => {
+    const live = socket('live', '/live/all');
+
     /** Get latest data from neutron1_exec */
     live.onmessage = ({ data }) => {
       try {

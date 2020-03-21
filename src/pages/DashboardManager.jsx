@@ -4,7 +4,7 @@ import BaseComponent from '../components/BaseComponent';
 // eslint-disable-next-line
 import LayoutManager from '../components/LayoutManager';
 
-import { live } from '../socket';
+import { socket } from '../socket';
 
 import {
   Context, actions, reducer,
@@ -17,6 +17,8 @@ function DashboardManager() {
   const [state, dispatch] = useReducer(reducer, {});
 
   useEffect(() => {
+    const live = socket('live', '/live/all');
+
     /** Get latest data from neutron1_exec */
     live.onmessage = ({ data }) => {
       try {

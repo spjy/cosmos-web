@@ -689,11 +689,12 @@ function CesiumGlobe({
       <Viewer
         fullscreenButton={false}
       >
-        {overlaysState.map((overlay) => (
+        {overlaysState.map((overlay, i) => (
           <GeoJsonDataSource
             data={overlay.geoJson}
             fill={Cesium.Color.fromAlpha(Cesium.Color[overlay.color ? overlay.color.toUpperCase() : 'BLACK'], 0.2)}
             stroke={Cesium.Color[overlay.color ? overlay.color.toUpperCase() : 'BLACK']}
+            key={i}
           />
         ))}
         <Globe enableLighting />
