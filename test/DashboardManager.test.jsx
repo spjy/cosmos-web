@@ -3,7 +3,7 @@ import { mount } from 'enzyme';
 import DashboardManager from '../src/pages/DashboardManager';
 
 describe('Dashboard page', () => {
-  it('renders', () => {
+it('renders', () => {
     mount(<DashboardManager />);
   });
 });

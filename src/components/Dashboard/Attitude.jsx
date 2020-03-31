@@ -43,6 +43,7 @@ function Attitude({
         live: attitudesState[i].live,
       };
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /** Update the live attitude display */
@@ -60,6 +61,7 @@ function Attitude({
         setAttitudesState(tempAttitude);
       }
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
   return (

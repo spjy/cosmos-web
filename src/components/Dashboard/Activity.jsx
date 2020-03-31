@@ -37,6 +37,7 @@ function Activity({
       setPackets(savedPackets);
       setExportPackets(null);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exportPackets]);
 
   /** Upon the state.list updating, update the store's list */
@@ -52,6 +53,7 @@ function Activity({
         ...activity,
       ]);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.activity]);
 
   return (
