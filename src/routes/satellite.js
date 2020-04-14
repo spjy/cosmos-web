@@ -678,7 +678,7 @@ export default {
             component: {
               name: 'Chart',
               props: {
-                name: 'EPS Busses',
+                name: 'EPS Buses',
                 XDataKey: 'utc',
                 processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                 plots: [
@@ -954,7 +954,7 @@ export default {
             component: {
               name: 'Chart',
               props: {
-                name: 'EPS PDM Swithces',
+                name: 'EPS PDM Switches',
                 XDataKey: 'utc',
                 processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                 plots: [
