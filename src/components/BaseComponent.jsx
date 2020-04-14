@@ -93,7 +93,10 @@ function BaseComponent({
         </div>
       </div>
 
-      <div className="px-4 py-1 overflow-y-auto" style={{ height: headerRef && headerRef.current ? height - headerRef.current.clientHeight : height }}>
+      {/* <div className="px-4 py-1 overflow-y-auto"
+      style={{ height: headerRef && headerRef.current ?
+      height - headerRef.current.clientHeight : height }}> */}
+      <div className="px-4 py-1 overflow-y-auto h-full">
         {children}
       </div>
     </div>
