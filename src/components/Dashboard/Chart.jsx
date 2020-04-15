@@ -194,10 +194,7 @@ function Chart({
             plotsState.length === 0 ? 'No charts to display.' : null
           }
           {
-            plotsState.length > 0 ? <Divider type="vertical" /> : null
-          }
-          {
-            plotsState.map((plot) => (
+            plotsState.map((plot, i) => (
               <span key={`${plot.nodeProcess}${plot.YDataKey}`}>
                 <span
                   className="inline-block rounded-full mr-2 indicator"
@@ -215,7 +212,10 @@ function Chart({
                 </span>
                 &nbsp;-&nbsp;
                 {plot.YDataKey}
-                <Divider type="vertical" />
+
+                {
+                  plotsState.length - 1 === i ? null : <Divider type="vertical" />
+                }
               </span>
             ))
           }
