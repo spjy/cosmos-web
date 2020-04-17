@@ -694,6 +694,7 @@ function CesiumGlobe({
             data={overlay.geoJson}
             fill={Cesium.Color.fromAlpha(Cesium.Color[overlay.color ? overlay.color.toUpperCase() : 'BLACK'], 0.2)}
             stroke={Cesium.Color[overlay.color ? overlay.color.toUpperCase() : 'BLACK']}
+            // eslint-disable-next-line
             key={i}
           />
         ))}

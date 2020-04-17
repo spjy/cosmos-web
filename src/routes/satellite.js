@@ -1,11 +1,10 @@
 import moment from 'moment-timezone';
-import Dashboard from '../pages/Dashboard';
 
 export default {
   name: 'Satellites',
   icon: 'rocket',
   path: '/satellite/:id',
-  component: Dashboard,
+  component: 'Dashboard',
   props: {
     socketType: 'live',
     defaultLayout: {
@@ -1542,4 +1541,4 @@ export default {
       },
     },
   ],
-}
+};

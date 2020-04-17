@@ -21,7 +21,7 @@ function BaseComponent({
   handleLiveSwitchChange,
   toolsSlot,
   movable,
-  height,
+  // height,
 }) {
   /** Handler for the widget settings modal */
   const [openSettings, setOpenSettings] = useState(false);
@@ -31,7 +31,7 @@ function BaseComponent({
 
   useEffect(() => {
     handleLiveSwitchChange(true);
-  }, []);
+  }, [handleLiveSwitchChange]);
 
   return (
     <div>
@@ -136,7 +136,7 @@ BaseComponent.propTypes = {
   /** Draggable layout component */
   movable: PropTypes.bool,
   /** Height to control child content */
-  height: PropTypes.number,
+  // height: PropTypes.number,
 };
 
 BaseComponent.defaultProps = {
@@ -151,7 +151,7 @@ BaseComponent.defaultProps = {
   formItems: null,
   toolsSlot: null,
   movable: true,
-  height: 100,
+  // height: 100,
 };
 
 export default BaseComponent;

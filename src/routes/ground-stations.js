@@ -1,10 +1,8 @@
-import Dashboard from '../pages/Dashboard';
-
 export default {
   name: 'Ground Stations',
   icon: 'wifi',
   path: '/gs/:id',
-  component: Dashboard,
+  component: 'Dashboard',
   props: {
     socketType: 'gs',
     defaultLayout: {
@@ -947,7 +945,8 @@ export default {
           //     props: {
           //       name: 'Satellite Pass',
           //       XDataKey: 'utc',
-          //       processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+          //       processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0))
+          //        .format('YYYY-MM-DDTHH:mm:ss'),
           //       plots: [
           //         {
           //           r: [5, 4, 3, 2, 1, 0.5, 0, 5],

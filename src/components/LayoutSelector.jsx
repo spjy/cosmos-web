@@ -32,7 +32,7 @@ function LayoutSelector({
     } catch (error) {
       message.success('Using default layout.', 5);
     }
-  }, []);
+  }, [path]);
 
   /** Handles retrieving the form layout value and sends it to dashboard */
   const changeLayout = () => {
