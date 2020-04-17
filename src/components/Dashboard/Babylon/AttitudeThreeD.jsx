@@ -7,17 +7,6 @@ import cubesat from '../../../public/cubesat.obj';
 import BabylonScene from './BabylonScene';
 
 class AttitudeThreeD extends Component {
-  static propTypes = {
-    data: PropTypes.shape({
-      d: PropTypes.shape({
-        x: PropTypes.number,
-        y: PropTypes.number,
-        z: PropTypes.number,
-      }),
-      w: PropTypes.number,
-    }).isRequired,
-  };
-
   onSceneMount = (e) => {
     const { canvas, scene, engine } = e;
 
@@ -225,5 +214,16 @@ class AttitudeThreeD extends Component {
     );
   }
 }
+
+AttitudeThreeD.propTypes = {
+  data: PropTypes.shape({
+    d: PropTypes.shape({
+      x: PropTypes.number,
+      y: PropTypes.number,
+      z: PropTypes.number,
+    }),
+    w: PropTypes.number,
+  }).isRequired,
+};
 
 export default AttitudeThreeD;

@@ -36,7 +36,7 @@ function Navbar() {
                   title="Routes"
                 >
                   {
-                    route.children.map(child => (
+                    route.children.map((child) => (
                       <Menu.Item
                         key={child.name}
                       >

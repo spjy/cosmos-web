@@ -3,8 +3,22 @@ import { Router } from '@reach/router';
 
 import Navbar from './components/Global/Navbar';
 
+import Home from './pages/Home';
+import Dashboard from './pages/Dashboard';
+import Scheduler from './pages/Scheduler';
+import DashboardManager from './pages/DashboardManager';
+import CEO from './pages/CEO';
+
 import FourOhFour from './pages/404';
 import routes from './routes';
+
+const components = {
+  Home,
+  Dashboard,
+  Scheduler,
+  DashboardManager,
+  CEO,
+};
 
 const App = () => (
   <div>
@@ -14,13 +28,18 @@ const App = () => (
     <Router>
       <FourOhFour default />
       {
-        routes.map(route => (
-          <route.component
-            key={route.path}
-            path={route.path}
-            {...route.props}
-          />
-        ))
+        routes.map((route) => {
+          const Component = components[route.component];
+
+          return (
+            <Component
+              key={route.path}
+              path={route.path}
+              // eslint-disable-next-line
+              {...route.props}
+            />
+          );
+        })
       }
     </Router>
   </div>
