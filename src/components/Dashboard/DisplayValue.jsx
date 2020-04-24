@@ -320,7 +320,7 @@ function DisplayValue({
                         },
                       })}
                       onBlur={({ target: { id: item, value } }) => {
-                        if (value.includes('return') || value.includes('=>') || value.includes('=>')) {
+                        if (value.includes('return')) {
                           // eslint-disable-next-line
                           displayValuesState[i].processDataKey = new Function('x', value);
                           setForm({
@@ -348,7 +348,7 @@ function DisplayValue({
                           });
                         }
                       }}
-                      defaultValue={displayValue.processDataKey ? displayValue.processDataKey.toString().replace(/^[^{]*{\s*/, '').replace(/\s*}[^}]*$/, '') : 'return x;'}
+                      defaultValue={displayValue.processDataKey ? displayValue.processDataKey.toString().replace(/^(.+\s?=>\s?)/, 'return ') : 'return x;'}
                     />
                   </Form.Item>
 
@@ -584,7 +584,7 @@ function DisplayValue({
                     },
                   })}
                   onBlur={({ target: { id: item, value } }) => {
-                    if (value.includes('return') || value.includes('=>')) {
+                    if (value.includes('return')) {
                       setForm({
                         ...form,
                         newChart: {
@@ -612,7 +612,7 @@ function DisplayValue({
                       });
                     }
                   }}
-                  value={form.newChart.processDataKey && form.newChart.processDataKey.value ? form.newChart.processDataKey.value.toString().replace(/^[^{]*{\s*/, '').replace(/\s*}[^}]*$/, '') : ''}
+                  value={form.newChart.processDataKey && form.newChart.processDataKey.value ? form.newChart.processDataKey.value.toString().replace(/^(.+\s?=>\s?)/, 'return ') : ''}
                 />
               </Form.Item>
 
@@ -691,7 +691,7 @@ function DisplayValue({
                     name: form.newChart.name && form.newChart.name.value ? form.newChart.name.value : '',
                     nodeProcess: form.newChart.nodeProcess.value,
                     dataKey: form.newChart.dataKey.value,
-                    processDataKey: form.newChart.processDataKey && form.newChart.processDataKey.value && (form.newChart.processDataKey.value.includes('return') || form.newChart.processDataKey.value.includes('=>')) ? form.newChart.processDataKey.value : (x) => x,
+                    processDataKey: form.newChart.processDataKey && form.newChart.processDataKey.value && (form.newChart.processDataKey.value.includes('return')) ? form.newChart.processDataKey.value : (x) => x,
                     unit: form.newChart.unit && form.newChart.unit.value ? form.newChart.unit.value : '',
                   });
 

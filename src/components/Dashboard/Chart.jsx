@@ -382,7 +382,7 @@ function Chart({
                 },
               })}
               onBlur={({ target: { id: item, value } }) => {
-                if (value.includes('return') || value.includes('=>')) {
+                if (value.includes('return')) {
                   // eslint-disable-next-line
                   setProcessXDataKeyState({
                     // eslint-disable-next-line
@@ -420,7 +420,7 @@ function Chart({
                   });
                 }
               }}
-              defaultValue={processXDataKey ? processXDataKey.toString().replace(/^[^{]*{\s*/, '').replace(/\s*}[^}]*$/, '') : 'return x;'}
+              defaultValue={processXDataKey ? processXDataKey.toString().replace(/^(.+\s?=>\s?)/, 'return ') : 'return x;'}
             />
           </Form.Item>
 
@@ -1037,7 +1037,7 @@ function Chart({
                         },
                       })}
                       onBlur={({ target: { id: item, value } }) => {
-                        if (value.includes('return') || value.includes('=>')) {
+                        if (value.includes('return')) {
                           // eslint-disable-next-line
                           plotsState[i].processYDataKey = new Function('x', value);
 
@@ -1076,7 +1076,7 @@ function Chart({
                           });
                         }
                       }}
-                      defaultValue={plot.processYDataKey ? plot.processYDataKey.toString().replace(/^[^{]*{\s*/, '').replace(/\s*}[^}]*$/, '') : 'return x;'}
+                      defaultValue={plot.processYDataKey ? plot.processYDataKey.toString().replace(/^(.+\s?=>\s?)/, 'return ') : 'return x;'}
                     />
                   </Form.Item>
 
@@ -1474,7 +1474,7 @@ function Chart({
                     },
                   })}
                   onBlur={({ target: { id: item, value } }) => {
-                    if (value.includes('return') || value.includes('=>')) {
+                    if (value.includes('return')) {
                       setForm({
                         ...form,
                         newValue: {
@@ -1492,7 +1492,7 @@ function Chart({
                       setForm({ ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], changed: false, help: 'You must return at least the variable "x".' } } });
                     }
                   }}
-                  value={form.newValue.processYDataKey && form.newValue.processYDataKey.value ? form.newValue.processYDataKey.value.toString().replace(/^[^{]*{\s*/, '').replace(/\s*}[^}]*$/, '') : ''}
+                  value={form.newValue.processYDataKey && form.newValue.processYDataKey.value ? form.newValue.processYDataKey.value.toString().replace(/^(.+\s?=>\s?)/, 'return ') : ''}
                 />
               </Form.Item>
 

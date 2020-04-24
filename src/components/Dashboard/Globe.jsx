@@ -656,7 +656,7 @@ function CesiumGlobe({
                     name: form.newOrbit.name.value,
                     nodeProcess: form.newOrbit.nodeProcess.value,
                     modelFileName: form.newOrbit.modelFileName.value === '' ? form.newOrbit.modelFileName.value : 'cubesat1.glb',
-                    processDataKey: form.newOrbit.processDataKey && form.newOrbit.processDataKey.value && (form.newOrbit.processDataKey.value.includes('return') || form.newOrbit.processDataKey.value.includes('=>')) ? form.newOrbit.processDataKey.value : (x) => x,
+                    processDataKey: form.newOrbit.processDataKey && form.newOrbit.processDataKey.value && (form.newOrbit.processDataKey.value.includes('return')) ? form.newOrbit.processDataKey.value : (x) => x,
                     live: form.newOrbit.live,
                     position: [21.289373, 157.917480, 350000.0],
                     orientation: {
