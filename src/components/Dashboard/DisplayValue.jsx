@@ -320,7 +320,7 @@ function DisplayValue({
                         },
                       })}
                       onBlur={({ target: { id: item, value } }) => {
-                        if (value.includes('return')) {
+                        if (value.includes('return') || value.includes('=>') || value.includes('=>')) {
                           // eslint-disable-next-line
                           displayValuesState[i].processDataKey = new Function('x', value);
                           setForm({
@@ -584,7 +584,7 @@ function DisplayValue({
                     },
                   })}
                   onBlur={({ target: { id: item, value } }) => {
-                    if (value.includes('return')) {
+                    if (value.includes('return') || value.includes('=>')) {
                       setForm({
                         ...form,
                         newChart: {

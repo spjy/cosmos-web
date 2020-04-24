@@ -382,7 +382,7 @@ function Chart({
                 },
               })}
               onBlur={({ target: { id: item, value } }) => {
-                if (value.includes('return')) {
+                if (value.includes('return') || value.includes('=>')) {
                   // eslint-disable-next-line
                   setProcessXDataKeyState({
                     // eslint-disable-next-line
@@ -1037,7 +1037,7 @@ function Chart({
                         },
                       })}
                       onBlur={({ target: { id: item, value } }) => {
-                        if (value.includes('return')) {
+                        if (value.includes('return') || value.includes('=>')) {
                           // eslint-disable-next-line
                           plotsState[i].processYDataKey = new Function('x', value);
 
@@ -1474,7 +1474,7 @@ function Chart({
                     },
                   })}
                   onBlur={({ target: { id: item, value } }) => {
-                    if (value.includes('return')) {
+                    if (value.includes('return') || value.includes('=>')) {
                       setForm({
                         ...form,
                         newValue: {
