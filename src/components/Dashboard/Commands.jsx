@@ -17,7 +17,7 @@ const ws = socket('query', '/command/');
 // const live = socket('live', '/live/list');
 
 /**
- * Send commands to agents. Simulates a CLI.
+ * Send commands to agents through agent mongo web socket. Simulates a CLI.
  * Gives the ability to select commonly used node:process; appends this value to after the `agent`
  * command.
  * Allows for running agent commands. Logs inputs and ouputs in the white box above the input box.

@@ -23,7 +23,8 @@ import AsyncComponent from './AsyncComponent';
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 /**
- * Configurable editor that allows the user to set up the layout of the page
+ * Configurable editor that allows the user to set up the layout of a page via JSON.
+ * Available under the "Dashboard Manager" page.
  */
 function LayoutManager() {
   /** Store the layout object here */
@@ -404,6 +405,11 @@ function LayoutManager() {
                         Component props (component.props)
                       </li>
                     </ul>
+                    <div>
+                      See
+                      <a href="https://bitbucket.org/cosmos-project/web/src/master/components.md">component list</a>
+                      .
+                    </div>
                     <br />
                     <strong>Example.</strong>
                     <br />
