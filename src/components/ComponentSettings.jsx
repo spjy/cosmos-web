@@ -4,6 +4,7 @@ import { Modal, Form } from 'antd';
 
 /**
  * The component containing the modal and form for setting settings for widgets.
+ * Used in the BaseComponent to set component settings.
  */
 function ComponentSettings({
   visible,

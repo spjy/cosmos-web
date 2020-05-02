@@ -64,6 +64,7 @@ function Dashboard({
       }
     };
 
+    /** Update statuses on error/connection */
     live.onclose = () => {
       setSocketStatus('error');
     };

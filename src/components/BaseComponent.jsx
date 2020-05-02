@@ -29,6 +29,7 @@ function BaseComponent({
   /** Ref to obtain the height of header to subtract from whole component height */
   const headerRef = useRef(null);
 
+  /** Detect when people use the live switch button */
   useEffect(() => {
     handleLiveSwitchChange(true);
   }, [handleLiveSwitchChange]);
@@ -57,10 +58,13 @@ function BaseComponent({
               </div>
             ) : null}
 
+            {/* Title */}
             <div className="font-bold text-base">
               {name}
             </div>
           </div>
+
+          {/* Settings / buttons for component */}
           <div>
             {!liveOnly ? (
               <span>
@@ -90,6 +94,7 @@ function BaseComponent({
         </div>
       </div>
 
+      {/* A description */}
       <div className="text-gray-600 text-sm preventDragHandle cursor-auto px-3 pb-2">
         {subheader}
       </div>
@@ -97,6 +102,8 @@ function BaseComponent({
       {/* <div className="px-4 py-1 overflow-y-auto"
       style={{ height: headerRef && headerRef.current ?
       height - headerRef.current.clientHeight : height }}> */}
+
+      {/* Main content of component */}
       <div className="px-4 py-1 overflow-x-auto h-full">
         {children}
       </div>

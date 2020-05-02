@@ -20,7 +20,9 @@ import Subsystem from './Dashboard/Subsystem';
 import ThreeD from './Dashboard/ThreeD';
 import UploadFile from './Dashboard/UploadFile';
 
-/** Store all of the available components into an object */
+/** Store all of the available dashboard components into an object
+ * This should contain all components that the dashboard should be able to render in the layout.
+ */
 const components = {
   Activity,
   Attitude,
@@ -43,7 +45,8 @@ const components = {
 };
 
 /**
- * A wrapper component for dynamically rendering components into the layout.
+ * A wrapper component for dynamically rendering components into the dashboard layout pages
+ * such as in /pages/Dashboard.jsx.
  */
 function AsyncComponent({ component, props, height }) {
   // Dynamically choose the component to render based on the component prop being passed in
@@ -58,7 +61,7 @@ AsyncComponent.propTypes = {
   component: PropTypes.string.isRequired,
   /** The props to pass into the component on render */
   props: PropTypes.shape({}),
-
+  /** The height obtained from the ref to dynamically set height */
   height: PropTypes.number,
 };
 
