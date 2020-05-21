@@ -18,6 +18,7 @@
     "babylonjs": "4.0.3",
     "babylonjs-loaders": "4.0.3",
     "cesium": "1.59.0",
+    "file-saver": "^2.0.2",
     "interactjs": "^1.6.3",
     "moment-timezone": "0.5.28",
     "plotly.js": "1.52.2",

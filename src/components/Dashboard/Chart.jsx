@@ -2,9 +2,10 @@ import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Form, Input, InputNumber, DatePicker, Button, Switch, Collapse, Divider, Select,
+  Form, Input, InputNumber, DatePicker, Button, Switch, Collapse, Divider, Select, Icon,
 } from 'antd';
 import Plot from 'react-plotly.js';
+import { saveAs } from 'file-saver';
 
 import BaseComponent from '../BaseComponent';
 import { Context } from '../../store/neutron1';
@@ -74,6 +75,64 @@ function Chart({
   const [retrievePlotHistory, setRetrievePlotHistory] = useState(null);
   /** Plot data storage */
   const [plotsState, setPlotsState] = useState(plots);
+
+  const downloadDataAsCSV = () => {
+    const yValues = {}; // to store keyed values
+    let xValues = []; // to store dates
+
+    // Get possible y values
+    plotsState.forEach((p) => {
+      yValues[p.YDataKey] = [];
+    });
+
+    // Loop through each x value to get dates
+    plotsState.forEach((plot) => {
+      // Store the x value in an key and each corresponding y value
+      plot.x.forEach((x) => {
+        xValues.push(new Date(x).toISOString());
+      });
+    });
+
+    // Sort dates
+    xValues = xValues.sort((a, b) => b - a);
+
+    // Go through each x value and match to each y value
+    plotsState.forEach((plot) => {
+      // Store the x value in an key and each corresponding y value
+      plot.x.forEach((x, i) => {
+        // Check if there exists a date for corresponding y value
+        const containsXValue = xValues.some((val) => {
+          // If so, insert
+          if (val === new Date(x).toISOString()) {
+            yValues[plot.YDataKey].push(plot.y[i]);
+          }
+          return val === new Date(x).toISOString();
+        });
+
+        // If not found, insert NaN
+        if (!containsXValue) {
+          yValues[plot.YDataKey].push(NaN);
+        }
+      });
+    });
+
+    // Convert object to array, set key to first array value and every value contained thereafter
+    Object.entries(yValues).map(([key, value]) => [key, ...value]);
+
+    // Create blob to download file
+    const blob = new Blob(
+      [
+        [
+          ['key', ...xValues].join(','), // columns
+          Object.entries(yValues).map(([key, value]) => [key, ...value].join(',')).join('\n'), // values
+        ].join('\n'),
+      ],
+      { type: 'text/csv' },
+    );
+
+    // Save csv to computer, named by chart title and date now
+    saveAs(blob, `${name.replace(' ', '-').toLowerCase()}-${new Date(Date.now()).toISOString()}.csv`);
+  };
 
   /** Initialize form slots for each plot to avoid crashing */
   useEffect(() => {
@@ -145,7 +204,7 @@ function Chart({
             + 2440587.5 - 2400000.5;
 
           query.send(
-            `database=agent_dump?collection=${plotsState[retrievePlotHistory].nodeProcess}?multiple=true?query={"utc": { "$gt": ${from}, "$lt": ${to} }}`,
+            `database=${process.env.MONGODB_COLLECTION}?collection=${plotsState[retrievePlotHistory].nodeProcess}?multiple=true?query={"utc": { "$gt": ${from}, "$lt": ${to} }}`,
           );
         }
 
@@ -223,6 +282,11 @@ function Chart({
       )}
       liveOnly
       height={height}
+      toolsSlot={(
+        <Button size="small" onClick={() => downloadDataAsCSV()}>
+          <Icon type="download" />
+        </Button>
+      )}
       formItems={(
         <Form layout="vertical">
           <Form.Item
