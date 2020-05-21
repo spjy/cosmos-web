@@ -81,8 +81,10 @@ function BaseComponent({
 
             <div>
               {
-                toolsSlot ? { toolsSlot } : null
+                toolsSlot ? toolsSlot : null
               }
+
+              &nbsp;
 
               {formItems ? (
                 <Button size="small" onClick={() => setOpenSettings(true)}>
