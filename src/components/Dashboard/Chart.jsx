@@ -76,62 +76,51 @@ function Chart({
   /** Plot data storage */
   const [plotsState, setPlotsState] = useState(plots);
 
+  /**
+   * Use object with keyed time
+   * Nested object with key y and value x
+   */
   const downloadDataAsCSV = () => {
-    const yValues = {}; // to store keyed values
-    let xValues = []; // to store dates
+    const xValues = {}; // to store keyed values
+    const yValues = []; // to store dates
 
     // Get possible y values
-    plotsState.forEach((p) => {
-      yValues[p.YDataKey] = [];
-    });
-
-    // Loop through each x value to get dates
     plotsState.forEach((plot) => {
-      // Store the x value in an key and each corresponding y value
-      plot.x.forEach((x) => {
-        xValues.push(new Date(x).toISOString());
-      });
-    });
-
-    // Sort dates
-    xValues = xValues.sort((a, b) => b - a);
-
-    // Go through each x value and match to each y value
-    plotsState.forEach((plot) => {
-      // Store the x value in an key and each corresponding y value
       plot.x.forEach((x, i) => {
-        // Check if there exists a date for corresponding y value
-        const containsXValue = xValues.some((val) => {
-          // If so, insert
-          if (val === new Date(x).toISOString()) {
-            yValues[plot.YDataKey].push(plot.y[i]);
-          }
-          return val === new Date(x).toISOString();
-        });
-
-        // If not found, insert NaN
-        if (!containsXValue) {
-          yValues[plot.YDataKey].push(NaN);
-        }
+        xValues[x] = {
+          ...xValues[x],
+          [plot.YDataKey]: plot.y[i],
+        };
       });
+
+      yValues.push(plot.YDataKey);
     });
 
-    // Convert object to array, set key to first array value and every value contained thereafter
-    Object.entries(yValues).map(([key, value]) => [key, ...value]);
+    // Sort according to date
+    const sortedKeys = Object.keys(xValues).sort();
+
+    // Convert each date object to array
+    sortedKeys.forEach((key) => {
+      // Save values
+      const values = xValues[key];
+
+      // Convert to array without value keys
+      xValues[key] = Object.entries(values).map(([, value]) => value);
+    });
 
     // Create blob to download file
     const blob = new Blob(
       [
         [
-          ['key', ...xValues].join(','), // columns
-          Object.entries(yValues).map(([key, value]) => [key, ...value].join(',')).join('\n'), // values
+          ['key', ...yValues].join(','), // columns
+          Object.entries(xValues).map(([key, value]) => [key, ...value].join(',')).join('\n'), // rows
         ].join('\n'),
       ],
       { type: 'text/csv' },
     );
 
     // Save csv to computer, named by chart title and date now
-    saveAs(blob, `${name.replace(' ', '-').toLowerCase()}-${new Date(Date.now()).toISOString()}.csv`);
+    saveAs(blob, `${name.replace(/ /g, '-').toLowerCase()}-${new Date(Date.now()).toISOString()}.csv`);
   };
 
   /** Initialize form slots for each plot to avoid crashing */
