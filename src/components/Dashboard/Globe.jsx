@@ -185,7 +185,7 @@ function CesiumGlobe({
             + 2440587.5 - 2400000.5;
 
           query.send(
-            `database=agent_dump?collection=${orbitsState[retrieveOrbitHistory].nodeProcess}?multiple=true?query={"utc": { "$gt": ${from}, "$lt": ${to} }}?options={"limit": 200}`,
+            `database=${process.env.MONGODB_COLLECTION}?collection=${orbitsState[retrieveOrbitHistory].nodeProcess}?multiple=true?query={"utc": { "$gt": ${from}, "$lt": ${to} }}?options={"limit": 200}`,
           );
         }
 
