@@ -112,7 +112,7 @@ function Chart({
     const blob = new Blob(
       [
         [
-          ['key', ...yValues].join(','), // columns
+          ['time', ...yValues].join(','), // columns
           Object.entries(xValues).map(([key, value]) => [key, ...value].join(',')).join('\n'), // rows
         ].join('\n'),
       ],
