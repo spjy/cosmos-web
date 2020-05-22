@@ -863,7 +863,7 @@ export default {
                     YDataKey: 'device_batt_volt_000',
                     nodeProcess: 'beagle1:eps',
                     live: true,
-                  }
+                  },
                 ],
               },
             },
