@@ -49,7 +49,7 @@ function BaseComponent({
         {formItems}
       </ComponentSettings>
 
-      <div className={`sticky top-0 z-50 flex justify-between px-3 py-2 dragHandle z-0 ${movable ? 'cursor-move' : ''}`} ref={headerRef}>
+      <div className={`sticky top-0 z-50 flex justify-between px-3 py-2 dragHandle z-0 component-color ${movable ? 'cursor-move' : ''}`} ref={headerRef}>
         <div className="flex justify-between w-full">
           <div className="flex">
             {showStatus ? (
@@ -81,7 +81,7 @@ function BaseComponent({
 
             <div>
               {
-                toolsSlot ? toolsSlot : null
+                toolsSlot
               }
 
               &nbsp;
@@ -106,7 +106,7 @@ function BaseComponent({
       height - headerRef.current.clientHeight : height }}> */}
 
       {/* Main content of component */}
-      <div className="px-4 py-1 overflow-x-auto h-full">
+      <div className="px-4 py-1 overflow-y-scroll">
         {children}
       </div>
     </div>
