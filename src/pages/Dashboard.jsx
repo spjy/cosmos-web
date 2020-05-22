@@ -187,7 +187,7 @@ function Dashboard({
                 .filter((layout) => layout && layout.i && layout.component && layout.component.name)
                 .map((layout, i) => (
                   <div
-                    className="shadow overflow-hidden rounded component-color"
+                    className="shadow overflow-y-scroll rounded component-color"
                     ref={(el) => {
                       componentRefs.current[i] = el;
                     }}
