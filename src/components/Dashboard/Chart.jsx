@@ -109,8 +109,6 @@ function Chart({
       xValues[key] = Object.entries(values).map(([, value]) => value);
     });
 
-    console.log(moment(Object.keys(xValues)[0]))
-
     // Create blob to download file
     const blob = new Blob(
       [
