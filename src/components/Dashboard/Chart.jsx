@@ -6,6 +6,7 @@ import {
 } from 'antd';
 import Plot from 'react-plotly.js';
 import { saveAs } from 'file-saver';
+import moment from 'moment-timezone';
 
 import BaseComponent from '../BaseComponent';
 import { Context } from '../../store/neutron1';
@@ -108,12 +109,14 @@ function Chart({
       xValues[key] = Object.entries(values).map(([, value]) => value);
     });
 
+    console.log(moment(Object.keys(xValues)[0]))
+
     // Create blob to download file
     const blob = new Blob(
       [
         [
-          ['time', ...yValues].join(','), // columns
-          Object.entries(xValues).map(([key, value]) => [key, ...value].join(',')).join('\n'), // rows
+          ['mjd', 'time', ...yValues].join(','), // columns
+          Object.entries(xValues).map(([key, value]) => [(moment(key).unix() / 86400.0) + 2440587.5 - 2400000.5, key, ...value].join(',')).join('\n'), // rows
         ].join('\n'),
       ],
       { type: 'text/csv' },
@@ -220,14 +223,11 @@ function Chart({
               layout.datarevision += 1;
               setDataRevision(dataRevision + 1);
             });
-
-            query.close();
-
-            // Reset state to null to allow for detection of future plot history requests
-            setRetrievePlotHistory(null);
           } catch (err) {
             console.log(err);
           }
+          // Reset state to null to allow for detection of future plot history requests
+          setRetrievePlotHistory(null);
         };
       }
     }
@@ -793,13 +793,13 @@ function Chart({
                       showTime
                       format="YYYY-MM-DD HH:mm:ss"
                       disabled={form[i] && form[i].live}
-                      onChange={(moment) => setForm({
+                      onChange={(m) => setForm({
                         ...form,
                         [i]: {
                           ...form[i],
                           dateRange: {
                             ...form[i].dateRange,
-                            value: moment,
+                            value: m,
                           },
                         },
                       })}
@@ -1211,13 +1211,13 @@ function Chart({
                   showTime
                   format="YYYY-MM-DD HH:mm:ss"
                   disabled={form.newValue.live}
-                  onChange={(moment) => setForm({
+                  onChange={(m) => setForm({
                     ...form,
                     newValue: {
                       ...form.newValue,
                       dateRange: {
                         ...form.newValue.dateRange,
-                        value: moment,
+                        value: m,
                       },
                     },
                   })}
