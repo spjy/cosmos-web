@@ -185,7 +185,7 @@ function CesiumGlobe({
             + 2440587.5 - 2400000.5;
 
           query.send(
-            `database=agent_dump?collection=${orbitsState[retrieveOrbitHistory].nodeProcess}?multiple=true?query={"utc": { "$gt": ${from}, "$lt": ${to} }}?options={"limit": 200}`,
+            `database=${process.env.MONGODB_COLLECTION}?collection=${orbitsState[retrieveOrbitHistory].nodeProcess}?multiple=true?query={"utc": { "$gt": ${from}, "$lt": ${to} }}?options={"limit": 200}`,
           );
         }
 
@@ -656,7 +656,7 @@ function CesiumGlobe({
                     name: form.newOrbit.name.value,
                     nodeProcess: form.newOrbit.nodeProcess.value,
                     modelFileName: form.newOrbit.modelFileName.value === '' ? form.newOrbit.modelFileName.value : 'cubesat1.glb',
-                    processDataKey: form.newOrbit.processDataKey && form.newOrbit.processDataKey.value && (form.newOrbit.processDataKey.value.includes('return') || form.newOrbit.processDataKey.value.includes('=>')) ? form.newOrbit.processDataKey.value : (x) => x,
+                    processDataKey: form.newOrbit.processDataKey && form.newOrbit.processDataKey.value && (form.newOrbit.processDataKey.value.includes('return')) ? form.newOrbit.processDataKey.value : (x) => x,
                     live: form.newOrbit.live,
                     position: [21.289373, 157.917480, 350000.0],
                     orientation: {
@@ -694,6 +694,7 @@ function CesiumGlobe({
             data={overlay.geoJson}
             fill={Cesium.Color.fromAlpha(Cesium.Color[overlay.color ? overlay.color.toUpperCase() : 'BLACK'], 0.2)}
             stroke={Cesium.Color[overlay.color ? overlay.color.toUpperCase() : 'BLACK']}
+            // eslint-disable-next-line
             key={i}
           />
         ))}

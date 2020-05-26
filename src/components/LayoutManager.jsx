@@ -23,7 +23,8 @@ import AsyncComponent from './AsyncComponent';
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 /**
- * Configurable editor that allows the user to set up the layout of the page
+ * Configurable editor that allows the user to set up the layout of a page via JSON.
+ * Available under the "Dashboard Manager" page.
  */
 function LayoutManager() {
   /** Store the layout object here */
@@ -89,7 +90,7 @@ function LayoutManager() {
       ),
     },
   ]);
-
+  /** Data to display on table */
   const [data, setData] = useState([]);
 
   /**
@@ -197,17 +198,20 @@ function LayoutManager() {
 
   /** Retrieve the keys that you can have settings for */
   useEffect(() => {
-    // Get keys from routes configuration file and extract ones with `:id`
+    // Get keys from routes configuration file (in routes/index.js) and extract paths with `:id`
     const keys = routes
       .filter((route) => route.path.split('/')[2] === ':id')
       .map(({ path }) => {
         const [, route] = path.split('/');
 
+        // Retrieve layouts from local storage
         const layouts = localStorage.getItem(route);
 
         try {
+          // Parse JSON from the local storage
           const json = JSON.parse(layouts);
 
+          // Iterate through the keys in local storage and store in state for table
           Object.keys(json)
             .forEach((layout, i) => {
               data.push({
@@ -223,6 +227,7 @@ function LayoutManager() {
         return route;
       });
 
+    // Store just route keys in state as well
     setRouteKeys(keys);
   }, []);
 
@@ -400,6 +405,11 @@ function LayoutManager() {
                         Component props (component.props)
                       </li>
                     </ul>
+                    <div>
+                      See
+                      <a href="https://bitbucket.org/cosmos-project/web/src/master/components.md">component list</a>
+                      .
+                    </div>
                     <br />
                     <strong>Example.</strong>
                     <br />

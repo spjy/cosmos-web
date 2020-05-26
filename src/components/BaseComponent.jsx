@@ -21,7 +21,7 @@ function BaseComponent({
   handleLiveSwitchChange,
   toolsSlot,
   movable,
-  height,
+  // height,
 }) {
   /** Handler for the widget settings modal */
   const [openSettings, setOpenSettings] = useState(false);
@@ -29,9 +29,10 @@ function BaseComponent({
   /** Ref to obtain the height of header to subtract from whole component height */
   const headerRef = useRef(null);
 
+  /** Detect when people use the live switch button */
   useEffect(() => {
     handleLiveSwitchChange(true);
-  }, []);
+  }, [handleLiveSwitchChange]);
 
   return (
     <div>
@@ -48,52 +49,64 @@ function BaseComponent({
         {formItems}
       </ComponentSettings>
 
-      <div className={`sticky top-0 z-50 flex justify-between px-3 py-2 dragHandle z-0 ${movable ? 'cursor-move' : ''}`} ref={headerRef}>
-        <div className="flex flex-row flex-shrink-0">
-          {showStatus ? (
-            <div style={{ marginTop: '0.2em' }}>
-              <Badge status={status} />
-            </div>
-          ) : null}
+      <div className={`sticky top-0 z-50 flex justify-between px-3 py-2 dragHandle z-0 component-color ${movable ? 'cursor-move' : ''}`} ref={headerRef}>
+        <div className="flex justify-between w-full">
+          <div className="flex">
+            {showStatus ? (
+              <div style={{ marginTop: '0.2em' }}>
+                <Badge status={status} />
+              </div>
+            ) : null}
 
-          <div>
+            {/* Title */}
             <div className="font-bold text-base">
               {name}
             </div>
+          </div>
 
-            <div className="text-gray-600 text-sm preventDragHandle cursor-auto">
-              {subheader}
+          {/* Settings / buttons for component */}
+          <div>
+            {!liveOnly ? (
+              <span>
+                <Switch
+                  checkedChildren="Live"
+                  unCheckedChildren="Past"
+                  defaultChecked
+                  onChange={(checked) => handleLiveSwitchChange(checked)}
+                />
+                &nbsp;
+                &nbsp;
+              </span>
+            ) : null}
+
+            <div>
+              {
+                toolsSlot
+              }
+
+              &nbsp;
+
+              {formItems ? (
+                <Button size="small" onClick={() => setOpenSettings(true)}>
+                  <Icon type="setting" />
+                </Button>
+              ) : null}
             </div>
           </div>
         </div>
-
-        <div className="flex-shrink-0">
-          {!liveOnly ? (
-            <span>
-              <Switch
-                checkedChildren="Live"
-                unCheckedChildren="Past"
-                defaultChecked
-                onChange={(checked) => handleLiveSwitchChange(checked)}
-              />
-              &nbsp;
-              &nbsp;
-            </span>
-          ) : null}
-
-          {
-            toolsSlot ? { toolsSlot } : null
-          }
-
-          {formItems ? (
-            <Button size="small" onClick={() => setOpenSettings(true)}>
-              <Icon type="setting" />
-            </Button>
-          ) : null}
-        </div>
       </div>
 
-      <div className="px-4 py-1 overflow-y-auto" style={{ height: headerRef && headerRef.current ? height - headerRef.current.clientHeight : height }}>
+      {/* A description */}
+      <div className="text-gray-600 text-sm preventDragHandle cursor-auto px-3 pb-2">
+        {subheader}
+      </div>
+
+      {/* <div className="px-4 py-1 overflow-y-auto"
+      style={{ height: headerRef && headerRef.current ?
+      height - headerRef.current.clientHeight : height }}> */}
+
+      {/* Main content of component */}
+      <div className="px-4 py-1 overflow-y-scroll">
         {children}
       </div>
     </div>
@@ -132,7 +145,7 @@ BaseComponent.propTypes = {
   /** Draggable layout component */
   movable: PropTypes.bool,
   /** Height to control child content */
-  height: PropTypes.number,
+  // height: PropTypes.number,
 };
 
 BaseComponent.defaultProps = {
@@ -147,7 +160,7 @@ BaseComponent.defaultProps = {
   formItems: null,
   toolsSlot: null,
   movable: true,
-  height: 100,
+  // height: 100,
 };
 
 export default BaseComponent;

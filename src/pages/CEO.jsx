@@ -66,7 +66,7 @@ function CEO() {
 
         // Check if node was previously added; if not, append to array.
         // Also check if it has agent cpu running
-        if (!currentNodes.includes(node) && state.hasOwnProperty(`${node}:cpu`)) {
+        if (!currentNodes.includes(node) && Object.prototype.hasOwnProperty.call(state, `${node}:cpu`)) {
           currentNodes.push(node);
         }
       });

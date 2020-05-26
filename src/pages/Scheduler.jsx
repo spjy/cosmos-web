@@ -67,6 +67,7 @@ function Scheduler() {
 
         // Check if node was previously added; if not, append to array.
         // Also check if it has agent cpu running
+        // eslint-disable-next-line
         if (!currentNodes.includes(node) && state.hasOwnProperty(`${node}:cpu`)) {
           currentNodes.push(node);
         }

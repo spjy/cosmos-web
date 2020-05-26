@@ -1,7 +1,7 @@
 {
   "name": "cosmos-web",
   "description": "A web application to visualize data from the COSMOS ecosystem.",
-  "version": "1.0.0",
+  "version": "0.0.2",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
@@ -18,7 +18,7 @@
     "babylonjs": "4.0.3",
     "babylonjs-loaders": "4.0.3",
     "cesium": "1.59.0",
-    "date-fns": "^2.12.0",
+    "file-saver": "^2.0.2",
     "interactjs": "^1.6.3",
     "moment": "latest",
     "moment-timezone": "0.5.28",

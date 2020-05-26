@@ -2,7 +2,9 @@ import React, {
   useState, useEffect, useReducer, useRef,
 } from 'react';
 import PropTypes from 'prop-types';
-import { message, Typography, Icon } from 'antd';
+import {
+  message, Typography, Icon, PageHeader,
+} from 'antd';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
@@ -17,7 +19,6 @@ import routes from '../routes';
 
 import AsyncComponent from '../components/AsyncComponent';
 import LayoutSelector from '../components/LayoutSelector';
-import BaseComponent from '../components/BaseComponent';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -64,6 +65,7 @@ function Dashboard({
       }
     };
 
+    /** Update statuses on error/connection */
     live.onclose = () => {
       setSocketStatus('error');
     };
@@ -127,43 +129,39 @@ function Dashboard({
 
   return (
     <div className="mt-5 mx-16 mb-16">
-      <div className="flex">
-        <div className="w-1/2 shadow overflow-y-auto rounded component-color">
-          <BaseComponent
-            name="Layout Selection"
-            movable={false}
-          >
-            <LayoutSelector
-              path={path}
-              selectLayout={(value) => selectLayout(value)}
-            />
-          </BaseComponent>
-        </div>
-        <div className="w-1/2 ml-3 shadow overflow-y-auto rounded component-color">
-          <BaseComponent
-            name="Socket Status"
-            movable={false}
-          >
-            <Typography.Text type="secondary">
-              {
-                socketStatus === 'success'
-                  ? (
-                    <span>
-                      <Icon type="check-circle" theme="twoTone" twoToneColor="#52c41a" />
-                      &nbsp;Connected and operational.
-                    </span>
-                  )
-                  : (
-                    <span>
-                      <Icon type="close-circle" theme="twoTone" twoToneColor="#d80000" />
-                      &nbsp;&nbsp;No connection available. Attempting to reconnect.
-                    </span>
-                  )
-              }
-            </Typography.Text>
-          </BaseComponent>
-        </div>
-      </div>
+      <PageHeader
+        className="component-color sticky z-10"
+        style={{
+          border: '1px solid rgb(235, 237, 240)',
+          top: 1,
+        }}
+        title="Tools"
+        subTitle={(
+          <Typography.Text type="secondary">
+            {
+              socketStatus === 'success'
+                ? (
+                  <span>
+                    <Icon type="check-circle" theme="twoTone" twoToneColor="#52c41a" />
+                    &nbsp;Socket is connected and operational.
+                  </span>
+                )
+                : (
+                  <span>
+                    <Icon type="close-circle" theme="twoTone" twoToneColor="#d80000" />
+                    &nbsp;&nbsp;No connection available. Attempting to reconnect.
+                  </span>
+                )
+            }
+          </Typography.Text>
+        )}
+        extra={(
+          <LayoutSelector
+            path={path}
+            selectLayout={(value) => selectLayout(value)}
+          />
+        )}
+      />
       <Context.Provider value={{ state, dispatch }}>
         <ResponsiveGridLayout
           className="layout"
@@ -186,7 +184,7 @@ function Dashboard({
                 .filter((layout) => layout && layout.i && layout.component && layout.component.name)
                 .map((layout, i) => (
                   <div
-                    className="shadow overflow-hidden rounded component-color"
+                    className="shadow overflow-y-scroll rounded component-color"
                     ref={(el) => {
                       componentRefs.current[i] = el;
                     }}

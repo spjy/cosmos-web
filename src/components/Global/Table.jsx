@@ -24,8 +24,8 @@ function Table({
           }
         </tr>
         {
-          data.map((row, i) => (
-            <tr key={i}>
+          data.map((row) => (
+            <tr key={row}>
               {columns.map(({ key }) => (
                 <td>{row[key]}</td>
               ))}

@@ -2,9 +2,11 @@ import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Form, Input, InputNumber, DatePicker, Button, Switch, Collapse, Divider, Select,
+  Form, Input, InputNumber, DatePicker, Button, Switch, Collapse, Divider, Select, Icon,
 } from 'antd';
 import Plot from 'react-plotly.js';
+import { saveAs } from 'file-saver';
+import moment from 'moment-timezone';
 
 import BaseComponent from '../BaseComponent';
 import { Context } from '../../store/neutron1';
@@ -74,6 +76,53 @@ function Chart({
   const [retrievePlotHistory, setRetrievePlotHistory] = useState(null);
   /** Plot data storage */
   const [plotsState, setPlotsState] = useState(plots);
+
+  /**
+   * Use object with keyed time
+   * Nested object with key y and value x
+   */
+  const downloadDataAsCSV = () => {
+    const xValues = {}; // to store keyed values
+    const yValues = []; // to store dates
+
+    // Get possible y values
+    plotsState.forEach((plot) => {
+      plot.x.forEach((x, i) => {
+        xValues[x] = {
+          ...xValues[x],
+          [plot.YDataKey]: plot.y[i],
+        };
+      });
+
+      yValues.push(plot.YDataKey);
+    });
+
+    // Sort according to date
+    const sortedKeys = Object.keys(xValues).sort();
+
+    // Convert each date object to array
+    sortedKeys.forEach((key) => {
+      // Save values
+      const values = xValues[key];
+
+      // Convert to array without value keys
+      xValues[key] = Object.entries(values).map(([, value]) => value);
+    });
+
+    // Create blob to download file
+    const blob = new Blob(
+      [
+        [
+          ['mjd', 'time', ...yValues].join(','), // columns
+          Object.entries(xValues).map(([key, value]) => [(moment(key).unix() / 86400.0) + 2440587.5 - 2400000.5, key, ...value].join(',')).join('\n'), // rows
+        ].join('\n'),
+      ],
+      { type: 'text/csv' },
+    );
+
+    // Save csv to computer, named by chart title and date now
+    saveAs(blob, `${name.replace(/ /g, '-').toLowerCase()}-${new Date(Date.now()).toISOString()}.csv`);
+  };
 
   /** Initialize form slots for each plot to avoid crashing */
   useEffect(() => {
@@ -145,7 +194,7 @@ function Chart({
             + 2440587.5 - 2400000.5;
 
           query.send(
-            `database=agent_dump?collection=${plotsState[retrievePlotHistory].nodeProcess}?multiple=true?query={"utc": { "$gt": ${from}, "$lt": ${to} }}`,
+            `database=${process.env.MONGODB_COLLECTION}?collection=${plotsState[retrievePlotHistory].nodeProcess}?multiple=true?query={"utc": { "$gt": ${from}, "$lt": ${to} }}`,
           );
         }
 
@@ -172,14 +221,11 @@ function Chart({
               layout.datarevision += 1;
               setDataRevision(dataRevision + 1);
             });
-
-            query.close();
-
-            // Reset state to null to allow for detection of future plot history requests
-            setRetrievePlotHistory(null);
           } catch (err) {
             console.log(err);
           }
+          // Reset state to null to allow for detection of future plot history requests
+          setRetrievePlotHistory(null);
         };
       }
     }
@@ -194,10 +240,7 @@ function Chart({
             plotsState.length === 0 ? 'No charts to display.' : null
           }
           {
-            plotsState.length > 0 ? <Divider type="vertical" /> : null
-          }
-          {
-            plotsState.map((plot) => (
+            plotsState.map((plot, i) => (
               <span key={`${plot.nodeProcess}${plot.YDataKey}`}>
                 <span
                   className="inline-block rounded-full mr-2 indicator"
@@ -215,7 +258,10 @@ function Chart({
                 </span>
                 &nbsp;-&nbsp;
                 {plot.YDataKey}
-                <Divider type="vertical" />
+
+                {
+                  plotsState.length - 1 === i ? null : <Divider type="vertical" />
+                }
               </span>
             ))
           }
@@ -223,6 +269,11 @@ function Chart({
       )}
       liveOnly
       height={height}
+      toolsSlot={(
+        <Button size="small" onClick={() => downloadDataAsCSV()}>
+          <Icon type="download" />
+        </Button>
+      )}
       formItems={(
         <Form layout="vertical">
           <Form.Item
@@ -420,7 +471,7 @@ function Chart({
                   });
                 }
               }}
-              defaultValue={processXDataKey ? processXDataKey.toString().replace(/^[^{]*{\s*/, '').replace(/\s*}[^}]*$/, '') : 'return x;'}
+              defaultValue={processXDataKey ? processXDataKey.toString().replace(/^(.+\s?=>\s?)/, 'return ') : 'return x;'}
             />
           </Form.Item>
 
@@ -740,13 +791,13 @@ function Chart({
                       showTime
                       format="YYYY-MM-DD HH:mm:ss"
                       disabled={form[i] && form[i].live}
-                      onChange={(moment) => setForm({
+                      onChange={(m) => setForm({
                         ...form,
                         [i]: {
                           ...form[i],
                           dateRange: {
                             ...form[i].dateRange,
-                            value: moment,
+                            value: m,
                           },
                         },
                       })}
@@ -1076,7 +1127,7 @@ function Chart({
                           });
                         }
                       }}
-                      defaultValue={plot.processYDataKey ? plot.processYDataKey.toString().replace(/^[^{]*{\s*/, '').replace(/\s*}[^}]*$/, '') : 'return x;'}
+                      defaultValue={plot.processYDataKey ? plot.processYDataKey.toString().replace(/^(.+\s?=>\s?)/, 'return ') : 'return x;'}
                     />
                   </Form.Item>
 
@@ -1158,13 +1209,13 @@ function Chart({
                   showTime
                   format="YYYY-MM-DD HH:mm:ss"
                   disabled={form.newValue.live}
-                  onChange={(moment) => setForm({
+                  onChange={(m) => setForm({
                     ...form,
                     newValue: {
                       ...form.newValue,
                       dateRange: {
                         ...form.newValue.dateRange,
-                        value: moment,
+                        value: m,
                       },
                     },
                   })}
@@ -1492,7 +1543,7 @@ function Chart({
                       setForm({ ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], changed: false, help: 'You must return at least the variable "x".' } } });
                     }
                   }}
-                  value={form.newValue.processYDataKey && form.newValue.processYDataKey.value ? form.newValue.processYDataKey.value.toString().replace(/^[^{]*{\s*/, '').replace(/\s*}[^}]*$/, '') : ''}
+                  value={form.newValue.processYDataKey && form.newValue.processYDataKey.value ? form.newValue.processYDataKey.value.toString().replace(/^(.+\s?=>\s?)/, 'return ') : ''}
                 />
               </Form.Item>
 

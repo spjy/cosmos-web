@@ -40,12 +40,12 @@ function Status({
           {
             list.map(({
               node, count, files,
-            }, i) => (
+            }) => (
               count > 0
                 ? files.map(({
                   name, bytes, size,
                 }) => (
-                  <tr key={node + name + i}>
+                  <tr key={node + name + count + size}>
                     <td>
                       <Badge status={bytes / size < 1 ? 'processing' : 'success'} />
                     </td>

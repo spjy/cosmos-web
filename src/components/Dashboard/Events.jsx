@@ -109,7 +109,7 @@
 // export default Events;
 
 import React, { Component } from 'react';
-import moment from 'moment';
+// import moment from 'moment';
 
 import Timeline from 'react-calendar-timeline';
 import 'react-calendar-timeline/lib/Timeline.css';
@@ -128,68 +128,68 @@ const keys = {
 };
 
 export default class App extends Component {
-  constructor(props) {
-    super(props);
+  // constructor(props) {
+  //   super(props);
 
-    const defaultTimeStart = moment()
-      .startOf('day')
-      .toDate();
-    const defaultTimeEnd = moment()
-      .startOf('day')
-      .add(1, 'day')
-      .toDate();
+  //   const defaultTimeStart = moment()
+  //     .startOf('day')
+  //     .toDate();
+  //   const defaultTimeEnd = moment()
+  //     .startOf('day')
+  //     .add(1, 'day')
+  //     .toDate();
 
-    this.state = {
-      groups: [
-        {
-          id: 1, title: 'Celestial Events', stackItems: true,
-        },
-        {
-          id: 'Mission Plan', title: 'Mission Plan', stackItems: true,
-        },
-      ],
-      items: [
-        {
-          id: 1,
-          group: 1,
-          title: 'Umbra Time',
-          start_time: moment().add(2, 'hour'),
-          end_time: moment().add(3, 'hour'),
-          canMove: true,
-          canResize: true,
-        },
-        {
-          id: 2,
-          group: 'Celestial Events',
-          title: 'Sunset',
-          start_time: moment().add(2, 'hour'),
-          end_time: moment().add(4, 'hour'),
-          canMove: true,
-          canResize: true,
-        },
-        // {
-        //   id: 3,
-        //   group: 'Mission Plan',
-        //   title: 'Soak',
-        //   start_time: moment().add(2, 'hour'),
-        //   end_time: moment().add(3, 'hour'),
-        //   canMove: false,
-        //   canResize: true,
-        // },
-        {
-          id: 4,
-          group: 1,
-          title: 'item 33',
-          start_time: moment().add(2.5, 'hour'),
-          end_time: moment().add(3, 'hour'),
-          canMove: true,
-          canResize: true,
-        },
-      ],
-      defaultTimeStart,
-      defaultTimeEnd,
-    };
-  }
+  //   this.state = {
+  //     groups: [
+  //       {
+  //         id: 1, title: 'Celestial Events', stackItems: true,
+  //       },
+  //       {
+  //         id: 'Mission Plan', title: 'Mission Plan', stackItems: true,
+  //       },
+  //     ],
+  //     items: [
+  //       {
+  //         id: 1,
+  //         group: 1,
+  //         title: 'Umbra Time',
+  //         start_time: moment().add(2, 'hour'),
+  //         end_time: moment().add(3, 'hour'),
+  //         canMove: true,
+  //         canResize: true,
+  //       },
+  //       {
+  //         id: 2,
+  //         group: 'Celestial Events',
+  //         title: 'Sunset',
+  //         start_time: moment().add(2, 'hour'),
+  //         end_time: moment().add(4, 'hour'),
+  //         canMove: true,
+  //         canResize: true,
+  //       },
+  //       // {
+  //       //   id: 3,
+  //       //   group: 'Mission Plan',
+  //       //   title: 'Soak',
+  //       //   start_time: moment().add(2, 'hour'),
+  //       //   end_time: moment().add(3, 'hour'),
+  //       //   canMove: false,
+  //       //   canResize: true,
+  //       // },
+  //       {
+  //         id: 4,
+  //         group: 1,
+  //         title: 'item 33',
+  //         start_time: moment().add(2.5, 'hour'),
+  //         end_time: moment().add(3, 'hour'),
+  //         canMove: true,
+  //         canResize: true,
+  //       },
+  //     ],
+  //     defaultTimeStart,
+  //     defaultTimeEnd,
+  //   };
+  // }
 
   handleItemMove = (itemId, dragTime, newGroupOrder) => {
     const { items, groups } = this.state;
