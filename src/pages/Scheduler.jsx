@@ -78,10 +78,7 @@ function Scheduler() {
 
   return (
     <Context.Provider value={{ state, dispatch }}>
-      <Events />
-      <div className="mt-5 mx-16 mb-16">
-        Scheduler
-      </div>
+      <Calendar/>
     </Context.Provider>
   );
 }
