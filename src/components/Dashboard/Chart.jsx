@@ -471,7 +471,7 @@ function Chart({
                   });
                 }
               }}
-              defaultValue={processXDataKey ? processXDataKey.toString().replace(/^(.+\s?=>\s?)/, 'return ') : 'return x;'}
+              defaultValue={processXDataKey ? processXDataKey.toString().replace(/^(.+\s?=>\s?)/, 'return ').replace(/^(\s*function\s*.*\([\s\S]*\)\s*{)([\s\S]*)(})/, '$2').trim() : 'return x;'}
             />
           </Form.Item>
 
@@ -1127,7 +1127,7 @@ function Chart({
                           });
                         }
                       }}
-                      defaultValue={plot.processYDataKey ? plot.processYDataKey.toString().replace(/^(.+\s?=>\s?)/, 'return ') : 'return x;'}
+                      defaultValue={plot.processYDataKey ? plot.processYDataKey.toString().replace(/^(.+\s?=>\s?)/, 'return ').replace(/^(\s*function\s*.*\([\s\S]*\)\s*{)([\s\S]*)(})/, '$2').trim() : 'return x;'}
                     />
                   </Form.Item>
 
@@ -1543,7 +1543,7 @@ function Chart({
                       setForm({ ...form, newValue: { ...form.newValue, [item]: { ...form.newValue[item], changed: false, help: 'You must return at least the variable "x".' } } });
                     }
                   }}
-                  value={form.newValue.processYDataKey && form.newValue.processYDataKey.value ? form.newValue.processYDataKey.value.toString().replace(/^(.+\s?=>\s?)/, 'return ') : ''}
+                  value={form.newValue.processYDataKey && form.newValue.processYDataKey.value ? form.newValue.processYDataKey.value.toString().replace(/^(.+\s?=>\s?)/, 'return ').replace(/^(\s*function\s*\(.*\)\s*{)([\s\S]*)(})/, '$2').trim() : ''}
                 />
               </Form.Item>
 

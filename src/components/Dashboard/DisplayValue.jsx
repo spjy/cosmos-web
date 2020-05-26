@@ -348,7 +348,7 @@ function DisplayValue({
                           });
                         }
                       }}
-                      defaultValue={displayValue.processDataKey ? displayValue.processDataKey.toString().replace(/^(.+\s?=>\s?)/, 'return ') : 'return x;'}
+                      defaultValue={displayValue.processDataKey ? displayValue.processDataKey.toString().replace(/^(.+\s?=>\s?)/, 'return ').replace(/^(\s*function\s*.*\([\s\S]*\)\s*{)([\s\S]*)(})/, '$2').trim() : 'return x;'}
                     />
                   </Form.Item>
 
@@ -579,7 +579,8 @@ function DisplayValue({
                       [item]: {
                         ...form.newChart[item],
                         value,
-                        changed: false,
+                        plaintext: value,
+                        changed: true,
                       },
                     },
                   })}
@@ -591,8 +592,7 @@ function DisplayValue({
                           ...form.newChart,
                           [item]: {
                             ...form.newChart[item],
-                            // eslint-disable-next-line
-                            value: new Function('x', value),
+                            value,
                             changed: true,
                             help: null,
                           },
@@ -612,7 +612,7 @@ function DisplayValue({
                       });
                     }
                   }}
-                  value={form.newChart.processDataKey && form.newChart.processDataKey.value ? form.newChart.processDataKey.value.toString().replace(/^(.+\s?=>\s?)/, 'return ') : ''}
+                  value={form.newChart.processDataKey && form.newChart.processDataKey.value ? form.newChart.processDataKey.value : ''}
                 />
               </Form.Item>
 
@@ -691,7 +691,9 @@ function DisplayValue({
                     name: form.newChart.name && form.newChart.name.value ? form.newChart.name.value : '',
                     nodeProcess: form.newChart.nodeProcess.value,
                     dataKey: form.newChart.dataKey.value,
-                    processDataKey: form.newChart.processDataKey && form.newChart.processDataKey.value && (form.newChart.processDataKey.value.includes('return')) ? form.newChart.processDataKey.value : (x) => x,
+                    processDataKey: form.newChart.processDataKey && form.newChart.processDataKey.value && (form.newChart.processDataKey.value.includes('return'))
+                      ? new Function('x', form.newChart.processDataKey.value) // eslint-disable-line no-new-func
+                      : (x) => x,
                     unit: form.newChart.unit && form.newChart.unit.value ? form.newChart.unit.value : '',
                   });
 
