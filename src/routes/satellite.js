@@ -549,6 +549,13 @@ export default {
                     processDataKey: (x) => x.toFixed(2),
                   },
                   {
+                    name: 'CPU Utilization (%)',
+                    nodeProcess: 'beagle1:cpu',
+                    dataKey: 'cpu_utilization_000',
+                    unit: '',
+                    processDataKey: (x) => x.toFixed(2),
+                  },
+                  {
                     name: 'Max GiB',
                     nodeProcess: 'beagle1:cpu',
                     dataKey: 'device_cpu_maxgib_000',
@@ -676,8 +683,21 @@ export default {
                     marker: {
                       color: 'red',
                     },
-                    name: '1',
+                    name: 'Load',
                     YDataKey: 'device_cpu_load_000',
+                    processYDataKey: (y) => y,
+                    nodeProcess: 'beagle1:cpu',
+                    live: true,
+                  },
+                  {
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    marker: {
+                      color: 'blue',
+                    },
+                    name: 'Utilization',
+                    YDataKey: 'cpu_utilization_000',
                     processYDataKey: (y) => y,
                     nodeProcess: 'beagle1:cpu',
                     live: true,

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useReducer } from 'react';
 // import PropTypes from 'prop-types';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
+import MyScheduler from '../components/Calendar';
 
 import {
   Context, actions, reducer,
@@ -79,7 +80,7 @@ function Scheduler() {
 
   return (
     <Context.Provider value={{ state, dispatch }}>
-      <Calendar/>
+      <MyScheduler/>
     </Context.Provider>
   );
 }

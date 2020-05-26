@@ -6,7 +6,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 
 const localizer = momentLocalizer(moment);
 
-class App extends Component {
+export default class MyScheduler extends Component {
   state = {
     events: [
       {
@@ -34,5 +34,3 @@ class App extends Component {
     );
   }
 }
-
-export default App;
