@@ -168,10 +168,10 @@ function Chart({
 
         // Upon insertion, check if the length of y exceeds the data limit.
         // If so, shift (remove first array element) in x and y arrays
-
-        if (plotsState[i].y > dataLimitState) {
-          plotsState[i].x.shift();
-          plotsState[i].y.shift();
+        if (plotsState[i].y.length > dataLimitState) {
+          const currIndex = plotsState[i].x.length;
+          plotsState[i].x.splice(0, currIndex-dataLimitState);
+          plotsState[i].y.splice(0, currIndex-dataLimitState);
         }
 
         // Trigger the chart to update
@@ -361,7 +361,7 @@ function Chart({
                   },
                 });
 
-                setDataLimitState(value);
+                setDataLimitState(Number(value));
               }}
             />
           </Form.Item>
