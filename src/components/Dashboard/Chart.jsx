@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Form, Input, InputNumber, DatePicker, Button, Switch, Collapse, Divider, Select, Icon,
+  message, Form, Input, InputNumber, DatePicker, Button, Switch, Collapse, Divider, Select, Icon,
 } from 'antd';
 import Plot from 'react-plotly.js';
 import { saveAs } from 'file-saver';
@@ -132,6 +132,7 @@ function Chart({
         live: plotsState[i].live,
       };
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /** Handle new data incoming from the Context */
@@ -179,6 +180,7 @@ function Chart({
         setDataRevision(dataRevision + 1);
       }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
   /** Handle the collection of historical data */
@@ -222,13 +224,14 @@ function Chart({
               setDataRevision(dataRevision + 1);
             });
           } catch (err) {
-            console.log(err);
+            message.log(err);
           }
           // Reset state to null to allow for detection of future plot history requests
           setRetrievePlotHistory(null);
         };
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [retrievePlotHistory]);
 
   return (
