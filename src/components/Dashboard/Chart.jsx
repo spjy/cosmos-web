@@ -167,11 +167,11 @@ function Chart({
         }
 
         // Upon insertion, check if the length of y exceeds the data limit.
-        // If so, shift (remove first array element) in x and y arrays
-        if (plotsState[i].y.length > dataLimitState) {
-          const currIndex = plotsState[i].x.length;
-          plotsState[i].x.splice(0, currIndex-dataLimitState);
-          plotsState[i].y.splice(0, currIndex-dataLimitState);
+        // If so, shift out the #points in the graph - #data limit oldest values
+        const dataPoints = plotsState[i].y.length;
+        if (dataPoints > dataLimitState) {
+          plotsState[i].x.splice(0, dataPoints - dataLimitState);
+          plotsState[i].y.splice(0, dataPoints - dataLimitState);
         }
 
         // Trigger the chart to update
