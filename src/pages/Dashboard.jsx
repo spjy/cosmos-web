@@ -3,9 +3,11 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import {
-  message, Typography, Icon, PageHeader,
+  message, Typography, PageHeader,
 } from 'antd';
 import { Responsive, WidthProvider } from 'react-grid-layout';
+import { CheckCircleTwoTone, CloseCircleTwoTone } from '@ant-design/icons';
+
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
@@ -142,13 +144,13 @@ function Dashboard({
               socketStatus === 'success'
                 ? (
                   <span>
-                    <Icon type="check-circle" theme="twoTone" twoToneColor="#52c41a" />
+                    <CheckCircleTwoTone twoToneColor="#52c41a" />
                     &nbsp;Socket is connected and operational.
                   </span>
                 )
                 : (
                   <span>
-                    <Icon type="close-circle" theme="twoTone" twoToneColor="#d80000" />
+                    <CloseCircleTwoTone twoToneColor="#d80000" />
                     &nbsp;&nbsp;No connection available. Attempting to reconnect.
                   </span>
                 )
