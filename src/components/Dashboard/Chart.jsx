@@ -1532,8 +1532,7 @@ function Chart({
                           ...form.newValue,
                           [item]: {
                             ...form.newValue[item],
-                            // eslint-disable-next-line
-                            value: new Function('x', value),
+                            value,
                             changed: true,
                             help: null,
                           },
@@ -1640,7 +1639,9 @@ function Chart({
                       ? form.newValue.chartMode.value : null,
                     name: form.newValue.name && form.newValue.name.value ? form.newValue.name.value : '',
                     YDataKey: form.newValue.YDataKey.value,
-                    processYDataKey: form.newValue.processYDataKey && form.newValue.processYDataKey.value.includes('return') ? form.newValue.processYDataKey.value : (x) => x,
+                    processYDataKey: form.newValue.processYDataKey && form.newValue.processYDataKey.value.includes('return')
+                      ? new Function('x', form.newValue.processYDataKey.value) // eslint-disable-line no-new-func
+                      : (x) => x,
                     nodeProcess: form.newValue.nodeProcess.value,
                   });
 
