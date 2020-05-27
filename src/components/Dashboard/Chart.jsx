@@ -167,11 +167,11 @@ function Chart({
         }
 
         // Upon insertion, check if the length of y exceeds the data limit.
-        // If so, shift (remove first array element) in x and y arrays
-
-        if (plotsState[i].y > dataLimitState) {
-          plotsState[i].x.shift();
-          plotsState[i].y.shift();
+        // If so, shift out the #points in the graph - #data limit oldest values
+        const dataPoints = plotsState[i].y.length;
+        if (dataPoints > dataLimitState) {
+          plotsState[i].x.splice(0, dataPoints - dataLimitState);
+          plotsState[i].y.splice(0, dataPoints - dataLimitState);
         }
 
         // Trigger the chart to update
@@ -270,9 +270,15 @@ function Chart({
       liveOnly
       height={height}
       toolsSlot={(
-        <Button size="small" onClick={() => downloadDataAsCSV()}>
-          <Icon type="download" />
-        </Button>
+        <>
+          <strong>Data Limit:</strong>
+          &nbsp;
+          {dataLimitState}
+          &nbsp;
+          <Button size="small" onClick={() => downloadDataAsCSV()}>
+            <Icon type="download" />
+          </Button>
+        </>
       )}
       formItems={(
         <Form layout="vertical">
@@ -361,8 +367,9 @@ function Chart({
                   },
                 });
 
-                setDataLimitState(value);
+                setDataLimitState(Number(value));
               }}
+              defaultValue={dataLimitState}
             />
           </Form.Item>
 
@@ -1731,7 +1738,7 @@ Chart.propTypes = {
 
 Chart.defaultProps = {
   name: '',
-  dataLimit: 1000,
+  dataLimit: 5000,
   polar: false,
   plots: [],
   XDataKey: null,
