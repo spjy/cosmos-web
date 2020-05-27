@@ -2,11 +2,12 @@ import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Form, Input, InputNumber, DatePicker, Button, Switch, Collapse, Divider, Select, Icon,
+  Form, Input, InputNumber, DatePicker, Button, Switch, Collapse, Divider, Select,
 } from 'antd';
 import Plot from 'react-plotly.js';
 import { saveAs } from 'file-saver';
 import moment from 'moment-timezone';
+import { DownloadOutlined } from '@ant-design/icons';
 
 import BaseComponent from '../BaseComponent';
 import { Context } from '../../store/neutron1';
@@ -276,7 +277,7 @@ function Chart({
           {dataLimitState}
           &nbsp;
           <Button size="small" onClick={() => downloadDataAsCSV()}>
-            <Icon type="download" />
+            <DownloadOutlined />
           </Button>
         </>
       )}

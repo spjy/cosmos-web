@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Badge, Icon } from 'antd';
+import { Badge } from 'antd';
+import { CheckCircleTwoTone } from '@ant-design/icons';
+
 import DisplayValue from './DisplayValue';
 import BaseComponent from '../BaseComponent';
 
@@ -26,7 +28,7 @@ function Subsystem({
           </div>
           <div className="flex-col pl-3 pt-2">
             <div>
-              <Icon type="check-circle" theme="twoTone" twoToneColor="#52c41a" />
+              <CheckCircleTwoTone twoToneColor="#52c41a" />
               &nbsp;Nominal.
             </div>
           </div>
