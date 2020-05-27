@@ -270,9 +270,15 @@ function Chart({
       liveOnly
       height={height}
       toolsSlot={(
-        <Button size="small" onClick={() => downloadDataAsCSV()}>
-          <Icon type="download" />
-        </Button>
+        <>
+          <strong>Data Limit:</strong>
+          &nbsp;
+          {dataLimitState}
+          &nbsp;
+          <Button size="small" onClick={() => downloadDataAsCSV()}>
+            <Icon type="download" />
+          </Button>
+        </>
       )}
       formItems={(
         <Form layout="vertical">
@@ -363,6 +369,7 @@ function Chart({
 
                 setDataLimitState(Number(value));
               }}
+              defaultValue={dataLimitState}
             />
           </Form.Item>
 
@@ -1731,7 +1738,7 @@ Chart.propTypes = {
 
 Chart.defaultProps = {
   name: '',
-  dataLimit: 1000,
+  dataLimit: 5000,
   polar: false,
   plots: [],
   XDataKey: null,
