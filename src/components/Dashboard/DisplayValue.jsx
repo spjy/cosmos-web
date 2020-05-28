@@ -24,14 +24,16 @@ function DisplayValue({
   /** Accessing the neutron1 messages from the socket */
   const { state } = useContext(Context);
 
-  const [newForm] = Form.useForm();
-  const [editForm] = Form.useForm();
-  /** Storage for form values */
+  /** Storage for global form values */
   const [displayValuesForm] = Form.useForm();
+  /** Form for adding new values */
+  const [newForm] = Form.useForm();
+  /** Form for editing values */
+  const [editForm] = Form.useForm();
 
   /** The state that manages the component's title */
   const [nameState, setNameState] = useState(name);
-
+  /** Initial form values for editForm */
   const [initialValues, setInitialValues] = useState({});
 
   /** Store the display values here */
@@ -41,6 +43,7 @@ function DisplayValue({
   useEffect(() => {
     let accumulate = {};
 
+    // Initialize form values for each value
     displayValues.forEach(({
       name: nameVal, nodeProcess, dataKey, processDataKey, unit,
     }, i) => {
@@ -105,6 +108,7 @@ function DisplayValue({
     processDataKey,
     unit,
   }) => {
+    // Append new value to array
     const displayValuesCopy = displayValuesState;
 
     displayValuesCopy.push({
@@ -119,6 +123,7 @@ function DisplayValue({
 
     setDisplayValuesState(displayValuesCopy);
 
+    // Set new value default form values
     const newIndex = displayValuesCopy.length - 1;
 
     editForm.setFieldsValue({
@@ -129,6 +134,7 @@ function DisplayValue({
       [`unit_${newIndex}`]: unit,
     });
 
+    // Clear form
     newForm.resetFields();
   };
 
