@@ -195,11 +195,11 @@ const Commands = React.memo(({
     if (allCommands[0] === `➜`) {
       allCommands.splice(0, 1);
       const time = allCommands.splice(0, 1);
-      return <div key={i}>➜ <span style={{color: '#000000'}}>{ time }</span> { allCommands } </div>;
+      return <div key={i}>➜ <span style={{color: '#000000'}}>{ time }</span> { allCommands.join(' ') } </div>;
     }
     else {
       const time = allCommands.splice(0, 1);
-      return <div key={i}><span style={{color: '#000000'}}>{ time }</span> { allCommands } </div>;
+      return <div key={i}><span style={{color: '#000000'}}>{ time }</span> { allCommands.join(' ') } </div>;
     }
   }
 
@@ -238,7 +238,7 @@ const Commands = React.memo(({
         </div> */}
         <div className="w-full py-2">
           <Search
-            placeholder="Select <node>:<process>"
+            placeholder="Select node:process"
             onSearch={(value) => setSelectedAgent(value.split(':'))}
             enterButton={<SelectOutlined />}
           />
