@@ -7,12 +7,14 @@ import {
   Input, Select, Tooltip, message,
 } from 'antd';
 import { SelectOutlined, CloseOutlined } from '@ant-design/icons';
+import moment from 'moment';
 
 import Search from 'antd/lib/input/Search';
 
 import { Context } from '../../store/neutron1';
 import BaseComponent from '../BaseComponent';
 import { socket } from '../../socket';
+
 
 const ws = socket('query', '/command/');
 // const live = socket('live', '/live/list');
@@ -89,12 +91,12 @@ const Commands = React.memo(({
         if (jsonOutput) {
           setCommandHistory([
             ...commandHistory,
-            JSON.stringify(jsonOutput, null, 2),
+            `${moment().toISOString()} ${jsonOutput}`,
           ]);
         } else {
           setCommandHistory([
             ...commandHistory,
-            JSON.stringify(json.output, null, 2),
+            `${moment().toISOString()} ${json.output}`,
           ]);
         }
 
@@ -123,13 +125,13 @@ const Commands = React.memo(({
       ws.send(`${process.env.COSMOS_BIN}/agent ${commandArguments}`);
       setCommandHistory([
         ...commandHistory,
-        `➜ agent ${commandArguments}`,
+        `➜ ${moment().toISOString()} agent ${commandArguments}`,
       ]);
     } else {
       ws.send(`${process.env.COSMOS_BIN}/agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro ? `${state.macro} ` : ''}${commandArguments}`);
       setCommandHistory([
         ...commandHistory,
-        `➜ agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro ? `${state.macro} ` : ''}${commandArguments}`,
+        `➜ ${moment().toISOString()} agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro ? `${state.macro} ` : ''}${commandArguments}`,
       ]);
     }
 
@@ -188,6 +190,40 @@ const Commands = React.memo(({
     setUpdateLog(null);
   }, [updateLog]);
 
+  const colorTime = (command, i) => {
+    const allCommands = command.split(' ');
+
+    if (allCommands[0] === '➜') {
+      allCommands.splice(0, 1);
+      const time = allCommands.splice(0, 1);
+
+      return (
+        <div key={i}>
+          ➜&nbsp;
+          <span className="text-gray-600">
+            { time }
+          </span>
+          &nbsp;
+          { allCommands.join(' ') }
+        </div>
+      );
+    }
+
+    const time = allCommands.splice(0, 1);
+
+    return (
+      <div key={i}>
+        <span className="text-gray-600">
+          { time }
+        </span>
+        &nbsp;
+        {
+          allCommands.join(' ')
+        }
+      </div>
+    );
+  };
+
   return (
     <BaseComponent
       name="Commands"
@@ -235,7 +271,7 @@ const Commands = React.memo(({
       >
         {
           // eslint-disable-next-line
-          commandHistory.map((command, i) => (<div key={i}>{ command }</div>))
+          commandHistory.map((command, i) => (colorTime(command, i)))
         }
         {
           autocompletions.length > 1 ? <CloseOutlined onClick={() => setAutocompletions([])} className="text-red-500" /> : ''
