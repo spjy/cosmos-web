@@ -89,12 +89,12 @@ const Commands = React.memo(({
         if (jsonOutput) {
           setCommandHistory([
             ...commandHistory,
-            jsonOutput,
+            JSON.stringify(jsonOutput, null, 2),
           ]);
         } else {
           setCommandHistory([
             ...commandHistory,
-            json.output,
+            JSON.stringify(json.output, null, 2),
           ]);
         }
 
