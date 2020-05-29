@@ -2,12 +2,12 @@ import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Form, Input, InputNumber, DatePicker, Button, Switch, Collapse, Divider, Select, message,
+  Form, Input, InputNumber, DatePicker, Button, Switch, Collapse, Divider, Select, message, Tag,
 } from 'antd';
+import { ExclamationCircleOutlined, DownloadOutlined } from '@ant-design/icons';
 import Plot from 'react-plotly.js';
 import { saveAs } from 'file-saver';
 import moment from 'moment-timezone';
-import { DownloadOutlined } from '@ant-design/icons';
 
 import BaseComponent from '../BaseComponent';
 import { Context } from '../../store/neutron1';
@@ -421,9 +421,12 @@ function Chart({
       height={height}
       toolsSlot={(
         <>
-          <strong>Data Limit:</strong>
-          &nbsp;
-          {dataLimitState}
+          <Tag icon={<ExclamationCircleOutlined />} color="warning">
+            <strong>Data Limit:</strong>
+            &nbsp;
+            {dataLimitState}
+          </Tag>
+
           &nbsp;
           <Button size="small" onClick={() => downloadDataAsCSV()}>
             <DownloadOutlined />
