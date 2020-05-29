@@ -91,12 +91,12 @@ const Commands = React.memo(({
         if (jsonOutput) {
           setCommandHistory([
             ...commandHistory,
-            `${moment().format()} ${jsonOutput}`,
+            `${moment().toISOString()} ${jsonOutput}`,
           ]);
         } else {
           setCommandHistory([
             ...commandHistory,
-            `${moment().format()} ${json.output}`,
+            `${moment().toISOString()} ${json.output}`,
           ]);
         }
 
@@ -125,13 +125,13 @@ const Commands = React.memo(({
       ws.send(`${process.env.COSMOS_BIN}/agent ${commandArguments}`);
       setCommandHistory([
         ...commandHistory,
-        `➜ ${moment().format()} agent ${commandArguments}`,
+        `➜ ${moment().toISOString()} agent ${commandArguments}`,
       ]);
     } else {
       ws.send(`${process.env.COSMOS_BIN}/agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro ? `${state.macro} ` : ''}${commandArguments}`);
       setCommandHistory([
         ...commandHistory,
-        `➜ ${moment().format()} agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro ? `${state.macro} ` : ''}${commandArguments}`,
+        `➜ ${moment().toISOString()} agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro ? `${state.macro} ` : ''}${commandArguments}`,
       ]);
     }
 
@@ -195,11 +195,11 @@ const Commands = React.memo(({
     if (allCommands[0] === `➜`) {
       allCommands.splice(0, 1);
       const time = allCommands.splice(0, 1);
-      return <div key={i}>➜ <span style={{color: '#000000'}}>{ time }</span> { allCommands.join(' ') } </div>;
+      return <div key={i}><span style={{color: '#000000'}}>➜</span> { time } <span style={{color: '#000000'}}>{ allCommands.join(' ') }</span></div>;
     }
     else {
       const time = allCommands.splice(0, 1);
-      return <div key={i}><span style={{color: '#000000'}}>{ time }</span> { allCommands.join(' ') } </div>;
+      return <div key={i}>{ time } <span style={{color: '#000000'}}>{ allCommands.join(' ') }</span></div>;
     }
   }
 
