@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Form } from 'antd';
+import { Modal } from 'antd';
 
 /**
  * The component containing the modal and form for setting settings for widgets.
@@ -55,6 +55,4 @@ ComponentSettings.defaultProps = {
   children: [],
 };
 
-const SettingsForm = Form.create({ name: 'horizontal_login' })(ComponentSettings);
-
-export default SettingsForm;
+export default ComponentSettings;

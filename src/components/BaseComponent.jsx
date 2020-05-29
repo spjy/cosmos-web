@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  Icon, Switch, Button, Badge,
+  Switch, Button, Badge,
 } from 'antd';
 import PropTypes from 'prop-types';
+import { SettingOutlined } from '@ant-design/icons';
 
 import ComponentSettings from './ComponentSettings';
 
@@ -88,7 +89,7 @@ function BaseComponent({
 
               {formItems ? (
                 <Button size="small" onClick={() => setOpenSettings(true)}>
-                  <Icon type="setting" />
+                  <SettingOutlined />
                 </Button>
               ) : null}
             </div>

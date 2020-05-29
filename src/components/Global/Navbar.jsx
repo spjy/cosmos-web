@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from '@reach/router';
-import { Menu, Icon } from 'antd';
+import { Menu } from 'antd';
+import { Icon } from '@ant-design/compatible';
 
 import routes from '../../routes';
 

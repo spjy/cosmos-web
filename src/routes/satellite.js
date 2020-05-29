@@ -85,12 +85,12 @@ export default {
             name: 'Globe',
             props: {
               name: 'Orbit',
-              dataKey: 'node_loc_pos_eci',
               orbits: [
                 {
                   name: 'neutron1',
                   modelFileName: 'cubesat1.glb',
                   nodeProcess: 'cubesat1:propagator_simple',
+                  dataKey: 'node_loc_pos_eci',
                   live: true,
                   position: [21.289373, 157.917480, 350000.0],
                   orientation: {
@@ -603,12 +603,12 @@ export default {
               name: 'Globe',
               props: {
                 name: 'Orbit',
-                dataKey: 'node_loc_pos_eci',
                 orbits: [
                   {
                     name: 'neutron1',
                     modelFileName: 'cubesat1.glb',
                     nodeProcess: 'cubesat1:propagator_simple',
+                    dataKey: 'node_loc_pos_eci',
                     live: true,
                     position: [21.289373, 157.917480, 350000.0],
                     orientation: {
@@ -1406,12 +1406,12 @@ export default {
               name: 'Globe',
               props: {
                 name: 'Orbit',
-                dataKey: 'node_loc_pos_eci',
                 orbits: [
                   {
                     name: 'neutron1',
                     modelFileName: 'cubesat1.glb',
                     nodeProcess: 'cubesat1:propagator_simple',
+                    dataKey: 'node_loc_pos_eci',
                     live: true,
                     position: [21.289373, 157.917480, 350000.0],
                     orientation: {

@@ -322,13 +322,13 @@ export default {
               name: 'Globe',
               props: {
                 name: 'Orbit',
-                dataKey: 'target_loc_pos_eci',
                 coordinateSystem: 'geodetic',
                 orbits: [
                   {
                     name: 'MASDR',
                     modelFileName: 'cubesat1.glb',
                     nodeProcess: 'masdr:nordiasoft',
+                    dataKey: 'target_loc_pos_eci',
                     live: true,
                     position: [21.289373, 157.917480, 350000.0],
                     geodetic: {
@@ -456,13 +456,13 @@ export default {
               name: 'Globe',
               props: {
                 name: 'Orbit',
-                dataKey: 'target_loc_pos_eci',
                 coordinateSystem: 'geodetic',
                 orbits: [
                   {
                     name: 'MASDR',
                     modelFileName: 'cubesat1.glb',
                     nodeProcess: 'masdr:nordiasoft',
+                    dataKey: 'target_loc_pos_eci',
                     live: true,
                     position: [21.289373, 157.917480, 350000.0],
                     geodetic: {
@@ -778,13 +778,13 @@ export default {
               name: 'Globe',
               props: {
                 name: 'Orbit',
-                dataKey: 'target_loc_pos_eci',
                 coordinateSystem: 'geodetic',
                 orbits: [
                   {
                     name: 'MASDR',
                     modelFileName: 'cubesat1.glb',
                     nodeProcess: 'masdr:nordiasoft',
+                    dataKey: 'target_loc_pos_eci',
                     live: true,
                     position: [21.289373, 157.917480, 350000.0],
                     geodetic: {
@@ -976,13 +976,13 @@ export default {
               name: 'Globe',
               props: {
                 name: 'Orbit',
-                dataKey: 'target_loc_pos_eci',
                 coordinateSystem: 'geodetic',
                 orbits: [
                   {
                     name: 'MASDR',
                     modelFileName: 'cubesat1.glb',
                     nodeProcess: 'masdr:nordiasoft',
+                    dataKey: 'target_loc_pos_eci',
                     live: true,
                     position: [21.289373, 157.917480, 350000.0],
                     geodetic: {

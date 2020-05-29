@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   message,
   Button,
-  Icon,
   Popover,
   Form,
   Select,
@@ -13,6 +12,8 @@ import {
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import Editor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs/components/prism-core';
+import { CloseOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+
 // eslint-disable-next-line
 import routes from '../routes';
 
@@ -84,7 +85,7 @@ function LayoutManager() {
           <Button
             type="link"
           >
-            <Icon type="close" />
+            <CloseOutlined />
           </Button>
         </Popconfirm>
       ),
@@ -214,12 +215,15 @@ function LayoutManager() {
           // Iterate through the keys in local storage and store in state for table
           Object.keys(json)
             .forEach((layout, i) => {
-              data.push({
-                key: i,
-                route,
-                name: layout,
-                configuration: JSON.stringify(json[layout]),
-              });
+              setData([
+                ...data,
+                {
+                  key: i,
+                  route,
+                  name: layout,
+                  configuration: JSON.stringify(json[layout]),
+                },
+              ]);
             });
         } catch (error) {
           message.error(error);
@@ -427,7 +431,7 @@ function LayoutManager() {
                   </div>
                 )}
               >
-                <Icon className="text-blue-500 cursor-pointer" type="question-circle" />
+                <QuestionCircleOutlined className="text-blue-500 cursor-pointer" />
               </Popover>
             </div>
           )}

@@ -2,8 +2,9 @@ import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Button, Popover, Icon, message,
+  Button, Popover, message,
 } from 'antd';
+import { QuestionOutlined } from '@ant-design/icons';
 
 import BaseComponent from '../BaseComponent';
 import { socket } from '../../socket';
@@ -118,7 +119,7 @@ function Sequence({
                   placement="topLeft"
                 >
                   <Button>
-                    <Icon type="question" />
+                    <QuestionOutlined />
                   </Button>
                 </Popover>
               </Button.Group>
