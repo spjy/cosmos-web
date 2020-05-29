@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import * as BABYLON from 'babylonjs';
+import { message } from 'antd';
 
 const canvas = HTMLCanvasElement;
 
@@ -25,7 +26,7 @@ class ThreeD extends Component {
         canvas: this.canvas,
       });
     } else {
-      console.error('onSceneMount function not available');
+      message.error('onSceneMount function not available');
     }
 
     // Resize the babylon engine when the window is resized

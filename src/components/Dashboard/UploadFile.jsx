@@ -60,7 +60,7 @@ function UploadFile({
 
           setFileContentUpload(result);
         } catch (error) {
-          console.log(error);
+          message.error(error);
         }
       }));
 
@@ -97,6 +97,7 @@ function UploadFile({
         };
       };
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fileContentUpload]);
 
   return (

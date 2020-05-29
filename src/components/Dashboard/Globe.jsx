@@ -99,6 +99,7 @@ function CesiumGlobe({
         live: orbitsState[i].live,
       };
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /** Retrieve live orbit data */
@@ -167,6 +168,7 @@ function CesiumGlobe({
         setOrbitsState(tempOrbit);
       }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
   /** Handle the collection of historical data */
@@ -260,6 +262,7 @@ function CesiumGlobe({
         };
       };
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [retrieveOrbitHistory]);
 
   return (

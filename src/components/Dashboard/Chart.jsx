@@ -152,9 +152,9 @@ function Chart({
         [`live_${i}`]: live,
         [`marker_${i}`]: marker.color,
       };
-    });
-
+    }
     setInitialValues(accumulate);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /** Handle new data incoming from the Context */
@@ -202,6 +202,7 @@ function Chart({
         setDataRevision(dataRevision + 1);
       }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
   /** Handle the collection of historical data */
@@ -260,7 +261,7 @@ function Chart({
               setDataRevision(dataRevision + 1);
             });
           } catch (err) {
-            console.log(err);
+            message.log(err);
           }
         };
 
@@ -273,6 +274,7 @@ function Chart({
         setRetrievePlotHistory(null);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [retrievePlotHistory]);
 
   /** Process edit value form */

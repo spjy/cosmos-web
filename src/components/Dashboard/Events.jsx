@@ -113,6 +113,7 @@ import React, { Component } from 'react';
 
 import Timeline from 'react-calendar-timeline';
 import 'react-calendar-timeline/lib/Timeline.css';
+import { message } from 'antd';
 
 const keys = {
   groupIdKey: 'id',
@@ -207,7 +208,7 @@ export default class App extends Component {
         : item)),
     });
 
-    console.log('Moved', itemId, dragTime, newGroupOrder);
+    message.error('Moved', itemId, dragTime, newGroupOrder);
   };
 
   handleItemResize = (itemId, time, edge) => {
@@ -223,7 +224,7 @@ export default class App extends Component {
         : item)),
     });
 
-    console.log('Resized', itemId, time, edge);
+    message.error('Resized', itemId, time, edge);
   };
 
   render() {

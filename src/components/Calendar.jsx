@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment-timezone';
 
@@ -6,8 +6,8 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 const localizer = momentLocalizer(moment);
 
-export default class MyScheduler extends Component {
-  state = {
+function MyScheduler() {
+  const state = {
     events: [
       {
         start: moment().toDate(),
@@ -19,18 +19,18 @@ export default class MyScheduler extends Component {
     ],
   };
 
-  render() {
-    return (
-      <div className="App">
-        <Calendar
-          localizer={localizer}
-          defaultDate={new Date()}
-          defaultView="month"
-          selectable
-          events={this.state.events}
-          style={{ height: '100vh' }}
-        />
-      </div>
-    );
-  }
+  return (
+    <div className="App">
+      <Calendar
+        localizer={localizer}
+        defaultDate={new Date()}
+        defaultView="month"
+        selectable
+        events={state.events}
+        style={{ height: '100vh' }}
+      />
+    </div>
+  );
 }
+
+export default MyScheduler;
