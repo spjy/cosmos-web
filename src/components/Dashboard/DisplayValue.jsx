@@ -52,7 +52,9 @@ function DisplayValue({
         [`name_${i}`]: nameVal,
         [`nodeProcess_${i}`]: nodeProcess,
         [`dataKey_${i}`]: dataKey,
-        [`processDataKey_${i}`]: processDataKey.toString().replace(/^(.+\s?=>\s?)/, 'return ').replace(/^(\s*function\s*.*\([\s\S]*\)\s*{)([\s\S]*)(})/, '$2').trim(),
+        [`processDataKey_${i}`]: processDataKey
+          ? processDataKey.toString().replace(/^(.+\s?=>\s?)/, 'return ').replace(/^(\s*function\s*.*\([\s\S]*\)\s*{)([\s\S]*)(})/, '$2').trim()
+          : 'return x',
         [`unit_${i}`]: unit,
       };
     });
@@ -123,7 +125,7 @@ function DisplayValue({
 
     setDisplayValuesState(displayValuesCopy);
 
-    // Set new value default form values
+    // Set edit value default form values
     const newIndex = displayValuesCopy.length - 1;
 
     editForm.setFieldsValue({
