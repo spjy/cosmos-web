@@ -7,6 +7,7 @@ import {
   Input, Select, Tooltip, message,
 } from 'antd';
 import { SelectOutlined, CloseOutlined } from '@ant-design/icons';
+import moment from 'moment';
 
 import Search from 'antd/lib/input/Search';
 
@@ -14,7 +15,6 @@ import { Context } from '../../store/neutron1';
 import BaseComponent from '../BaseComponent';
 import { socket } from '../../socket';
 
-import moment from 'moment';
 
 const ws = socket('query', '/command/');
 // const live = socket('live', '/live/list');
@@ -191,17 +191,38 @@ const Commands = React.memo(({
   }, [updateLog]);
 
   const colorTime = (command, i) => {
-    const allCommands = command.split(" ");
-    if (allCommands[0] === `➜`) {
+    const allCommands = command.split(' ');
+
+    if (allCommands[0] === '➜') {
       allCommands.splice(0, 1);
       const time = allCommands.splice(0, 1);
-      return <div key={i}><span style={{color: '#000000'}}>➜</span> { time } <span style={{color: '#000000'}}>{ allCommands.join(' ') }</span></div>;
+
+      return (
+        <div key={i}>
+          ➜&nbsp;
+          <span className="text-gray-600">
+            { time }
+          </span>
+          &nbsp;
+          { allCommands.join(' ') }
+        </div>
+      );
     }
-    else {
-      const time = allCommands.splice(0, 1);
-      return <div key={i}>{ time } <span style={{color: '#000000'}}>{ allCommands.join(' ') }</span></div>;
-    }
-  }
+
+    const time = allCommands.splice(0, 1);
+
+    return (
+      <div key={i}>
+        <span className="text-gray-600">
+          { time }
+        </span>
+        &nbsp;
+        {
+          allCommands.join(' ')
+        }
+      </div>
+    );
+  };
 
   return (
     <BaseComponent
