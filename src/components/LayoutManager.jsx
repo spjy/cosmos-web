@@ -215,12 +215,15 @@ function LayoutManager() {
           // Iterate through the keys in local storage and store in state for table
           Object.keys(json)
             .forEach((layout, i) => {
-              data.push({
-                key: i,
-                route,
-                name: layout,
-                configuration: JSON.stringify(json[layout]),
-              });
+              setData([
+                ...data,
+                {
+                  key: i,
+                  route,
+                  name: layout,
+                  configuration: JSON.stringify(json[layout]),
+                },
+              ]);
             });
         } catch (error) {
           console.log(error);
