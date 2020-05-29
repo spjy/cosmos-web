@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Form, Input, InputNumber, DatePicker, Button, Switch, Collapse, Divider, Select, message
+  Form, Input, InputNumber, DatePicker, Button, Switch, Collapse, Divider, Select, message,
 } from 'antd';
 import Plot from 'react-plotly.js';
 import { saveAs } from 'file-saver';
@@ -80,7 +80,7 @@ function Chart({
   const [plotsState, setPlotsState] = useState(plots);
   /** Variable to update to force component update */
   const [updateComponent, setUpdateComponent] = useState(false);
-
+  /** State to store switch denoting whether added value is live or not */
   const [addChartLive, setAddChartLive] = useState(true);
 
   /**
@@ -133,11 +133,6 @@ function Chart({
   /** Initialize form slots for each plot to avoid crashing */
   useEffect(() => {
     // Make an object for each plot's form
-    // for (let i = 0; i < plotsState.length; i += 1) {
-    //   form[i] = {
-    //     live: plotsState[i].live,
-    //   };
-    // }
     let accumulate = {};
 
     // Initialize form values for each value
@@ -213,23 +208,26 @@ function Chart({
   useEffect(() => {
     if (retrievePlotHistory !== null) {
       if (query.OPEN) {
-        const dates = editForm.getFieldsValue()[`dateRange_${retrievePlotHistory}`];
+        const fields = editForm.getFieldsValue();
+
+        const dates = fields[`dateRange_${retrievePlotHistory}`];
+        const YDataKey = fields[`YDataKey_${retrievePlotHistory}`];
 
         // Check to see if user chose a range of dates
         if (dates && dates.length === 2) {
           // Unix time to modified julian date
-          const from = (dates[0].unix() / 86400.0)
-            + 2440587.5 - 2400000.5;
-          const to = (dates[1].unix() / 86400.0)
-            + 2440587.5 - 2400000.5;
+          const from = (dates[0].unix() / 86400.0) + 2440587.5 - 2400000.5;
+          const to = (dates[1].unix() / 86400.0) + 2440587.5 - 2400000.5;
 
+          // Retrieve date and YDataKey fields from database, return only those keys
           query.send(
-            `database=${process.env.MONGODB_COLLECTION}?collection=${plotsState[retrievePlotHistory].nodeProcess}?multiple=true?query={"utc": { "$gt": ${from}, "$lt": ${to} }}`,
+            `database=${process.env.MONGODB_COLLECTION}?collection=${plotsState[retrievePlotHistory].nodeProcess}?multiple=true?query={"utc": { "$gt": ${from}, "$lt": ${to} }}?options={"projection": { "${XDataKeyState}": 1, "${YDataKey}": 1 }}`,
           );
 
           message.loading('Querying data...', 0);
         }
 
+        // Wait for response from query
         query.onmessage = ({ data }) => {
           try {
             const json = JSON.parse(data);
@@ -265,6 +263,12 @@ function Chart({
             console.log(err);
           }
         };
+
+        query.onerror = () => {
+          message.destroy();
+          message.error('Error has occurred.');
+        };
+
         // Reset state to null to allow for detection of future plot history requests
         setRetrievePlotHistory(null);
       }
@@ -297,7 +301,7 @@ function Chart({
           break;
       }
     } else if (form === 'editForm') {
-      // Copy display values to replace index and field value
+      // Update edit form values
       const fields = editForm.getFieldsValue();
 
       switch (field) {
@@ -312,7 +316,7 @@ function Chart({
           break;
       }
 
-      // Update state
+      // Update state since we mutate it by modifying plotsState
       setUpdateComponent(!updateComponent);
     }
   };
@@ -370,8 +374,6 @@ function Chart({
     newForm.resetFields();
 
     message.success('Created new chart value.');
-
-    console.log(newForm.getFieldsValue(), addChartLive, dateRange, newIndex);
 
     // Retrieve plot history
     if (!addChartLive) {
@@ -462,6 +464,7 @@ function Chart({
             </Form.Item>
           </Form>
 
+          {/* Edit existing values */}
           <Form
             form={editForm}
             layout="vertical"
@@ -641,22 +644,6 @@ function Chart({
           >
             <Collapse>
               <Panel header="Add Value" key="add">
-                {/* <Form.Item label="Historical Date Range" name={`daterange_${i}`} hasFeedback>
-                  <RangePicker
-                    className="mr-1"
-                    showTime
-                    format="YYYY-MM-DD HH:mm:ss"
-                    disabled={editForm && editForm.getFieldsValue()[`live${i}`]}
-                  />
-                  <Button
-                    type="primary"
-                    onClick={() => setRetrievePlotHistory(i)}
-                    disabled={editForm && editForm.getFieldsValue()[`live${i}`]}
-                  >
-                    Show
-                  </Button>
-                </Form.Item> */}
-
                 <Switch
                   checkedChildren="Live"
                   unCheckedChildren="Past"
