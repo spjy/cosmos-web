@@ -18,6 +18,7 @@ import {
 import { socket } from '../socket';
 // eslint-disable-next-line
 import routes from '../routes';
+import project from '../../package.json';
 
 import AsyncComponent from '../components/AsyncComponent';
 import LayoutSelector from '../components/LayoutSelector';
@@ -137,7 +138,7 @@ function Dashboard({
           border: '1px solid rgb(235, 237, 240)',
           top: 1,
         }}
-        title="Tools"
+        title={`Web ${project.version}`}
         subTitle={(
           <Typography.Text type="secondary">
             {
