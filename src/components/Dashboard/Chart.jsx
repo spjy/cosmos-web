@@ -2,9 +2,20 @@ import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Form, Input, InputNumber, DatePicker, Button, Switch, Collapse, Divider, Select, message, Tag,
+  Form,
+  Input,
+  InputNumber,
+  DatePicker,
+  Button,
+  Switch,
+  Collapse,
+  Divider,
+  Select,
+  message,
+  Tag,
+  Popconfirm,
 } from 'antd';
-import { ExclamationCircleOutlined, DownloadOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, DownloadOutlined, ClearOutlined } from '@ant-design/icons';
 import Plot from 'react-plotly.js';
 import { saveAs } from 'file-saver';
 import moment from 'moment-timezone';
@@ -128,6 +139,17 @@ function Chart({
 
     // Save csv to computer, named by chart title and date now
     saveAs(blob, `${name.replace(/ /g, '-').toLowerCase()}-${new Date(Date.now()).toISOString()}.csv`);
+  };
+
+  const clearAll = () => {
+    const emptyArr = plotsState.map((point) => {
+      // eslint-disable-next-line no-param-reassign
+      point.x = [];
+      // eslint-disable-next-line no-param-reassign
+      point.y = [];
+      return point;
+    });
+    setPlotsState(emptyArr);
   };
 
   /** Initialize form slots for each plot to avoid crashing */
@@ -431,6 +453,20 @@ function Chart({
           </Tag>
 
           &nbsp;
+
+          <Popconfirm
+            title="Are you sure you want to clear the chart of all values?"
+            onConfirm={() => clearAll()}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button size="small">
+              <ClearOutlined />
+            </Button>
+          </Popconfirm>
+
+          &nbsp;
+
           <Button size="small" onClick={() => downloadDataAsCSV()}>
             <DownloadOutlined />
           </Button>
