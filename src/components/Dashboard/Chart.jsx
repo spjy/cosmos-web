@@ -220,9 +220,9 @@ function Chart({
         // Upon insertion, check if the length of y exceeds the data limit.
         // If so, shift out the #points in the graph - #data limit oldest values
         const dataPoints = plotsState[i].y.length;
-        if (dataPoints > dataLimitState && dataLimitState !== -1) {
-          plotsState[i].x.splice(0, dataPoints - dataLimitState);
-          plotsState[i].y.splice(0, dataPoints - dataLimitState);
+        if (dataPoints >= dataLimitState && dataLimitState !== -1) {
+          plotsState[i].x.splice(0, dataPoints - dataLimitState + 1);
+          plotsState[i].y.splice(0, dataPoints - dataLimitState + 1);
         }
 
         // Trigger the chart to update
