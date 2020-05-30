@@ -471,7 +471,6 @@ function CesiumGlobe({
             </Collapse>
           </Form>
 
-
           <br />
 
           {/* Add forms */}
@@ -492,6 +491,9 @@ function CesiumGlobe({
                   checked={addOrbitLive}
                   onChange={() => setAddOrbitLive(!addOrbitLive)}
                 />
+
+                <br />
+                <br />
 
                 <Form.Item label="Historical Date Range" name="dateRange" hasFeedback>
                   <RangePicker
