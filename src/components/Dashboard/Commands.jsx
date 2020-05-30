@@ -7,7 +7,7 @@ import {
   Input, Select, Tooltip, message,
 } from 'antd';
 import { SelectOutlined, CloseOutlined } from '@ant-design/icons';
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 import Search from 'antd/lib/input/Search';
 
