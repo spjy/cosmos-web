@@ -2,7 +2,18 @@ import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Form, Input, InputNumber, DatePicker, Button, Switch, Collapse, Divider, Select, message, Tag,
+  Form,
+  Input,
+  InputNumber,
+  DatePicker,
+  Button,
+  Switch,
+  Collapse,
+  Divider,
+  Select,
+  message,
+  Tag,
+  Popconfirm,
 } from 'antd';
 import { ExclamationCircleOutlined, DownloadOutlined, ClearOutlined } from '@ant-design/icons';
 import Plot from 'react-plotly.js';
@@ -439,11 +450,22 @@ function Chart({
           </Tag>
 
           &nbsp;
+
+          <Popconfirm
+            title="Are you sure you want to clear the chart of all values?"
+            onConfirm={() => clearAll()}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button size="small">
+              <ClearOutlined />
+            </Button>
+          </Popconfirm>
+
+          &nbsp;
+
           <Button size="small" onClick={() => downloadDataAsCSV()}>
             <DownloadOutlined />
-          </Button>
-          <Button size="small" onClick={() => clearAll()}>
-            <ClearOutlined />
           </Button>
         </>
       )}
