@@ -220,16 +220,6 @@ const Commands = React.memo(({
     setUpdateLog(true);
   };
 
-  /** Get the possible requests for selected agent */
-  const getRequests = () => {
-    setSortedAgentRequests([]);
-    setAgentRequests({});
-
-    if (selectedAgent.length > 0) {
-      ws.send(`${process.env.COSMOS_BIN}/agent ${selectedAgent[0]} ${selectedAgent[1]} help_json`);
-    }
-  };
-
   /** Query for autocompleted paths */
   const getAutocomplete = (autocomplete) => {
     const complete = socket('query', '/command/');
@@ -259,10 +249,20 @@ const Commands = React.memo(({
       // Clear autocompletions once chosen the autocompeleted path
       setAutocompletions([]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autocompletions]);
 
   /** Watches for changes to selectedAgent. Then sends WS message to get list of commands. */
   useEffect(() => {
+    /** Get the possible requests for selected agent */
+    const getRequests = () => {
+      setSortedAgentRequests([]);
+      setAgentRequests({});
+
+      if (selectedAgent.length > 0) {
+        ws.send(`${process.env.COSMOS_BIN}/agent ${selectedAgent[0]} ${selectedAgent[1]} help_json`);
+      }
+    };
     getRequests();
   }, [selectedAgent]);
 

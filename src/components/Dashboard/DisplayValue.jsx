@@ -77,6 +77,7 @@ function DisplayValue({
         displayValuesState[i].utc = moment.unix((((state[v.nodeProcess].utc + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss');
       }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
   /** Process edit value form */

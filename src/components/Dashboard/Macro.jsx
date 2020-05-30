@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 
-import { Select, Button } from 'antd';
+import { message, Select, Button } from 'antd';
 
 import { Context, actions } from '../../store/neutron1';
 import { socket } from '../../socket';
@@ -27,7 +27,7 @@ function Macro({
   /** Store selected macro in React Context */
   useEffect(() => {
     dispatch(actions.get('macro', macro));
-  }, [macro]);
+  }, [macro, dispatch]);
 
   /**
    * Retrieve the possible macros from Nordiasoft applications
@@ -46,7 +46,7 @@ function Macro({
             setMacros(json.output.installed);
           }
         } catch (error) {
-          console.log(error);
+          message.error(error);
         }
 
         installed.close();

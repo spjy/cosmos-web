@@ -226,14 +226,14 @@ function LayoutManager() {
               ]);
             });
         } catch (error) {
-          console.log(error);
+          message.error(error);
         }
         return route;
       });
 
     // Store just route keys in state as well
     setRouteKeys(keys);
-  }, []);
+  }, [data]);
 
   return (
     <div>
