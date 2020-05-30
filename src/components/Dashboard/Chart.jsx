@@ -15,7 +15,12 @@ import {
   Tag,
   Popconfirm,
 } from 'antd';
-import { ExclamationCircleOutlined, DownloadOutlined, ClearOutlined } from '@ant-design/icons';
+import {
+  ExclamationCircleOutlined,
+  DownloadOutlined,
+  ClearOutlined,
+  CheckCircleOutlined,
+} from '@ant-design/icons';
 import Plot from 'react-plotly.js';
 import { saveAs } from 'file-saver';
 import moment from 'moment-timezone';
@@ -215,9 +220,9 @@ function Chart({
         // Upon insertion, check if the length of y exceeds the data limit.
         // If so, shift out the #points in the graph - #data limit oldest values
         const dataPoints = plotsState[i].y.length;
-        if (dataPoints > dataLimitState) {
-          plotsState[i].x.splice(0, dataPoints - dataLimitState);
-          plotsState[i].y.splice(0, dataPoints - dataLimitState);
+        if (dataPoints >= dataLimitState && dataLimitState !== -1) {
+          plotsState[i].x.splice(0, dataPoints - dataLimitState + 1);
+          plotsState[i].y.splice(0, dataPoints - dataLimitState + 1);
         }
 
         // Trigger the chart to update
@@ -446,11 +451,21 @@ function Chart({
       height={height}
       toolsSlot={(
         <>
-          <Tag icon={<ExclamationCircleOutlined />} color="warning">
-            <strong>Data Limit:</strong>
-            &nbsp;
-            {dataLimitState}
-          </Tag>
+          {
+            dataLimitState !== -1 ? (
+              <Tag icon={<ExclamationCircleOutlined />} color="warning">
+                <strong>Data Limit:</strong>
+                &nbsp;
+                {dataLimitState}
+              </Tag>
+            ) : (
+              <Tag icon={<CheckCircleOutlined />} color="success">
+                <strong>Data Limit:</strong>
+                &nbsp;
+                &infin;
+              </Tag>
+            )
+          }
 
           &nbsp;
 
@@ -489,8 +504,17 @@ function Chart({
             <Form.Item label="Name" name="name" hasFeedback>
               <Input onBlur={({ target: { id } }) => processForm(id)} />
             </Form.Item>
-            <Form.Item label="Data Limit" name="dataLimit" hasFeedback>
-              <InputNumber onBlur={({ target: { id } }) => processForm(id)} />
+            <Form.Item
+              label="Data Limit"
+              name="dataLimit"
+              hasFeedback
+              help="No limit => -1, Limit => positive value"
+            >
+              <InputNumber
+                min={-1}
+                max={Infinity}
+                onBlur={({ target: { id } }) => processForm(id)}
+              />
             </Form.Item>
             <Form.Item label="X Data Key" name="XDataKey" hasFeedback>
               <Input onBlur={({ target: { id } }) => processForm(id)} />
