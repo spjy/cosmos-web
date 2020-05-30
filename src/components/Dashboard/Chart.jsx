@@ -152,7 +152,8 @@ function Chart({
         [`live_${i}`]: live,
         [`marker_${i}`]: marker.color,
       };
-    }
+    });
+
     setInitialValues(accumulate);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
