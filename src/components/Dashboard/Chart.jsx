@@ -595,6 +595,7 @@ function Chart({
                     </Button>
 
                     <br />
+                    <br />
 
                     <Form.Item label="Name" name={`name_${i}`} hasFeedback>
                       <Input placeholder="Name" onBlur={({ target: { id } }) => processForm(id)} />
@@ -692,6 +693,9 @@ function Chart({
                   checked={addChartLive}
                   onChange={() => setAddChartLive(!addChartLive)}
                 />
+
+                <br />
+                <br />
 
                 <Form.Item label="Historical Date Range" name="dateRange" hasFeedback>
                   <RangePicker

@@ -22,7 +22,6 @@
     "cesium": "1.59.0",
     "file-saver": "^2.0.2",
     "interactjs": "^1.6.3",
-    "moment": "latest",
     "moment-timezone": "0.5.28",
     "plotly.js": "1.52.2",
     "prismjs": "^1.17.1",
