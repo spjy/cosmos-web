@@ -2,12 +2,14 @@ import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Form,
+  Form, Input, Collapse,
 } from 'antd';
 
 import BaseComponent from '../BaseComponent';
 import AttitudeThreeD from './Babylon/AttitudeThreeD';
 import { Context } from '../../store/neutron1';
+
+const { Panel } = Collapse;
 
 /**
  * Visualizes the attitude of an object through a Babylon.js simulation.
@@ -24,45 +26,76 @@ function Attitude({
   /** Accessing the neutron1 messages from the socket */
   const { state } = useContext(Context);
 
-  /** The state that manages the component's title */
-  const [nameState] = useState(name);
   /** Storage for form values */
-  const [form] = useState({
-    newOrbit: {
-      live: true,
-    },
-  });
+  const [attitudesForm] = Form.useForm();
+  /** Form for editing values */
+  const [editForm] = Form.useForm();
+
+  /** Initial form values for editForm */
+  const [initialValues, setInitialValues] = useState({});
+  /** The state that manages the component's title */
+  const [nameState, setNameState] = useState(name);
   /** Currently displayed attitudes */
   const [attitudesState, setAttitudesState] = useState(attitudes);
+  /** Variable to update to force component update */
+  const [updateComponent, setUpdateComponent] = useState(false);
 
   /** Initialize form slots for each orbit */
   useEffect(() => {
     // Make an object for each plot's form
-    for (let i = 0; i < attitudesState.length; i += 1) {
-      form[i] = {
-        live: attitudesState[i].live,
+    let accumulate = {};
+
+    // Initialize form values for each value
+    attitudes.forEach(({
+      name: nameVal, nodeProcess, dataKey: dataKeyVal, live,
+    }, i) => {
+      accumulate = {
+        ...accumulate,
+        [`name_${i}`]: nameVal,
+        [`nodeProcess_${i}`]: nodeProcess,
+        [`dataKey_${i}`]: dataKeyVal,
+        [`live_${i}`]: live,
       };
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    });
+
+    setInitialValues(accumulate);
   }, []);
 
   /** Update the live attitude display */
   useEffect(() => {
-    attitudesState.forEach((attitude, i) => {
-      if (state[attitude.nodeProcess]
-        && state[attitude.nodeProcess].node_loc_att_icrf
-        && state[attitude.nodeProcess].node_loc_att_icrf.pos
-        && attitude.live
+    attitudesState.forEach(({ nodeProcess, dataKey, live }, i) => {
+      if (state[nodeProcess]
+        && state[nodeProcess][dataKey]
+        && state[nodeProcess][dataKey].pos
+        && live
       ) {
         const tempAttitude = [...attitudesState];
 
-        tempAttitude[i].quaternions = state[attitude.nodeProcess].node_loc_att_icrf.pos;
+        tempAttitude[i].quaternions = state[nodeProcess][dataKey].pos;
 
         setAttitudesState(tempAttitude);
       }
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
+
+  /** Process edit value form */
+  const processForm = (id) => {
+    // Destructure form, field, index to retrieve changed field
+    const [form, field, index] = id.split('_');
+
+    // Check type of form
+    if (form === 'orbitsForm') {
+      // Update name state
+      setNameState(attitudesForm.getFieldsValue()[field]);
+    } else if (form === 'editForm') {
+      // Create function for processDataKey, O.W. for inputs just set value
+      attitudesForm[index][field] = editForm.getFieldsValue()[`${field}_${index}`];
+
+      // Update state
+      setUpdateComponent(!updateComponent);
+    }
+  };
 
   return (
     <BaseComponent
@@ -73,9 +106,62 @@ function Attitude({
       status={status}
       height={height}
       formItems={(
-        <Form layout="vertical">
-          ok
-        </Form>
+        <>
+          <Form
+            form={attitudesForm}
+            layout="vertical"
+            name="attitudesForm"
+            initialValues={{
+              name,
+            }}
+          >
+            <Form.Item label="Name" name="name" hasFeedback>
+              <Input onBlur={({ target: { id } }) => processForm(id)} />
+            </Form.Item>
+          </Form>
+          {/* Modify values forms */}
+          <Form
+            layout="vertical"
+            initialValues={initialValues}
+            name="editForm"
+            form={editForm}
+          >
+            <Collapse
+              bordered
+            >
+              {
+                attitudesState.map((attitude, i) => (
+                  <Panel
+                    header={(
+                      <span className="text-gray-600">
+                        <strong>
+                          {attitude.nodeProcess}
+                        </strong>
+                      &nbsp;
+                        <span>
+                          {attitude.dataKey}
+                        </span>
+                      </span>
+                    )}
+                    key={`${attitude.name}${attitude.nodeProcess}${attitude.dataKey}`}
+                  >
+                    <Form.Item label="Name" name={`name_${i}`} hasFeedback>
+                      <Input placeholder="Name" onBlur={({ target: { id } }) => processForm(id)} />
+                    </Form.Item>
+
+                    <Form.Item label="Node Process" name={`nodeProcess_${i}`} hasFeedback>
+                      <Input placeholder="Node Process" onBlur={({ target: { id } }) => processForm(id)} />
+                    </Form.Item>
+
+                    <Form.Item label="Data Key" name={`dataKey_${i}`} hasFeedback>
+                      <Input placeholder="Data Key" onBlur={({ target: { id } }) => processForm(id)} />
+                    </Form.Item>
+                  </Panel>
+                ))
+              }
+            </Collapse>
+          </Form>
+        </>
       )}
     >
       <AttitudeThreeD
@@ -119,6 +205,7 @@ Attitude.propTypes = {
       name: PropTypes.string,
       /** node:process to look at for retrieving attitude data */
       nodeProcess: PropTypes.string,
+      dataKey: PropTypes.string,
     }),
   ),
   /** Whether to show a circular indicator of the status of the component */

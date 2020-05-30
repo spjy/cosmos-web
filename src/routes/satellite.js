@@ -130,6 +130,7 @@ export default {
                 {
                   name: 'n1',
                   nodeProcess: 'cubesat1:propagator_simple',
+                  dataKey: 'node_loc_att_icrf',
                   quaternions: {
                     d: {
                       x: 0,
@@ -649,6 +650,7 @@ export default {
                   {
                     name: 'n1',
                     nodeProcess: 'cubesat1:propagator_simple',
+                    dataKey: 'node_loc_att_icrf',
                     quaternions: {
                       d: {
                         x: 0,
@@ -1440,6 +1442,7 @@ export default {
                   {
                     name: 'n1',
                     nodeProcess: 'cubesat1:propagator_simple',
+                    dataKey: 'node_loc_att_icrf',
                     quaternions: {
                       d: {
                         x: 0,
