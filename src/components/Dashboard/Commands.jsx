@@ -252,14 +252,17 @@ const Commands = React.memo(({
             placeholder="Select agent node and process"
           >
             {
-              state && state.list && state.list.agent_list ? state.list.agent_list.map(({ agent }) => (
-                <Select.Option
-                  key={agent}
-                  value={agent}
-                >
-                  {agent}
-                </Select.Option>
-              )) : null
+              state
+                && state.list
+                && state.list.agent_list
+                ? state.list.agent_list.map(({ agent }) => (
+                  <Select.Option
+                    key={agent}
+                    value={agent}
+                  >
+                    {agent}
+                  </Select.Option>
+                )) : null
             }
           </Select>
         </div>
