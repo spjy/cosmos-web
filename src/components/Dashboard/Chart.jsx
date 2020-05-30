@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {
   Form, Input, InputNumber, DatePicker, Button, Switch, Collapse, Divider, Select, message, Tag,
 } from 'antd';
-import { ExclamationCircleOutlined, DownloadOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, DownloadOutlined, ClearOutlined } from '@ant-design/icons';
 import Plot from 'react-plotly.js';
 import { saveAs } from 'file-saver';
 import moment from 'moment-timezone';
@@ -128,6 +128,17 @@ function Chart({
 
     // Save csv to computer, named by chart title and date now
     saveAs(blob, `${name.replace(/ /g, '-').toLowerCase()}-${new Date(Date.now()).toISOString()}.csv`);
+  };
+
+  const clearAll = () => {
+    const emptyArr = plotsState.map((point) => {
+      // eslint-disable-next-line no-param-reassign
+      point.x = [];
+      // eslint-disable-next-line no-param-reassign
+      point.y = [];
+      return point;
+    });
+    setPlotsState(emptyArr);
   };
 
   /** Initialize form slots for each plot to avoid crashing */
@@ -430,6 +441,9 @@ function Chart({
           &nbsp;
           <Button size="small" onClick={() => downloadDataAsCSV()}>
             <DownloadOutlined />
+          </Button>
+          <Button size="small" onClick={() => clearAll()}>
+            <ClearOutlined />
           </Button>
         </>
       )}
