@@ -516,19 +516,74 @@ function Chart({
                 onBlur={({ target: { id } }) => processForm(id)}
               />
             </Form.Item>
+
             <Form.Item label="X Data Key" name="XDataKey" hasFeedback>
               <Input onBlur={({ target: { id } }) => processForm(id)} />
             </Form.Item>
+
             <Form.Item label="Process X Data key" name="processXDataKey" hasFeedback>
               <TextArea onBlur={({ target: { id } }) => processForm(id)} />
             </Form.Item>
-            <Form.Item label="X Range" name="XRange" hasFeedback>
-              <Input onBlur={({ target: { id } }) => processForm(id)} />
+
+            <Form.Item label="X Range" name="XRange">
+              <RangePicker
+                className="mr-1"
+                showTime
+                format="YYYY-MM-DDTHH:mm:ss"
+                onBlur={() => {
+                  const fields = plotsForm.getFieldsValue();
+
+                  if (fields.XRange
+                    && fields.XRange.length === 2
+                  ) {
+                    layout.yaxis.range = [fields.XRange[0], fields.XRange[1]];
+                    layout.datarevision += 1;
+                    layout.uirevision += 1;
+                    setDataRevision(dataRevision + 1);
+                  } else {
+                    message.error('Fill in the range fields.');
+                  }
+                }}
+              />
             </Form.Item>
-            <Form.Item label="Y Range" name="YRange" hasFeedback>
-              <Input onBlur={({ target: { id } }) => processForm(id)} />
+
+            &nbsp;&nbsp;
+
+            <Form.Item name="YRangeMin" noStyle>
+              <InputNumber />
             </Form.Item>
+
+            &nbsp;to&nbsp;
+
+            <Form.Item name="YRangeMax" noStyle>
+              <InputNumber />
+            </Form.Item>
+
+            &nbsp;&nbsp;
+
+            <Button
+              onClick={() => {
+                const fields = plotsForm.getFieldsValue();
+
+                if (fields.YRangeMin
+                  && fields.YRangeMax
+                  && fields.YRangeMin.toString()
+                  && fields.YRangeMax.toString()
+                ) {
+                  layout.yaxis.range = [fields.YRangeMin, fields.YRangeMax];
+                  layout.datarevision += 1;
+                  layout.uirevision += 1;
+                  setDataRevision(dataRevision + 1);
+                } else {
+                  message.error('Fill in the range fields.');
+                }
+              }}
+            >
+              Set Y Range
+            </Button>
           </Form>
+
+          <br />
 
           {/* Edit existing values */}
           <Form
