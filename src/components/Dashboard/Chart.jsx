@@ -529,7 +529,7 @@ function Chart({
               <RangePicker
                 className="mr-1"
                 showTime
-                format="YYYY-MM-DDTHH:mm:ss"
+                format="YYYY-MM-DD HH:mm:ss"
                 onBlur={() => {
                   const fields = plotsForm.getFieldsValue();
 

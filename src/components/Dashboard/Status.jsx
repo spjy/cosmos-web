@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import { Badge } from 'antd';
+// import moment from 'moment-timezone';
 
 import { Context } from '../../store/neutron1';
 import BaseComponent from '../BaseComponent';
@@ -15,15 +16,6 @@ function Status({
 }) {
   /** Get agent list state from the Context */
   const { state } = useContext(Context);
-  /** Component's agent list storage */
-  const [list, setList] = useState([]);
-
-  /** Upon the state.list updating, update the store's list */
-  useEffect(() => {
-    if (state.list) {
-      setList(state.list.agent_list);
-    }
-  }, [state.list]);
 
   return (
     <BaseComponent
@@ -32,12 +24,12 @@ function Status({
       height={height}
     >
       {
-        list.length === 0 ? 'No agents.' : null
+        !state || !state.list || state.list.agent_list.length === 0 ? 'No agents.' : null
       }
       <table>
         <tbody>
           {
-            list.map(({
+            state && state.list && state.list.agent_list ? state.list.agent_list.map(({
               agent, utc,
             }) => (
               <tr key={agent}>
@@ -56,7 +48,7 @@ function Status({
                   {agent}
                 </td>
               </tr>
-            ))
+            )) : null
           }
         </tbody>
       </table>

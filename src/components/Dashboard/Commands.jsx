@@ -6,10 +6,10 @@ import PropTypes from 'prop-types';
 import {
   Input, Select, Tooltip, message,
 } from 'antd';
-import { SelectOutlined, CloseOutlined } from '@ant-design/icons';
+import { CloseOutlined } from '@ant-design/icons';
 import moment from 'moment-timezone';
 
-import Search from 'antd/lib/input/Search';
+// import Search from 'antd/lib/input/Search';
 
 import { Context } from '../../store/neutron1';
 import BaseComponent from '../BaseComponent';
@@ -82,6 +82,7 @@ const Commands = React.memo(({
         setAgentRequests(requests);
         setSortedAgentRequests(sortedRequests);
 
+        message.destroy();
         message.success(`Retrieved agent requests for ${selectedAgent[0]}:${selectedAgent[1]}.`, 5);
       } else if (json && json.output) {
         // agent node proc cmd
@@ -170,19 +171,23 @@ const Commands = React.memo(({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autocompletions]);
 
-  /** Watches for changes to selectedAgent. Then sends WS message to get list of commands. */
-  useEffect(() => {
-    /** Get the possible requests for selected agent */
-    const getRequests = () => {
-      setSortedAgentRequests([]);
-      setAgentRequests({});
+  /** Get the possible requests for selected agent */
+  const getRequests = (agent) => {
+    setSelectedAgent(agent);
 
-      if (selectedAgent.length > 0) {
-        ws.send(`${process.env.COSMOS_BIN}/agent ${selectedAgent[0]} ${selectedAgent[1]} help_json`);
-      }
-    };
-    getRequests();
-  }, [selectedAgent]);
+    message.loading(`Retrieving requests for ${agent[0]}:${agent[1]}...`, 0);
+
+    setSortedAgentRequests([]);
+    setAgentRequests({});
+
+    if (agent.length > 0) {
+      ws.send(`${process.env.COSMOS_BIN}/agent ${agent[0]} ${agent[1]} help_json`);
+    }
+  };
+  /** Watches for changes to selectedAgent. Then sends WS message to get list of commands. */
+  // useEffect(() => {
+  //   getRequests();
+  // }, [selectedAgent]);
 
   /** Update height of the history log */
   useEffect(() => {
@@ -201,7 +206,9 @@ const Commands = React.memo(({
         <div key={i}>
           ➜&nbsp;
           <span className="text-gray-600">
+            [
             { time }
+            ]
           </span>
           &nbsp;
           { allCommands.join(' ') }
@@ -214,7 +221,9 @@ const Commands = React.memo(({
     return (
       <div key={i}>
         <span className="text-gray-600">
+          [
           { time }
+          ]
         </span>
         &nbsp;
         {
@@ -233,37 +242,34 @@ const Commands = React.memo(({
       showStatus={false}
     >
       <div className="flex flex-wrap">
-        {/* <div
-          className="pr-1 w-1/2"
+        <div
+          className="w-full"
         >
           <Select
             className="block mb-2"
             dropdownMatchSelectWidth={false}
-            onChange={(value) => {
-              setAgentRequests([]);
-              setSelectedAgent(value.split(':'));
-            }}
+            onChange={(value) => getRequests(value.split(':'))}
             placeholder="Select agent node and process"
           >
             {
-              agentList.map(({ agent }) => (
+              state && state.list && state.list.agent_list ? state.list.agent_list.map(({ agent }) => (
                 <Select.Option
                   key={agent}
                   value={agent}
                 >
                   {agent}
                 </Select.Option>
-              ))
+              )) : null
             }
           </Select>
-        </div> */}
-        <div className="w-full py-2">
+        </div>
+        {/* <div className="w-full py-2">
           <Search
             placeholder="Select node:process"
             onSearch={(value) => setSelectedAgent(value.split(':'))}
             enterButton={<SelectOutlined />}
           />
-        </div>
+        </div> */}
       </div>
       <div
         className="border border-gray-300 rounded mb-2 p-4 bg-white font-mono h-32 max-h-full resize-y overflow-y-auto"
