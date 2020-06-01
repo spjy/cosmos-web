@@ -70,11 +70,11 @@ function DisplayValue({
       // by checking the node process and the key it is watching
       if (state[v.nodeProcess]
         && state[v.nodeProcess][v.dataKey] !== undefined
-        && state[v.nodeProcess].utc
+        && state[v.nodeProcess].node_utc
       ) {
         // If it does, change the value
         displayValuesState[i].value = state[v.nodeProcess][v.dataKey];
-        displayValuesState[i].utc = moment.unix((((state[v.nodeProcess].utc + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss');
+        displayValuesState[i].node_utc = moment.unix((((state[v.nodeProcess].node_utc + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss');
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -340,7 +340,7 @@ function DisplayValue({
                   }
                 </td>
                 <td className="text-gray-500">
-                  { displayValuesState[i].utc ? displayValuesState[i].utc : '-' }
+                  { displayValuesState[i].node_utc ? displayValuesState[i].node_utc : '-' }
                 </td>
               </tr>
             ))

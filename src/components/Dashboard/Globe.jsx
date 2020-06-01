@@ -133,7 +133,7 @@ function CesiumGlobe({
           tempOrbit[i].path = new Cesium.SampledPositionProperty();
         }
 
-        if (state[nodeProcess].utc
+        if (state[nodeProcess].node_utc
           && (state[nodeProcess][dataKey]
           || state[nodeProcess].target_loc_pos_geod_s_lat)
         ) {
@@ -141,7 +141,7 @@ function CesiumGlobe({
             .JulianDate
             .fromDate(
               moment
-                .unix((((state[nodeProcess].utc + 2400000.5) - 2440587.5) * 86400.0))
+                .unix((((state[nodeProcess].node_utc + 2400000.5) - 2440587.5) * 86400.0))
                 .toDate(),
             );
 
@@ -205,7 +205,7 @@ function CesiumGlobe({
           const to = (dates[1].unix() / 86400.0) + 2440587.5 - 2400000.5;
 
           query.send(
-            `database=${process.env.MONGODB_COLLECTION}?collection=${orbitsState[retrieveOrbitHistory].nodeProcess}?multiple=true?query={"utc": { "$gt": ${from}, "$lt": ${to} }}?options={"projection": { "${dataKey}": 1, "utc": 1 }}`,
+            `database=${process.env.MONGODB_COLLECTION}?collection=${orbitsState[retrieveOrbitHistory].nodeProcess}?multiple=true?query={"node_utc": { "$gt": ${from}, "$lt": ${to} }}?options={"projection": { "${dataKey}": 1, "node_utc": 1 }}`,
           );
 
           message.loading('Querying data...', 0);
@@ -236,14 +236,14 @@ function CesiumGlobe({
                 .JulianDate
                 .fromDate(
                   moment
-                    .unix((((json[0].utc + 2400000.5) - 2440587.5) * 86400.0))
+                    .unix((((json[0].node_utc + 2400000.5) - 2440587.5) * 86400.0))
                     .toDate(),
                 );
               stopOrbit = Cesium
                 .JulianDate
                 .fromDate(
                   moment
-                    .unix((((json[json.length - 1].utc + 2400000.5) - 2440587.5) * 86400.0))
+                    .unix((((json[json.length - 1].node_utc + 2400000.5) - 2440587.5) * 86400.0))
                     .toDate(),
                 );
               startOrbitPosition = json[0][dataKey].pos;
@@ -254,12 +254,12 @@ function CesiumGlobe({
             json.forEach((orbit) => {
               const p = orbit[dataKey].pos;
 
-              if (orbit.utc && orbit[dataKey]) {
+              if (orbit.node_utc && orbit[dataKey]) {
                 const date = Cesium
                   .JulianDate
                   .fromDate(
                     moment
-                      .unix((((orbit.utc + 2400000.5) - 2440587.5) * 86400.0))
+                      .unix((((orbit.node_utc + 2400000.5) - 2440587.5) * 86400.0))
                       .toDate(),
                   );
                 const pos = Cesium.Cartesian3.fromArray(p);

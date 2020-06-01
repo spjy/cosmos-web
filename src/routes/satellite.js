@@ -155,7 +155,7 @@ export default {
             name: 'Chart',
             props: {
               name: 'CPU',
-              XDataKey: 'utc',
+              XDataKey: 'node_utc',
               processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
               plots: [
                 {
@@ -211,7 +211,7 @@ export default {
             name: 'Chart',
             props: {
               name: 'EPS Buses',
-              XDataKey: 'utc',
+              XDataKey: 'node_utc',
               processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
               plots: [
                 {
@@ -300,7 +300,7 @@ export default {
             name: 'Chart',
             props: {
               name: 'EPS Battery Charge Regulators',
-              XDataKey: 'utc',
+              XDataKey: 'node_utc',
               processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
               plots: [
                 {
@@ -675,7 +675,7 @@ export default {
               name: 'Chart',
               props: {
                 name: 'CPU',
-                XDataKey: 'utc',
+                XDataKey: 'node_utc',
                 processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                 plots: [
                   {
@@ -718,7 +718,7 @@ export default {
               name: 'Chart',
               props: {
                 name: 'EPS Bus Aux',
-                XDataKey: 'utc',
+                XDataKey: 'node_utc',
                 processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                 plots: [
                   {
@@ -784,7 +784,7 @@ export default {
               name: 'Chart',
               props: {
                 name: 'EPS Bus Amp',
-                XDataKey: 'utc',
+                XDataKey: 'node_utc',
                 processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                 plots: [
                   {
@@ -874,7 +874,7 @@ export default {
               name: 'Chart',
               props: {
                 name: 'EPS Bus Volt',
-                XDataKey: 'utc',
+                XDataKey: 'node_utc',
                 processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                 plots: [
                   {
@@ -952,7 +952,7 @@ export default {
               name: 'Chart',
               props: {
                 name: 'EPS Battery Charge Regulator Amp',
-                XDataKey: 'utc',
+                XDataKey: 'node_utc',
                 processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                 plots: [
                   {
@@ -1005,7 +1005,7 @@ export default {
               name: 'Chart',
               props: {
                 name: 'EPS Battery Charge Regulator Volt',
-                XDataKey: 'utc',
+                XDataKey: 'node_utc',
                 processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                 plots: [
                   {
@@ -1058,7 +1058,7 @@ export default {
               name: 'Chart',
               props: {
                 name: 'EPS PDM Switch Amp',
-                XDataKey: 'utc',
+                XDataKey: 'node_utc',
                 processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                 plots: [
                   {
@@ -1196,7 +1196,7 @@ export default {
               name: 'Chart',
               props: {
                 name: 'EPS PDM Switch Volt',
-                XDataKey: 'utc',
+                XDataKey: 'node_utc',
                 processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                 plots: [
                   {
@@ -1467,7 +1467,7 @@ export default {
               name: 'Chart',
               props: {
                 name: 'Temperature',
-                XDataKey: 'utc',
+                XDataKey: 'node_utc',
                 processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                 plots: [
                   {
@@ -1523,7 +1523,7 @@ export default {
               name: 'Chart',
               props: {
                 name: 'Voltage',
-                XDataKey: 'utc',
+                XDataKey: 'node_utc',
                 processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                 plots: [
                   {
@@ -1576,7 +1576,7 @@ export default {
               name: 'Chart',
               props: {
                 name: 'Amperage',
-                XDataKey: 'utc',
+                XDataKey: 'node_utc',
                 processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                 plots: [
                   {

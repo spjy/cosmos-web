@@ -250,7 +250,7 @@ function Chart({
 
           // Retrieve date and YDataKey fields from database, return only those keys
           query.send(
-            `database=${process.env.MONGODB_COLLECTION}?collection=${plotsState[retrievePlotHistory].nodeProcess}?multiple=true?query={"utc": { "$gt": ${from}, "$lt": ${to} }}?options={"projection": { "${XDataKeyState}": 1, "${YDataKey}": 1 }}`,
+            `database=${process.env.MONGODB_COLLECTION}?collection=${plotsState[retrievePlotHistory].nodeProcess}?multiple=true?query={"node_utc": { "$gt": ${from}, "$lt": ${to} }}?options={"projection": { "${XDataKeyState}": 1, "${YDataKey}": 1 }}`,
           );
 
           message.loading('Querying data...', 0);
