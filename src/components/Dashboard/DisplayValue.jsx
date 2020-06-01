@@ -33,6 +33,8 @@ function DisplayValue({
 
   /** The state that manages the component's title */
   const [nameState, setNameState] = useState(name);
+  /** The state that manages the global node process */
+  const [np, setNp] = useState('');
   /** Initial form values for editForm */
   const [initialValues, setInitialValues] = useState({});
 
@@ -43,6 +45,7 @@ function DisplayValue({
   useEffect(() => {
     let accumulate = {};
 
+    let check = displayValues[0].nodeProcess;
     // Initialize form values for each value
     displayValues.forEach(({
       name: nameVal, nodeProcess, dataKey, processDataKey, unit,
@@ -57,7 +60,17 @@ function DisplayValue({
           : 'return x',
         [`unit_${i}`]: unit,
       };
+
+      if (check !== nodeProcess && check !== ' ') {
+        check = ' ';
+      }
     });
+
+    if (check !== ' ') {
+      setNp(check);
+    } else {
+      setNp('');
+    }
 
     setInitialValues(accumulate);
   }, []);
@@ -83,7 +96,7 @@ function DisplayValue({
   const processForm = (id) => {
     // Destructure form, field, index to retrieve changed field
     const [form, field, index] = id.split('_');
-
+    console.log(form, field, index);
     // Check type of form
     if (form === 'displayValuesForm') {
       // Update name state
@@ -99,6 +112,21 @@ function DisplayValue({
 
       // Update state
       setDisplayValuesState(displayValuesCopy);
+    }
+
+    if (field === 'np') {
+      const displayValuesCopy = displayValuesState;
+      displayValuesCopy.forEach((area) => {
+        // eslint-disable-next-line no-param-reassign
+        area.nodeProcess = displayValuesForm.getFieldsValue()[field];
+      });
+      setDisplayValuesState(displayValuesCopy);
+      // eslint-disable-next-line no-plusplus
+      for (let x = 0; x < displayValuesCopy.length; x++) {
+        editForm.setFieldsValue({
+          [`nodeProcess_${x}`]: displayValuesForm.getFieldsValue()[field],
+        });
+      }
     }
   };
 
@@ -156,9 +184,13 @@ function DisplayValue({
             name="displayValuesForm"
             initialValues={{
               name,
+              np,
             }}
           >
             <Form.Item label="Name" name="name" hasFeedback>
+              <Input onBlur={({ target: { id } }) => processForm(id)} />
+            </Form.Item>
+            <Form.Item label="<node>:<process>" name="np" hasFeedback>
               <Input onBlur={({ target: { id } }) => processForm(id)} />
             </Form.Item>
           </Form>
