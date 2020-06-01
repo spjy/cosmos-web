@@ -43,12 +43,12 @@ function Activity({
   /** Upon the state.list updating, update the store's list */
   useEffect(() => {
     if (state.activity) {
-      const { activity: event, utc } = state.activity;
+      const { activity: event, node_utc } = state.activity; // eslint-disable-line camelcase
 
       setActivity([
         {
           activity: event,
-          utc,
+          node_utc,
         },
         ...activity,
       ]);
@@ -88,15 +88,17 @@ function Activity({
       <table>
         <tbody>
           {
-            activity.map(({ activity: event, utc }) => (
-              <tr className="truncate ..." key={utc}>
+            activity.map(({ activity: event, node_utc }) => ( // eslint-disable-line camelcase
+              // eslint-disable-next-line camelcase
+              <tr className="truncate ..." key={node_utc}>
                 <td>
                   <Badge status="default" />
                 </td>
                 <td className="pr-4 text-gray-500">
                   {
                     moment
-                      .unix((((utc + 2400000.5) - 2440587.5) * 86400.0))
+                      // eslint-disable-next-line camelcase
+                      .unix((((node_utc + 2400000.5) - 2440587.5) * 86400.0))
                       .format('YYYY-MM-DDTHH:mm:ss')
                   }
                 </td>
