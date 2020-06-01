@@ -34,18 +34,21 @@ function DisplayValue({
   /** The state that manages the component's title */
   const [nameState, setNameState] = useState(name);
   /** The state that manages the global node process */
-  const [np, setNp] = useState('');
+  const [globalNodeProcess, setGlobalNodeProcess] = useState('');
   /** Initial form values for editForm */
   const [initialValues, setInitialValues] = useState({});
 
   /** Store the display values here */
   const [displayValuesState, setDisplayValuesState] = useState(displayValues);
+  /** Variable to update to force component update */
+  const [updateComponent, setUpdateComponent] = useState(false);
 
   /** Initialize form components for each display value */
   useEffect(() => {
     let accumulate = {};
 
     let check = displayValues[0].nodeProcess;
+
     // Initialize form values for each value
     displayValues.forEach(({
       name: nameVal, nodeProcess, dataKey, processDataKey, unit,
@@ -67,9 +70,9 @@ function DisplayValue({
     });
 
     if (check !== ' ') {
-      setNp(check);
+      setGlobalNodeProcess(check);
     } else {
-      setNp('');
+      setGlobalNodeProcess('');
     }
 
     setInitialValues(accumulate);
@@ -83,11 +86,11 @@ function DisplayValue({
       // by checking the node process and the key it is watching
       if (state[v.nodeProcess]
         && state[v.nodeProcess][v.dataKey] !== undefined
-        && state[v.nodeProcess].utc
+        && state[v.nodeProcess].node_utc
       ) {
         // If it does, change the value
         displayValuesState[i].value = state[v.nodeProcess][v.dataKey];
-        displayValuesState[i].utc = moment.unix((((state[v.nodeProcess].utc + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss');
+        displayValuesState[i].node_utc = moment.unix((((state[v.nodeProcess].node_utc + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss');
       }
     });
   }, [state]);
@@ -96,11 +99,32 @@ function DisplayValue({
   const processForm = (id) => {
     // Destructure form, field, index to retrieve changed field
     const [form, field, index] = id.split('_');
-    console.log(form, field, index);
+
     // Check type of form
     if (form === 'displayValuesForm') {
-      // Update name state
-      setNameState(displayValuesForm.getFieldsValue()[field]);
+      switch (field) {
+        case 'name':
+          // Update name state
+          setNameState(displayValuesForm.getFieldsValue()[field]);
+          break;
+        case 'globalNodeProcess': {
+          const nodeProcessVal = displayValuesForm.getFieldsValue()[field];
+
+          // Modify nodeProcess values in state and on form
+          displayValuesState.forEach((value, i) => {
+            displayValuesState[i].nodeProcess = nodeProcessVal;
+
+            editForm.setFieldsValue({
+              [`nodeProcess_${i}`]: nodeProcessVal,
+            });
+          });
+
+          setUpdateComponent(!updateComponent);
+          break;
+        }
+        default:
+          break;
+      }
     } else if (form === 'editForm') {
       // Copy display values to replace index and field value
       const displayValuesCopy = displayValuesState;
@@ -112,21 +136,6 @@ function DisplayValue({
 
       // Update state
       setDisplayValuesState(displayValuesCopy);
-    }
-
-    if (field === 'np') {
-      const displayValuesCopy = displayValuesState;
-      displayValuesCopy.forEach((area) => {
-        // eslint-disable-next-line no-param-reassign
-        area.nodeProcess = displayValuesForm.getFieldsValue()[field];
-      });
-      setDisplayValuesState(displayValuesCopy);
-      // eslint-disable-next-line no-plusplus
-      for (let x = 0; x < displayValuesCopy.length; x++) {
-        editForm.setFieldsValue({
-          [`nodeProcess_${x}`]: displayValuesForm.getFieldsValue()[field],
-        });
-      }
     }
   };
 
@@ -184,16 +193,18 @@ function DisplayValue({
             name="displayValuesForm"
             initialValues={{
               name,
-              np,
+              globalNodeProcess,
             }}
           >
             <Form.Item label="Name" name="name" hasFeedback>
               <Input onBlur={({ target: { id } }) => processForm(id)} />
             </Form.Item>
-            <Form.Item label="<node>:<process>" name="np" hasFeedback>
+            <Form.Item label="Global Node Process" name="globalNodeProcess" hasFeedback help="Change all nodes and processes within this component.">
               <Input onBlur={({ target: { id } }) => processForm(id)} />
             </Form.Item>
           </Form>
+
+          <br />
 
           {/* Modify values forms */}
           <Form
@@ -371,7 +382,7 @@ function DisplayValue({
                   }
                 </td>
                 <td className="text-gray-500">
-                  { displayValuesState[i].utc ? displayValuesState[i].utc : '-' }
+                  { displayValuesState[i].node_utc ? displayValuesState[i].node_utc : '-' }
                 </td>
               </tr>
             ))
