@@ -33,15 +33,21 @@ function DisplayValue({
 
   /** The state that manages the component's title */
   const [nameState, setNameState] = useState(name);
+  /** The state that manages the global node process */
+  const [globalNodeProcess, setGlobalNodeProcess] = useState('');
   /** Initial form values for editForm */
   const [initialValues, setInitialValues] = useState({});
 
   /** Store the display values here */
   const [displayValuesState, setDisplayValuesState] = useState(displayValues);
+  /** Variable to update to force component update */
+  const [updateComponent, setUpdateComponent] = useState(false);
 
   /** Initialize form components for each display value */
   useEffect(() => {
     let accumulate = {};
+
+    let check = displayValues[0].nodeProcess;
 
     // Initialize form values for each value
     displayValues.forEach(({
@@ -57,7 +63,17 @@ function DisplayValue({
           : 'return x',
         [`unit_${i}`]: unit,
       };
+
+      if (check !== nodeProcess && check !== ' ') {
+        check = ' ';
+      }
     });
+
+    if (check !== ' ') {
+      setGlobalNodeProcess(check);
+    } else {
+      setGlobalNodeProcess('');
+    }
 
     setInitialValues(accumulate);
   }, []);
@@ -87,8 +103,29 @@ function DisplayValue({
 
     // Check type of form
     if (form === 'displayValuesForm') {
-      // Update name state
-      setNameState(displayValuesForm.getFieldsValue()[field]);
+      switch (field) {
+        case 'name':
+          // Update name state
+          setNameState(displayValuesForm.getFieldsValue()[field]);
+          break;
+        case 'globalNodeProcess': {
+          const nodeProcessVal = displayValuesForm.getFieldsValue()[field];
+
+          // Modify nodeProcess values in state and on form
+          displayValuesState.forEach((value, i) => {
+            displayValuesState[i].nodeProcess = nodeProcessVal;
+
+            editForm.setFieldsValue({
+              [`nodeProcess_${i}`]: nodeProcessVal,
+            });
+          });
+
+          setUpdateComponent(!updateComponent);
+          break;
+        }
+        default:
+          break;
+      }
     } else if (form === 'editForm') {
       // Copy display values to replace index and field value
       const displayValuesCopy = displayValuesState;
@@ -157,12 +194,18 @@ function DisplayValue({
             name="displayValuesForm"
             initialValues={{
               name,
+              globalNodeProcess,
             }}
           >
             <Form.Item label="Name" name="name" hasFeedback>
               <Input onBlur={({ target: { id } }) => processForm(id)} />
             </Form.Item>
+            <Form.Item label="Global Node Process" name="globalNodeProcess" hasFeedback help="Change all nodes and processes within this component.">
+              <Input onBlur={({ target: { id } }) => processForm(id)} />
+            </Form.Item>
           </Form>
+
+          <br />
 
           {/* Modify values forms */}
           <Form
