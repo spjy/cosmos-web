@@ -30,14 +30,15 @@ function Status({
         <tbody>
           {
             state && state.list && state.list.agent_list ? state.list.agent_list.map(({
-              agent, utc,
+              agent, node_utc, // eslint-disable-line camelcase
             }) => (
               <tr key={agent}>
                 <td>
                   <Badge status="success" />
                 </td>
                 <td className="text-gray-500 pr-2">
-                  {utc}
+                  { /* eslint-disable-next-line camelcase */ }
+                  {node_utc}
                   {/* {
                     moment
                       .unix((((utc + 2400000.5) - 2440587.5) * 86400.0))

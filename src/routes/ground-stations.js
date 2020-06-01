@@ -944,7 +944,7 @@ export default {
           //     name: 'Chart',
           //     props: {
           //       name: 'Satellite Pass',
-          //       XDataKey: 'utc',
+          //       XDataKey: 'node_utc',
           //       processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0))
           //        .format('YYYY-MM-DDTHH:mm:ss'),
           //       plots: [
