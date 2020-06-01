@@ -12,8 +12,6 @@ import { socket } from '../socket';
 // eslint-disable-next-line
 import routes from '../routes';
 
-import Events from '../components/Dashboard/Events';
-
 function Scheduler() {
   /**
    * Store the agent statuses in the global store.
@@ -80,7 +78,7 @@ function Scheduler() {
 
   return (
     <Context.Provider value={{ state, dispatch }}>
-      <MyScheduler/>
+      <MyScheduler />
     </Context.Provider>
   );
 }

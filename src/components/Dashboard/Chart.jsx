@@ -2,9 +2,25 @@ import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Form, Input, InputNumber, DatePicker, Button, Switch, Collapse, Divider, Select, message, Tag,
+  Form,
+  Input,
+  InputNumber,
+  DatePicker,
+  Button,
+  Switch,
+  Collapse,
+  Divider,
+  Select,
+  message,
+  Tag,
+  Popconfirm,
 } from 'antd';
-import { ExclamationCircleOutlined, DownloadOutlined } from '@ant-design/icons';
+import {
+  ExclamationCircleOutlined,
+  DownloadOutlined,
+  ClearOutlined,
+  CheckCircleOutlined,
+} from '@ant-design/icons';
 import Plot from 'react-plotly.js';
 import { saveAs } from 'file-saver';
 import moment from 'moment-timezone';
@@ -130,6 +146,17 @@ function Chart({
     saveAs(blob, `${name.replace(/ /g, '-').toLowerCase()}-${new Date(Date.now()).toISOString()}.csv`);
   };
 
+  const clearAll = () => {
+    const emptyArr = plotsState.map((point) => {
+      // eslint-disable-next-line no-param-reassign
+      point.x = [];
+      // eslint-disable-next-line no-param-reassign
+      point.y = [];
+      return point;
+    });
+    setPlotsState(emptyArr);
+  };
+
   /** Initialize form slots for each plot to avoid crashing */
   useEffect(() => {
     // Make an object for each plot's form
@@ -155,6 +182,7 @@ function Chart({
     });
 
     setInitialValues(accumulate);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /** Handle new data incoming from the Context */
@@ -192,9 +220,9 @@ function Chart({
         // Upon insertion, check if the length of y exceeds the data limit.
         // If so, shift out the #points in the graph - #data limit oldest values
         const dataPoints = plotsState[i].y.length;
-        if (dataPoints > dataLimitState) {
-          plotsState[i].x.splice(0, dataPoints - dataLimitState);
-          plotsState[i].y.splice(0, dataPoints - dataLimitState);
+        if (dataPoints >= dataLimitState && dataLimitState !== -1) {
+          plotsState[i].x.splice(0, dataPoints - dataLimitState + 1);
+          plotsState[i].y.splice(0, dataPoints - dataLimitState + 1);
         }
 
         // Trigger the chart to update
@@ -202,6 +230,7 @@ function Chart({
         setDataRevision(dataRevision + 1);
       }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
   /** Handle the collection of historical data */
@@ -260,7 +289,7 @@ function Chart({
               setDataRevision(dataRevision + 1);
             });
           } catch (err) {
-            console.log(err);
+            message.log(err);
           }
         };
 
@@ -273,6 +302,7 @@ function Chart({
         setRetrievePlotHistory(null);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [retrievePlotHistory]);
 
   /** Process edit value form */
@@ -421,13 +451,37 @@ function Chart({
       height={height}
       toolsSlot={(
         <>
-          <Tag icon={<ExclamationCircleOutlined />} color="warning">
-            <strong>Data Limit:</strong>
-            &nbsp;
-            {dataLimitState}
-          </Tag>
+          {
+            dataLimitState !== -1 ? (
+              <Tag icon={<ExclamationCircleOutlined />} color="warning">
+                <strong>Data Limit:</strong>
+                &nbsp;
+                {dataLimitState}
+              </Tag>
+            ) : (
+              <Tag icon={<CheckCircleOutlined />} color="success">
+                <strong>Data Limit:</strong>
+                &nbsp;
+                &infin;
+              </Tag>
+            )
+          }
 
           &nbsp;
+
+          <Popconfirm
+            title="Are you sure you want to clear the chart of all values?"
+            onConfirm={() => clearAll()}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button size="small">
+              <ClearOutlined />
+            </Button>
+          </Popconfirm>
+
+          &nbsp;
+
           <Button size="small" onClick={() => downloadDataAsCSV()}>
             <DownloadOutlined />
           </Button>
@@ -450,22 +504,86 @@ function Chart({
             <Form.Item label="Name" name="name" hasFeedback>
               <Input onBlur={({ target: { id } }) => processForm(id)} />
             </Form.Item>
-            <Form.Item label="Data Limit" name="dataLimit" hasFeedback>
-              <InputNumber onBlur={({ target: { id } }) => processForm(id)} />
+            <Form.Item
+              label="Data Limit"
+              name="dataLimit"
+              hasFeedback
+              help="No limit => -1, Limit => positive value"
+            >
+              <InputNumber
+                min={-1}
+                max={Infinity}
+                onBlur={({ target: { id } }) => processForm(id)}
+              />
             </Form.Item>
+
             <Form.Item label="X Data Key" name="XDataKey" hasFeedback>
               <Input onBlur={({ target: { id } }) => processForm(id)} />
             </Form.Item>
+
             <Form.Item label="Process X Data key" name="processXDataKey" hasFeedback>
               <TextArea onBlur={({ target: { id } }) => processForm(id)} />
             </Form.Item>
-            <Form.Item label="X Range" name="XRange" hasFeedback>
-              <Input onBlur={({ target: { id } }) => processForm(id)} />
+
+            <Form.Item label="X Range" name="XRange">
+              <RangePicker
+                className="mr-1"
+                showTime
+                format="YYYY-MM-DD HH:mm:ss"
+                onBlur={() => {
+                  const fields = plotsForm.getFieldsValue();
+
+                  if (fields.XRange
+                    && fields.XRange.length === 2
+                  ) {
+                    layout.yaxis.range = [fields.XRange[0], fields.XRange[1]];
+                    layout.datarevision += 1;
+                    layout.uirevision += 1;
+                    setDataRevision(dataRevision + 1);
+                  } else {
+                    message.error('Fill in the range fields.');
+                  }
+                }}
+              />
             </Form.Item>
-            <Form.Item label="Y Range" name="YRange" hasFeedback>
-              <Input onBlur={({ target: { id } }) => processForm(id)} />
+
+            &nbsp;&nbsp;
+
+            <Form.Item name="YRangeMin" noStyle>
+              <InputNumber />
             </Form.Item>
+
+            &nbsp;to&nbsp;
+
+            <Form.Item name="YRangeMax" noStyle>
+              <InputNumber />
+            </Form.Item>
+
+            &nbsp;&nbsp;
+
+            <Button
+              onClick={() => {
+                const fields = plotsForm.getFieldsValue();
+
+                if (fields.YRangeMin
+                  && fields.YRangeMax
+                  && fields.YRangeMin.toString()
+                  && fields.YRangeMax.toString()
+                ) {
+                  layout.yaxis.range = [fields.YRangeMin, fields.YRangeMax];
+                  layout.datarevision += 1;
+                  layout.uirevision += 1;
+                  setDataRevision(dataRevision + 1);
+                } else {
+                  message.error('Fill in the range fields.');
+                }
+              }}
+            >
+              Set Y Range
+            </Button>
           </Form>
+
+          <br />
 
           {/* Edit existing values */}
           <Form
@@ -555,6 +673,7 @@ function Chart({
                       Show
                     </Button>
 
+                    <br />
                     <br />
 
                     <Form.Item label="Name" name={`name_${i}`} hasFeedback>
@@ -653,6 +772,9 @@ function Chart({
                   checked={addChartLive}
                   onChange={() => setAddChartLive(!addChartLive)}
                 />
+
+                <br />
+                <br />
 
                 <Form.Item label="Historical Date Range" name="dateRange" hasFeedback>
                   <RangePicker

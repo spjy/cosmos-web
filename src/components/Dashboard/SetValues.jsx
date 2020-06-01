@@ -113,6 +113,7 @@ function SetValues({
     ]);
 
     setUpdateLog(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dopplerSwitch]);
 
   /** Get the live values from the agent */
@@ -135,8 +136,6 @@ function SetValues({
             setLiveValues([{ id: json.output.error }]);
           }
         } catch (error) {
-          console.log(error);
-
           setLiveValues([{ id: 'Unable to retrieve component properties.' }]);
 
           message.error(error);
@@ -152,6 +151,7 @@ function SetValues({
     getValue();
 
     setQueryValues(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryValues]);
 
   /** Close ws on unmount */

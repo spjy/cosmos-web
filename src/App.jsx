@@ -33,6 +33,7 @@ const App = () => (
 
           return (
             <Component
+              id={route.path}
               key={route.path}
               path={route.path}
               // eslint-disable-next-line

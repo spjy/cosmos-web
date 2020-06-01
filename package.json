@@ -1,7 +1,7 @@
 {
   "name": "cosmos-web",
   "description": "A web application to visualize data from the COSMOS ecosystem.",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
@@ -22,7 +22,6 @@
     "cesium": "1.59.0",
     "file-saver": "^2.0.2",
     "interactjs": "^1.6.3",
-    "moment": "latest",
     "moment-timezone": "0.5.28",
     "plotly.js": "1.52.2",
     "prismjs": "^1.17.1",
