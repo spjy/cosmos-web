@@ -112,8 +112,6 @@ function LayoutManager() {
         return value;
       });
 
-      console.log(json);
-
       // Check if pass in an array of objects
       if (!json.length) {
         throw new Error('Outer container must be an array.');
@@ -408,7 +406,7 @@ function LayoutManager() {
                         Height (h)
                       </li>
                       <li>
-                        Horiztonal position (w)
+                        Horizontal position (w)
                       </li>
                       <li>
                         Vertical position (y)
