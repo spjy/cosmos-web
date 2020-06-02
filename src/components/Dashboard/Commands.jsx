@@ -108,7 +108,7 @@ const Commands = React.memo(({
     } catch (error) {
       setCommandHistory([
         ...commandHistory,
-        data,
+        `${moment().toISOString()} ${data}`,
       ]);
 
       message.error(error.message);
@@ -265,6 +265,16 @@ const Commands = React.memo(({
                 )) : null
             }
           </Select>
+          <Select
+            showSearch
+            className="block mb-2"
+            onChange={(value) => getRequests(value.split(':'))}
+            placeholder="Command List"
+          >
+            {
+              // set options here
+            }
+          </Select>
         </div>
         {/* <div className="w-full py-2">
           <Search
@@ -362,7 +372,6 @@ const Commands = React.memo(({
               setCommandArguments(lastArgument);
             } else if (e.keyCode === 9) {
               e.preventDefault();
-
               getAutocomplete(commandArguments.split(' ')[commandArguments.split(' ').length - 1]);
             }
           }}

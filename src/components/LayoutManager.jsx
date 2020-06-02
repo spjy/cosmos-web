@@ -101,7 +101,18 @@ function LayoutManager() {
    */
   const processLayoutObject = () => {
     try {
-      const json = JSON.parse(layoutObjectForm);
+      const json = JSON.parse(layoutObjectForm, (key, value) => {
+        if (value && (typeof value === 'string') && value.indexOf('function') === 0) {
+          // we can only pass a function as string in JSON ==> doing a real function
+          // eslint-disable-next-line no-new-func
+          const jsFunc = new Function(`return ${value}`)();
+          return jsFunc;
+        }
+
+        return value;
+      });
+
+      console.log(json);
 
       // Check if pass in an array of objects
       if (!json.length) {
@@ -233,7 +244,7 @@ function LayoutManager() {
 
     // Store just route keys in state as well
     setRouteKeys(keys);
-  }, [data]);
+  }, []);
 
   return (
     <div>
