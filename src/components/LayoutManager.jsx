@@ -233,7 +233,7 @@ function LayoutManager() {
 
     // Store just route keys in state as well
     setRouteKeys(keys);
-  }, [data]);
+  }, []);
 
   return (
     <div>
