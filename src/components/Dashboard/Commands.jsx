@@ -49,11 +49,18 @@ const Commands = React.memo(({
   const [updateLog, setUpdateLog] = useState(null);
   /** Store autocompletions */
   const [autocompletions, setAutocompletions] = useState([]);
+  /** Store command list arguments */
+  const [commandList, setCommandList] = useState('');
 
   /** DOM Element selector for history log */
   const cliEl = useRef(null);
   /** DOM Element selector for argument input */
   const inputEl = useRef(null);
+
+  const commandListRoute = [
+    'first',
+    'second',
+  ];
 
   /** Manages requests for agent list and agent [node] [process] */
   ws.onmessage = ({ data }) => {
@@ -263,6 +270,33 @@ const Commands = React.memo(({
                     {agent}
                   </Select.Option>
                 )) : null
+            }
+          </Select>
+          <Select
+            className="block mb-2"
+            showSearch
+            placeholder="Command List"
+            value={commandList}
+            onChange={(value) => {
+              setCommandList(value);
+              setCommandArguments(value);
+            }}
+            onInputKeyDown={(e) => {
+              if (e.keyCode === 38) {
+                sendCommand();
+                setCommandArguments('');
+              }
+            }}
+          >
+            {
+              commandListRoute.map((route) => (
+                <Select.Option
+                  value={route}
+                  key={route}
+                >
+                  {route}
+                </Select.Option>
+              ))
             }
           </Select>
         </div>
