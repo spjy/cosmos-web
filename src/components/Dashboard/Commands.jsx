@@ -146,6 +146,19 @@ const Commands = React.memo(({
     setUpdateLog(true);
   };
 
+  /** Handle submission of command list */
+  const sendCommandList = () => {
+    setLastArgument(commandList);
+
+    ws.send(`${process.env.COSMOS_BIN}/agent ${commandList}`);
+    setCommandHistory([
+      ...commandHistory,
+      `➜ ${moment().toISOString()} agent ${commandList}`,
+    ]);
+
+    setUpdateLog(true);
+  };
+
   /** Retrieve file autocompletion */
   const getAutocomplete = (autocomplete) => {
     const complete = socket('query', '/command/');
@@ -275,21 +288,16 @@ const Commands = React.memo(({
           <Select
             className="block mb-2"
             showSearch
-            value={commandList}
             placeholder="Command List"
-            onChange={(value) => {
-              setCommandList(value);
-              setCommandArguments(value);
-            }}
+            onChange={(value) => setCommandList(value)}
             onInputKeyDown={(e) => {
               if (e.keyCode === 13) {
-                sendCommand();
-                setCommandArguments('');
+                sendCommandList();
               }
             }}
-            onSelect={() => {
-              sendCommand();
-              setCommandArguments('');
+            onSelect={(value) => {
+              setCommandList(value);
+              sendCommandList();
             }}
           >
             {
