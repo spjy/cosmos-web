@@ -275,17 +275,21 @@ const Commands = React.memo(({
           <Select
             className="block mb-2"
             showSearch
-            placeholder="Command List"
             value={commandList}
+            placeholder="Command List"
             onChange={(value) => {
               setCommandList(value);
               setCommandArguments(value);
             }}
             onInputKeyDown={(e) => {
-              if (e.keyCode === 38) {
+              if (e.keyCode === 13) {
                 sendCommand();
                 setCommandArguments('');
               }
+            }}
+            onSelect={() => {
+              sendCommand();
+              setCommandArguments('');
             }}
           >
             {
