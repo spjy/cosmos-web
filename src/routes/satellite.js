@@ -550,7 +550,7 @@ export default {
                     processDataKey: (x) => x.toFixed(2),
                   },
                   {
-                    name: 'CPU Utilization (%)',
+                    name: 'CPU Utilization',
                     nodeProcess: 'neutron1:soh',
                     dataKey: 'cpu_utilization_000',
                     unit: '',
@@ -1399,7 +1399,7 @@ export default {
                     processDataKey: (x) => x.toFixed(2),
                   },
                   {
-                    name: 'CPU Utilization (%)',
+                    name: 'CPU Utilization',
                     nodeProcess: 'beagle1:cpu',
                     dataKey: 'cpu_utilization_000',
                     unit: '',
