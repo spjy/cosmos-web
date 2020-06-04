@@ -131,12 +131,12 @@ function Dashboard({
   };
 
   return (
-    <div className="mt-5 mx-16 mb-16">
+    <div>
       <PageHeader
-        className="component-color sticky z-10"
+        className="component-color sticky z-10 py-2 px-5"
         style={{
-          border: '1px solid rgb(235, 237, 240)',
-          top: 1,
+          borderBottom: '1px solid rgb(235, 237, 240)',
+          top: 0,
         }}
         title={`Web ${project.version}`}
         subTitle={(
@@ -165,48 +165,52 @@ function Dashboard({
           />
         )}
       />
-      <Context.Provider value={{ state, dispatch }}>
-        <ResponsiveGridLayout
-          className="layout"
-          breakpoints={{
-            lg: 996,
-          }}
-          cols={{
-            lg: 12,
-          }}
-          layouts={layouts}
-          margin={[12, 12]}
-          draggableHandle=".dragHandle"
-          draggableCancel=".preventDragHandle"
-          rowHeight={20}
-        >
-          {
-            layouts !== null
-              && layouts.lg !== null
-              ? layouts.lg
-                .filter((layout) => layout && layout.i && layout.component && layout.component.name)
-                .map((layout, i) => (
-                  <div
-                    className="shadow overflow-y-scroll rounded component-color"
-                    ref={(el) => {
-                      componentRefs.current[i] = el;
-                    }}
-                    key={layout.i}
-                  >
-                    <AsyncComponent
-                      component={layout.component.name}
-                      props={layout.component.props}
-                      height={
-                        componentRefs && componentRefs.current[i]
-                          ? componentRefs.current[i].clientHeight
-                          : 100
-                      }
-                    />
-                  </div>
-                )) : null
-          }
-        </ResponsiveGridLayout>
-      </Context.Provider>
+      <div className="mt-5 mx-16 mb-16">
+        <Context.Provider value={{ state, dispatch }}>
+          <ResponsiveGridLayout
+            className="layout"
+            breakpoints={{
+              lg: 996,
+            }}
+            cols={{
+              lg: 12,
+            }}
+            layouts={layouts}
+            margin={[12, 12]}
+            draggableHandle=".dragHandle"
+            draggableCancel=".preventDragHandle"
+            rowHeight={20}
+          >
+            {
+              layouts !== null
+                && layouts.lg !== null
+                ? layouts.lg
+                  .filter(
+                    (layout) => layout && layout.i && layout.component && layout.component.name,
+                  )
+                  .map((layout, i) => (
+                    <div
+                      className="shadow overflow-y-scroll rounded component-color"
+                      ref={(el) => {
+                        componentRefs.current[i] = el;
+                      }}
+                      key={layout.i}
+                    >
+                      <AsyncComponent
+                        component={layout.component.name}
+                        props={layout.component.props}
+                        height={
+                          componentRefs && componentRefs.current[i]
+                            ? componentRefs.current[i].clientHeight
+                            : 100
+                        }
+                      />
+                    </div>
+                  )) : null
+            }
+          </ResponsiveGridLayout>
+        </Context.Provider>
+      </div>
     </div>
   );
 }
