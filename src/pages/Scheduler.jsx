@@ -6,7 +6,7 @@ import MyScheduler from '../components/Calendar';
 
 import {
   Context, actions, reducer,
-} from '../store/neutron1';
+} from '../store/dashboard';
 
 import { socket } from '../socket';
 // eslint-disable-next-line

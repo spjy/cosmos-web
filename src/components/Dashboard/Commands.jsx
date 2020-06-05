@@ -11,7 +11,7 @@ import moment from 'moment-timezone';
 
 // import Search from 'antd/lib/input/Search';
 
-import { Context } from '../../store/neutron1';
+import { Context } from '../../store/dashboard';
 import BaseComponent from '../BaseComponent';
 import { socket } from '../../socket';
 

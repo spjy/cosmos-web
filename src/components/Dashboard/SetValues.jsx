@@ -7,7 +7,7 @@ import {
   Form, Input, Button, Select, message, Card, Switch,
 } from 'antd';
 
-import { Context } from '../../store/neutron1';
+import { Context } from '../../store/dashboard';
 
 import BaseComponent from '../BaseComponent';
 import { socket } from '../../socket';

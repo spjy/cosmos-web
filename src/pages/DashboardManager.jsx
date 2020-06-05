@@ -8,7 +8,7 @@ import { socket } from '../socket';
 
 import {
   Context, actions, reducer,
-} from '../store/neutron1';
+} from '../store/dashboard';
 
 /**
  * Component that manages the layout configuration page (aka Dashboard Manager).

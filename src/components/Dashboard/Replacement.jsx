@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Badge } from 'antd';
 // import moment from 'moment-timezone';
 
-import { Context } from '../../store/neutron1';
+import { Context } from '../../store/dashboard';
 import BaseComponent from '../BaseComponent';
 
 /**

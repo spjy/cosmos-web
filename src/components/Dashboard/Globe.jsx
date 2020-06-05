@@ -12,7 +12,7 @@ import {
 } from 'antd';
 
 import BaseComponent from '../BaseComponent';
-import { Context } from '../../store/neutron1';
+import { Context } from '../../store/dashboard';
 import model from '../../public/cubesat.glb';
 import { query } from '../../socket';
 

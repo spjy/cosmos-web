@@ -7,7 +7,7 @@
 
 // import model from '../../public/cubesat.glb';
 
-// import { Context } from '../../store/neutron1';
+// import { Context } from '../../store/dashboard';
 
 // /**
 //  * Displays a 3D model.
