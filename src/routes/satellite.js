@@ -592,6 +592,14 @@ export default {
             h: 10,
             component: {
               name: 'Commands',
+              props: {
+                commands: [
+                  {
+                    name: 'mov_agent_cpu',
+                    command: 'neutron1 exec add_value mov_agent_cpu',
+                  },
+                ],
+              },
             },
           },
           {
