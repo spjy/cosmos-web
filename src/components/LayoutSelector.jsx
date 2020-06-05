@@ -68,7 +68,7 @@ function LayoutSelector({
   return (
     <div className="flex">
       <Select
-        className="w-3/4 mr-3 mb-2"
+        className="mr-3"
         defaultActiveFirstOption
         dropdownMatchSelectWidth={false}
         showSearch
