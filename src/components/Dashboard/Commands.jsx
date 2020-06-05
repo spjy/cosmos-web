@@ -4,7 +4,7 @@ import React, {
 import PropTypes from 'prop-types';
 
 import {
-  Input, Select, Tooltip, message,
+  Input, Select, Tooltip, message, Button,
 } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import moment from 'moment-timezone';
@@ -27,6 +27,7 @@ const ws = socket('query', '/command/');
  */
 const Commands = React.memo(({
   height,
+  commands,
 }) => {
   const { state } = useContext(Context);
   /** Agents */
@@ -49,6 +50,8 @@ const Commands = React.memo(({
   const [updateLog, setUpdateLog] = useState(null);
   /** Store autocompletions */
   const [autocompletions, setAutocompletions] = useState([]);
+  /** Currently selected dropdown value of command list */
+  const [macroCommand, setMacroCommand] = useState(null);
 
   /** DOM Element selector for history log */
   const cliEl = useRef(null);
@@ -108,7 +111,7 @@ const Commands = React.memo(({
     } catch (error) {
       setCommandHistory([
         ...commandHistory,
-        data,
+        `${moment().toISOString()} ${data}`,
       ]);
 
       message.error(error.message);
@@ -137,6 +140,15 @@ const Commands = React.memo(({
     }
 
     setUpdateLog(true);
+  };
+
+  const sendMacroCommand = () => {
+    ws.send(`${process.env.COSMOS_BIN}/agent ${macroCommand}`);
+
+    setCommandHistory([
+      ...commandHistory,
+      `➜ ${moment().toISOString()} agent ${macroCommand}`,
+    ]);
   };
 
   /** Retrieve file autocompletion */
@@ -265,6 +277,35 @@ const Commands = React.memo(({
                 )) : null
             }
           </Select>
+          <div className="flex">
+            <div className="mr-2">
+              <Select
+                showSearch
+                className="block mb-2"
+                onChange={(value) => setMacroCommand(value)}
+                placeholder="Command List"
+              >
+                {
+                  commands.map(({ name, command }) => (
+                    <Select.Option
+                      key={name}
+                      value={command}
+                    >
+                      <Tooltip placement="right" title={command}>
+                        {name}
+                      </Tooltip>
+                    </Select.Option>
+                  ))
+                }
+              </Select>
+            </div>
+            <Button
+              disabled={!macroCommand}
+              onClick={() => sendMacroCommand()}
+            >
+              Send
+            </Button>
+          </div>
         </div>
         {/* <div className="w-full py-2">
           <Search
@@ -362,7 +403,6 @@ const Commands = React.memo(({
               setCommandArguments(lastArgument);
             } else if (e.keyCode === 9) {
               e.preventDefault();
-
               getAutocomplete(commandArguments.split(' ')[commandArguments.split(' ').length - 1]);
             }
           }}
@@ -376,6 +416,16 @@ const Commands = React.memo(({
 
 Commands.propTypes = {
   height: PropTypes.number.isRequired,
+  commands: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+      command: PropTypes.string,
+    }),
+  ),
+};
+
+Commands.defaultProps = {
+  commands: [],
 };
 
 export default Commands;
