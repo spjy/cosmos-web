@@ -3,17 +3,22 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import {
-  message, Typography, PageHeader,
+  Button, message, Typography, PageHeader, Drawer, Form, Input, Modal, Tabs,
 } from 'antd';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import {
   CheckCircleTwoTone,
   CloseCircleTwoTone,
+  CloseOutlined,
+  PlusOutlined,
 } from '@ant-design/icons';
 
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
+import Editor from 'react-simple-code-editor';
+import { highlight, languages } from 'prismjs/components/prism-core';
+import _ from 'lodash';
 import {
   Context, actions, reducer,
 } from '../store/neutron1';
@@ -26,7 +31,10 @@ import project from '../../package.json';
 import AsyncComponent from '../components/AsyncComponent';
 import LayoutSelector from '../components/LayoutSelector';
 
+
 const ResponsiveGridLayout = WidthProvider(Responsive);
+
+const { TabPane } = Tabs;
 
 function Dashboard({
   id,
@@ -52,10 +60,25 @@ function Dashboard({
     lg: [],
   });
 
+  /** Control the visibility of the layout editor on dashboard */
+  const [visible, setVisible] = useState(false);
+
+  /** State for editing JSON of the layout */
+  const [jsonEdit, setJsonEdit] = useState({});
+
+  /** Control visibility of the save layout form */
+  const [formVisible, setFormVisible] = useState(false);
+
   const [socketStatus, setSocketStatus] = useState('error');
 
   const componentRefs = useRef([]);
 
+  /** Form for saving layout */
+  const [formSave] = Form.useForm();
+
+  const [formError, setFormError] = useState('');
+
+  const [updateLayoutSelector, setUpdateLayoutSelector] = useState(false);
   /** Get socket data from the agent */
   useEffect(() => {
     const live = socket('live', '/live/all');
@@ -118,6 +141,78 @@ function Dashboard({
     }, 100);
   }, [defaultLayout, id, path]);
 
+  /** Save layout */
+  const saveLayout = (dashname) => {
+    const route = path.split('/')[1];
+    // Store the layout into localStorage
+    try {
+      try {
+        setUpdateLayoutSelector(true);
+        // Check if the route already has an object to store the saved layout
+        if (!(typeof JSON.parse(localStorage.getItem(route)) === 'object')
+          && JSON.parse(localStorage.getItem(route) !== null)
+        ) {
+          throw new Error(`${route} is not an array.`);
+        }
+      } catch (error) {
+        // If not, set it to an empty object
+        localStorage.setItem(route, JSON.stringify({}));
+      }
+
+      // Store the layout based on the name given
+      localStorage.setItem(route, JSON.stringify({
+        ...JSON.parse(localStorage.getItem(route)),
+        [dashname]: layouts,
+      }));
+
+      setUpdateLayoutSelector(false);
+      message.success('Layout saved successfully.', 10);
+    } catch {
+      message.error('Error saving layout.', 10);
+    }
+  };
+
+  /**
+   * Checks to see if the layout array's objects contain all of the correct keys
+   */
+  const processLayoutObject = () => {
+    try {
+      const json = JSON.parse(jsonEdit);
+
+      // Check if pass in an array of objects
+      if (!json.length) {
+        throw new Error('Outer container must be an array.');
+      }
+
+      // Validate the required fields
+      json.forEach((component, i) => {
+        if (!component
+          || !('i' in component)
+          || !('x' in component)
+          || !('y' in component)
+          || !('w' in component)
+          || !('h' in component)
+          || !('component' in component)
+          || !('name' in component.component)
+        ) {
+          throw new Error(`Object number ${i} object must contain a key (i), width (x), height (y) and component (component.name)`);
+        }
+      });
+
+      // If all valid, set the layout object
+      setLayouts({
+        lg: json,
+      });
+
+      message.success('Successfully updated layout.');
+
+      // Reset form error message
+      setFormError('');
+    } catch (error) {
+      setFormError(error.message);
+    }
+  };
+
   /** Set the layout based on using the LayoutSelector function */
   const selectLayout = (layout) => {
     if (layout === 'defaultRouteLayout') {
@@ -132,6 +227,18 @@ function Dashboard({
 
     message.success('Successfully changed layout.');
   };
+
+  const deleteComponent = (e) => {
+    const key = e.currentTarget.getAttribute('layoutkey');
+    console.log(_.reject(layouts.lg, { i: key }), layouts, key);
+    setLayouts({
+      lg: _.reject(layouts.lg, { i: key }),
+    });
+  };
+
+  useEffect(() => {
+    setJsonEdit(JSON.stringify(layouts.lg));
+  }, [layouts]);
 
   return (
     <div className="mt-5 mx-16 mb-16">
@@ -161,12 +268,54 @@ function Dashboard({
             }
           </Typography.Text>
         )}
-        extra={(
+        extra={[
+          <div className="float-left relative">
+            <Button
+              className="mr-3"
+              type="primary"
+              onClick={() => setFormVisible(true)}
+            >
+              Save Layout
+            </Button>
+            <Modal
+              visible={formVisible}
+              title="Save Current Layout"
+              onCancel={() => setFormVisible(false)}
+              okText="Save"
+              cancelText="Cancel"
+              onOk={() => {
+                formSave.validateFields()
+                  .then((values) => {
+                    saveLayout(values.dashname);
+                    setFormVisible(false);
+                    formSave.resetFields();
+                  });
+              }}
+            >
+              <Form
+                layout="vertical"
+                form={formSave}
+              >
+                <Form.Item
+                  name="dashname"
+                  required
+                  label="Dashboard Name"
+                  rules={[{ required: true, message: 'Please enter a name for the layout.' }]}
+                >
+                  <Input
+                    placeholder="Dashboard Name"
+                  />
+                </Form.Item>
+              </Form>
+            </Modal>
+          </div>,
           <LayoutSelector
+            className="absolute"
             path={path}
+            updateLayout={updateLayoutSelector}
             selectLayout={(value) => selectLayout(value)}
-          />
-        )}
+          />,
+        ]}
       />
       <Context.Provider value={{ state, dispatch }}>
         <ResponsiveGridLayout
@@ -205,11 +354,62 @@ function Dashboard({
                           : 100
                       }
                     />
+                    <Button
+                      style={{ display: (visible) ? 'block' : 'none' }}
+                      className="absolute bottom-0 left-0 z-50 mb-1 ml-1"
+                      shape="circle"
+                      layoutkey={layout.i}
+                      icon={<CloseOutlined />}
+                      onClick={(e) => deleteComponent(e)}
+                    />
                   </div>
                 )) : null
           }
         </ResponsiveGridLayout>
+        <Drawer
+          placement="bottom"
+          onClose={() => setVisible(false)}
+          visible={visible}
+          key="bottom"
+          mask={false}
+          height={400}
+        >
+          <Tabs defaultActiveKey="1">
+            <TabPane tab="Add Components" key="1">
+              Content
+            </TabPane>
+            <TabPane tab="JSON Editor" key="2">
+              <Button
+                onClick={() => processLayoutObject()}
+              >
+                Update Layout
+              </Button>
+              <span className="text-red-500 ml-3 mb-3">
+                {formError}
+              </span>
+              <pre
+                className="language-json mb-2 h-64 overflow-y-scroll overflow-x-scroll resize-y cursor-text text-white"
+              >
+                <Editor
+                  className="font-mono"
+                  value={jsonEdit}
+                  onValueChange={(value) => setJsonEdit(value)}
+                  highlight={(code) => highlight(code, languages.json)}
+                  padding={10}
+                />
+              </pre>
+            </TabPane>
+          </Tabs>
+        </Drawer>
       </Context.Provider>
+      <Button
+        className="fixed right-0 bottom-0 mb-5 mr-5"
+        icon={<PlusOutlined />}
+        type="primary"
+        onClick={() => setVisible(true)}
+        shape="circle"
+        size="large"
+      />
     </div>
   );
 }

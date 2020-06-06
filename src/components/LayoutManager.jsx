@@ -260,7 +260,6 @@ function LayoutManager() {
                 padding={10}
               />
             </pre>
-
             <Button
               onClick={() => saveLayout(route, name, data[key].configuration)}
             >
