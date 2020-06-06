@@ -63,6 +63,8 @@ function Dashboard({
   /** Timezone */
   const [timezoneState] = useState('Pacific/Honolulu');
 
+  const [globalHistoricalDate, setGlobalHistoricalDate] = useState(null);
+
   /** On mount, set the time and update each second */
   useEffect(() => {
     // Every second, update local and UTC time view
@@ -217,9 +219,16 @@ function Dashboard({
         </div>
       </div>
       <div className="flex justify-center pt-5">
-        <RangePicker className="mr-3" />
+        <RangePicker
+          className="mr-3"
+          showTime
+          format="YYYY-MM-DD HH:mm:ss"
+          onChange={(m) => setGlobalHistoricalDate(m)}
+          value={globalHistoricalDate}
+        />
         <Button
-          onClick={() => {}}
+          disabled={!globalHistoricalDate}
+          onClick={() => dispatch(actions.get('globalHistoricalDate', globalHistoricalDate))}
         >
           Set Global Historical Date
         </Button>
