@@ -8,7 +8,7 @@ import {
 } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 
-import { Context } from '../../store/neutron1';
+import { Context } from '../../store/dashboard';
 import BaseComponent from '../BaseComponent';
 import { socket } from '../../socket';
 

@@ -14,7 +14,7 @@ import 'react-resizable/css/styles.css';
 
 import {
   Context, actions, reducer,
-} from '../store/neutron1';
+} from '../store/dashboard';
 
 import { socket } from '../socket';
 // eslint-disable-next-line
@@ -62,6 +62,8 @@ function Dashboard({
   const [utcTime, setUtcTime] = useState('');
   /** Timezone */
   const [timezoneState] = useState('Pacific/Honolulu');
+
+  // const [globalHistoricalDate, setGlobalHistoricalDate] = useState(null);
 
   /** On mount, set the time and update each second */
   useEffect(() => {
@@ -217,9 +219,16 @@ function Dashboard({
         </div>
       </div>
       {/* <div className="flex justify-center pt-5">
-        <RangePicker className="mr-3" />
+        <RangePicker
+          className="mr-3"
+          showTime
+          format="YYYY-MM-DD HH:mm:ss"
+          onChange={(m) => setGlobalHistoricalDate(m)}
+          value={globalHistoricalDate}
+        />
         <Button
-          onClick={() => {}}
+          disabled={!globalHistoricalDate}
+          onClick={() => dispatch(actions.get('globalHistoricalDate', globalHistoricalDate))}
         >
           Set Global Historical Date
         </Button>

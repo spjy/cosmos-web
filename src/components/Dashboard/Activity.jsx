@@ -5,7 +5,7 @@ import { Badge, Form, Button } from 'antd';
 import moment from 'moment-timezone';
 import { highlight, languages } from 'prismjs/components/prism-core';
 
-import { Context } from '../../store/neutron1';
+import { Context } from '../../store/dashboard';
 import BaseComponent from '../BaseComponent';
 
 /**

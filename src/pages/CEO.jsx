@@ -6,7 +6,7 @@ import 'react-resizable/css/styles.css';
 
 import {
   Context, actions, reducer,
-} from '../store/neutron1';
+} from '../store/dashboard';
 
 import { socket } from '../socket';
 // eslint-disable-next-line
