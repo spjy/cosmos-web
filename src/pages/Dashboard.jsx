@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import {
-  message, Typography, DatePicker, Button,
+  message, Typography,
 } from 'antd';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import { CheckCircleTwoTone, CloseCircleTwoTone } from '@ant-design/icons';
@@ -24,7 +24,7 @@ import project from '../../package.json';
 import AsyncComponent from '../components/AsyncComponent';
 import LayoutSelector from '../components/LayoutSelector';
 
-const { RangePicker } = DatePicker;
+// const { RangePicker } = DatePicker;
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -63,7 +63,7 @@ function Dashboard({
   /** Timezone */
   const [timezoneState] = useState('Pacific/Honolulu');
 
-  const [globalHistoricalDate, setGlobalHistoricalDate] = useState(null);
+  // const [globalHistoricalDate, setGlobalHistoricalDate] = useState(null);
 
   /** On mount, set the time and update each second */
   useEffect(() => {
@@ -218,7 +218,7 @@ function Dashboard({
           </div>
         </div>
       </div>
-      <div className="flex justify-center pt-5">
+      {/* <div className="flex justify-center pt-5">
         <RangePicker
           className="mr-3"
           showTime
@@ -232,7 +232,7 @@ function Dashboard({
         >
           Set Global Historical Date
         </Button>
-      </div>
+      </div> */}
       <div className="mt-5 mx-16 mb-16">
         <Context.Provider value={{ state, dispatch }}>
           <ResponsiveGridLayout
