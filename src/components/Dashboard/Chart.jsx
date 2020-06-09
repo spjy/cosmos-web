@@ -233,6 +233,13 @@ function Chart({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
+  /**
+   * Retrieve a data key from a nodeProcess between a date range
+   * @param {moment[]} dates Array of moment dates, range of dates to retrieve data from
+   * @param {string} YDataKey Key to retrieve
+   * @param {string} nodeProcess node:process to retrieve data key from
+   * @param {number} plot Plot index to modify
+   */
   const queryHistoricalData = (dates, YDataKey, nodeProcess, plot) => {
     if (query.OPEN) {
       // Check to see if user chose a range of dates
