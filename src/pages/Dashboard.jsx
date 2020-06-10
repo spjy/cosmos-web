@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Button, message, Typography, PageHeader, Drawer, Form, Input, Modal, Tabs,
+  Button, message, Typography, PageHeader, Drawer, Form, Input, Modal, Tabs, Divider, Space,
 } from 'antd';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import {
@@ -13,12 +13,14 @@ import {
   PlusOutlined,
 } from '@ant-design/icons';
 
+
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
 import Editor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import _ from 'lodash';
+import components from '../components/default/Default';
 import {
   Context, actions, reducer,
 } from '../store/neutron1';
@@ -30,7 +32,6 @@ import project from '../../package.json';
 
 import AsyncComponent from '../components/AsyncComponent';
 import LayoutSelector from '../components/LayoutSelector';
-
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -64,18 +65,22 @@ function Dashboard({
   const [visible, setVisible] = useState(false);
 
   /** State for editing JSON of the layout */
-  const [jsonEdit, setJsonEdit] = useState({});
+  const [jsonEdit, setJsonEdit] = useState('');
 
   /** Control visibility of the save layout form */
   const [formVisible, setFormVisible] = useState(false);
 
   const [socketStatus, setSocketStatus] = useState('error');
 
+  /** String for the component editor */
+  const [componentEditor, setComponentEditor] = useState(JSON.stringify({}));
+
   const componentRefs = useRef([]);
 
   /** Form for saving layout */
   const [formSave] = Form.useForm();
 
+  /** Error from the form */
   const [formError, setFormError] = useState('');
 
   const [updateLayoutSelector, setUpdateLayoutSelector] = useState(false);
@@ -230,15 +235,43 @@ function Dashboard({
 
   const deleteComponent = (e) => {
     const key = e.currentTarget.getAttribute('layoutkey');
-    console.log(_.reject(layouts.lg, { i: key }), layouts, key);
     setLayouts({
       lg: _.reject(layouts.lg, { i: key }),
     });
   };
 
+  const addToLayout = () => {
+    let rand; let newId;
+    do {
+      rand = Math.random().toString(36).substring(7);
+      newId = `${path.split('/')[1]}-${id}-${rand}`;
+      // eslint-disable-next-line no-loop-func
+    } while (layouts.lg.filter((object) => object.i === newId).length);
+    setLayouts({
+
+      lg: [
+        ...layouts.lg,
+        {
+          i: newId,
+          x: 0,
+          y: Infinity,
+          h: 7,
+          w: 3,
+          component: JSON.parse(componentEditor),
+        },
+      ],
+    });
+  };
+
   useEffect(() => {
-    setJsonEdit(JSON.stringify(layouts.lg));
+    setJsonEdit(JSON.stringify(layouts.lg, null, 2));
   }, [layouts]);
+
+  const retrieveInfo = (e) => {
+    const compName = e.currentTarget.getAttribute('keyid');
+    const retrieved = components.find((el) => el.name === compName);
+    setComponentEditor(JSON.stringify(retrieved, null, 2));
+  };
 
   return (
     <div className="mt-5 mx-16 mb-16">
@@ -376,7 +409,37 @@ function Dashboard({
         >
           <Tabs defaultActiveKey="1">
             <TabPane tab="Add Components" key="1">
-              Content
+              <Divider orientation="left">Components</Divider>
+              { components.map((piece) => (
+                <Button
+                  key={piece.name}
+                  className="mr-1"
+                  draggable
+                  keyid={piece.name}
+                  onClick={(e) => retrieveInfo(e)}
+                >
+                  {piece.name}
+                </Button>
+              ))}
+              <Divider orientation="left">
+                <Space>
+                  Editor
+                  <Button
+                    onClick={() => addToLayout()}
+                  >
+                    Add
+                  </Button>
+                </Space>
+              </Divider>
+              <pre className="language-json mb-2 h-40 overflow-y-scroll overflow-x-scroll resize-y cursor-text text-white">
+                <Editor
+                  className="font-mono"
+                  value={componentEditor}
+                  onValueChange={(value) => setComponentEditor(value)}
+                  highlight={(code) => highlight(code, languages.json)}
+                  padding={10}
+                />
+              </pre>
             </TabPane>
             <TabPane tab="JSON Editor" key="2">
               <Button
