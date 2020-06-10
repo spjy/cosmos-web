@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { message, Select, Button } from 'antd';
 
-import { Context, actions } from '../../store/neutron1';
+import { Context, actions } from '../../store/dashboard';
 import { socket } from '../../socket';
 import BaseComponent from '../BaseComponent';
 

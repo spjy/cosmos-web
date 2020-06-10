@@ -3,20 +3,18 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import {
-  message, Typography, PageHeader,
+  message, Typography,
 } from 'antd';
 import { Responsive, WidthProvider } from 'react-grid-layout';
-import {
-  CheckCircleTwoTone,
-  CloseCircleTwoTone,
-} from '@ant-design/icons';
+import { CheckCircleTwoTone, CloseCircleTwoTone } from '@ant-design/icons';
+import moment from 'moment-timezone';
 
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
 import {
   Context, actions, reducer,
-} from '../store/neutron1';
+} from '../store/dashboard';
 
 import { socket } from '../socket';
 // eslint-disable-next-line
@@ -25,6 +23,8 @@ import project from '../../package.json';
 
 import AsyncComponent from '../components/AsyncComponent';
 import LayoutSelector from '../components/LayoutSelector';
+
+// const { RangePicker } = DatePicker;
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -55,6 +55,29 @@ function Dashboard({
   const [socketStatus, setSocketStatus] = useState('error');
 
   const componentRefs = useRef([]);
+
+  /** Storage for form values */
+  const [time, setTime] = useState('');
+  /** Storage for form values */
+  const [utcTime, setUtcTime] = useState('');
+  /** Timezone */
+  const [timezoneState] = useState('Pacific/Honolulu');
+
+  // const [globalHistoricalDate, setGlobalHistoricalDate] = useState(null);
+
+  /** On mount, set the time and update each second */
+  useEffect(() => {
+    // Every second, update local and UTC time view
+    const clock = setTimeout(() => {
+      setTime(moment().tz(timezoneState).format('YYYY-MM-DDTHH:mm:ss'));
+      setUtcTime(moment().tz('Europe/London').format('YYYY-MM-DDTHH:mm:ss'));
+    }, 1000);
+
+    // Stop timeout on unmount
+    return () => {
+      clearTimeout(clock);
+    };
+  }, [time, utcTime, timezoneState]);
 
   /** Get socket data from the agent */
   useEffect(() => {
@@ -134,82 +157,128 @@ function Dashboard({
   };
 
   return (
-    <div className="mt-5 mx-16 mb-16">
-      <PageHeader
-        className="component-color sticky z-10"
-        style={{
-          border: '1px solid rgb(235, 237, 240)',
-          top: 1,
-        }}
-        title={`Web ${project.version}`}
-        subTitle={(
-          <Typography.Text type="secondary">
-            {
-              socketStatus === 'success'
-                ? (
-                  <span>
-                    <CheckCircleTwoTone twoToneColor="#52c41a" />
-                    &nbsp;Socket is connected and operational.
-                  </span>
-                )
-                : (
-                  <span>
-                    <CloseCircleTwoTone twoToneColor="#d80000" />
-                    &nbsp;&nbsp;No connection available. Attempting to reconnect.
-                  </span>
-                )
-            }
-          </Typography.Text>
-        )}
-        extra={(
-          <LayoutSelector
-            path={path}
-            selectLayout={(value) => selectLayout(value)}
-          />
-        )}
-      />
-      <Context.Provider value={{ state, dispatch }}>
-        <ResponsiveGridLayout
-          className="layout"
-          breakpoints={{
-            lg: 996,
-          }}
-          cols={{
-            lg: 12,
-          }}
-          layouts={layouts}
-          margin={[12, 12]}
-          draggableHandle=".dragHandle"
-          draggableCancel=".preventDragHandle"
-          rowHeight={20}
+    <div>
+      <div className="component-color sticky z-10 py-2 px-5 border-gray-200 border-solid border-b top-0">
+        <div
+          className="flex justify-between"
         >
-          {
-            layouts !== null
-              && layouts.lg !== null
-              ? layouts.lg
-                .filter((layout) => layout && layout.i && layout.component && layout.component.name)
-                .map((layout, i) => (
-                  <div
-                    className="shadow overflow-y-scroll rounded component-color"
-                    ref={(el) => {
-                      componentRefs.current[i] = el;
-                    }}
-                    key={layout.i}
-                  >
-                    <AsyncComponent
-                      component={layout.component.name}
-                      props={layout.component.props}
-                      height={
-                        componentRefs && componentRefs.current[i]
-                          ? componentRefs.current[i].clientHeight
-                          : 100
-                      }
-                    />
-                  </div>
-                )) : null
-          }
-        </ResponsiveGridLayout>
-      </Context.Provider>
+          <div className="pt-2">
+            <span className="text-2xl">
+              Web&nbsp;
+              {project.version}
+            </span>
+            &nbsp;&nbsp;
+          </div>
+          <div className="pt-4">
+            <Typography.Text type="secondary">
+              {
+                socketStatus === 'success'
+                  ? (
+                    <span>
+                      <CheckCircleTwoTone twoToneColor="#52c41a" />
+                      &nbsp;Connected and operational.
+                    </span>
+                  )
+                  : (
+                    <span>
+                      <CloseCircleTwoTone twoToneColor="#d80000" />
+                      &nbsp;&nbsp;No connection available. Attempting to reconnect.
+                    </span>
+                  )
+              }
+            </Typography.Text>
+          </div>
+          <div>
+            <table className="">
+              <tbody>
+                <tr>
+                  <td className="pr-4 text-gray-500">
+                    {timezoneState.split('/')[1]}
+                  </td>
+                  <td className="pr-2 text-gray-500 ">
+                    UTC
+                  </td>
+                </tr>
+                <tr>
+                  <td className="pr-4">
+                    {time}
+                  </td>
+                  <td className="pr-2">
+                    {utcTime}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div className="pt-2">
+            <LayoutSelector
+              path={path}
+              selectLayout={(value) => selectLayout(value)}
+            />
+          </div>
+        </div>
+      </div>
+      {/* <div className="flex justify-center pt-5">
+        <RangePicker
+          className="mr-3"
+          showTime
+          format="YYYY-MM-DD HH:mm:ss"
+          onChange={(m) => setGlobalHistoricalDate(m)}
+          value={globalHistoricalDate}
+        />
+        <Button
+          disabled={!globalHistoricalDate}
+          onClick={() => dispatch(actions.get('globalHistoricalDate', globalHistoricalDate))}
+        >
+          Set Global Historical Date
+        </Button>
+      </div> */}
+      <div className="mt-5 mx-16 mb-16">
+        <Context.Provider value={{ state, dispatch }}>
+          <ResponsiveGridLayout
+            className="layout"
+            breakpoints={{
+              lg: 996,
+            }}
+            cols={{
+              lg: 12,
+            }}
+            layouts={layouts}
+            margin={[12, 12]}
+            draggableHandle=".dragHandle"
+            draggableCancel=".preventDragHandle"
+            rowHeight={20}
+          >
+            {
+              layouts !== null
+                && layouts.lg !== null
+                ? layouts.lg
+                  .filter(
+                    (layout) => layout && layout.i && layout.component && layout.component.name,
+                  )
+                  .map((layout, i) => (
+                    <div
+                      className="shadow overflow-y-scroll rounded component-color"
+                      ref={(el) => {
+                        componentRefs.current[i] = el;
+                      }}
+                      key={layout.i}
+                    >
+                      <AsyncComponent
+                        component={layout.component.name}
+                        props={layout.component.props}
+                        height={
+                          componentRefs && componentRefs.current[i]
+                            ? componentRefs.current[i].clientHeight
+                            : 100
+                        }
+                      />
+                    </div>
+                  )) : null
+            }
+          </ResponsiveGridLayout>
+        </Context.Provider>
+      </div>
     </div>
   );
 }

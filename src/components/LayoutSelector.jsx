@@ -21,7 +21,16 @@ function LayoutSelector({
 
     try {
       // Parse and check if layout is in JSON format
-      const json = JSON.parse(layout);
+      const json = JSON.parse(layout, (key, value) => {
+        if (value && (typeof value === 'string') && value.indexOf('function') === 0) {
+          // we can only pass a function as string in JSON ==> doing a real function
+          // eslint-disable-next-line no-new-func
+          const jsFunc = new Function(`return ${value}`)();
+          return jsFunc;
+        }
+
+        return value;
+      });
 
       if (typeof json !== 'object' || json === null) {
         throw new Error('The layout configuration for this page is invalid.');
@@ -59,7 +68,7 @@ function LayoutSelector({
   return (
     <div className="flex">
       <Select
-        className="w-3/4 mr-3 mb-2"
+        className="mr-3"
         defaultActiveFirstOption
         dropdownMatchSelectWidth={false}
         showSearch

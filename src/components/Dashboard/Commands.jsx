@@ -4,14 +4,14 @@ import React, {
 import PropTypes from 'prop-types';
 
 import {
-  Input, Select, Tooltip, message,
+  Input, Select, Tooltip, message, Button,
 } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import moment from 'moment-timezone';
 
 // import Search from 'antd/lib/input/Search';
 
-import { Context } from '../../store/neutron1';
+import { Context } from '../../store/dashboard';
 import BaseComponent from '../BaseComponent';
 import { socket } from '../../socket';
 
@@ -27,6 +27,7 @@ const ws = socket('query', '/command/');
  */
 const Commands = React.memo(({
   height,
+  commands,
 }) => {
   const { state } = useContext(Context);
   /** Agents */
@@ -51,6 +52,8 @@ const Commands = React.memo(({
   const [autocompletions, setAutocompletions] = useState([]);
   /** Store command list arguments */
   const [commandList, setCommandList] = useState('');
+  /** Currently selected dropdown value of command list */
+  const [macroCommand, setMacroCommand] = useState(null);
 
   /** DOM Element selector for history log */
   const cliEl = useRef(null);
@@ -115,7 +118,7 @@ const Commands = React.memo(({
     } catch (error) {
       setCommandHistory([
         ...commandHistory,
-        data,
+        `${moment().toISOString()} ${data}`,
       ]);
 
       message.error(error.message);
@@ -144,6 +147,15 @@ const Commands = React.memo(({
     }
 
     setUpdateLog(true);
+  };
+
+  const sendMacroCommand = () => {
+    ws.send(`${process.env.COSMOS_BIN}/agent ${macroCommand}`);
+
+    setCommandHistory([
+      ...commandHistory,
+      `➜ ${moment().toISOString()} agent ${macroCommand}`,
+    ]);
   };
 
   /** Retrieve file autocompletion */
@@ -272,33 +284,35 @@ const Commands = React.memo(({
                 )) : null
             }
           </Select>
-          <Select
-            className="block mb-2"
-            showSearch
-            placeholder="Command List"
-            value={commandList}
-            onChange={(value) => {
-              setCommandList(value);
-              setCommandArguments(value);
-            }}
-            onInputKeyDown={(e) => {
-              if (e.keyCode === 38) {
-                sendCommand();
-                setCommandArguments('');
-              }
-            }}
-          >
-            {
-              commandListRoute.map((route) => (
-                <Select.Option
-                  value={route}
-                  key={route}
-                >
-                  {route}
-                </Select.Option>
-              ))
-            }
-          </Select>
+          <div className="flex">
+            <div className="mr-2">
+              <Select
+                showSearch
+                className="block mb-2"
+                onChange={(value) => setMacroCommand(value)}
+                placeholder="Command List"
+              >
+                {
+                  commands.map(({ name, command }) => (
+                    <Select.Option
+                      key={name}
+                      value={command}
+                    >
+                      <Tooltip placement="right" title={command}>
+                        {name}
+                      </Tooltip>
+                    </Select.Option>
+                  ))
+                }
+              </Select>
+            </div>
+            <Button
+              disabled={!macroCommand}
+              onClick={() => sendMacroCommand()}
+            >
+              Send
+            </Button>
+          </div>
         </div>
         {/* <div className="w-full py-2">
           <Search
@@ -396,7 +410,6 @@ const Commands = React.memo(({
               setCommandArguments(lastArgument);
             } else if (e.keyCode === 9) {
               e.preventDefault();
-
               getAutocomplete(commandArguments.split(' ')[commandArguments.split(' ').length - 1]);
             }
           }}
@@ -410,6 +423,16 @@ const Commands = React.memo(({
 
 Commands.propTypes = {
   height: PropTypes.number.isRequired,
+  commands: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+      command: PropTypes.string,
+    }),
+  ),
+};
+
+Commands.defaultProps = {
+  commands: [],
 };
 
 export default Commands;

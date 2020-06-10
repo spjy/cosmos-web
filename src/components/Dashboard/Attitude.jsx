@@ -7,7 +7,7 @@ import {
 
 import BaseComponent from '../BaseComponent';
 import AttitudeThreeD from './Babylon/AttitudeThreeD';
-import { Context } from '../../store/neutron1';
+import { Context } from '../../store/dashboard';
 
 const { Panel } = Collapse;
 
