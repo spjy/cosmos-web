@@ -234,33 +234,43 @@ function Dashboard({
   };
 
   const deleteComponent = (e) => {
-    const key = e.currentTarget.getAttribute('layoutkey');
-    setLayouts({
-      lg: _.reject(layouts.lg, { i: key }),
-    });
+    try {
+      const key = e.currentTarget.getAttribute('layoutkey');
+      setLayouts({
+        lg: _.reject(layouts.lg, { i: key }),
+      });
+      
+      message.success('Successfully deleted component.');
+    } catch(err) {
+      message.error(err); 
+    }
   };
 
   const addToLayout = () => {
-    let rand; let newId;
-    do {
-      rand = Math.random().toString(36).substring(7);
-      newId = `${path.split('/')[1]}-${id}-${rand}`;
-      // eslint-disable-next-line no-loop-func
-    } while (layouts.lg.filter((object) => object.i === newId).length);
-    setLayouts({
-
-      lg: [
-        ...layouts.lg,
-        {
-          i: newId,
-          x: 0,
-          y: Infinity,
-          h: 7,
-          w: 3,
-          component: JSON.parse(componentEditor),
-        },
-      ],
-    });
+    try {
+      let rand; let newId;
+      do {
+        rand = Math.random().toString(36).substring(7);
+        newId = `${path.split('/')[1]}-${id}-${rand}`;
+        // eslint-disable-next-line no-loop-func
+      } while (layouts.lg.filter((object) => object.i === newId).length);
+      setLayouts({
+        lg: [
+          ...layouts.lg,
+          {
+            i: newId,
+            x: 0,
+            y: Infinity,
+            h: 7,
+            w: 3,
+            component: JSON.parse(componentEditor),
+          },
+        ],
+      });
+      message.success('Successfully added component.');
+    } catch (err) {
+      message.error(err);
+    };
   };
 
   useEffect(() => {
