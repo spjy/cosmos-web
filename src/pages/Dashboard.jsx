@@ -16,7 +16,7 @@ import {
   Context, actions, reducer,
 } from '../store/dashboard';
 
-import { socket } from '../socket';
+import { socket } from '../api';
 // eslint-disable-next-line
 import routes from '../routes';
 import project from '../../package.json';
@@ -81,7 +81,7 @@ function Dashboard({
 
   /** Get socket data from the agent */
   useEffect(() => {
-    const live = socket('live', '/live/all');
+    const live = socket('/live/all');
 
     /** Get latest data from neutron1_exec */
     live.onmessage = ({ data }) => {

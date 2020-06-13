@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { message, Select, Button } from 'antd';
 
 import { Context, actions } from '../../store/dashboard';
-import { socket } from '../../socket';
+import { socket } from '../../api';
 import BaseComponent from '../BaseComponent';
 
 /**
