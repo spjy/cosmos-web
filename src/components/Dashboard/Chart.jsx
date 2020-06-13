@@ -27,7 +27,7 @@ import moment from 'moment-timezone';
 
 import BaseComponent from '../BaseComponent';
 import { Context } from '../../store/dashboard';
-import { query } from '../../socket';
+import { axios } from '../../api';
 
 const { RangePicker } = DatePicker;
 const { Panel } = Collapse;
@@ -240,43 +240,44 @@ function Chart({
    * @param {string} nodeProcess node:process to retrieve data key from
    * @param {number} plot Plot index to modify
    */
-  const queryHistoricalData = (dates, YDataKey, nodeProcess, plot) => {
-    if (query.OPEN) {
-      // Check to see if user chose a range of dates
-      if (dates && dates.length === 2) {
-        // Unix time to modified julian date
-        const from = (dates[0].unix() / 86400.0) + 2440587.5 - 2400000.5;
-        const to = (dates[1].unix() / 86400.0) + 2440587.5 - 2400000.5;
+  const queryHistoricalData = async (dates, YDataKey, nodeProcess, plot) => {
+    if (dates && dates.length === 2) {
+      message.loading(`Querying ${nodeProcess} data...`, 0);
 
-        // Retrieve date and YDataKey fields from database, return only those keys
-        query.send(
-          `database=${process.env.MONGODB_COLLECTION}?collection=${nodeProcess}?multiple=true?query={"node_utc": { "$gt": ${from}, "$lt": ${to} }}?options={"projection": { "${XDataKeyState}": 1, "${YDataKey}": 1 }}`,
-        );
+      // Unix time to modified julian date
+      const from = (dates[0].unix() / 86400.0) + 2440587.5 - 2400000.5;
+      const to = (dates[1].unix() / 86400.0) + 2440587.5 - 2400000.5;
 
-        message.loading('Querying data...', 0);
-      }
+      try {
+        const { data } = await axios.post(`/query/${process.env.MONGODB_COLLECTION}/${nodeProcess}`, {
+          multiple: true,
+          query: {
+            [XDataKeyState]: {
+              $gt: from,
+              $lt: to,
+            },
+          },
+          options: {
+            projection: {
+              [XDataKeyState]: 1,
+              [YDataKey]: 1,
+            },
+          },
+        });
 
-      // Wait for response from query
-      query.onmessage = ({ data }) => {
-        try {
-          const json = JSON.parse(data);
+        message.destroy();
+        plotsState[plot].live = false;
 
-          message.destroy();
-
-          if (json.length === 0) {
-            message.warning('No data for specified date range.');
-          } else {
-            message.success(`Retrieved ${json.length} records.`);
-          }
-
-          plotsState[plot].live = false;
-
+        if (data.length === 0) {
+          message.warning('No data for specified date range.');
+        } else {
+          message.success(`Retrieved ${data.length} records.`);
           // Reset chart for past data
           plotsState[plot].x = [];
           plotsState[plot].y = [];
 
           // Insert past data into chart
-          json.forEach((d) => {
+          data.forEach((d) => {
             plotsState[plot].x.push(processXDataKeyState.func(d[XDataKeyState]));
             plotsState[plot]
               .y
@@ -288,15 +289,12 @@ function Chart({
             layout.datarevision += 1;
             setDataRevision(dataRevision + 1);
           });
-        } catch (err) {
-          message.log(err);
         }
-      };
-
-      query.onerror = () => {
+      } catch (error) {
         message.destroy();
-        message.error('Error has occurred.');
-      };
+        message.error(error.message);
+        console.log(error);
+      }
     }
   };
 

@@ -8,7 +8,7 @@ import {
   Context, actions, reducer,
 } from '../store/dashboard';
 
-import { socket } from '../socket';
+import { socket } from '../api';
 // eslint-disable-next-line
 import routes from '../routes';
 

@@ -14,7 +14,7 @@ import {
 import BaseComponent from '../BaseComponent';
 import { Context } from '../../store/dashboard';
 import model from '../../public/cubesat.glb';
-import { query } from '../../socket';
+import { axios } from '../../api';
 
 const { Panel } = Collapse;
 const { RangePicker } = DatePicker;
@@ -188,110 +188,118 @@ function CesiumGlobe({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
+  const queryHistoricalData = async (dates, dataKey, nodeProcess, orbit) => {
+    // Check to see if user chose a range of dates
+    if (dates && dates.length === 2) {
+      // Unix time to modified julian date
+      const from = (dates[0].unix() / 86400.0) + 2440587.5 - 2400000.5;
+      const to = (dates[1].unix() / 86400.0) + 2440587.5 - 2400000.5;
+
+      try {
+        const { data } = await axios.post(`/query/${process.env.MONGODB_COLLECTION}/${nodeProcess}`, {
+          multiple: true,
+          query: {
+            node_utc: {
+              $gt: from,
+              $lt: to,
+            },
+          },
+          options: {
+            projection: {
+              [dataKey]: 1,
+              node_utc: 1,
+            },
+          },
+        });
+
+        message.destroy();
+
+        if (data.length === 0) {
+          message.warning('No data for specified date range.');
+        } else {
+          message.success(`Retrieved ${data.length} records.`);
+
+          const tempOrbit = [...orbitsState];
+
+          let startOrbit;
+          let stopOrbit;
+          let startOrbitPosition;
+
+          tempOrbit[orbit].live = false;
+
+          if (data.length > 0) {
+            startOrbit = Cesium
+              .JulianDate
+              .fromDate(
+                moment
+                  .unix((((data[0].node_utc + 2400000.5) - 2440587.5) * 86400.0))
+                  .toDate(),
+              );
+            stopOrbit = Cesium
+              .JulianDate
+              .fromDate(
+                moment
+                  .unix((((data[data.length - 1].node_utc + 2400000.5) - 2440587.5) * 86400.0))
+                  .toDate(),
+              );
+            startOrbitPosition = data[0][dataKey].pos;
+          }
+
+          const sampledPosition = new Cesium.SampledPositionProperty();
+
+          data.forEach((o) => {
+            const p = o[dataKey].pos;
+
+            if (o.node_utc && o[dataKey]) {
+              const date = Cesium
+                .JulianDate
+                .fromDate(
+                  moment
+                    .unix((((o.node_utc + 2400000.5) - 2440587.5) * 86400.0))
+                    .toDate(),
+                );
+              const pos = Cesium.Cartesian3.fromArray(p);
+
+              sampledPosition.addSample(date, pos);
+            }
+          });
+
+          tempOrbit[orbit].position = sampledPosition;
+
+          setStart(startOrbit);
+          setStop(stopOrbit);
+          setOrbitsState(tempOrbit);
+
+          setCameraFlyTo(Cesium.Cartesian3.fromArray([
+            startOrbitPosition[0] * 3,
+            startOrbitPosition[1] * 3,
+            startOrbitPosition[2] * 3,
+          ]));
+        }
+      } catch (error) {
+        message.error(error.message);
+      }
+    }
+  };
+
   /** Handle the collection of historical data */
   /** TODO: UPDATE RETRIEVAL FOR GEODETIC COORDINATES */
   useEffect(() => {
     if (retrieveOrbitHistory !== null) {
-      if (query.OPEN) {
-        const fields = editForm.getFieldsValue();
+      const fields = editForm.getFieldsValue();
 
-        const dates = fields[`dateRange_${retrieveOrbitHistory}`];
-        const dataKey = fields[`dataKey_${retrieveOrbitHistory}`];
+      const dates = fields[`dateRange_${retrieveOrbitHistory}`];
+      const dataKey = fields[`dataKey_${retrieveOrbitHistory}`];
 
-        // Check to see if user chose a range of dates
-        if (dates && dates.length === 2) {
-          // Unix time to modified julian date
-          const from = (dates[0].unix() / 86400.0) + 2440587.5 - 2400000.5;
-          const to = (dates[1].unix() / 86400.0) + 2440587.5 - 2400000.5;
+      queryHistoricalData(
+        dates,
+        dataKey,
+        orbitsState[retrieveOrbitHistory].nodeProcess,
+        retrieveOrbitHistory,
+      );
 
-          query.send(
-            `database=${process.env.MONGODB_COLLECTION}?collection=${orbitsState[retrieveOrbitHistory].nodeProcess}?multiple=true?query={"node_utc": { "$gt": ${from}, "$lt": ${to} }}?options={"projection": { "${dataKey}": 1, "node_utc": 1 }}`,
-          );
-
-          message.loading('Querying data...', 0);
-        }
-
-        query.onmessage = ({ data }) => {
-          try {
-            const json = JSON.parse(data);
-
-            message.destroy();
-
-            if (json.length === 0) {
-              message.warning('No data for specified date range.');
-            } else {
-              message.success(`Retrieved ${json.length} records.`);
-            }
-
-            const tempOrbit = [...orbitsState];
-
-            let startOrbit;
-            let stopOrbit;
-            let startOrbitPosition;
-
-            tempOrbit[retrieveOrbitHistory].live = false;
-
-            if (json.length > 0) {
-              startOrbit = Cesium
-                .JulianDate
-                .fromDate(
-                  moment
-                    .unix((((json[0].node_utc + 2400000.5) - 2440587.5) * 86400.0))
-                    .toDate(),
-                );
-              stopOrbit = Cesium
-                .JulianDate
-                .fromDate(
-                  moment
-                    .unix((((json[json.length - 1].node_utc + 2400000.5) - 2440587.5) * 86400.0))
-                    .toDate(),
-                );
-              startOrbitPosition = json[0][dataKey].pos;
-            }
-
-            const sampledPosition = new Cesium.SampledPositionProperty();
-
-            json.forEach((orbit) => {
-              const p = orbit[dataKey].pos;
-
-              if (orbit.node_utc && orbit[dataKey]) {
-                const date = Cesium
-                  .JulianDate
-                  .fromDate(
-                    moment
-                      .unix((((orbit.node_utc + 2400000.5) - 2440587.5) * 86400.0))
-                      .toDate(),
-                  );
-                const pos = Cesium.Cartesian3.fromArray(p);
-
-                sampledPosition.addSample(date, pos);
-              }
-            });
-
-            tempOrbit[retrieveOrbitHistory].position = sampledPosition;
-
-            setStart(startOrbit);
-            setStop(stopOrbit);
-            setOrbitsState(tempOrbit);
-
-            setCameraFlyTo(Cesium.Cartesian3.fromArray([
-              startOrbitPosition[0] * 3,
-              startOrbitPosition[1] * 3,
-              startOrbitPosition[2] * 3,
-            ]));
-          } catch (err) {
-            // console.log(err);
-          }
-        };
-
-        query.onerror = () => {
-          message.destroy();
-          message.error('Error has occurred.');
-        };
-
-        // Reset state to null to allow for detection of future orbit history requests
-        setRetrieveOrbitHistory(null);
-      }
+      // Reset state to null to allow for detection of future orbit history requests
+      setRetrieveOrbitHistory(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [retrieveOrbitHistory]);

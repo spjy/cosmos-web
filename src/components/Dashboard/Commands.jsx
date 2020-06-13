@@ -13,11 +13,7 @@ import moment from 'moment-timezone';
 
 import { Context } from '../../store/dashboard';
 import BaseComponent from '../BaseComponent';
-import { socket } from '../../socket';
-
-
-const ws = socket('query', '/command/');
-// const live = socket('live', '/live/list');
+import { axios } from '../../api';
 
 /**
  * Send commands to agents through agent mongo web socket. Simulates a CLI.
@@ -59,111 +55,114 @@ const Commands = React.memo(({
   const inputEl = useRef(null);
 
   /** Manages requests for agent list and agent [node] [process] */
-  ws.onmessage = ({ data }) => {
+  const sendCommandApi = async (command) => {
     try {
-      const json = JSON.parse(data);
-
-      const sortedRequests = [];
-      const requests = {};
-
-      if (json.output && json.output.requests) {
-        // Clear agent requests for new agent
-
-        json.output.requests.forEach((request) => {
-          sortedRequests.push(
-            request.token,
-          );
-
-          // Make commands mapped into an object
-          requests[request.token] = {
-            ...request,
-          };
-        });
-
-        sortedRequests.sort();
-
-        setAgentRequests(requests);
-        setSortedAgentRequests(sortedRequests);
-
-        message.destroy();
-        message.success(`Retrieved agent requests for ${selectedAgent[0]}:${selectedAgent[1]}.`, 5);
-      } else if (json && json.output) {
-        // agent node proc cmd
-
-        const jsonOutput = JSON.stringify(json.output);
-
-        if (jsonOutput) {
-          setCommandHistory([
-            ...commandHistory,
-            `${moment().toISOString()} ${jsonOutput}`,
-          ]);
-        } else {
-          setCommandHistory([
-            ...commandHistory,
-            `${moment().toISOString()} ${json.output}`,
-          ]);
-        }
-
-        setUpdateLog(true);
-      } else if (json.error) {
-        throw new Error(json.error);
-      }
-    } catch (error) {
       setCommandHistory([
         ...commandHistory,
-        `${moment().toISOString()} ${data}`,
+        command,
       ]);
 
-      message.error(error.message);
+      const { data } = await axios.post('/command', {
+        responseType: 'text',
+        data: {
+          command,
+        },
+      });
+
+      try {
+        const json = JSON.parse(data);
+
+        // json
+        if (json.output && json.output.requests) {
+          const sortedRequests = [];
+          const requests = {};
+
+          // Clear agent requests for new agent
+          json.output.requests.forEach((request) => {
+            sortedRequests.push(
+              request.token,
+            );
+
+            // Make commands mapped into an object
+            requests[request.token] = {
+              ...request,
+            };
+          });
+
+          sortedRequests.sort();
+
+          setAgentRequests(requests);
+          setSortedAgentRequests(sortedRequests);
+
+          message.destroy();
+          message.success(`Retrieved agent requests for ${selectedAgent[0]}:${selectedAgent[1]}.`, 5);
+        } else if (json && json.output) {
+          // agent node proc cmd
+
+          const jsonOutput = JSON.stringify(json.output);
+
+          if (jsonOutput) {
+            setCommandHistory([
+              ...commandHistory,
+              `${moment().toISOString()} ${jsonOutput}`,
+            ]);
+          } else {
+            setCommandHistory([
+              ...commandHistory,
+              `${moment().toISOString()} ${json.output}`,
+            ]);
+          }
+
+          setUpdateLog(true);
+        } else if (json.error) {
+          throw new Error(json.error);
+        }
+      } catch (error) {
+        // non-json
+        setCommandHistory([
+          ...commandHistory,
+          `${moment().toISOString()} ${data}`,
+        ]);
+      }
+    } catch (error) {
+      message.error(error);
     }
   };
 
-  /** Close ws on unmount */
-  useEffect(() => () => ws.close(), []);
-
   /** Handle submission of agent command */
-  const sendCommand = () => {
+  const sendCommand = async () => {
     setLastArgument(commandArguments);
 
     if (selectedRequest === '> agent') {
-      ws.send(`${process.env.COSMOS_BIN}/agent ${commandArguments}`);
-      setCommandHistory([
-        ...commandHistory,
-        `➜ ${moment().toISOString()} agent ${commandArguments}`,
-      ]);
+      sendCommandApi(`${process.env.COSMOS_BIN}/agent ${commandArguments}`);
     } else {
-      ws.send(`${process.env.COSMOS_BIN}/agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro ? `${state.macro} ` : ''}${commandArguments}`);
-      setCommandHistory([
-        ...commandHistory,
-        `➜ ${moment().toISOString()} agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro ? `${state.macro} ` : ''}${commandArguments}`,
-      ]);
+      sendCommandApi(`${process.env.COSMOS_BIN}/agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro ? `${state.macro} ` : ''}${commandArguments}`);
     }
 
     setUpdateLog(true);
   };
 
-  const sendMacroCommand = () => {
-    ws.send(`${process.env.COSMOS_BIN}/agent ${macroCommand}`);
-
-    setCommandHistory([
-      ...commandHistory,
-      `➜ ${moment().toISOString()} agent ${macroCommand}`,
-    ]);
+  const sendMacroCommand = async () => {
+    sendCommandApi(`${process.env.COSMOS_BIN}/agent ${macroCommand}`);
   };
 
   /** Retrieve file autocompletion */
-  const getAutocomplete = (autocomplete) => {
-    const complete = socket('query', '/command/');
+  const getAutocomplete = async (autocomplete) => {
+    sendCommandApi(`compgen -c ${autocomplete}`);
 
-    complete.onopen = () => {
-      complete.send(`compgen -c ${autocomplete}`);
+    setCommandHistory([
+      ...commandHistory,
+      `compgen -c ${autocomplete}`,
+    ]);
 
-      complete.onmessage = ({ data }) => {
-        setAutocompletions(data.split('\n'));
+    const { data } = await axios.post('/command', {
+      responseType: 'text',
+      data: {
+        command: `compgen -c ${autocomplete}`,
+      },
+    });
 
-        complete.close();
-      };
-    };
+    setAutocompletions(data.split('\n'));
   };
 
   /** Autocomplete if it's the only one in the array */
@@ -184,7 +183,7 @@ const Commands = React.memo(({
   }, [autocompletions]);
 
   /** Get the possible requests for selected agent */
-  const getRequests = (agent) => {
+  const getRequests = async (agent) => {
     setSelectedAgent(agent);
 
     message.loading(`Retrieving requests for ${agent[0]}:${agent[1]}...`, 0);
@@ -193,7 +192,7 @@ const Commands = React.memo(({
     setAgentRequests({});
 
     if (agent.length > 0) {
-      ws.send(`${process.env.COSMOS_BIN}/agent ${agent[0]} ${agent[1]} help_json`);
+      sendCommandApi(`${process.env.COSMOS_BIN}/agent ${agent[0]} ${agent[1]} help_json`);
     }
   };
   /** Watches for changes to selectedAgent. Then sends WS message to get list of commands. */
