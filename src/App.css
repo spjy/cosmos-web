@@ -16,6 +16,10 @@
   color: blue;
 }
 
+.handlebar {
+  cursor: ns-resize;
+}
+
 /* PrismJS 1.17.1
 https://prismjs.com/download.html#themes=prism-tomorrow&languages=json */
 /**

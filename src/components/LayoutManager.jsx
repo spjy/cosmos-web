@@ -101,7 +101,16 @@ function LayoutManager() {
    */
   const processLayoutObject = () => {
     try {
-      const json = JSON.parse(layoutObjectForm);
+      const json = JSON.parse(layoutObjectForm, (key, value) => {
+        if (value && (typeof value === 'string') && value.indexOf('function') === 0) {
+          // we can only pass a function as string in JSON ==> doing a real function
+          // eslint-disable-next-line no-new-func
+          const jsFunc = new Function(`return ${value}`)();
+          return jsFunc;
+        }
+
+        return value;
+      });
 
       // Check if pass in an array of objects
       if (!json.length) {
@@ -260,6 +269,7 @@ function LayoutManager() {
                 padding={10}
               />
             </pre>
+
             <Button
               onClick={() => saveLayout(route, name, data[key].configuration)}
             >
@@ -396,7 +406,7 @@ function LayoutManager() {
                         Height (h)
                       </li>
                       <li>
-                        Horiztonal position (w)
+                        Horizontal position (w)
                       </li>
                       <li>
                         Vertical position (y)

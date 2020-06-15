@@ -3,23 +3,35 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Button, message, Typography, PageHeader, Drawer, Form, Input, Modal, Tabs, Divider, Space,
+  Button,
+  message,
+  Typography,
+  PageHeader,
+  Drawer,
+  Form,
+  Input,
+  Modal,
+  Tabs,
+  Divider,
+  Space,
+  Slider,
+  Col,
+  Row,
+  InputNumber,
 } from 'antd';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import {
   CheckCircleTwoTone,
   CloseCircleTwoTone,
   CloseOutlined,
-  PlusOutlined,
+  EditOutlined,
 } from '@ant-design/icons';
-
 
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
 import Editor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs/components/prism-core';
-import _ from 'lodash';
 import components from '../components/default/Default';
 import {
   Context, actions, reducer,
@@ -63,27 +75,41 @@ function Dashboard({
 
   /** Control the visibility of the layout editor on dashboard */
   const [visible, setVisible] = useState(false);
+  /** Track mouse movements */
+  const [mouseY, setMouseY] = useState(null);
+  /** Variable for the height of the drawer */
+  const [height, setHeight] = useState(400);
+  /** Original mouse position */
+  const [origMouseY, setOrigMouseY] = useState(null);
 
   /** State for editing JSON of the layout */
   const [jsonEdit, setJsonEdit] = useState('');
 
+  /** String for the component editor */
+  const [componentEditor, setComponentEditor] = useState(JSON.stringify({
+    i: 'Will be randomly generated',
+    x: 0,
+    y: 0,
+    w: 4,
+    h: 7,
+    component: {},
+  }, null, 2));
+
+  const [dimensions, setDimensions] = useState([4, 7]);
+
   /** Control visibility of the save layout form */
   const [formVisible, setFormVisible] = useState(false);
+  /** Form for saving layout */
+  const [formSave] = Form.useForm();
+  /** Error from the form */
+  const [formError, setFormError] = useState('');
+  /** Update the dropdown to select layouts */
+  const [updateLayoutSelector, setUpdateLayoutSelector] = useState(false);
 
   const [socketStatus, setSocketStatus] = useState('error');
 
-  /** String for the component editor */
-  const [componentEditor, setComponentEditor] = useState(JSON.stringify({}));
-
   const componentRefs = useRef([]);
 
-  /** Form for saving layout */
-  const [formSave] = Form.useForm();
-
-  /** Error from the form */
-  const [formError, setFormError] = useState('');
-
-  const [updateLayoutSelector, setUpdateLayoutSelector] = useState(false);
   /** Get socket data from the agent */
   useEffect(() => {
     const live = socket('live', '/live/all');
@@ -236,41 +262,48 @@ function Dashboard({
   const deleteComponent = (e) => {
     try {
       const key = e.currentTarget.getAttribute('layoutkey');
+      const newLayout = layouts.lg.filter((el) => el.i !== key);
       setLayouts({
-        lg: _.reject(layouts.lg, { i: key }),
+        lg: newLayout,
       });
-      
       message.success('Successfully deleted component.');
-    } catch(err) {
-      message.error(err); 
+    } catch (err) {
+      message.error(err);
     }
   };
 
-  const addToLayout = () => {
+  const addToLayout = (elemParams) => {
     try {
-      let rand; let newId;
+      const add = JSON.parse(componentEditor);
+
+      if (elemParams) {
+        add.x = elemParams.x;
+        add.y = elemParams.y;
+      }
+
+      let rand;
+      let newId;
       do {
-        rand = Math.random().toString(36).substring(7);
+        rand = Math.random()
+          .toString(36)
+          .substring(7);
         newId = `${path.split('/')[1]}-${id}-${rand}`;
         // eslint-disable-next-line no-loop-func
       } while (layouts.lg.filter((object) => object.i === newId).length);
+
+      add.i = newId;
+
       setLayouts({
         lg: [
           ...layouts.lg,
-          {
-            i: newId,
-            x: 0,
-            y: Infinity,
-            h: 7,
-            w: 3,
-            component: JSON.parse(componentEditor),
-          },
+          add,
         ],
       });
+
       message.success('Successfully added component.');
-    } catch (err) {
-      message.error(err);
-    };
+    } catch {
+      message.error('Error adding component.');
+    }
   };
 
   useEffect(() => {
@@ -280,7 +313,53 @@ function Dashboard({
   const retrieveInfo = (e) => {
     const compName = e.currentTarget.getAttribute('keyid');
     const retrieved = components.find((el) => el.name === compName);
-    setComponentEditor(JSON.stringify(retrieved, null, 2));
+    const modify = JSON.parse(componentEditor);
+
+    modify.component.name = retrieved.name;
+    modify.component.props = retrieved.props;
+    setComponentEditor(JSON.stringify(modify, null, 2));
+  };
+
+  const changeDimensions = (value, dim) => {
+    const change = JSON.parse(componentEditor);
+
+    switch (dim) {
+      case 'w':
+        setDimensions([value, dimensions[1]]);
+        change.w = value;
+        break;
+      case 'h':
+        setDimensions([dimensions[0], value]);
+        change.h = value;
+        break;
+      default:
+        break;
+    }
+
+    setComponentEditor(JSON.stringify(change, null, 2));
+  };
+
+  const getMousePosition = (e) => {
+    setMouseY(e.clientY);
+  };
+
+  useEffect(() => {
+    if (origMouseY !== 0 && origMouseY !== null) {
+      const calculateHeight = height + (origMouseY - mouseY);
+      if (calculateHeight >= 100 && calculateHeight <= 950) {
+        setHeight(height + (origMouseY - mouseY));
+        setOrigMouseY(mouseY);
+      }
+    }
+  });
+
+  const checkComponentJson = () => {
+    try {
+      JSON.parse(componentEditor);
+      return true;
+    } catch {
+      return false;
+    }
   };
 
   return (
@@ -312,8 +391,9 @@ function Dashboard({
           </Typography.Text>
         )}
         extra={[
-          <div className="float-left relative">
+          <div key="form" className="float-left relative">
             <Button
+              key="savelayout"
               className="mr-3"
               type="primary"
               onClick={() => setFormVisible(true)}
@@ -321,6 +401,7 @@ function Dashboard({
               Save Layout
             </Button>
             <Modal
+              key="inputname"
               visible={formVisible}
               title="Save Current Layout"
               onCancel={() => setFormVisible(false)}
@@ -353,6 +434,7 @@ function Dashboard({
             </Modal>
           </div>,
           <LayoutSelector
+            key="layoutselector"
             className="absolute"
             path={path}
             updateLayout={updateLayoutSelector}
@@ -374,6 +456,8 @@ function Dashboard({
           draggableHandle=".dragHandle"
           draggableCancel=".preventDragHandle"
           rowHeight={20}
+          isDroppable
+          onDrop={(elemParams) => addToLayout(elemParams)}
         >
           {
             layouts !== null
@@ -415,16 +499,30 @@ function Dashboard({
           visible={visible}
           key="bottom"
           mask={false}
-          height={400}
+          height={height}
         >
+          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+          <div
+            className="handlebar fixed z-30 w-full h-2"
+            style={{ top: -5, left: -10 }}
+            onMouseDown={(e) => {
+              setOrigMouseY(e.clientY);
+              window.addEventListener('mousemove', getMousePosition);
+              window.addEventListener('mouseup', () => {
+                setOrigMouseY(0);
+                window.removeEventListener('mousemove', getMousePosition);
+              });
+            }}
+          >
+            &nbsp;
+          </div>
           <Tabs defaultActiveKey="1">
             <TabPane tab="Add Components" key="1">
-              <Divider orientation="left">Components</Divider>
+              <Divider orientation="left">1. Choose component</Divider>
               { components.map((piece) => (
                 <Button
                   key={piece.name}
                   className="mr-1"
-                  draggable
                   keyid={piece.name}
                   onClick={(e) => retrieveInfo(e)}
                 >
@@ -432,24 +530,80 @@ function Dashboard({
                 </Button>
               ))}
               <Divider orientation="left">
-                <Space>
-                  Editor
-                  <Button
-                    onClick={() => addToLayout()}
-                  >
-                    Add
-                  </Button>
-                </Space>
+                <Space>2. Edit component&apos;s properties</Space>
               </Divider>
-              <pre className="language-json mb-2 h-40 overflow-y-scroll overflow-x-scroll resize-y cursor-text text-white">
-                <Editor
-                  className="font-mono"
-                  value={componentEditor}
-                  onValueChange={(value) => setComponentEditor(value)}
-                  highlight={(code) => highlight(code, languages.json)}
-                  padding={10}
-                />
-              </pre>
+              <div className="flex">
+                <pre className="flex-none language-json mb-2 h-64 w-2/4 overflow-y-scroll overflow-x-scroll resize-y cursor-text text-white">
+                  <Editor
+                    className="font-mono"
+                    value={componentEditor}
+                    onValueChange={(value) => setComponentEditor(value)}
+                    highlight={(code) => highlight(code, languages.json)}
+                    padding={10}
+                  />
+                </pre>
+                <div className="flex-1 m-auto text-center">
+                  <div>Height</div>
+                  <Row justify="center">
+                    <Col span={12}>
+                      <Slider
+                        min={2}
+                        max={18}
+                        onChange={(value) => changeDimensions(value, 'h')}
+                        value={dimensions[1]}
+                      />
+                    </Col>
+                    <Col span={4}>
+                      <InputNumber
+                        min={2}
+                        max={18}
+                        style={{ margin: '0 16px' }}
+                        value={dimensions[1]}
+                        onChange={(value) => changeDimensions(value, 'h')}
+                      />
+                    </Col>
+                  </Row>
+                  <br />
+                  <div>Width</div>
+                  <Row justify="center">
+                    <Col span={12}>
+                      <Slider
+                        min={1}
+                        max={12}
+                        onChange={(value) => changeDimensions(value, 'w')}
+                        value={dimensions[0]}
+                      />
+                    </Col>
+                    <Col span={4}>
+                      <InputNumber
+                        min={1}
+                        max={12}
+                        style={{ margin: '0 16px' }}
+                        value={dimensions[0]}
+                        onChange={(value) => changeDimensions(value, 'w')}
+                      />
+                    </Col>
+                  </Row>
+                  <br />
+                  <Button type="primary" onClick={() => addToLayout()}>Add Component to Layout</Button>
+                </div>
+              </div>
+              <Divider orientation="left">Preview</Divider>
+              {checkComponentJson() && JSON.parse(componentEditor).component.name
+                ? (
+                  <div
+                    className="shadow mt-5 mx-16 mb-16 overflow-y-scroll rounded component-color"
+                    style={{ width: `${(dimensions[0] / 12) * 100}%`, height: `${dimensions[1] * 30}px` }}
+                    draggable
+                  >
+                    <AsyncComponent
+                      component={JSON.parse(componentEditor).component.name}
+                      props={JSON.parse(componentEditor).component.props}
+                      height={JSON.parse(componentEditor).h}
+                    />
+                  </div>
+                )
+                : null}
             </TabPane>
             <TabPane tab="JSON Editor" key="2">
               <Button
@@ -477,7 +631,7 @@ function Dashboard({
       </Context.Provider>
       <Button
         className="fixed right-0 bottom-0 mb-5 mr-5"
-        icon={<PlusOutlined />}
+        icon={<EditOutlined />}
         type="primary"
         onClick={() => setVisible(true)}
         shape="circle"
