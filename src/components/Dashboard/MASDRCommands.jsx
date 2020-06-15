@@ -10,7 +10,7 @@ import { CloseOutlined } from '@ant-design/icons';
 
 import { Context } from '../../store/dashboard';
 import BaseComponent from '../BaseComponent';
-import { socket } from '../../socket';
+import { socket } from '../../api';
 
 const ws = socket('query', '/command/');
 // const live = socket('live', '/live/list');

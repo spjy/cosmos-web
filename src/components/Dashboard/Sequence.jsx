@@ -7,7 +7,7 @@ import {
 import { QuestionOutlined } from '@ant-design/icons';
 
 import BaseComponent from '../BaseComponent';
-import { socket } from '../../socket';
+import { socket } from '../../api';
 
 /**
  * Component to handle pre-defined sequences of commands to run agent commands.

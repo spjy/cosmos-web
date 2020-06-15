@@ -4,7 +4,7 @@ import BaseComponent from '../components/BaseComponent';
 // eslint-disable-next-line
 import LayoutManager from '../components/LayoutManager';
 
-import { socket } from '../socket';
+import { socket } from '../api';
 
 import {
   Context, actions, reducer,

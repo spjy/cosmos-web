@@ -6,7 +6,7 @@ import {
 } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 
-import { socket } from '../../socket';
+import { socket } from '../../api';
 import BaseComponent from '../BaseComponent';
 
 function UploadFile({
