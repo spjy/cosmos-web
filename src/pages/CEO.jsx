@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, {
+  useState, useEffect, useReducer, useRef,
+} from 'react';
 import {
   Badge, message, Divider, Collapse, Tag, Tooltip,
 } from 'antd';
@@ -22,8 +24,16 @@ function CEO() {
 
   /** Store the default page layout in case user wants to switch to it */
   const [, setSocketStatus] = useState('error');
+  // Store selected tags
+  const [selectedTags, setSelectedTags] = useState({});
+  // Last selected tag
+  const [lastSelectedTag, setLastSelectedTag] = useState('');
 
-  const [selectedTags, setSelectedTags] = useState([]);
+  // Ref to get current state value, for setTimeout function
+  const selectedTagsRef = useRef(selectedTags);
+  selectedTagsRef.current = selectedTags;
+
+  const lastSelectedTagRef = useRef(null);
 
   /** Get socket data from the agent */
   useEffect(() => {
@@ -72,20 +82,41 @@ function CEO() {
   }, []);
 
   // Handle copying of pieces to clipboard
-  const handleChange = (tag) => {
-    const nextSelectedTags = [...selectedTags, tag];
-    setSelectedTags(nextSelectedTags);
+  const copyPieceName = (node, tag, name) => {
+    // Check if it was not selected
+    if (!(node in selectedTags && selectedTags[node].includes(tag))) {
+      setLastSelectedTag(name);
 
-    setTimeout(() => {
-      const remove = selectedTags.filter((t) => t !== tag);
+      lastSelectedTagRef.current.select();
+      document.execCommand('copy');
 
-      setSelectedTags(remove);
-    }, 3000);
+      // Add to selected array for node
+      const nextSelectedTags = {
+        ...selectedTags,
+        [node]: selectedTags[node] ? [...selectedTags[node], tag] : [tag],
+      };
+
+      setSelectedTags(nextSelectedTags);
+
+      // After 2 sec, remove from array
+      setTimeout(() => {
+        // To handle closure
+        const tags = selectedTagsRef.current;
+        const remove = tags[node].filter((t) => t !== tag);
+
+        setSelectedTags(remove);
+      }, 2000);
+    }
   };
 
   return (
     <Context.Provider value={{ state, dispatch }}>
       <div className="mt-5 mx-16 mb-16">
+        <textarea
+          className="hidden"
+          ref={lastSelectedTagRef}
+          value={lastSelectedTag}
+        />
         {
           state.namespace && !(state.namespace.length === 0)
             ? Object.entries(state.namespace).map(([node, { pieces, agents }]) => (
@@ -130,12 +161,26 @@ function CEO() {
                             ? Object.entries(pieces).map(([piece, name]) => {
                               if (piece.startsWith('piece_name_')) {
                                 return (
-                                  <Tooltip visible={selectedTags.indexOf(piece) > -1} title={`Copied ${name}!`}>
+                                  <Tooltip
+                                    visible={
+                                      selectedTags[node]
+                                        ? selectedTags[node].indexOf(piece) > -1
+                                        : false
+                                    }
+                                    title={`Copied ${name}!`}
+                                    key={`${node}:${piece}`}
+                                  >
                                     <Tag.CheckableTag
-                                      checked={selectedTags.indexOf(piece) > -1}
-                                      onChange={() => handleChange(piece)}
-                                      key={piece}
+                                      checked={
+                                        selectedTags[node]
+                                          ? selectedTags[node].indexOf(piece) > -1
+                                          : false
+                                      }
+                                      onChange={() => copyPieceName(node, piece, name)}
+                                      key={`${node}:${piece}`}
                                     >
+                                      { piece.split('_')[2] }
+                                      :
                                       { name }
                                     </Tag.CheckableTag>
                                   </Tooltip>
