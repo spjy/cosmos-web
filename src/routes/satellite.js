@@ -479,6 +479,19 @@ export default {
       defaultLayout: {
         lg: [
           {
+            i: 'satellite-neutron1-test',
+            x: 0,
+            y: null,
+            w: 3,
+            h: 7,
+            component: {
+              name: 'SOH',
+              props: {
+                name: 'beagle1',
+              },
+            },
+          },
+          {
             i: 'satellite-neutron1-a',
             x: 0,
             y: 0,

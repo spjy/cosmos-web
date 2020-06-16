@@ -15,6 +15,7 @@ import Replacement from './Dashboard/Replacement';
 import SatellitePasses from './Dashboard/SatellitePasses';
 import SetValues from './Dashboard/SetValues';
 import Sequence from './Dashboard/Sequence';
+import SOH from './Dashboard/SOH';
 import Status from './Dashboard/Status';
 import Subsystem from './Dashboard/Subsystem';
 import ThreeD from './Dashboard/ThreeD';
@@ -38,6 +39,7 @@ const components = {
   SatellitePasses,
   SetValues,
   Sequence,
+  SOH,
   Status,
   Subsystem,
   ThreeD,
