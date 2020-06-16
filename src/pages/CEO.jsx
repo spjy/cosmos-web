@@ -162,12 +162,20 @@ function CEO() {
                               if (piece.startsWith('piece_name_')) {
                                 return (
                                   <Tooltip
-                                    visible={selectedTags[node] ? selectedTags[node].indexOf(piece) > -1 : false}
+                                    visible={
+                                      selectedTags[node]
+                                        ? selectedTags[node].indexOf(piece) > -1
+                                        : false
+                                    }
                                     title={`Copied ${name}!`}
                                     key={`${node}:${piece}`}
                                   >
                                     <Tag.CheckableTag
-                                      checked={selectedTags[node] ? selectedTags[node].indexOf(piece) > -1 : false}
+                                      checked={
+                                        selectedTags[node]
+                                          ? selectedTags[node].indexOf(piece) > -1
+                                          : false
+                                      }
                                       onChange={() => copyPieceName(node, piece, name)}
                                       key={`${node}:${piece}`}
                                     >
