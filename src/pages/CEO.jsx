@@ -24,10 +24,14 @@ function CEO() {
 
   /** Store the default page layout in case user wants to switch to it */
   const [, setSocketStatus] = useState('error');
+  // Selected piece
+  const [selectedPiece, setSelectedPiece] = useState({});
   // Store selected tags
   const [selectedTags, setSelectedTags] = useState({});
   // Last selected tag
   const [lastSelectedTag, setLastSelectedTag] = useState('');
+  // Values for currently selected piece
+  const [availableValues, setAvailableValues] = useState({});
 
   // Ref to get current state value, for setTimeout function
   const selectedTagsRef = useRef(selectedTags);
@@ -70,30 +74,34 @@ function CEO() {
   useEffect(() => {
     async function fetchNamespace() {
       try {
-        const agents = await axios.get('/namespace/pieces');
+        const { data } = await axios.get('/namespace/all');
 
-        dispatch(actions.get('namespace', agents.data));
+        dispatch(actions.get('namespace', data));
       } catch (error) {
         message.error(error);
       }
     }
 
-    fetchNamespace();
+    if (!state.namespace) {
+      fetchNamespace();
+    }
   }, []);
 
   // Handle copying of pieces to clipboard
-  const copyPieceName = (node, tag, name) => {
+  const copyPieceName = (node, name) => {
     // Check if it was not selected
-    if (!(node in selectedTags && selectedTags[node].includes(tag))) {
+    if (!(node in selectedTags && selectedTags[node].includes(name))) {
+      // Set text in text area
       setLastSelectedTag(name);
 
+      // Copy text from textarea
       lastSelectedTagRef.current.select();
       document.execCommand('copy');
 
       // Add to selected array for node
       const nextSelectedTags = {
         ...selectedTags,
-        [node]: selectedTags[node] ? [...selectedTags[node], tag] : [tag],
+        [node]: selectedTags[node] ? [...selectedTags[node], name] : [name],
       };
 
       setSelectedTags(nextSelectedTags);
@@ -102,18 +110,34 @@ function CEO() {
       setTimeout(() => {
         // To handle closure
         const tags = selectedTagsRef.current;
-        const remove = tags[node].filter((t) => t !== tag);
+        const remove = tags[node].filter((t) => t !== name);
 
         setSelectedTags(remove);
       }, 2000);
     }
   };
 
+  const viewPieceValues = (node, piece, component) => {
+    // Add to selected array for node
+    const nextSelectedPiece = {
+      ...selectedPiece,
+      [node]: piece,
+    };
+
+    setSelectedPiece(nextSelectedPiece);
+
+    setAvailableValues({
+      ...availableValues,
+      [node]: state.namespace[node].values[component],
+    });
+  };
+
   return (
     <Context.Provider value={{ state, dispatch }}>
-      <div className="mt-5 mx-16 mb-16">
+      <div className="flex flex-wrap mt-5 mx-16 mb-16">
+        {/* For copying values */}
         <textarea
-          className="hidden"
+          className="w-1 h-1 opacity-0"
           ref={lastSelectedTagRef}
           value={lastSelectedTag}
         />
@@ -153,42 +177,58 @@ function CEO() {
                       bordered={false}
                     >
                       <Collapse.Panel
-                        header="Pieces"
+                        header={`Pieces (${Object.keys(pieces).length})`}
                         className="my-2 border-b-0"
                       >
+                        <span>
+                          <span className="text-gray-500">pieces</span>
+                          <Divider type="vertical" />
+                        </span>
                         {
                           Object.keys(pieces).length > 0
-                            ? Object.entries(pieces).map(([piece, name]) => {
-                              if (piece.startsWith('piece_name_')) {
-                                return (
-                                  <Tooltip
-                                    visible={
-                                      selectedTags[node]
-                                        ? selectedTags[node].indexOf(piece) > -1
-                                        : false
-                                    }
-                                    title={`Copied ${name}!`}
-                                    key={`${node}:${piece}`}
+                            ? Object.entries(pieces).map(([piece, component]) => (
+                              <Tag.CheckableTag
+                                checked={
+                                    selectedPiece[node]
+                                      ? selectedPiece[node].indexOf(piece) > -1
+                                      : false
+                                  }
+                                onChange={() => viewPieceValues(node, piece, component)}
+                                key={`${node}:${piece}`}
+                              >
+                                { piece }
+                              </Tag.CheckableTag>
+                            )) : '-'
+                          }
+                        <br />
+                        <br />
+                        <div>
+                          <span>
+                            <span className="text-gray-500">values</span>
+                            <Divider type="vertical" />
+                          </span>
+                          {
+                            availableValues[node]
+                              ? availableValues[node].map((value) => (
+                                <Tooltip
+                                  visible={
+                                    selectedTags[node]
+                                      ? selectedTags[node].indexOf(value) > -1
+                                      : false
+                                  }
+                                  title={`Copied ${value}!`}
+                                  key={`${node}:${value}`}
+                                >
+                                  <Tag.CheckableTag
+                                    onChange={() => copyPieceName(node, value)}
                                   >
-                                    <Tag.CheckableTag
-                                      checked={
-                                        selectedTags[node]
-                                          ? selectedTags[node].indexOf(piece) > -1
-                                          : false
-                                      }
-                                      onChange={() => copyPieceName(node, piece, name)}
-                                      key={`${node}:${piece}`}
-                                    >
-                                      { piece.split('_')[2] }
-                                      :
-                                      { name }
-                                    </Tag.CheckableTag>
-                                  </Tooltip>
-                                );
-                              }
-                              return null;
-                            }) : 'No pieces.'
-                        }
+                                    { value }
+                                  </Tag.CheckableTag>
+                                </Tooltip>
+                              ))
+                              : '-'
+                          }
+                        </div>
                       </Collapse.Panel>
                     </Collapse>
                   </div>
