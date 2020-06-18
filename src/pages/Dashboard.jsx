@@ -78,11 +78,11 @@ function Dashboard({
   /** Control the visibility of the layout editor on dashboard */
   const [visible, setVisible] = useState(false);
   /** Track mouse movements */
-  const [mouseY, setMouseY] = useState(null);
+  // const [mouseY, setMouseY] = useState(null);
   /** Variable for the height of the drawer */
-  const [height, setHeight] = useState(400);
+  const [height/* , setHeight */] = useState(400);
   /** Original mouse position */
-  const [origMouseY, setOrigMouseY] = useState(null);
+  // const [origMouseY, setOrigMouseY] = useState(null);
 
   /** State for editing JSON of the layout */
   const [jsonEdit, setJsonEdit] = useState('');
@@ -364,7 +364,7 @@ function Dashboard({
     setComponentEditor(JSON.stringify(change, null, 2));
   };
 
-  const getMousePosition = (e) => {
+  /* const getMousePosition = (e) => {
     setMouseY(e.clientY);
   };
 
@@ -376,7 +376,7 @@ function Dashboard({
         setOrigMouseY(mouseY);
       }
     }
-  });
+  }); */
 
   const checkComponentJson = () => {
     try {
@@ -570,7 +570,7 @@ function Dashboard({
             height={height}
           >
             {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-            <div
+            {/* <div
               className="handlebar fixed z-30 w-full h-2"
               style={{ top: -5, left: -10 }}
               onMouseDown={(e) => {
@@ -583,7 +583,7 @@ function Dashboard({
               }}
             >
               &nbsp;
-            </div>
+            </div> */}
             <Tabs defaultActiveKey="1">
               <TabPane tab="Add Components" key="1">
                 <Divider orientation="left">1. Choose component</Divider>
