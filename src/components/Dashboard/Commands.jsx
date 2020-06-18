@@ -46,6 +46,8 @@ const Commands = React.memo(({
   const [updateLog, setUpdateLog] = useState(null);
   /** Store autocompletions */
   const [autocompletions, setAutocompletions] = useState([]);
+  /** Store command list arguments */
+  const [commandList, setCommandList] = useState('');
   /** Currently selected dropdown value of command list */
   const [macroCommand, setMacroCommand] = useState(null);
 
@@ -53,6 +55,11 @@ const Commands = React.memo(({
   const cliEl = useRef(null);
   /** DOM Element selector for argument input */
   const inputEl = useRef(null);
+
+  const commandListRoute = [
+    'first',
+    'second',
+  ];
 
   /** Manages requests for agent list and agent [node] [process] */
   const sendCommandApi = async (command) => {

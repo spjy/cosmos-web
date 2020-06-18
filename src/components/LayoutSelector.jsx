@@ -7,6 +7,7 @@ import { Select, Button, message } from 'antd';
  */
 function LayoutSelector({
   path,
+  updateLayout,
   selectLayout,
 }) {
   /** Store user defined layouts here */
@@ -41,7 +42,7 @@ function LayoutSelector({
     } catch (error) {
       message.success('Using default layout.', 5);
     }
-  }, [path]);
+  }, [path, updateLayout]);
 
   /** Handles retrieving the form layout value and sends it to dashboard */
   const changeLayout = () => {
@@ -130,6 +131,7 @@ function LayoutSelector({
 LayoutSelector.propTypes = {
   /** Current path the user is at */
   path: PropTypes.string.isRequired,
+  updateLayout: PropTypes.bool.isRequired,
   /** The path the user would like to change to */
   selectLayout: PropTypes.func,
 };
