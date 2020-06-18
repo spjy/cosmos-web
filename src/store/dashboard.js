@@ -3,23 +3,23 @@ import React from 'react';
 const GET_LATEST_MESSAGE = 'GET_LATEST_MESSAGE';
 
 export const actions = {
-  get(nodeproc, message) {
+  get(key, message) {
     return {
       type: GET_LATEST_MESSAGE,
-      nodeproc,
+      key,
       payload: message,
     };
   },
 };
 
 export function reducer(state, {
-  type, nodeproc, payload,
+  type, key, payload,
 }) {
   switch (type) {
     case GET_LATEST_MESSAGE:
       return {
         ...state,
-        [nodeproc]: payload,
+        [key]: payload,
       };
     default:
       return state;
