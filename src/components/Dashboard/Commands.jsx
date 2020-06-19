@@ -15,7 +15,6 @@ import { axios } from '../../api';
 import { Context } from '../../store/dashboard';
 import BaseComponent from '../BaseComponent';
 
-
 /**
  * Send commands to agents through agent mongo web socket. Simulates a CLI.
  * Gives the ability to select commonly used node:process; appends this value to after the `agent`

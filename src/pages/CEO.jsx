@@ -87,6 +87,7 @@ function CEO() {
     if (!state.namespace) {
       fetchNamespace();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Handle copying of pieces to clipboard
@@ -141,7 +142,8 @@ function CEO() {
         <textarea
           className="w-1 h-1 opacity-0"
           ref={lastSelectedTagRef}
-          value={lastSelectedTag}
+          value={lastSelectedTag || ''}
+          readOnly
         />
         <Collapsible
           title="Test"

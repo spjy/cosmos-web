@@ -293,7 +293,6 @@ function Chart({
       } catch (error) {
         message.destroy();
         message.error(error.message);
-        console.log(error);
       }
     }
   };
