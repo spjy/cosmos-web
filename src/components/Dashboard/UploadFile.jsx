@@ -6,7 +6,7 @@ import {
 } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 
-import { socket } from '../../api';
+import { axios } from '../../api';
 import BaseComponent from '../BaseComponent';
 
 function UploadFile({
@@ -76,26 +76,24 @@ function UploadFile({
 
   /** Send content to agent */
   useEffect(() => {
+    async function sendCommand() {
+      try {
+        const { data } = await axios.post('/command', {
+          command: `${process.env.COSMOS_BIN}/agent ${node} ${proc} ${command} ${fileContentUpload}`,
+        });
+
+        if (data) {
+          message.success('Successfully uploaded all files!');
+        }
+
+        setFileContentUpload(null);
+      } catch (error) {
+        message.error('Error while attempting to upload files.');
+      }
+    }
+
     if (fileContentUpload !== null) {
-      const upload = socket('query', '/command');
-
-      upload.onopen = () => {
-        upload.send(`${process.env.COSMOS_BIN}/agent ${node} ${proc} ${command} ${fileContentUpload}`);
-
-        upload.onmessage = (data) => {
-          if (data) {
-            message.success('Successfully uploaded all files!', 10);
-          }
-
-          setFileContentUpload(null);
-
-          upload.close();
-        };
-
-        upload.error = () => {
-          message.error('Error while attempting to upload files.', 10);
-        };
-      };
+      sendCommand();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fileContentUpload]);

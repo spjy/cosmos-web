@@ -10,9 +10,7 @@ import {
 import { Context } from '../../store/dashboard';
 
 import BaseComponent from '../BaseComponent';
-import { socket } from '../../api';
-
-const ws = socket('query', '/command/');
+import { axios } from '../../api';
 
 /**
  * Component to conveniently get and set values via an agent command.
@@ -44,28 +42,16 @@ function SetValues({
   const [liveValues, setLiveValues] = useState([]);
   /** Auto scroll the history log to the bottom */
   const [updateLog, setUpdateLog] = useState(null);
-  /**  */
+  /** Values to query */
   const [queryValues, setQueryValues] = useState(null);
-
+  /** State for switch */
   const [dopplerSwitch, setDopplerSwitch] = useState(0);
 
   /** DOM element selector for history log */
   const cliEl = useRef(null);
 
-  /** Listen for command outputs and append them to the command history.
-   * Force scroll to the bottom.
-   */
-  ws.onmessage = ({ data }) => {
-    setCommandHistory([
-      ...commandHistory,
-      data,
-    ]);
-
-    setUpdateLog(true);
-  };
-
   /** Send the agent command with the selected value to change. */
-  const setParameter = () => {
+  const setParameter = async () => {
     try {
       // Error handlers
       if (!selectedComponent) {
@@ -80,11 +66,21 @@ function SetValues({
         throw new Error('A value is required.');
       }
 
-      ws.send(`${process.env.COSMOS_BIN}/agent ${node} ${proc} ${selectedComponent === 'USRP_UHD_Device' || selectedComponent === 'USRP_Device_Tx' || selectedComponent === 'USRP_Device_Rx' ? 'configure_device' : 'app_configure_component'} ${state.macro ? `${state.macro} ` : ''}${selectedComponent} ${selectedProperty} ${form.value}`);
-
+      // Specify added value
       setCommandHistory([
         ...commandHistory,
         `➜ agent ${node} ${proc} ${selectedComponent === 'USRP_UHD_Device' || selectedComponent === 'USRP_Device_Tx' || selectedComponent === 'USRP_Device_Rx' ? 'configure_device' : 'app_configure_component'} ${state.macro ? `${state.macro} ` : ''}${selectedComponent} ${selectedProperty} ${form.value}`,
+      ]);
+
+      setUpdateLog(true);
+
+      const { data } = await axios.post('/command', {
+        command: `${process.env.COSMOS_BIN}/agent ${node} ${proc} ${selectedComponent === 'USRP_UHD_Device' || selectedComponent === 'USRP_Device_Tx' || selectedComponent === 'USRP_Device_Rx' ? 'configure_device' : 'app_configure_component'} ${state.macro ? `${state.macro} ` : ''}${selectedComponent} ${selectedProperty} ${form.value}`,
+      });
+
+      setCommandHistory([
+        ...commandHistory,
+        data,
       ]);
 
       setUpdateLog(true);
@@ -105,45 +101,51 @@ function SetValues({
   };
 
   useEffect(() => {
-    ws.send(`${process.env.COSMOS_BIN}/agent ${node} ${proc} doppler ${dopplerSwitch}`);
+    async function switchDoppler() {
+      try {
+        setCommandHistory([
+          ...commandHistory,
+          `➜ agent ${node} ${proc} doppler ${dopplerSwitch}`,
+        ]);
 
-    setCommandHistory([
-      ...commandHistory,
-      `➜ agent ${node} ${proc} doppler ${dopplerSwitch}`,
-    ]);
+        const { data } = await axios.post('/command', {
+          command: `${process.env.COSMOS_BIN}/agent ${node} ${proc} doppler ${dopplerSwitch}`,
+        });
 
-    setUpdateLog(true);
+        setCommandHistory([
+          ...commandHistory,
+          data,
+        ]);
+
+        setUpdateLog(true);
+      } catch (error) {
+        message.error(error.message);
+      }
+    }
+
+    switchDoppler();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dopplerSwitch]);
 
   /** Get the live values from the agent */
-  const getValue = () => {
-    const components = socket('query', '/command/');
+  const getValue = async () => {
+    try {
+      const { data } = await axios.post('/command', {
+        command: `${process.env.COSMOS_BIN}/agent ${node} ${proc} ${selectedComponent === 'USRP_UHD_Device' || selectedComponent === 'USRP_Device_Tx' || selectedComponent === 'USRP_Device_Rx' ? 'device_properties' : 'app_component'} ${state.macro && !(selectedComponent === 'USRP_UHD_Device' || selectedComponent === 'USRP_Device_Tx' || selectedComponent === 'USRP_Device_Rx') ? `${state.macro} ` : ''}${selectedComponent}`,
+      });
 
-    // Open socket
-    components.onopen = () => {
-      // Send request for the values
-      components.send(`${process.env.COSMOS_BIN}/agent ${node} ${proc} ${selectedComponent === 'USRP_UHD_Device' || selectedComponent === 'USRP_Device_Tx' || selectedComponent === 'USRP_Device_Rx' ? 'device_properties' : 'app_component'} ${state.macro && !(selectedComponent === 'USRP_UHD_Device' || selectedComponent === 'USRP_Device_Tx' || selectedComponent === 'USRP_Device_Rx') ? `${state.macro} ` : ''}${selectedComponent}`);
+      const json = JSON.parse(data);
 
-      // Update the values on return of output
-      components.onmessage = ({ data }) => {
-        try {
-          const json = JSON.parse(data);
+      if (json.output && json.output.properties) {
+        setLiveValues(json.output.properties);
+      } else if (json.output && json.output.error) {
+        setLiveValues([{ id: json.output.error }]);
+      }
+    } catch (error) {
+      setLiveValues([{ id: 'Unable to retrieve component properties.' }]);
 
-          if (json.output && json.output.properties) {
-            setLiveValues(json.output.properties);
-          } else if (json.output && json.output.error) {
-            setLiveValues([{ id: json.output.error }]);
-          }
-        } catch (error) {
-          setLiveValues([{ id: 'Unable to retrieve component properties.' }]);
-
-          message.error(error);
-        }
-
-        components.close();
-      };
-    };
+      message.error(error);
+    }
   };
 
   /** Poll every second for the values */
@@ -153,9 +155,6 @@ function SetValues({
     setQueryValues(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryValues]);
-
-  /** Close ws on unmount */
-  useEffect(() => () => ws.close(), []);
 
   /** Update height of the history log to bottom of window */
   useEffect(() => {

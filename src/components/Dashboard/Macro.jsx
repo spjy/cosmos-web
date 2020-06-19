@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { message, Select, Button } from 'antd';
 
 import { Context, actions } from '../../store/dashboard';
-import { socket } from '../../api';
+import { axios } from '../../api';
 import BaseComponent from '../BaseComponent';
 
 /**
@@ -29,33 +29,29 @@ function Macro({
     dispatch(actions.get('macro', macro));
   }, [macro, dispatch]);
 
-  /**
-   * Retrieve the possible macros from Nordiasoft applications
-   */
-  const getValue = () => {
-    const installed = socket('query', '/command/');
-
-    installed.onopen = () => {
-      installed.send('agent masdr nordiasoft list_applications');
-
-      installed.onmessage = ({ data }) => {
-        try {
-          const json = JSON.parse(data);
-
-          if (json.output && json.output.installed) {
-            setMacros(json.output.installed);
-          }
-        } catch (error) {
-          message.error(error);
-        }
-
-        installed.close();
-      };
-    };
-  };
-
   /** Retreive values upon user wanting to get new macro values from Nordiasoft */
   useEffect(() => {
+    /**
+     * Retrieve the possible macros from Nordiasoft applications
+     */
+    async function getValue() {
+      try {
+        const { data } = await axios.post('/command', {
+          command: 'agent masdr nordiasoft list_applications',
+        });
+
+        const json = JSON.parse(data);
+
+        if (json.output && json.output.installed) {
+          setMacros(json.output.installed);
+        } else {
+          throw new Error(data);
+        }
+      } catch (error) {
+        message.error(error.message);
+      }
+    }
+
     getValue();
   }, [updateMacros]);
 

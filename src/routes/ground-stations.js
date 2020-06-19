@@ -171,7 +171,7 @@ export default {
             w: 12,
             h: 10,
             component: {
-              name: 'MASDRCommands',
+              name: 'Commands',
             },
           },
           {
@@ -621,7 +621,7 @@ export default {
             w: 12,
             h: 10,
             component: {
-              name: 'MASDRCommands',
+              name: 'Commands',
             },
           },
           {
