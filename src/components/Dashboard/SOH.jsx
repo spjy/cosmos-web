@@ -1,10 +1,13 @@
 import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { Form, Select, DatePicker } from 'antd';
+import {
+  Form, Select, DatePicker, message,
+} from 'antd';
 import BaseComponent from '../BaseComponent';
 import { Context } from '../../store/dashboard';
 import { axios } from '../../api';
+
 
 const { RangePicker } = DatePicker;
 
@@ -33,90 +36,150 @@ function SOH({
   const [disable, setDisable] = useState(true);
 
   /** Information displayed */
-  const [display, setDisplay] = useState({});
+  const [display, setDisplay] = useState([]);
 
   /** Stores the overall SOH of the node process */
-  const [soh, setSoh] = useState({});
+  const [soh, setSoh] = useState([]);
 
   /** Form information */
-  const [form] = useState({
-    name: '',
-    dateRange,
-  });
+  const [sohForm] = Form.useForm();
 
-  const queryDatabase = async (dateRange) => {
+  /** Initial value for the form */
+  const [initialValue, setInitialValue] = useState({});
+
+  const queryDatabase = async (dates) => {
+    message.loading('Retrieving information from database...', 0);
     /** Query database */
-    const { data } = await axios.post(`/query/${process.env.MONGODB_COLLECTION}/${nameState}:soh`,{
+
+    const start = (dates[0].unix() / 86400.0) + 2440587.5 - 2400000.5;
+    const end = (dates[1].unix() / 86400.0) + 2440587.5 - 2400000.5;
+
+    const { data } = await axios.post(`/query/${process.env.MONGODB_COLLECTION}/${nameState}:soh`, {
+      multiple: true,
       query: {
-        'node_name': {
+        node_utc: {
+          $lt: end,
+          $gt: start,
         },
       },
     });
-    console.log(data);
+
+    return data;
   };
+
+  useEffect(() => {
+    const accumulate = {};
+
+    accumulate.name = name;
+
+    if (dateRange !== -1) {
+      accumulate.dateRange = dateRange;
+      queryDatabase(dateRange).then((r) => setSoh(r));
+    }
+
+    setInitialValue(accumulate);
+  }, []);
 
   /** Update the inactive and active node lists */
   useEffect(() => {
-    const newArray = [];
-
+    /** Update active nodes */
+    const activeArray = [];
     Object.keys(state)
       .forEach((key) => {
         if (key.split(':')[1] === 'soh') {
-          newArray.push(key.split(':')[0]);
+          activeArray.push(key.split(':')[0]);
         }
       });
+    setActiveNodes(activeArray);
 
+    /** Update inactive nodes */
     if (Object.keys(state)
       .includes('namespace')) {
       const inactiveArray = Object.keys(state.namespace)
-        .filter((key) => !newArray.includes(key));
+        .filter((key) => !activeNodes.includes(key) && state.namespace[key].agents.includes('soh'));
       setInactiveNodes(inactiveArray);
     }
 
-    if (form.dateRange !== -1) {
-      setSoh(queryDatabase(dateRange));
-    } else {
-      setSoh(state[`${nameState}:soh`]);
+    /** Update SOH data */
+    if (disable) {
+      setSoh([state[`${nameState}:soh`]]);
     }
-
-    setActiveNodes(newArray);
   }, [state]);
 
   const findSohProperty = (input) => {
-    const tempObj = {};
+    const tempObj = [];
 
-    input.forEach((val) => {
-      tempObj[val] = soh[val];
-    });
+    if (input.length !== 0) {
+      soh.forEach((obj) => {
+        const newObj = { localTime: new Date(obj.node_utc * 1000) };
+        input.forEach((item) => {
+          newObj[item] = obj[item];
+        });
+        tempObj.push(newObj);
+      });
+    }
 
     setDisplay(tempObj);
   };
 
   const changeNode = (value) => {
-    if (value !== '') {
-      form.name = value;
-
-      if (inactiveNodes.includes(value)) {
-        setDisable(false);
-      } else {
-        setDisable(true);
-      }
+    if (activeNodes.includes(value)) {
+      setDisable(true);
+    }
+    if (inactiveNodes.includes(value)) {
+      setDisable(false);
     }
   };
 
-  const updateComponent = () => {
-    setNameState(form.name);
+  const processForm = () => {
+    setDisplay([]);
 
-    if (activeNodes.includes(nameState)) {
+    const fields = sohForm.getFieldsValue();
+
+    if (fields.name !== '') {
+      setNameState(fields.name);
+    }
+
+    if (disable) {
       setSoh(state[`${nameState}:soh`]);
+    } else if (fields.dateRange != null) {
+      queryDatabase(fields.dateRange)
+        .then((r) => setSoh(r))
+        .finally(() => {
+          message.destroy();
+          message.success('Successfully loaded SOH.');
+        });
     } else {
-      setSoh(queryDatabase(form.dateRange));
+      setSoh([]);
     }
   };
 
   return (
     <BaseComponent
       name={`${nameState} State of Health (SOH)`}
+      subheader={(
+        <Select
+          className="w-full top-0"
+          mode="multiple"
+          showSearch
+          allowClear
+          placeholder="Select information you want to view"
+          onChange={(input) => findSohProperty(input)}
+        >
+          {
+            (soh != null && soh[0] != null && soh.length !== 0) ?
+              Object.keys(soh[0]).map((props) => (
+                <Select.Option
+                  key={props}
+                  value={props}
+                >
+                  {props}
+                </Select.Option>
+              ))
+              : null
+          }
+        </Select>
+      )}
       liveOnly
       showStatus
       height={height}
@@ -124,18 +187,16 @@ function SOH({
       formItems={(
         <>
           <Form
+            form={sohForm}
             layout="vertical"
             name="sohForm"
-            initialValues={{
-              name: nameState,
-              dateRange,
-            }}
+            initialValues={initialValue}
           >
             <Form.Item label="Name" name="name" hasFeedback>
               <Select
                 showSearch
                 onChange={(value) => changeNode(value)}
-                onBlur={() => updateComponent()}
+                onBlur={() => processForm()}
               >
                 <Select.OptGroup label="Active">
                   { activeNodes.map((node) => (
@@ -165,32 +226,13 @@ function SOH({
                 showTime
                 format="YYYY-MM-DD HH:mm:ss"
                 disabled={disable}
+                onBlur={() => processForm()}
               />
             </Form.Item>
           </Form>
         </>
       )}
     >
-      <Select
-        className="w-full top-0 sticky"
-        mode="multiple"
-        showSearch
-        allowClear
-        placeholder="Select information you want to view"
-        onChange={(input) => findSohProperty(input)}
-      >
-        {
-          (soh != null && soh !== {}) ? Object.keys(soh).map((props) => (
-            <Select.Option
-              key={props}
-              value={props}
-            >
-              {props}
-            </Select.Option>
-          ))
-            : null
-        }
-      </Select>
       <pre className="pt-1">
         {
           Object.keys(display).length !== 0 ? JSON.stringify(display, null, 2)
