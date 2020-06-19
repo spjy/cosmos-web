@@ -59,6 +59,7 @@ function Attitude({
     });
 
     setInitialValues(accumulate);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /** Update the live attitude display */

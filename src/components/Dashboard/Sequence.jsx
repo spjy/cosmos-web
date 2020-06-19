@@ -7,7 +7,7 @@ import {
 import { QuestionOutlined } from '@ant-design/icons';
 
 import BaseComponent from '../BaseComponent';
-import { socket } from '../../api';
+import { axios } from '../../api';
 
 /**
  * Component to handle pre-defined sequences of commands to run agent commands.
@@ -31,35 +31,25 @@ function Sequence({
      * Force scroll to the bottom.
      */
     await Promise.all(sequence.map(async (command) => {
-      const ws = socket('query', '/command/');
+      try {
+        const { data } = await axios.post('/command', {
+          commands: `${process.env.COSMOS_BIN}/agent ${command}`,
+        });
 
-      // Query command in sequence and wait for response from socket
-      await new Promise((resolve) => {
-        ws.onopen = () => {
-          ws.send(`${process.env.COSMOS_BIN}/agent ${command}`);
+        // User feedback indicating command just sent
+        commandHistory.push(`➜ agent ${command}`);
 
-          ws.onmessage = ({ data }) => {
-            // User feedback indicating command just sent
-            commandHistory.push(`➜ agent ${command}`);
+        // Force scroll to bottom
+        setUpdateLog(true);
 
-            // Force scroll to bottom
-            setUpdateLog(true);
+        // Add to command history for reusing in future
+        commandHistory.push(data);
 
-            // Add to command history for reusing in future
-            commandHistory.push(data);
-
-            // Force scroll to bottom
-            setUpdateLog(true);
-
-            // Resolve promise and close websocket
-            resolve();
-            ws.close();
-          };
-
-          ws.onclose = () => {
-          };
-        };
-      });
+        // Force scroll to bottom
+        setUpdateLog(true);
+      } catch (error) {
+        message.error(error.message);
+      }
     }));
 
     // Destory user indicator that sequence is done.

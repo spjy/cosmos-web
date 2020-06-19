@@ -308,6 +308,7 @@ function Dashboard({
 
       let rand;
       let newId;
+
       do {
         rand = Math.random()
           .toString(36)
@@ -550,8 +551,7 @@ function Dashboard({
                         }
                       />
                       <Button
-                        style={{ display: (visible) ? 'block' : 'none' }}
-                        className="absolute bottom-0 left-0 z-50 mb-1 ml-1"
+                        className={`absolute bottom-0 left-0 z-50 mb-1 ml-1 ${visible ? 'block' : 'hidden'}`}
                         shape="circle"
                         layoutkey={layout.i}
                         icon={<CloseOutlined />}
