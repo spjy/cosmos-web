@@ -1,5 +1,10 @@
 @tailwind base;
 
+/* Fix ant design icon alignment */
+svg {
+  vertical-align: baseline;
+}
+
 @tailwind components;
 
 @tailwind utilities;
