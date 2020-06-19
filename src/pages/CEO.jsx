@@ -16,6 +16,8 @@ import { socket, axios } from '../api';
 // eslint-disable-next-line
 import routes from '../routes';
 
+import Collapsible from '../components/Collapsible';
+
 function CEO() {
   /**
    * Store the agent statuses in the global store.
@@ -141,6 +143,18 @@ function CEO() {
           ref={lastSelectedTagRef}
           value={lastSelectedTag}
         />
+        <Collapsible
+          title="Test"
+          actions={(
+            <div>
+              X
+            </div>
+          )}
+        >
+          Test
+        </Collapsible>
+        <br />
+        <br />
         {
           state.namespace && !(state.namespace.length === 0)
             ? Object.entries(state.namespace).map(([node, { pieces, agents }]) => (
