@@ -14,9 +14,9 @@
   },
   "dependencies": {
     "@ant-design/compatible": "^1.0.2",
-    "@ant-design/icons": "^4.1.0",
+    "@ant-design/icons": "^4.2.1",
     "@reach/router": "^1.2.1",
-    "antd": "4.2.5",
+    "antd": "4.3.4",
     "axios": "^0.19.2",
     "babylonjs": "4.0.3",
     "babylonjs-loaders": "4.0.3",
