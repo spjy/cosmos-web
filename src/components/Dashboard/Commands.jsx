@@ -10,10 +10,11 @@ import { CloseOutlined } from '@ant-design/icons';
 import moment from 'moment-timezone';
 
 // import Search from 'antd/lib/input/Search';
+import { axios } from '../../api';
 
 import { Context } from '../../store/dashboard';
 import BaseComponent from '../BaseComponent';
-import { axios } from '../../api';
+
 
 /**
  * Send commands to agents through agent mongo web socket. Simulates a CLI.
@@ -66,6 +67,7 @@ const Commands = React.memo(({
 
     setUpdateLog(true);
 
+    // retrieve command output
     try {
       const { data } = await axios.post('/command', {
         data: {
@@ -143,6 +145,7 @@ const Commands = React.memo(({
     setUpdateLog(true);
   };
 
+  /** Send macro command */
   const sendMacroCommand = async () => {
     sendCommandApi(`${process.env.COSMOS_BIN}agent ${macroCommand}`);
   };
@@ -151,9 +154,10 @@ const Commands = React.memo(({
   const getAutocomplete = async (autocomplete) => {
     setCommandHistory([
       ...commandHistory,
-      `compgen -c ${autocomplete}`,
+      `autocomplete ${autocomplete}`,
     ]);
 
+    // retrieve autocompletions
     const { data } = await axios.post('/command', {
       responseType: 'text',
       data: {
@@ -316,7 +320,14 @@ const Commands = React.memo(({
           commandHistory.map((command, i) => (colorTime(command, i)))
         }
         {
-          autocompletions.length > 1 ? <CloseOutlined onClick={() => setAutocompletions([])} className="text-red-500" /> : ''
+          autocompletions.length > 1
+            ? (
+              <span className="text-red-500 cursor-pointer hover:underline">
+                Clear&nbsp;
+                <CloseOutlined onClick={() => setAutocompletions([])} />
+              </span>
+            )
+            : ''
         }
         {
           autocompletions.map((autocompletion) => (

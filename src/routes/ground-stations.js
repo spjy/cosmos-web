@@ -4,7 +4,6 @@ export default {
   path: '/gs/:id',
   component: 'Dashboard',
   props: {
-    socketType: 'gs',
     defaultLayout: {
       lg: [
         {

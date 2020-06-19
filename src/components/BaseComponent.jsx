@@ -16,7 +16,6 @@ function BaseComponent({
   liveOnly,
   showStatus,
   status,
-  submitForm,
   children,
   formItems,
   handleLiveSwitchChange,
@@ -41,11 +40,6 @@ function BaseComponent({
         visible={openSettings}
         /** Closes the modal. */
         closeModal={() => setOpenSettings(false)}
-        /** Handles form submission; updates fields in CosmosToolsTest.jsx and clears form. */
-        submitForm={() => {
-          submitForm();
-        }}
-        validForm
       >
         {formItems}
       </ComponentSettings>
@@ -135,8 +129,6 @@ BaseComponent.propTypes = {
   showStatus: PropTypes.bool,
   /** The type of badge to show if showStatus is true (see the ant design badges component) */
   status: PropTypes.string,
-  /** Callback function to launch event when form gets submitted */
-  submitForm: PropTypes.func,
   /** The main content of the component */
   children: PropTypes.node,
   /** Node containing form item components */
@@ -155,7 +147,6 @@ BaseComponent.defaultProps = {
   showStatus: false,
   liveOnly: true,
   handleLiveSwitchChange: () => {},
-  submitForm: () => {},
   status: 'error',
   children: null,
   formItems: null,
