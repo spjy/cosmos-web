@@ -1,4 +1,4 @@
-FROM node:8-alpine as react
+FROM node:lts as react
 
 WORKDIR /cosmos-web
 COPY . ./
