@@ -28,7 +28,7 @@ function Status({
 
   return (
     <BaseComponent
-      name="Radio"
+      name="Replacement"
       movable
       height={height}
     >

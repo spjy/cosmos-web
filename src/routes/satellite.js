@@ -479,11 +479,31 @@ export default {
       defaultLayout: {
         lg: [
           {
-            i: 'satellite-neutron1-test',
+            i: 'satellite-neutron1-a',
             x: 0,
-            y: null,
-            w: 3,
+            y: 0,
+            w: 4,
             h: 7,
+            component: {
+              name: 'Status',
+            },
+          },
+          {
+            i: 'satellite-neutron1-c',
+            x: 4,
+            y: 0,
+            w: 4,
+            h: 7,
+            component: {
+              name: 'Replacement',
+            },
+          },
+          {
+            i: 'satellite-neutron1-test',
+            x: 8,
+            y: 0,
+            w: 4,
+            h: 14,
             component: {
               name: 'SOH',
               props: {
@@ -492,20 +512,10 @@ export default {
             },
           },
           {
-            i: 'satellite-neutron1-a',
-            x: 0,
-            y: 0,
-            w: 3,
-            h: 7,
-            component: {
-              name: 'Status',
-            },
-          },
-          {
             i: 'satellite-neutron1-ba',
-            x: 3,
-            y: 0,
-            w: 3,
+            x: 0,
+            y: 1,
+            w: 4,
             h: 7,
             component: {
               name: 'DisplayValue',
@@ -546,9 +556,9 @@ export default {
           },
           {
             i: 'satellite-neutron1-b',
-            x: 6,
-            y: 0,
-            w: 3,
+            x: 4,
+            y: 1,
+            w: 4,
             h: 7,
             component: {
               name: 'DisplayValue',
@@ -588,19 +598,9 @@ export default {
             },
           },
           {
-            i: 'satellite-neutron1-c',
-            x: 9,
-            y: 0,
-            w: 3,
-            h: 7,
-            component: {
-              name: 'Replacement',
-            },
-          },
-          {
             i: 'satellite-neutron1-d',
             x: 0,
-            y: 1,
+            y: 2,
             w: 12,
             h: 10,
             component: {
@@ -610,7 +610,7 @@ export default {
           {
             i: 'satellite-neutron1-e',
             x: 0,
-            y: 2,
+            y: 3,
             w: 6,
             h: 21,
             component: {
@@ -652,7 +652,7 @@ export default {
           {
             i: 'satellite-neutron1-f',
             x: 6,
-            y: 2,
+            y: 3,
             w: 6,
             h: 21,
             component: {
@@ -681,7 +681,7 @@ export default {
           {
             i: 'satellite-neutron1-g',
             x: 0,
-            y: 3,
+            y: 4,
             w: 12,
             h: 18,
             component: {
@@ -724,7 +724,7 @@ export default {
           {
             i: 'satellite-neutron1-hc',
             x: 0,
-            y: 4,
+            y: 5,
             w: 12,
             h: 18,
             component: {
@@ -790,7 +790,7 @@ export default {
           {
             i: 'satellite-neutron1-ha',
             x: 0,
-            y: 4,
+            y: 5,
             w: 6,
             h: 18,
             component: {
@@ -880,7 +880,7 @@ export default {
           {
             i: 'satellite-neutron1-hb',
             x: 6,
-            y: 4,
+            y: 5,
             w: 6,
             h: 18,
             component: {
@@ -958,7 +958,7 @@ export default {
           {
             i: 'satellite-default-ia',
             x: 0,
-            y: 5,
+            y: 6,
             w: 6,
             h: 18,
             component: {
@@ -1011,7 +1011,7 @@ export default {
           {
             i: 'satellite-default-ib',
             x: 6,
-            y: 5,
+            y: 6,
             w: 6,
             h: 18,
             component: {
@@ -1064,7 +1064,7 @@ export default {
           {
             i: 'satellite-default-ja',
             x: 0,
-            y: 6,
+            y: 7,
             w: 6,
             h: 19,
             component: {
@@ -1202,7 +1202,7 @@ export default {
           {
             i: 'satellite-default-jb',
             x: 6,
-            y: 6,
+            y: 7,
             w: 6,
             h: 19,
             component: {

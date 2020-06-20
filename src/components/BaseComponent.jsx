@@ -100,7 +100,7 @@ function BaseComponent({
       {/* A description */}
       <div
         className="sticky text-gray-600 text-sm preventDragHandle cursor-auto px-3 pb-2"
-        style={{ top: 52 }}
+        style={{ top: 50 }}
       >
         {subheader}
       </div>
