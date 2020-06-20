@@ -1,7 +1,4 @@
 import React, { useState, useEffect, useReducer } from 'react';
-// import PropTypes from 'prop-types';
-import 'react-grid-layout/css/styles.css';
-import 'react-resizable/css/styles.css';
 import MyScheduler from '../components/Calendar';
 
 import {
@@ -19,14 +16,11 @@ function Scheduler() {
   const [state, dispatch] = useReducer(reducer, {});
 
   /** Store the default page layout in case user wants to switch to it */
-
   const [, setSocketStatus] = useState('error');
-
-  const [, setNodes] = useState([]);
 
   /** Get socket data from the agent */
   useEffect(() => {
-    const live = socket('live', '/live/all');
+    const live = socket('/live/all');
 
     /** Get latest data from neutron1_exec */
     live.onmessage = ({ data }) => {
@@ -55,26 +49,6 @@ function Scheduler() {
       live.close(1000);
     };
   }, []);
-
-  /** Maintain node list */
-  useEffect(() => {
-    if (state.list && state.list.agent_list) {
-      const currentNodes = [];
-
-      state.list.agent_list.forEach(({ agent }) => {
-        const node = agent.split(':')[0];
-
-        // Check if node was previously added; if not, append to array.
-        // Also check if it has agent cpu running
-        // eslint-disable-next-line
-        if (!currentNodes.includes(node) && state.hasOwnProperty(`${node}:cpu`)) {
-          currentNodes.push(node);
-        }
-      });
-
-      setNodes(currentNodes);
-    }
-  }, [state]);
 
   return (
     <Context.Provider value={{ state, dispatch }}>

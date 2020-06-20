@@ -10,10 +10,10 @@ import { CloseOutlined } from '@ant-design/icons';
 import moment from 'moment-timezone';
 
 // import Search from 'antd/lib/input/Search';
+import { axios } from '../../api';
 
 import { Context } from '../../store/dashboard';
 import BaseComponent from '../BaseComponent';
-import { axios } from '../../api';
 
 /**
  * Send commands to agents through agent mongo web socket. Simulates a CLI.
@@ -46,8 +46,6 @@ const Commands = React.memo(({
   const [updateLog, setUpdateLog] = useState(null);
   /** Store autocompletions */
   const [autocompletions, setAutocompletions] = useState([]);
-  /** Store command list arguments */
-  const [commandList, setCommandList] = useState('');
   /** Currently selected dropdown value of command list */
   const [macroCommand, setMacroCommand] = useState(null);
 
@@ -56,21 +54,21 @@ const Commands = React.memo(({
   /** DOM Element selector for argument input */
   const inputEl = useRef(null);
 
-  const commandListRoute = [
-    'first',
-    'second',
-  ];
+  const commandHistoryEl = useRef(null);
+  commandHistoryEl.current = commandHistory;
 
   /** Manages requests for agent list and agent [node] [process] */
   const sendCommandApi = async (command) => {
-    try {
-      setCommandHistory([
-        ...commandHistory,
-        command,
-      ]);
+    setCommandHistory([
+      ...commandHistoryEl.current,
+      `➜ ${moment().toISOString()} ${command}`,
+    ]);
 
+    setUpdateLog(true);
+
+    // retrieve command output
+    try {
       const { data } = await axios.post('/command', {
-        responseType: 'text',
         data: {
           command,
         },
@@ -79,8 +77,8 @@ const Commands = React.memo(({
       try {
         const json = JSON.parse(data);
 
-        // json
-        if (json.output && json.output.requests) {
+        // json checking for json.output, json.error
+        if (json && json.output && json.output.requests) {
           const sortedRequests = [];
           const requests = {};
 
@@ -96,42 +94,39 @@ const Commands = React.memo(({
             };
           });
 
+          // Alphabetical order
           sortedRequests.sort();
 
+          // Set agent requests
           setAgentRequests(requests);
           setSortedAgentRequests(sortedRequests);
 
           message.destroy();
-          message.success(`Retrieved agent requests for ${selectedAgent[0]}:${selectedAgent[1]}.`, 5);
+          message.success('Retrieved agent requests.');
         } else if (json && json.output) {
           // agent node proc cmd
+          setCommandHistory([
+            ...commandHistoryEl.current,
+            `${moment().toISOString()} ${data.output}`,
+          ]);
 
-          const jsonOutput = JSON.stringify(json.output);
-
-          if (jsonOutput) {
-            setCommandHistory([
-              ...commandHistory,
-              `${moment().toISOString()} ${jsonOutput}`,
-            ]);
-          } else {
-            setCommandHistory([
-              ...commandHistory,
-              `${moment().toISOString()} ${json.output}`,
-            ]);
-          }
-
-          setUpdateLog(true);
-        } else if (json.error) {
+          message.destroy();
+        } else if (json && json.error) {
           throw new Error(json.error);
+        } else {
+          throw new Error();
         }
       } catch (error) {
+        message.destroy();
         // non-json
         setCommandHistory([
-          ...commandHistory,
+          ...commandHistoryEl.current,
           `${moment().toISOString()} ${data}`,
         ]);
       }
+      setUpdateLog(true);
     } catch (error) {
+      message.destroy();
       message.error(error);
     }
   };
@@ -141,27 +136,27 @@ const Commands = React.memo(({
     setLastArgument(commandArguments);
 
     if (selectedRequest === '> agent') {
-      sendCommandApi(`${process.env.COSMOS_BIN}/agent ${commandArguments}`);
+      sendCommandApi(`${process.env.COSMOS_BIN}agent ${commandArguments}`);
     } else {
-      sendCommandApi(`${process.env.COSMOS_BIN}/agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro ? `${state.macro} ` : ''}${commandArguments}`);
+      sendCommandApi(`${process.env.COSMOS_BIN}agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro ? `${state.macro} ` : ''}${commandArguments}`);
     }
 
     setUpdateLog(true);
   };
 
+  /** Send macro command */
   const sendMacroCommand = async () => {
-    sendCommandApi(`${process.env.COSMOS_BIN}/agent ${macroCommand}`);
+    sendCommandApi(`${process.env.COSMOS_BIN}agent ${macroCommand}`);
   };
 
   /** Retrieve file autocompletion */
   const getAutocomplete = async (autocomplete) => {
-    sendCommandApi(`compgen -c ${autocomplete}`);
-
     setCommandHistory([
       ...commandHistory,
-      `compgen -c ${autocomplete}`,
+      `autocomplete ${autocomplete}`,
     ]);
 
+    // retrieve autocompletions
     const { data } = await axios.post('/command', {
       responseType: 'text',
       data: {
@@ -172,7 +167,7 @@ const Commands = React.memo(({
     setAutocompletions(data.split('\n'));
   };
 
-  /** Autocomplete if it's the only one in the array */
+  /** Autocomplete automatically if it's the only one in the array */
   useEffect(() => {
     if (autocompletions.length === 2) {
       const args = commandArguments.split(' ');
@@ -193,21 +188,15 @@ const Commands = React.memo(({
   const getRequests = async (agent) => {
     setSelectedAgent(agent);
 
-    message.loading(`Retrieving requests for ${agent[0]}:${agent[1]}...`, 0);
-
     setSortedAgentRequests([]);
     setAgentRequests({});
 
     if (agent.length > 0) {
-      sendCommandApi(`${process.env.COSMOS_BIN}/agent ${agent[0]} ${agent[1]} help_json`);
+      sendCommandApi(`${process.env.COSMOS_BIN}agent ${agent[0]} ${agent[1]} help_json`);
     }
   };
-  /** Watches for changes to selectedAgent. Then sends WS message to get list of commands. */
-  // useEffect(() => {
-  //   getRequests();
-  // }, [selectedAgent]);
 
-  /** Update height of the history log */
+  /** Update height of the history log to go to the bottom */
   useEffect(() => {
     cliEl.current.scrollTop = cliEl.current.scrollHeight;
     setUpdateLog(null);
@@ -330,7 +319,14 @@ const Commands = React.memo(({
           commandHistory.map((command, i) => (colorTime(command, i)))
         }
         {
-          autocompletions.length > 1 ? <CloseOutlined onClick={() => setAutocompletions([])} className="text-red-500" /> : ''
+          autocompletions.length > 1
+            ? (
+              <span className="text-red-500 cursor-pointer hover:underline">
+                Clear&nbsp;
+                <CloseOutlined onClick={() => setAutocompletions([])} />
+              </span>
+            )
+            : ''
         }
         {
           autocompletions.map((autocompletion) => (

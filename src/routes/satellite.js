@@ -6,7 +6,6 @@ export default {
   path: '/satellite/:id',
   component: 'Dashboard',
   props: {
-    socketType: 'live',
     defaultLayout: {
       lg: [
         {

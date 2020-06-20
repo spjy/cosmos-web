@@ -14,12 +14,11 @@ import Editor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import { CloseOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 
-// eslint-disable-next-line
-import routes from '../routes';
-
 import 'prismjs/components/prism-json';
 
 import AsyncComponent from './AsyncComponent';
+// eslint-disable-next-line
+import routes from '../routes';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -185,6 +184,8 @@ function LayoutManager() {
       } catch (error) {
         // If not, set it to an empty object
         localStorage.setItem(route, JSON.stringify({}));
+
+        message.error(error.message);
       }
 
       // Store the layout based on the name given
@@ -220,20 +221,20 @@ function LayoutManager() {
         try {
           // Parse JSON from the local storage
           const json = JSON.parse(layouts);
+          const layoutsArray = [];
 
           // Iterate through the keys in local storage and store in state for table
           Object.keys(json)
             .forEach((layout, i) => {
-              setData([
-                ...data,
-                {
-                  key: i,
-                  route,
-                  name: layout,
-                  configuration: JSON.stringify(json[layout]),
-                },
-              ]);
+              layoutsArray.push({
+                key: i,
+                route,
+                name: layout,
+                configuration: JSON.stringify(json[layout]),
+              });
             });
+
+          setData(layoutsArray);
         } catch (error) {
           message.error(error);
         }
@@ -247,7 +248,7 @@ function LayoutManager() {
   return (
     <div>
       <Table
-        title={() => 'Saved Layouts'}
+        title={() => 'Saved Layouts on Machine'}
         size="small"
         className="mb-3"
         columns={columns}

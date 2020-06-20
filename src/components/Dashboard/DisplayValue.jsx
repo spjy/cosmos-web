@@ -76,6 +76,7 @@ function DisplayValue({
     }
 
     setInitialValues(accumulate);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /** Handle new data incoming from the Context */

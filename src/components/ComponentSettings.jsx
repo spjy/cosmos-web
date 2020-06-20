@@ -10,7 +10,6 @@ function ComponentSettings({
   visible,
   closeModal,
   children,
-  submitForm,
 }) {
   return (
     <Modal
@@ -25,7 +24,6 @@ function ComponentSettings({
        */
       okText="Done"
       onOk={() => {
-        submitForm();
         closeModal();
       }}
       footer={null}
@@ -47,8 +45,6 @@ ComponentSettings.propTypes = {
   closeModal: PropTypes.func.isRequired,
   /** Children prop */
   children: PropTypes.node,
-  /** The function to handle the submission of the form. */
-  submitForm: PropTypes.func.isRequired,
 };
 
 ComponentSettings.defaultProps = {

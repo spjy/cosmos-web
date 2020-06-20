@@ -4,7 +4,6 @@ export default {
   path: '/gs/:id',
   component: 'Dashboard',
   props: {
-    socketType: 'gs',
     defaultLayout: {
       lg: [
         {
@@ -172,7 +171,7 @@ export default {
             w: 12,
             h: 10,
             component: {
-              name: 'MASDRCommands',
+              name: 'Commands',
             },
           },
           {
@@ -622,7 +621,7 @@ export default {
             w: 12,
             h: 10,
             component: {
-              name: 'MASDRCommands',
+              name: 'Commands',
             },
           },
           {
