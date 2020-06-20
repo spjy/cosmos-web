@@ -475,7 +475,7 @@ export default {
       name: 'neutron1',
       path: '/neutron1',
       icon: 'qrcode',
-      defaultLayout: {
+      defaultLayoutSimple: {
         lg: [
           {
             i: 'satellite-neutron1-a',
@@ -1324,7 +1324,7 @@ export default {
           },
         ],
       },
-      defaultLayoutSimple: {
+      defaultLayout: {
         lg: [
           {
             i: 'satellite-simple-neutron1-a',
