@@ -930,6 +930,9 @@ function Chart({
         data={plotsState}
         config={{
           scrollZoom: true,
+          toImageButtonOptions: {
+            filename: `${name.replace(/ /g, '-').toLowerCase()}-${new Date(Date.now()).toISOString()}`,
+          },
         }}
         layout={layout}
         revision={dataRevision}
