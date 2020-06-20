@@ -2,12 +2,11 @@ import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Form, Select, DatePicker, message,
+  Form, Select, DatePicker, message, Switch, Tooltip,
 } from 'antd';
 import BaseComponent from '../BaseComponent';
 import { Context } from '../../store/dashboard';
 import { axios } from '../../api';
-
 
 const { RangePicker } = DatePicker;
 
@@ -136,6 +135,7 @@ function SOH({
 
     const fields = sohForm.getFieldsValue();
 
+    console.log(fields);
     if (fields.name !== '') {
       setNameState(fields.name);
     }
@@ -228,6 +228,18 @@ function SOH({
                 disabled={disable}
                 onBlur={() => processForm()}
               />
+              <Tooltip>
+                <Switch
+                  checkedChildren="Live"
+                  unCheckedChildren="Past"
+                  checked={disable}
+                  onClick={() => {
+                    if (activeNodes.includes(nameState)) {
+                      setDisable(!disable);
+                    }
+                  }}
+                />
+              </Tooltip>
             </Form.Item>
           </Form>
         </>
