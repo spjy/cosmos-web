@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Form, Select, DatePicker, message, Switch, Tooltip,
+  Form, Select, DatePicker, message, Switch, Button,
 } from 'antd';
 import BaseComponent from '../BaseComponent';
 import { Context } from '../../store/dashboard';
@@ -19,36 +19,37 @@ function SOH({
   dateRange,
   height,
 }) {
+  /** Initialize settings */
+  const [init, setInit] = useState(true);
+
   /** Accessing the neutron1 messages from the socket */
   const { state } = useContext(Context);
+  /** Form information */
+  const [sohForm] = Form.useForm();
 
   /** The state that manages the component's title */
   const [nameState, setNameState] = useState(name);
+  /** The date range of the database query */
+  const [dates, setDates] = useState(dateRange);
 
   /** Stores active nodes */
   const [activeNodes, setActiveNodes] = useState([]);
-
   /** Stores active nodes */
   const [inactiveNodes, setInactiveNodes] = useState([]);
 
   /** Checks if the selected node is inactive or active */
-  const [disable, setDisable] = useState(true);
-
-  /** Information displayed */
-  const [display, setDisplay] = useState([]);
+  const [live, setLive] = useState(!dates);
+  /** Allows the user to freeze the information from the state */
+  const [stream, setStream] = useState(!!dates);
 
   /** Stores the overall SOH of the node process */
   const [soh, setSoh] = useState([]);
+  /** Information displayed */
+  const [display, setDisplay] = useState([]);
 
-  /** Form information */
-  const [sohForm] = Form.useForm();
-
-  /** Initial value for the form */
-  const [initialValue, setInitialValue] = useState({});
-
-  const queryDatabase = async (dates) => {
+  /** Query database */
+  const queryDatabase = async () => {
     message.loading('Retrieving information from database...', 0);
-    /** Query database */
 
     const start = (dates[0].unix() / 86400.0) + 2440587.5 - 2400000.5;
     const end = (dates[1].unix() / 86400.0) + 2440587.5 - 2400000.5;
@@ -66,18 +67,34 @@ function SOH({
     return data;
   };
 
-  useEffect(() => {
-    const accumulate = {};
+  const findSohProperty = (input) => {
+    const tempObj = [];
 
-    accumulate.name = name;
-
-    if (dateRange !== -1) {
-      accumulate.dateRange = dateRange;
-      queryDatabase(dateRange).then((r) => setSoh(r));
+    if (input.length !== 0) {
+      soh.forEach((obj) => {
+        const newObj = {
+          localTime: new Date((obj.node_utc - 2440587.5 + 2400000.5) * 86400.0 * 1000),
+        };
+        input.forEach((item) => {
+          newObj[item] = obj[item];
+        });
+        tempObj.push(newObj);
+      });
     }
 
-    setInitialValue(accumulate);
-  }, []);
+    setDisplay(tempObj);
+  };
+
+  const changeNode = (value) => {
+    if (activeNodes.includes(value)) {
+      setLive(true);
+      setStream(true);
+    }
+    if (inactiveNodes.includes(value)) {
+      setLive(false);
+      setStream(false);
+    }
+  };
 
   /** Update the inactive and active node lists */
   useEffect(() => {
@@ -100,55 +117,43 @@ function SOH({
     }
 
     /** Update SOH data */
-    if (disable) {
+    if (live && stream) {
       setSoh([state[`${nameState}:soh`]]);
+
+      if (display.length !== 0) {
+        const keys = Object.keys(display[0]);
+        findSohProperty(keys.slice(1));
+      }
+    }
+
+    if (init) {
+      setInit(false);
+      changeNode(nameState);
     }
   }, [state]);
 
-  const findSohProperty = (input) => {
-    const tempObj = [];
-
-    if (input.length !== 0) {
-      soh.forEach((obj) => {
-        const newObj = { localTime: new Date(obj.node_utc * 1000) };
-        input.forEach((item) => {
-          newObj[item] = obj[item];
-        });
-        tempObj.push(newObj);
-      });
-    }
-
-    setDisplay(tempObj);
-  };
-
-  const changeNode = (value) => {
-    if (activeNodes.includes(value)) {
-      setDisable(true);
-    }
-    if (inactiveNodes.includes(value)) {
-      setDisable(false);
-    }
-  };
-
-  const processForm = () => {
+  const processForm = async () => {
     setDisplay([]);
 
     const fields = sohForm.getFieldsValue();
 
-    console.log(fields);
     if (fields.name !== '') {
       setNameState(fields.name);
     }
 
-    if (disable) {
+    if (live) {
       setSoh(state[`${nameState}:soh`]);
     } else if (fields.dateRange != null) {
-      queryDatabase(fields.dateRange)
-        .then((r) => setSoh(r))
-        .finally(() => {
-          message.destroy();
-          message.success('Successfully loaded SOH.');
-        });
+      try {
+        setDates(fields.dateRange);
+        const result = await queryDatabase();
+        setSoh(result);
+        message.destroy();
+        message.success('Successfully loaded SOH.');
+      } catch {
+        message.destroy();
+        message.error('Error retrieving from database.');
+      }
     } else {
       setSoh([]);
     }
@@ -167,8 +172,8 @@ function SOH({
           onChange={(input) => findSohProperty(input)}
         >
           {
-            (soh != null && soh[0] != null && soh.length !== 0) ?
-              Object.keys(soh[0]).map((props) => (
+            (soh != null && soh[0] != null && soh.length !== 0)
+              ? Object.keys(soh[0]).map((props) => (
                 <Select.Option
                   key={props}
                   value={props}
@@ -184,13 +189,26 @@ function SOH({
       showStatus
       height={height}
       status={state.length === 0 ? 'default' : 'success'}
+      toolsSlot={(
+        <Switch
+          className="mr-1"
+          checkedChildren="Stream"
+          unCheckedChildren="Freeze"
+          checked={stream}
+          disabled={inactiveNodes.includes(nameState) && !live}
+          onClick={() => setStream(!stream)}
+        />
+      )}
       formItems={(
         <>
           <Form
             form={sohForm}
             layout="vertical"
             name="sohForm"
-            initialValues={initialValue}
+            initialValues={{
+              name: nameState,
+              dateRange,
+            }}
           >
             <Form.Item label="Name" name="name" hasFeedback>
               <Select
@@ -220,27 +238,36 @@ function SOH({
                 </Select.OptGroup>
               </Select>
             </Form.Item>
-            <Form.Item label="Historical Date Range" name="dateRange" hasFeedback>
+            <div className="mb-1 text-gray-800 mb-2">
+              Historical Date Range
+              <Switch
+                className="ml-1"
+                checkedChildren="Live"
+                unCheckedChildren="Past"
+                disabled={inactiveNodes.includes(nameState)}
+                checked={live}
+                onClick={() => {
+                  setLive(!live);
+                  setSoh([]);
+                  setDisplay([]);
+                }}
+              />
+            </div>
+            <Form.Item label="Historical Date Range" name="dateRange" hasFeedback noStyle>
               <RangePicker
                 className="mr-1"
                 showTime
                 format="YYYY-MM-DD HH:mm:ss"
-                disabled={disable}
-                onBlur={() => processForm()}
+                disabled={live}
               />
-              <Tooltip>
-                <Switch
-                  checkedChildren="Live"
-                  unCheckedChildren="Past"
-                  checked={disable}
-                  onClick={() => {
-                    if (activeNodes.includes(nameState)) {
-                      setDisable(!disable);
-                    }
-                  }}
-                />
-              </Tooltip>
             </Form.Item>
+            <Button
+              type="primary"
+              onClick={() => processForm()}
+              disabled={live}
+            >
+              Show
+            </Button>
           </Form>
         </>
       )}
