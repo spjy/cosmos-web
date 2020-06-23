@@ -17,6 +17,7 @@ import {
   Col,
   Row,
   InputNumber,
+  DatePicker,
 } from 'antd';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import {
@@ -45,7 +46,7 @@ import project from '../../package.json';
 import AsyncComponent from '../components/AsyncComponent';
 import LayoutSelector from '../components/LayoutSelector';
 
-// const { RangePicker } = DatePicker;
+const { RangePicker } = DatePicker;
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -119,7 +120,7 @@ function Dashboard({
   /** Timezone */
   const [timezoneState] = useState('Pacific/Honolulu');
 
-  // const [globalHistoricalDate, setGlobalHistoricalDate] = useState(null);
+  const [globalHistoricalDate, setGlobalHistoricalDate] = useState(null);
 
   /** On mount, set the time and update each second */
   useEffect(() => {
@@ -493,7 +494,7 @@ function Dashboard({
           </div>
         </div>
       </div>
-      {/* <div className="flex justify-center pt-5">
+      <div className="flex justify-center pt-5">
         <RangePicker
           className="mr-3"
           showTime
@@ -503,11 +504,14 @@ function Dashboard({
         />
         <Button
           disabled={!globalHistoricalDate}
-          onClick={() => dispatch(actions.get('globalHistoricalDate', globalHistoricalDate))}
+          onClick={() => {
+            dispatch(actions.get('globalQueue', []));
+            dispatch(actions.get('globalHistoricalDate', globalHistoricalDate));
+          }}
         >
           Set Global Historical Date
         </Button>
-      </div> */}
+      </div>
       <div className="mt-5 mx-16 mb-16">
         <Context.Provider value={{ state, dispatch }}>
           <ResponsiveGridLayout

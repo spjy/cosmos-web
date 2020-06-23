@@ -321,10 +321,20 @@ function Chart({
   /** Handle the collection of global historical data */
   useEffect(() => {
     if (state && state.globalHistoricalDate !== null) {
+      const tempArr = [nameState];
+      if (state.globalQueue !== undefined) {
+        tempArr.unshift(state.globalQueue);
+        dispatch(actions.get('globalQueue', tempArr.flat()));
+      } else {
+        dispatch(actions.get('globalQueue', tempArr));
+      }
+      while (state.globalQueue[0] !== nameState) {
+        setTimeout(() => {}, 3000);
+      }
       plotsState.forEach((plot, i) => {
         queryHistoricalData(state.globalHistoricalDate, plot.YDataKey, plot.nodeProcess, i);
       });
-
+      state.globalQueue.shift();
       // Reset state to null to allow for detection of future plot history requests
       setRetrievePlotHistory(null);
     }
