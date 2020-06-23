@@ -78,7 +78,7 @@ function CEO() {
 
         dispatch(actions.get('namespace', data));
       } catch (error) {
-        message.error(error);
+        message.error(error.message);
       }
     }
 

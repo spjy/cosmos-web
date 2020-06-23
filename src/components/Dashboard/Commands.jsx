@@ -135,10 +135,16 @@ const Commands = React.memo(({
   const sendCommand = async () => {
     setLastArgument(commandArguments);
 
-    if (selectedRequest === '> agent') {
-      sendCommandApi(`${process.env.COSMOS_BIN}agent ${commandArguments}`);
-    } else {
-      sendCommandApi(`${process.env.COSMOS_BIN}agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro ? `${state.macro} ` : ''}${commandArguments}`);
+    switch (selectedRequest) {
+      case '> agent':
+        sendCommandApi(`${process.env.COSMOS_BIN}agent ${commandArguments}`);
+        break;
+      case '> command_generator':
+        sendCommandApi(`${process.env.COSMOS_BIN}command_generator ${commandArguments.replace(/"/g, "'")}`);
+        break;
+      default:
+        sendCommandApi(`${process.env.COSMOS_BIN}agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro ? `${state.macro} ` : ''}${commandArguments}`);
+        break;
     }
 
     setUpdateLog(true);
@@ -367,6 +373,11 @@ const Commands = React.memo(({
               <Select.Option value="> agent">
                 <Tooltip placement="right" title="node process [arguments]">
                   ➜ agent
+                </Tooltip>
+              </Select.Option>
+              <Select.Option value="> command_generator">
+                <Tooltip placement="right" title="name command [time | +sec] [node] [condition] [repeat_flag]">
+                  ➜ command_generator
                 </Tooltip>
               </Select.Option>
               {
