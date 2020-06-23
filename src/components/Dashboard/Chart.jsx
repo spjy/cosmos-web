@@ -279,14 +279,12 @@ function Chart({
           // Insert past data into chart
           data.forEach((d) => {
             plotsState[plot].x.push(processXDataKeyState.func(d[XDataKeyState]));
-
-            const y = typeof plotsState[plot].processYDataKey === 'function'
-              ? plotsState[plot].processYDataKey(d[plotsState[plot].YDataKey])
-              : d[plotsState[plot].YDataKey];
-
             plotsState[plot]
               .y
-              .push(y);
+              .push(
+                plotsState[plot]
+                  .processYDataKey(d[plotsState[plot].YDataKey]),
+              );
 
             layout.datarevision += 1;
             setDataRevision(dataRevision + 1);
