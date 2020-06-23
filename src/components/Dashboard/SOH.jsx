@@ -149,8 +149,13 @@ function SOH({
         const result = await queryDatabase();
         setSoh(result);
         message.destroy();
-        message.success('Successfully loaded SOH.');
-      } catch {
+        if (result.length !== 0) {
+          message.success(`Successfully retrieved ${result.length} documents.`);
+        } else {
+          message.warning(`No documents found.`);
+        }
+      } catch (err) {
+        console.log(err.message);
         message.destroy();
         message.error('Error retrieving from database.');
       }
