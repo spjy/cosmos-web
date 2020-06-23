@@ -164,7 +164,7 @@ function CEO() {
                     <span className="text-gray-500">agents</span>
                     <Divider type="vertical" />
                     {
-                      agents.length > 0
+                      agents && agents.length > 0
                         ? agents.map((agent) => (
                           <span
                             key={agent}
@@ -181,7 +181,7 @@ function CEO() {
                       bordered={false}
                     >
                       <Collapse.Panel
-                        header={`Pieces (${Object.keys(pieces).length})`}
+                        header={`Pieces (${pieces ? Object.keys(pieces).length : 0})`}
                         className="my-2 border-b-0"
                       >
                         <span>
@@ -189,7 +189,7 @@ function CEO() {
                           <Divider type="vertical" />
                         </span>
                         {
-                          Object.keys(pieces).length > 0
+                          pieces && Object.keys(pieces).length > 0
                             ? Object.entries(pieces).map(([piece, component]) => (
                               <Tag.CheckableTag
                                 checked={
