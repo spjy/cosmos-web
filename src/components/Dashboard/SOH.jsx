@@ -69,8 +69,8 @@ function SOH({
 
   /**
    * Filters through JSON object and retrieves wanted key
-   * 
-   * @param {*} input 
+   *
+   * @param {*} input
    */
   const findSohProperty = (input) => {
     const tempObj = [];
@@ -138,6 +138,7 @@ function SOH({
       setInit(false);
       changeNode(nameState);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
   const processForm = async () => {
@@ -164,7 +165,7 @@ function SOH({
         if (result.length !== 0) {
           message.success(`Retrieved ${result.length} records.`);
         } else {
-          message.warning(`No data for specified range.`);
+          message.warning('No data for specified range.');
         }
       } catch (err) {
         message.destroy();
