@@ -92,10 +92,12 @@ function BaseComponent({
       </div>
 
       {/* A description */}
-      <div className="text-gray-600 text-sm preventDragHandle cursor-auto px-3 pb-2">
+      <div
+        className="sticky text-gray-600 text-sm preventDragHandle cursor-auto px-3 pb-2"
+        style={{ top: 50 }}
+      >
         {subheader}
       </div>
-
       {/* <div className="px-4 py-1 overflow-y-auto"
       style={{ height: headerRef && headerRef.current ?
       height - headerRef.current.clientHeight : height }}> */}

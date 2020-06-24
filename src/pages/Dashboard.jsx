@@ -37,7 +37,7 @@ import {
   Context, actions, reducer,
 } from '../store/dashboard';
 
-import { socket } from '../api';
+import { axios, socket } from '../api';
 // eslint-disable-next-line
 import routes from '../routes';
 import project from '../../package.json';
@@ -164,6 +164,20 @@ function Dashboard({
     return () => {
       live.close(1000);
     };
+  }, []);
+
+  useEffect(() => {
+    async function fetchNamespace() {
+      try {
+        const agents = await axios.get('/namespace/pieces');
+
+        dispatch(actions.get('namespace', agents.data));
+      } catch (error) {
+        message.error(error.message);
+      }
+    }
+
+    fetchNamespace();
   }, []);
 
   /** Retrieve default layout for page */
