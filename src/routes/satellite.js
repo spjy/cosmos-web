@@ -500,28 +500,28 @@ export default {
                 displayValues: [
                   {
                     name: 'Battery Capacity',
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     dataKey: 'node_battcap',
                     unit: 'Whr',
                     processDataKey: (x) => x.toFixed(2),
                   },
                   {
                     name: 'Battery Percent',
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     dataKey: 'device_batt_percentage_000',
                     unit: '%',
                     processDataKey: (x) => x.toFixed(2),
                   },
                   {
                     name: 'Power Gen',
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     dataKey: 'node_powgen',
                     unit: 'W',
                     processDataKey: (x) => x.toFixed(2),
                   },
                   {
                     name: 'Power Use',
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     dataKey: 'node_powuse',
                     unit: 'W',
                     processDataKey: (x) => x.toFixed(2),
@@ -543,28 +543,28 @@ export default {
                 displayValues: [
                   {
                     name: 'CPU Load',
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     dataKey: 'device_cpu_load_000',
                     unit: '',
                     processDataKey: (x) => x.toFixed(2),
                   },
                   {
                     name: 'CPU Utilization',
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     dataKey: 'cpu_utilization_000',
                     unit: '',
                     processDataKey: (x) => x.toFixed(2),
                   },
                   {
                     name: 'Max GiB',
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     dataKey: 'device_cpu_maxgib_000',
                     unit: 'GiB',
                     processDataKey: (x) => x.toFixed(2),
                   },
                   {
                     name: 'GiB',
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     dataKey: 'device_cpu_gib_000',
                     unit: 'GiB',
                     processDataKey: (x) => x.toFixed(2),
@@ -687,7 +687,7 @@ export default {
                     name: 'Load',
                     YDataKey: 'device_cpu_load_000',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -700,7 +700,7 @@ export default {
                     name: 'Utilization',
                     YDataKey: 'cpu_utilization_000',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                 ],
@@ -731,7 +731,7 @@ export default {
                     name: 'Batt Power',
                     YDataKey: 'device_batt_power_000',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -744,7 +744,7 @@ export default {
                     name: 'Batt Charge',
                     YDataKey: 'device_batt_charge_000',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -757,7 +757,7 @@ export default {
                     name: 'Batt Percentage',
                     YDataKey: 'device_batt_percentage_000',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -770,7 +770,7 @@ export default {
                     name: 'Batt Time Remaining',
                     YDataKey: 'device_batt_time_remaining_000',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                 ],
@@ -800,7 +800,7 @@ export default {
                     name: 'Amp 000',
                     YDataKey: 'device_bus_amp_000',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -813,7 +813,7 @@ export default {
                     name: 'Amp 001',
                     YDataKey: 'device_bus_amp_001',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -826,7 +826,7 @@ export default {
                     name: 'Amp 002',
                     YDataKey: 'device_bus_amp_002',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -839,7 +839,7 @@ export default {
                     name: '12V Amperage',
                     YDataKey: 'device_bus_amp_003',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -852,7 +852,7 @@ export default {
                     name: 'Batt Amerage',
                     YDataKey: 'device_batt_amp_000',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -866,7 +866,7 @@ export default {
                     name: 'Batt Voltage',
                     YDataKey: 'device_batt_volt_000',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                 ],
@@ -896,7 +896,7 @@ export default {
                     name: 'Volt 000',
                     YDataKey: 'device_bus_volt_000',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -909,7 +909,7 @@ export default {
                     name: 'Volt 001',
                     YDataKey: 'device_bus_volt_001',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -922,7 +922,7 @@ export default {
                     name: 'Volt 002',
                     YDataKey: 'device_bus_volt_002',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -935,7 +935,7 @@ export default {
                     name: 'Volt 003',
                     YDataKey: 'device_bus_volt_003',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -949,7 +949,7 @@ export default {
                     name: 'Batt Voltage',
                     YDataKey: 'device_batt_volt_000',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                 ],
@@ -979,7 +979,7 @@ export default {
                     name: 'Amp 000',
                     YDataKey: 'device_bcreg_amp_000',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -992,7 +992,7 @@ export default {
                     name: 'Amp 001',
                     YDataKey: 'device_bcreg_amp_001',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -1005,7 +1005,7 @@ export default {
                     name: 'Amp 002',
                     YDataKey: 'device_bcreg_amp_002',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                 ],
@@ -1035,7 +1035,7 @@ export default {
                     name: 'Volt 000',
                     YDataKey: 'device_bcreg_volt_000',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -1048,7 +1048,7 @@ export default {
                     name: 'Volt 001',
                     YDataKey: 'device_bcreg_volt_001',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -1061,7 +1061,7 @@ export default {
                     name: 'Volt 002',
                     YDataKey: 'device_bcreg_volt_002',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                 ],
@@ -1091,7 +1091,7 @@ export default {
                     name: 'Amp 000',
                     YDataKey: 'device_swch_amp_000',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -1104,7 +1104,7 @@ export default {
                     name: 'Amp 001',
                     YDataKey: 'device_swch_amp_001',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -1117,7 +1117,7 @@ export default {
                     name: 'Amp 002',
                     YDataKey: 'device_swch_amp_002',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -1130,7 +1130,7 @@ export default {
                     name: 'Amp 003',
                     YDataKey: 'device_swch_amp_003',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -1143,7 +1143,7 @@ export default {
                     name: 'Amp 004',
                     YDataKey: 'device_swch_amp_004',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -1156,7 +1156,7 @@ export default {
                     name: 'Amp 005',
                     YDataKey: 'device_swch_amp_005',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -1169,7 +1169,7 @@ export default {
                     name: 'Amp 006',
                     YDataKey: 'device_swch_amp_006',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -1182,7 +1182,7 @@ export default {
                     name: 'Amp 007',
                     YDataKey: 'device_swch_amp_007',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -1195,7 +1195,7 @@ export default {
                     name: 'Amp 008',
                     YDataKey: 'device_swch_amp_008',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -1208,7 +1208,7 @@ export default {
                     name: 'Amp 009',
                     YDataKey: 'device_swch_amp_009',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
 
@@ -1239,7 +1239,7 @@ export default {
                     name: 'Volt 000',
                     YDataKey: 'device_swch_volt_000',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -1252,7 +1252,7 @@ export default {
                     name: 'Volt 001',
                     YDataKey: 'device_swch_volt_001',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -1265,7 +1265,7 @@ export default {
                     name: 'Volt 002',
                     YDataKey: 'device_swch_volt_002',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -1278,7 +1278,7 @@ export default {
                     name: 'Volt 003',
                     YDataKey: 'device_swch_volt_003',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -1291,7 +1291,7 @@ export default {
                     name: 'Volt 004',
                     YDataKey: 'device_swch_volt_004',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -1304,7 +1304,7 @@ export default {
                     name: 'Volt 005',
                     YDataKey: 'device_swch_volt_005',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -1317,7 +1317,7 @@ export default {
                     name: 'Volt 006',
                     YDataKey: 'device_swch_volt_006',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -1330,7 +1330,7 @@ export default {
                     name: 'Volt 007',
                     YDataKey: 'device_swch_volt_007',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -1343,7 +1343,7 @@ export default {
                     name: 'Volt 008',
                     YDataKey: 'device_swch_volt_008',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                   {
@@ -1356,7 +1356,7 @@ export default {
                     name: 'Volt 009',
                     YDataKey: 'device_swch_volt_009',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'neutron1:soh',
+                    nodeProcess: 'beagle1:soh',
                     live: true,
                   },
                 ],
