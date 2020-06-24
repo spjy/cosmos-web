@@ -1625,7 +1625,7 @@ export default {
                     marker: {
                       color: 'blue',
                     },
-                    name: 'Amp 000',
+                    name: 'Temp 000',
                     YDataKey: 'device_tsen_temp_000',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
@@ -1638,7 +1638,7 @@ export default {
                     marker: {
                       color: 'orange',
                     },
-                    name: 'Amp 001',
+                    name: 'Temp 001',
                     YDataKey: 'device_tsen_temp_001',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
@@ -1651,7 +1651,7 @@ export default {
                     marker: {
                       color: 'yellow',
                     },
-                    name: 'Amp 002',
+                    name: 'Temp 002',
                     YDataKey: 'device_tsen_temp_002',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
@@ -1664,8 +1664,34 @@ export default {
                     marker: {
                       color: 'yellow',
                     },
-                    name: 'Amp 002',
+                    name: 'Temp 003',
                     YDataKey: 'device_tsen_temp_003',
+                    processYDataKey: (x) => x,
+                    nodeProcess: 'beagle1:eps',
+                    live: true,
+                  },
+                  {
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    marker: {
+                      color: 'yellow',
+                    },
+                    name: 'EPS OBC CPU Temp',
+                    YDataKey: 'device_cpu_temp_000',
+                    processYDataKey: (x) => x,
+                    nodeProcess: 'beagle1:eps',
+                    live: true,
+                  },
+                  {
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    marker: {
+                      color: 'yellow',
+                    },
+                    name: 'Battery Temp',
+                    YDataKey: 'device_batt_temp_000',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
                     live: true,
@@ -1764,7 +1790,7 @@ export default {
                     marker: {
                       color: 'red',
                     },
-                    name: 'Amp 000',
+                    name: 'Power 000',
                     YDataKey: 'device_bus_power_000',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
@@ -1777,7 +1803,7 @@ export default {
                     marker: {
                       color: 'orange',
                     },
-                    name: 'Amp 001',
+                    name: 'Power 001',
                     YDataKey: 'device_bus_power_001',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
@@ -1790,7 +1816,7 @@ export default {
                     marker: {
                       color: 'blue',
                     },
-                    name: 'Amp 002',
+                    name: 'Power 002',
                     YDataKey: 'device_bus_power_002',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
@@ -1803,7 +1829,7 @@ export default {
                     marker: {
                       color: 'gray',
                     },
-                    name: '12V Amperage',
+                    name: 'Power 003',
                     YDataKey: 'device_bus_power_003',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
@@ -1833,7 +1859,7 @@ export default {
                     marker: {
                       color: 'blue',
                     },
-                    name: 'Amp 000',
+                    name: 'Power 000',
                     YDataKey: 'device_bcreg_power_000',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
@@ -1846,7 +1872,7 @@ export default {
                     marker: {
                       color: 'orange',
                     },
-                    name: 'Amp 001',
+                    name: 'Power 001',
                     YDataKey: 'device_bcreg_power_001',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
@@ -1859,7 +1885,7 @@ export default {
                     marker: {
                       color: 'yellow',
                     },
-                    name: 'Amp 002',
+                    name: 'Power 002',
                     YDataKey: 'device_bcreg_power_002',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
@@ -1889,7 +1915,7 @@ export default {
                     marker: {
                       color: 'yellow',
                     },
-                    name: 'Amp 000',
+                    name: 'Power 000',
                     YDataKey: 'device_swch_power_000',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
@@ -1902,7 +1928,7 @@ export default {
                     marker: {
                       color: 'blue',
                     },
-                    name: 'Amp 001',
+                    name: 'Power 001',
                     YDataKey: 'device_swch_power_001',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
@@ -1928,7 +1954,7 @@ export default {
                     marker: {
                       color: 'green',
                     },
-                    name: 'Amp 003',
+                    name: 'Power 003',
                     YDataKey: 'device_swch_power_003',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
@@ -1941,7 +1967,7 @@ export default {
                     marker: {
                       color: 'blue',
                     },
-                    name: 'Amp 004',
+                    name: 'Power 004',
                     YDataKey: 'device_swch_power_004',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
@@ -1954,7 +1980,7 @@ export default {
                     marker: {
                       color: 'purple',
                     },
-                    name: 'Amp 005',
+                    name: 'Power 005',
                     YDataKey: 'device_swch_power_005',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
@@ -1967,7 +1993,7 @@ export default {
                     marker: {
                       color: 'red',
                     },
-                    name: 'Amp 006',
+                    name: 'Power 006',
                     YDataKey: 'device_swch_power_006',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
@@ -1980,7 +2006,7 @@ export default {
                     marker: {
                       color: 'black',
                     },
-                    name: 'Amp 007',
+                    name: 'Power 007',
                     YDataKey: 'device_swch_power_007',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
@@ -2006,7 +2032,7 @@ export default {
                     marker: {
                       color: 'cyan',
                     },
-                    name: 'Amp 009',
+                    name: 'Power 009',
                     YDataKey: 'device_swch_power_009',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
