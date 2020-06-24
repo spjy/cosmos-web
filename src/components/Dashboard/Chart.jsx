@@ -242,7 +242,7 @@ function Chart({
    */
   const queryHistoricalData = async (dates, YDataKey, nodeProcess, plot) => {
     if (dates && dates.length === 2) {
-      message.loading(`Querying ${nodeProcess} data...`, 0);
+      message.loading(`Querying ${nodeProcess} for ${YDataKey}...`, 0);
 
       // Unix time to modified julian date
       const from = (dates[0].unix() / 86400.0) + 2440587.5 - 2400000.5;
@@ -269,9 +269,9 @@ function Chart({
         plotsState[plot].live = false;
 
         if (data.length === 0) {
-          message.warning('No data for specified date range.');
+          message.warning(`No data for specified date range in ${nodeProcess} for ${YDataKey}.`);
         } else {
-          message.success(`Retrieved ${data.length} records.`);
+          message.success(`Retrieved ${data.length} records in ${nodeProcess} for ${YDataKey}.`);
           // Reset chart for past data
           plotsState[plot].x = [];
           plotsState[plot].y = [];
