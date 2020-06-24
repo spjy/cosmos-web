@@ -481,17 +481,40 @@ export default {
             i: 'satellite-neutron1-a',
             x: 0,
             y: 0,
-            w: 3,
+            w: 4,
             h: 7,
             component: {
               name: 'Status',
             },
           },
           {
-            i: 'satellite-neutron1-ba',
-            x: 3,
+            i: 'satellite-neutron1-c',
+            x: 4,
             y: 0,
-            w: 3,
+            w: 4,
+            h: 7,
+            component: {
+              name: 'Replacement',
+            },
+          },
+          {
+            i: 'satellite-neutron1-test',
+            x: 8,
+            y: 0,
+            w: 4,
+            h: 14,
+            component: {
+              name: 'SOH',
+              props: {
+                name: 'beagle1',
+              },
+            },
+          },
+          {
+            i: 'satellite-neutron1-ba',
+            x: 0,
+            y: 1,
+            w: 4,
             h: 7,
             component: {
               name: 'DisplayValue',
@@ -532,9 +555,9 @@ export default {
           },
           {
             i: 'satellite-neutron1-b',
-            x: 6,
-            y: 0,
-            w: 3,
+            x: 4,
+            y: 1,
+            w: 4,
             h: 7,
             component: {
               name: 'DisplayValue',
@@ -574,19 +597,9 @@ export default {
             },
           },
           {
-            i: 'satellite-neutron1-c',
-            x: 9,
-            y: 0,
-            w: 3,
-            h: 7,
-            component: {
-              name: 'Replacement',
-            },
-          },
-          {
             i: 'satellite-neutron1-d',
             x: 0,
-            y: 1,
+            y: 2,
             w: 12,
             h: 10,
             component: {
@@ -596,7 +609,7 @@ export default {
           {
             i: 'satellite-neutron1-e',
             x: 0,
-            y: 2,
+            y: 3,
             w: 6,
             h: 21,
             component: {
@@ -638,7 +651,7 @@ export default {
           {
             i: 'satellite-neutron1-f',
             x: 6,
-            y: 2,
+            y: 3,
             w: 6,
             h: 21,
             component: {
@@ -667,7 +680,7 @@ export default {
           {
             i: 'satellite-neutron1-g',
             x: 0,
-            y: 3,
+            y: 4,
             w: 12,
             h: 18,
             component: {
@@ -710,7 +723,7 @@ export default {
           {
             i: 'satellite-neutron1-hc',
             x: 0,
-            y: 4,
+            y: 5,
             w: 12,
             h: 18,
             component: {
@@ -780,7 +793,7 @@ export default {
           {
             i: 'satellite-neutron1-ha',
             x: 0,
-            y: 4,
+            y: 5,
             w: 6,
             h: 18,
             component: {
@@ -876,7 +889,7 @@ export default {
           {
             i: 'satellite-neutron1-hb',
             x: 6,
-            y: 4,
+            y: 5,
             w: 6,
             h: 18,
             component: {
@@ -959,7 +972,7 @@ export default {
           {
             i: 'satellite-default-ia',
             x: 0,
-            y: 5,
+            y: 6,
             w: 6,
             h: 18,
             component: {
@@ -1015,7 +1028,7 @@ export default {
           {
             i: 'satellite-default-ib',
             x: 6,
-            y: 5,
+            y: 6,
             w: 6,
             h: 18,
             component: {
@@ -1071,7 +1084,7 @@ export default {
           {
             i: 'satellite-default-ja',
             x: 0,
-            y: 6,
+            y: 7,
             w: 6,
             h: 19,
             component: {
@@ -1219,7 +1232,7 @@ export default {
           {
             i: 'satellite-default-jb',
             x: 6,
-            y: 6,
+            y: 7,
             w: 6,
             h: 19,
             component: {
@@ -1566,7 +1579,7 @@ export default {
             i: 'satellite-simple-neutron1-g',
             x: 0,
             y: 3,
-            w: 12,
+            w: 6,
             h: 18,
             component: {
               name: 'Chart',
@@ -1606,10 +1619,105 @@ export default {
             },
           },
           {
+            i: 'satellite-simple-default-iaa',
+            x: 6,
+            y: 3,
+            w: 6,
+            h: 18,
+            component: {
+              name: 'Chart',
+              props: {
+                name: 'Thermal',
+                XDataKey: 'node_utc',
+                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                plots: [
+                  {
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    marker: {
+                      color: 'blue',
+                    },
+                    name: 'Temp 000',
+                    YDataKey: 'device_tsen_temp_000',
+                    processYDataKey: (x) => x,
+                    nodeProcess: 'beagle1:eps',
+                    live: true,
+                  },
+                  {
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    marker: {
+                      color: 'orange',
+                    },
+                    name: 'Temp 001',
+                    YDataKey: 'device_tsen_temp_001',
+                    processYDataKey: (x) => x,
+                    nodeProcess: 'beagle1:eps',
+                    live: true,
+                  },
+                  {
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    marker: {
+                      color: 'yellow',
+                    },
+                    name: 'Temp 002',
+                    YDataKey: 'device_tsen_temp_002',
+                    processYDataKey: (x) => x,
+                    nodeProcess: 'beagle1:eps',
+                    live: true,
+                  },
+                  {
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    marker: {
+                      color: 'yellow',
+                    },
+                    name: 'Temp 003',
+                    YDataKey: 'device_tsen_temp_003',
+                    processYDataKey: (x) => x,
+                    nodeProcess: 'beagle1:eps',
+                    live: true,
+                  },
+                  {
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    marker: {
+                      color: 'yellow',
+                    },
+                    name: 'EPS OBC CPU Temp',
+                    YDataKey: 'device_cpu_temp_000',
+                    processYDataKey: (x) => x,
+                    nodeProcess: 'beagle1:eps',
+                    live: true,
+                  },
+                  {
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    marker: {
+                      color: 'yellow',
+                    },
+                    name: 'Battery Temp',
+                    YDataKey: 'device_batt_temp_000',
+                    processYDataKey: (x) => x,
+                    nodeProcess: 'beagle1:eps',
+                    live: true,
+                  },
+                ],
+              },
+            },
+          },
+          {
             i: 'satellite-simple-neutron1-hc',
             x: 0,
             y: 4,
-            w: 12,
+            w: 6,
             h: 18,
             component: {
               name: 'Chart',
@@ -1677,102 +1785,6 @@ export default {
           },
           {
             i: 'satellite-simple-neutron1-ha',
-            x: 0,
-            y: 4,
-            w: 6,
-            h: 18,
-            component: {
-              name: 'Chart',
-              props: {
-                name: 'EPS Bus Amp',
-                XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
-                plots: [
-                  {
-                    x: [],
-                    y: [],
-                    type: 'scatter',
-                    marker: {
-                      color: 'red',
-                    },
-                    name: 'Amp 000',
-                    YDataKey: 'device_bus_amp_000',
-                    processYDataKey: (x) => x,
-                    nodeProcess: 'beagle1:eps',
-                    live: true,
-                  },
-                  {
-                    x: [],
-                    y: [],
-                    type: 'scatter',
-                    marker: {
-                      color: 'orange',
-                    },
-                    name: 'Amp 001',
-                    YDataKey: 'device_bus_amp_001',
-                    processYDataKey: (x) => x,
-                    nodeProcess: 'beagle1:eps',
-                    live: true,
-                  },
-                  {
-                    x: [],
-                    y: [],
-                    type: 'scatter',
-                    marker: {
-                      color: 'blue',
-                    },
-                    name: 'Amp 002',
-                    YDataKey: 'device_bus_amp_002',
-                    processYDataKey: (x) => x,
-                    nodeProcess: 'beagle1:eps',
-                    live: true,
-                  },
-                  {
-                    x: [],
-                    y: [],
-                    type: 'scatter',
-                    marker: {
-                      color: 'gray',
-                    },
-                    name: '12V Amperage',
-                    YDataKey: 'device_bus_amp_003',
-                    processYDataKey: (x) => x,
-                    nodeProcess: 'beagle1:eps',
-                    live: true,
-                  },
-                  {
-                    x: [],
-                    y: [],
-                    type: 'scatter',
-                    marker: {
-                      color: 'yellow',
-                    },
-                    name: 'Batt Amerage',
-                    YDataKey: 'device_batt_amp_000',
-                    processYDataKey: (x) => x,
-                    nodeProcess: 'beagle1:eps',
-                    live: true,
-                  },
-                  {
-                    x: [],
-                    y: [],
-                    type: 'scatter',
-                    mode: 'marker',
-                    marker: {
-                      color: 'red',
-                    },
-                    name: 'Batt Voltage',
-                    YDataKey: 'device_batt_volt_000',
-                    processYDataKey: (x) => x,
-                    nodeProcess: 'beagle1:eps',
-                    live: true,
-                  },
-                ],
-              },
-            },
-          },
-          {
-            i: 'satellite-simple-neutron1-hb',
             x: 6,
             y: 4,
             w: 6,
@@ -1780,7 +1792,7 @@ export default {
             component: {
               name: 'Chart',
               props: {
-                name: 'EPS Bus Volt',
+                name: 'EPS Bus Power',
                 XDataKey: 'node_utc',
                 processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                 plots: [
@@ -1791,8 +1803,8 @@ export default {
                     marker: {
                       color: 'red',
                     },
-                    name: 'Volt 000',
-                    YDataKey: 'device_bus_volt_000',
+                    name: 'Power 000',
+                    YDataKey: 'device_bus_power_000',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
                     live: true,
@@ -1804,8 +1816,8 @@ export default {
                     marker: {
                       color: 'orange',
                     },
-                    name: 'Volt 001',
-                    YDataKey: 'device_bus_volt_001',
+                    name: 'Power 001',
+                    YDataKey: 'device_bus_power_001',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
                     live: true,
@@ -1817,8 +1829,8 @@ export default {
                     marker: {
                       color: 'blue',
                     },
-                    name: 'Volt 002',
-                    YDataKey: 'device_bus_volt_002',
+                    name: 'Power 002',
+                    YDataKey: 'device_bus_power_002',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
                     live: true,
@@ -1830,22 +1842,8 @@ export default {
                     marker: {
                       color: 'gray',
                     },
-                    name: 'Volt 003',
-                    YDataKey: 'device_bus_volt_003',
-                    processYDataKey: (x) => x,
-                    nodeProcess: 'beagle1:eps',
-                    live: true,
-                  },
-                  {
-                    x: [],
-                    y: [],
-                    type: 'scatter',
-                    mode: 'marker',
-                    marker: {
-                      color: 'red',
-                    },
-                    name: 'Batt Voltage',
-                    YDataKey: 'device_batt_volt_000',
+                    name: 'Power 003',
+                    YDataKey: 'device_bus_power_003',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
                     live: true,
@@ -1863,7 +1861,7 @@ export default {
             component: {
               name: 'Chart',
               props: {
-                name: 'EPS Battery Charge Regulator Amp',
+                name: 'EPS Battery Charge Regulator Power',
                 XDataKey: 'node_utc',
                 processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                 plots: [
@@ -1874,8 +1872,8 @@ export default {
                     marker: {
                       color: 'blue',
                     },
-                    name: 'Amp 000',
-                    YDataKey: 'device_bcreg_amp_000',
+                    name: 'Power 000',
+                    YDataKey: 'device_bcreg_power_000',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
                     live: true,
@@ -1887,8 +1885,8 @@ export default {
                     marker: {
                       color: 'orange',
                     },
-                    name: 'Amp 001',
-                    YDataKey: 'device_bcreg_amp_001',
+                    name: 'Power 001',
+                    YDataKey: 'device_bcreg_power_001',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
                     live: true,
@@ -1900,64 +1898,8 @@ export default {
                     marker: {
                       color: 'yellow',
                     },
-                    name: 'Amp 002',
-                    YDataKey: 'device_bcreg_amp_002',
-                    processYDataKey: (x) => x,
-                    nodeProcess: 'beagle1:eps',
-                    live: true,
-                  },
-                ],
-              },
-            },
-          },
-          {
-            i: 'satellite-simple-default-ib',
-            x: 6,
-            y: 5,
-            w: 6,
-            h: 18,
-            component: {
-              name: 'Chart',
-              props: {
-                name: 'EPS Battery Charge Regulator Volt',
-                XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
-                plots: [
-                  {
-                    x: [],
-                    y: [],
-                    type: 'scatter',
-                    marker: {
-                      color: 'blue',
-                    },
-                    name: 'Volt 000',
-                    YDataKey: 'device_bcreg_volt_000',
-                    processYDataKey: (x) => x,
-                    nodeProcess: 'beagle1:eps',
-                    live: true,
-                  },
-                  {
-                    x: [],
-                    y: [],
-                    type: 'scatter',
-                    marker: {
-                      color: 'orange',
-                    },
-                    name: 'Volt 001',
-                    YDataKey: 'device_bcreg_volt_001',
-                    processYDataKey: (x) => x,
-                    nodeProcess: 'beagle1:eps',
-                    live: true,
-                  },
-                  {
-                    x: [],
-                    y: [],
-                    type: 'scatter',
-                    marker: {
-                      color: 'yellow',
-                    },
-                    name: 'Volt 002',
-                    YDataKey: 'device_bcreg_volt_002',
+                    name: 'Power 002',
+                    YDataKey: 'device_bcreg_power_002',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
                     live: true,
@@ -1968,14 +1910,14 @@ export default {
           },
           {
             i: 'satellite-simple-default-ja',
-            x: 0,
+            x: 6,
             y: 6,
             w: 6,
-            h: 19,
+            h: 18,
             component: {
               name: 'Chart',
               props: {
-                name: 'EPS PDM Switch Amp',
+                name: 'EPS PDM Switch Power',
                 XDataKey: 'node_utc',
                 processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                 plots: [
@@ -1986,8 +1928,8 @@ export default {
                     marker: {
                       color: 'yellow',
                     },
-                    name: 'Amp 000',
-                    YDataKey: 'device_swch_amp_000',
+                    name: 'Power 000',
+                    YDataKey: 'device_swch_power_000',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
                     live: true,
@@ -1999,8 +1941,8 @@ export default {
                     marker: {
                       color: 'blue',
                     },
-                    name: 'Amp 001',
-                    YDataKey: 'device_swch_amp_001',
+                    name: 'Power 001',
+                    YDataKey: 'device_swch_power_001',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
                     live: true,
@@ -2013,7 +1955,7 @@ export default {
                       color: 'orange',
                     },
                     name: 'Amp 002',
-                    YDataKey: 'device_swch_amp_002',
+                    YDataKey: 'device_swch_power_002',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
                     live: true,
@@ -2025,8 +1967,8 @@ export default {
                     marker: {
                       color: 'green',
                     },
-                    name: 'Amp 003',
-                    YDataKey: 'device_swch_amp_003',
+                    name: 'Power 003',
+                    YDataKey: 'device_swch_power_003',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
                     live: true,
@@ -2038,8 +1980,8 @@ export default {
                     marker: {
                       color: 'blue',
                     },
-                    name: 'Amp 004',
-                    YDataKey: 'device_swch_amp_004',
+                    name: 'Power 004',
+                    YDataKey: 'device_swch_power_004',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
                     live: true,
@@ -2051,8 +1993,8 @@ export default {
                     marker: {
                       color: 'purple',
                     },
-                    name: 'Amp 005',
-                    YDataKey: 'device_swch_amp_005',
+                    name: 'Power 005',
+                    YDataKey: 'device_swch_power_005',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
                     live: true,
@@ -2064,8 +2006,8 @@ export default {
                     marker: {
                       color: 'red',
                     },
-                    name: 'Amp 006',
-                    YDataKey: 'device_swch_amp_006',
+                    name: 'Power 006',
+                    YDataKey: 'device_swch_power_006',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
                     live: true,
@@ -2077,8 +2019,8 @@ export default {
                     marker: {
                       color: 'black',
                     },
-                    name: 'Amp 007',
-                    YDataKey: 'device_swch_amp_007',
+                    name: 'Power 007',
+                    YDataKey: 'device_swch_power_007',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
                     live: true,
@@ -2091,7 +2033,7 @@ export default {
                       color: 'pink',
                     },
                     name: 'Amp 008',
-                    YDataKey: 'device_swch_amp_008',
+                    YDataKey: 'device_swch_power_008',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
                     live: true,
@@ -2103,160 +2045,13 @@ export default {
                     marker: {
                       color: 'cyan',
                     },
-                    name: 'Amp 009',
-                    YDataKey: 'device_swch_amp_009',
+                    name: 'Power 009',
+                    YDataKey: 'device_swch_power_009',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:eps',
                     live: true,
                   },
 
-                ],
-              },
-            },
-          },
-          {
-            i: 'satellite-simple-default-jb',
-            x: 6,
-            y: 6,
-            w: 6,
-            h: 19,
-            component: {
-              name: 'Chart',
-              props: {
-                name: 'EPS PDM Switch Volt',
-                XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
-                plots: [
-                  {
-                    x: [],
-                    y: [],
-                    type: 'scatter',
-                    marker: {
-                      color: 'yellow',
-                    },
-                    name: 'Volt 000',
-                    YDataKey: 'device_swch_volt_000',
-                    processYDataKey: (x) => x,
-                    nodeProcess: 'beagle1:eps',
-                    live: true,
-                  },
-                  {
-                    x: [],
-                    y: [],
-                    type: 'scatter',
-                    marker: {
-                      color: 'blue',
-                    },
-                    name: 'Volt 001',
-                    YDataKey: 'device_swch_volt_001',
-                    processYDataKey: (x) => x,
-                    nodeProcess: 'beagle1:eps',
-                    live: true,
-                  },
-                  {
-                    x: [],
-                    y: [],
-                    type: 'scatter',
-                    marker: {
-                      color: 'orange',
-                    },
-                    name: 'Volt 002',
-                    YDataKey: 'device_swch_volt_002',
-                    processYDataKey: (x) => x,
-                    nodeProcess: 'beagle1:eps',
-                    live: true,
-                  },
-                  {
-                    x: [],
-                    y: [],
-                    type: 'scatter',
-                    marker: {
-                      color: 'green',
-                    },
-                    name: 'Volt 003',
-                    YDataKey: 'device_swch_volt_003',
-                    processYDataKey: (x) => x,
-                    nodeProcess: 'beagle1:eps',
-                    live: true,
-                  },
-                  {
-                    x: [],
-                    y: [],
-                    type: 'scatter',
-                    marker: {
-                      color: 'blue',
-                    },
-                    name: 'Volt 004',
-                    YDataKey: 'device_swch_volt_004',
-                    processYDataKey: (x) => x,
-                    nodeProcess: 'beagle1:eps',
-                    live: true,
-                  },
-                  {
-                    x: [],
-                    y: [],
-                    type: 'scatter',
-                    marker: {
-                      color: 'purple',
-                    },
-                    name: 'Volt 005',
-                    YDataKey: 'device_swch_volt_005',
-                    processYDataKey: (x) => x,
-                    nodeProcess: 'beagle1:eps',
-                    live: true,
-                  },
-                  {
-                    x: [],
-                    y: [],
-                    type: 'scatter',
-                    marker: {
-                      color: 'red',
-                    },
-                    name: 'Volt 006',
-                    YDataKey: 'device_swch_volt_006',
-                    processYDataKey: (x) => x,
-                    nodeProcess: 'beagle1:eps',
-                    live: true,
-                  },
-                  {
-                    x: [],
-                    y: [],
-                    type: 'scatter',
-                    marker: {
-                      color: 'black',
-                    },
-                    name: 'Volt 007',
-                    YDataKey: 'device_swch_volt_007',
-                    processYDataKey: (x) => x,
-                    nodeProcess: 'beagle1:eps',
-                    live: true,
-                  },
-                  {
-                    x: [],
-                    y: [],
-                    type: 'scatter',
-                    marker: {
-                      color: 'pink',
-                    },
-                    name: 'Volt 008',
-                    YDataKey: 'device_swch_volt_008',
-                    processYDataKey: (x) => x,
-                    nodeProcess: 'beagle1:eps',
-                    live: true,
-                  },
-                  {
-                    x: [],
-                    y: [],
-                    type: 'scatter',
-                    marker: {
-                      color: 'cyan',
-                    },
-                    name: 'Volt 009',
-                    YDataKey: 'device_swch_volt_009',
-                    processYDataKey: (x) => x,
-                    nodeProcess: 'beagle1:eps',
-                    live: true,
-                  },
                 ],
               },
             },
