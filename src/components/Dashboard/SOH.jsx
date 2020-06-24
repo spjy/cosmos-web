@@ -38,7 +38,7 @@ function SOH({
   const [inactiveNodes, setInactiveNodes] = useState([]);
 
   /** Checks if the selected node is inactive or active */
-  const [live, setLive] = useState(!dates);
+  const [live, setLive] = useState(true);
   /** Allows the user to freeze the information from the state */
   const [stream, setStream] = useState(!!dates);
 
@@ -67,6 +67,11 @@ function SOH({
     return data;
   };
 
+  /**
+   * Filters through JSON object and retrieves wanted key
+   * 
+   * @param {*} input 
+   */
   const findSohProperty = (input) => {
     const tempObj = [];
 
@@ -75,9 +80,11 @@ function SOH({
         const newObj = {
           localTime: new Date((obj.node_utc - 2440587.5 + 2400000.5) * 86400.0 * 1000),
         };
+
         input.forEach((item) => {
           newObj[item] = obj[item];
         });
+
         tempObj.push(newObj);
       });
     }
@@ -90,6 +97,7 @@ function SOH({
       setLive(true);
       setStream(true);
     }
+
     if (inactiveNodes.includes(value)) {
       setLive(false);
       setStream(false);
@@ -100,19 +108,20 @@ function SOH({
   useEffect(() => {
     /** Update active nodes */
     const activeArray = [];
-    Object.keys(state)
-      .forEach((key) => {
-        if (key.split(':')[1] === 'soh') {
-          activeArray.push(key.split(':')[0]);
-        }
-      });
+
+    Object.keys(state).forEach((key) => {
+      if (key.split(':')[1] === 'soh') {
+        activeArray.push(key.split(':')[0]);
+      }
+    });
+
     setActiveNodes(activeArray);
 
     /** Update inactive nodes */
-    if (Object.keys(state)
-      .includes('namespace')) {
+    if (Object.keys(state).includes('namespace')) {
       const inactiveArray = Object.keys(state.namespace)
         .filter((key) => !activeNodes.includes(key) && state.namespace[key].agents.includes('soh'));
+
       setInactiveNodes(inactiveArray);
     }
 
@@ -121,8 +130,7 @@ function SOH({
       setSoh([state[`${nameState}:soh`]]);
 
       if (display.length !== 0) {
-        const keys = Object.keys(display[0]);
-        findSohProperty(keys.slice(1));
+        findSohProperty(Object.keys(display[0]).slice(1));
       }
     }
 
@@ -146,16 +154,19 @@ function SOH({
     } else if (fields.dateRange != null) {
       try {
         setDates(fields.dateRange);
+
         const result = await queryDatabase();
+
         setSoh(result);
+
         message.destroy();
+
         if (result.length !== 0) {
-          message.success(`Successfully retrieved ${result.length} documents.`);
+          message.success(`Retrieved ${result.length} records.`);
         } else {
-          message.warning(`No documents found.`);
+          message.warning(`No data for specified range.`);
         }
       } catch (err) {
-        console.log(err.message);
         message.destroy();
         message.error('Error retrieving from database.');
       }
@@ -213,6 +224,7 @@ function SOH({
             initialValues={{
               name: nameState,
               dateRange,
+
             }}
           >
             <Form.Item label="Name" name="name" hasFeedback>
@@ -222,24 +234,28 @@ function SOH({
                 onBlur={() => processForm()}
               >
                 <Select.OptGroup label="Active">
-                  { activeNodes.map((node) => (
-                    <Select.Option
-                      key={node}
-                      value={node}
-                    >
-                      {node}
-                    </Select.Option>
-                  ))}
+                  {
+                    activeNodes.map((node) => (
+                      <Select.Option
+                        key={node}
+                        value={node}
+                      >
+                        {node}
+                      </Select.Option>
+                    ))
+                  }
                 </Select.OptGroup>
                 <Select.OptGroup label="Inactive">
-                  { inactiveNodes.map((node) => (
-                    <Select.Option
-                      key={node}
-                      value={node}
-                    >
-                      {node}
-                    </Select.Option>
-                  ))}
+                  {
+                    inactiveNodes.map((node) => (
+                      <Select.Option
+                        key={node}
+                        value={node}
+                      >
+                        {node}
+                      </Select.Option>
+                    ))
+                  }
                 </Select.OptGroup>
               </Select>
             </Form.Item>
