@@ -17,6 +17,7 @@ import {
   Col,
   Row,
   InputNumber,
+  DatePicker,
 } from 'antd';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import {
@@ -40,12 +41,11 @@ import {
 import { axios, socket } from '../api';
 // eslint-disable-next-line
 import routes from '../routes';
-import project from '../../package.json';
 
 import AsyncComponent from '../components/AsyncComponent';
 import LayoutSelector from '../components/LayoutSelector';
 
-// const { RangePicker } = DatePicker;
+const { RangePicker } = DatePicker;
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -117,7 +117,7 @@ function Dashboard({
   /** Timezone */
   const [timezoneState] = useState('Pacific/Honolulu');
 
-  // const [globalHistoricalDate, setGlobalHistoricalDate] = useState(null);
+  const [globalHistoricalDate, setGlobalHistoricalDate] = useState(null);
 
   /** On mount, set the time and update each second */
   useEffect(() => {
@@ -406,32 +406,6 @@ function Dashboard({
         <div
           className="flex justify-between"
         >
-          <div className="pt-2">
-            <span className="text-2xl">
-              Web&nbsp;
-              {project.version}
-            </span>
-            &nbsp;&nbsp;
-          </div>
-          <div className="pt-4">
-            <Typography.Text type="secondary">
-              {
-                socketStatus === 'success'
-                  ? (
-                    <span>
-                      <CheckCircleTwoTone twoToneColor="#52c41a" />
-                      &nbsp;Connected and operational.
-                    </span>
-                  )
-                  : (
-                    <span>
-                      <CloseCircleTwoTone twoToneColor="#d80000" />
-                      &nbsp;&nbsp;No connection available. Attempting to reconnect.
-                    </span>
-                  )
-              }
-            </Typography.Text>
-          </div>
           <div>
             <table className="">
               <tbody>
@@ -453,6 +427,44 @@ function Dashboard({
                 </tr>
               </tbody>
             </table>
+          </div>
+          <div className="pt-4">
+            <Typography.Text type="secondary">
+              {
+                socketStatus === 'success'
+                  ? (
+                    <span>
+                      <CheckCircleTwoTone twoToneColor="#52c41a" />
+                      &nbsp;Connected and operational.
+                    </span>
+                  )
+                  : (
+                    <span>
+                      <CloseCircleTwoTone twoToneColor="#d80000" />
+                      &nbsp;&nbsp;No connection available. Attempting to reconnect.
+                    </span>
+                  )
+              }
+            </Typography.Text>
+          </div>
+          <div className="pt-2">
+            <RangePicker
+              className="mr-3"
+              showTime
+              format="YYYY-MM-DD HH:mm:ss"
+              onChange={(m) => setGlobalHistoricalDate(m)}
+              value={globalHistoricalDate}
+            />
+            <Button
+              disabled={!globalHistoricalDate}
+              onClick={() => {
+                const num = layouts.lg.filter((el) => el.component.name === 'Chart').length;
+                dispatch(actions.get('globalQueue', num));
+                dispatch(actions.get('globalHistoricalDate', globalHistoricalDate));
+              }}
+            >
+              Set Global Historical Date
+            </Button>
           </div>
           <div className="pt-2">
             <div className="float-left">
@@ -505,21 +517,6 @@ function Dashboard({
           </div>
         </div>
       </div>
-      {/* <div className="flex justify-center pt-5">
-        <RangePicker
-          className="mr-3"
-          showTime
-          format="YYYY-MM-DD HH:mm:ss"
-          onChange={(m) => setGlobalHistoricalDate(m)}
-          value={globalHistoricalDate}
-        />
-        <Button
-          disabled={!globalHistoricalDate}
-          onClick={() => dispatch(actions.get('globalHistoricalDate', globalHistoricalDate))}
-        >
-          Set Global Historical Date
-        </Button>
-      </div> */}
       <div className="mt-5 mx-16 mb-16">
         <Context.Provider value={{ state, dispatch }}>
           <ResponsiveGridLayout
