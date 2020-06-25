@@ -1,6 +1,7 @@
 import React from 'react';
 
-const GET_LATEST_MESSAGE = 'GET_LATEST_MESSAGE';
+const SET_KEY = 'SET_KEY';
+const SET_DATA = 'SET_DATA';
 
 export const actions = {
   /**
@@ -9,11 +10,18 @@ export const actions = {
    * @param {String} key Name to give the key in the context
    * @param {*} message Value to store in above key
    */
-  get(key, message) {
+  set(key, payload) {
     return {
-      type: GET_LATEST_MESSAGE,
+      type: SET_KEY,
       key,
-      payload: message,
+      payload,
+    };
+  },
+  setData(node, data) {
+    return {
+      type: SET_DATA,
+      key: node,
+      payload: data,
     };
   },
 };
@@ -25,14 +33,24 @@ export function reducer(state, {
   type, key, payload,
 }) {
   switch (type) {
-    case GET_LATEST_MESSAGE:
+    case SET_KEY:
       return {
         ...state,
         [key]: payload,
+      };
+    case SET_DATA:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [key]: payload,
+        },
       };
     default:
       return state;
   }
 }
 
-export const Context = React.createContext();
+export const Context = React.createContext({
+  data: {},
+});

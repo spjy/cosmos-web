@@ -48,7 +48,7 @@ function CEO() {
       try {
         const json = JSON.parse(data);
 
-        dispatch(actions.get(json.node_type, json));
+        dispatch(actions.setData(json.node_type, json));
       } catch (err) {
         // console.log(err);
       }
@@ -76,7 +76,7 @@ function CEO() {
       try {
         const { data } = await axios.get('/namespace/all');
 
-        dispatch(actions.get('namespace', data));
+        dispatch(actions.set('namespace', data));
       } catch (error) {
         message.error(error.message);
       }

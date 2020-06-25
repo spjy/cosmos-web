@@ -26,7 +26,7 @@ function Macro({
 
   /** Store selected macro in React Context */
   useEffect(() => {
-    dispatch(actions.get('macro', macro));
+    dispatch(actions.set('macro', macro));
   }, [macro, dispatch]);
 
   /** Retreive values upon user wanting to get new macro values from Nordiasoft */
