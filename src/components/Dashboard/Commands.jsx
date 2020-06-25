@@ -28,6 +28,9 @@ const Commands = React.memo(({
   const { state } = useContext(Context);
   /** Agents */
   // const [agentList, setAgentList] = useState([]);
+
+  /** Component's agent list storage */
+  const [list, setList] = useState([]);
   /** Selected agent to get requests from */
   const [selectedAgent, setSelectedAgent] = useState([]);
   /** Requests possible from selectedAgent */
@@ -173,6 +176,13 @@ const Commands = React.memo(({
     setAutocompletions(data.split('\n'));
   };
 
+  /** Upon the state.list updating, update the store's list */
+  useEffect(() => {
+    if (state.list) {
+      setList(state.list.agent_list);
+    }
+  }, [state.list]);
+
   /** Autocomplete automatically if it's the only one in the array */
   useEffect(() => {
     if (autocompletions.length === 2) {
@@ -265,17 +275,14 @@ const Commands = React.memo(({
             placeholder="Select agent node and process"
           >
             {
-              state
-                && state.list
-                && state.list.agent_list
-                ? state.list.agent_list.map(({ agent }) => (
-                  <Select.Option
-                    key={agent}
-                    value={agent}
-                  >
-                    {agent}
-                  </Select.Option>
-                )) : null
+              list.map(({ agent }) => (
+                <Select.Option
+                  key={agent}
+                  value={agent}
+                >
+                  {agent}
+                </Select.Option>
+              ))
             }
           </Select>
           <div className="flex">

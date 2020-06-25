@@ -27,7 +27,7 @@ function Scheduler() {
       try {
         const json = JSON.parse(data);
 
-        dispatch(actions.get(json.node_type, json));
+        dispatch(actions.set(json.node_type, json));
       } catch (err) {
         // console.log(err);
       }
