@@ -109,7 +109,7 @@ function SOH({
     /** Update active nodes */
     const activeArray = [];
 
-    Object.keys(state).forEach((key) => {
+    Object.keys(state.data).forEach((key) => {
       if (key.split(':')[1] === 'soh') {
         activeArray.push(key.split(':')[0]);
       }
@@ -118,7 +118,7 @@ function SOH({
     setActiveNodes(activeArray);
 
     /** Update inactive nodes */
-    if (Object.keys(state).includes('namespace')) {
+    if (Object.keys(state.data).includes('namespace')) {
       const inactiveArray = Object.keys(state.namespace)
         .filter((key) => !activeNodes.includes(key) && state.namespace[key].agents.includes('soh'));
 
@@ -127,7 +127,7 @@ function SOH({
 
     /** Update SOH data */
     if (live && stream) {
-      setSoh([state[`${nameState}:soh`]]);
+      setSoh([state.data[`${nameState}:soh`]]);
 
       if (display.length !== 0) {
         findSohProperty(Object.keys(display[0]).slice(1));
@@ -139,7 +139,7 @@ function SOH({
       changeNode(nameState);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state]);
+  }, [state.data, state.namespace]);
 
   const processForm = async () => {
     setDisplay([]);

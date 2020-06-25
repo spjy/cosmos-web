@@ -65,20 +65,20 @@ function Attitude({
   /** Update the live attitude display */
   useEffect(() => {
     attitudesState.forEach(({ nodeProcess, dataKey, live }, i) => {
-      if (state[nodeProcess]
-        && state[nodeProcess][dataKey]
-        && state[nodeProcess][dataKey].pos
+      if (state.data && state.data[nodeProcess]
+        && state.data[nodeProcess][dataKey]
+        && state.data[nodeProcess][dataKey].pos
         && live
       ) {
         const tempAttitude = [...attitudesState];
 
-        tempAttitude[i].quaternions = state[nodeProcess][dataKey].pos;
+        tempAttitude[i].quaternions = state.data[nodeProcess][dataKey].pos;
 
         setAttitudesState(tempAttitude);
       }
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state]);
+  }, [state.data]);
 
   /** Process edit value form */
   const processForm = (id) => {

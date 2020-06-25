@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import { Badge } from 'antd';
@@ -17,6 +17,16 @@ function Status({
   /** Get agent list state from the Context */
   const { state } = useContext(Context);
 
+  /** Component's agent list storage */
+  const [list, setList] = useState([]);
+
+  /** Upon the state.list updating, update the store's list */
+  useEffect(() => {
+    if (state.list) {
+      setList(state.list.agent_list);
+    }
+  }, [state.list]);
+
   return (
     <BaseComponent
       name="Agent List"
@@ -24,12 +34,12 @@ function Status({
       height={height}
     >
       {
-        !state || !state.list || state.list.agent_list.length === 0 ? 'No agents.' : null
+        list.length === 0 ? 'No agents.' : null
       }
       <table>
         <tbody>
           {
-            state && state.list && state.list.agent_list ? state.list.agent_list.map(({
+            list.map(({
               agent, utc,
             }) => (
               <tr key={agent}>
@@ -48,7 +58,7 @@ function Status({
                   {agent}
                 </td>
               </tr>
-            )) : null
+            ))
           }
         </tbody>
       </table>

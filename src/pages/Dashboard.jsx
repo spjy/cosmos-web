@@ -142,7 +142,11 @@ function Dashboard({
       try {
         const json = JSON.parse(data);
 
-        dispatch(actions.get(json.node_type, json));
+        if (json.node_type === 'list') {
+          dispatch(actions.set('list', json));
+        } else {
+          dispatch(actions.setData(json.node_type, json));
+        }
       } catch (err) {
         // console.log(err);
       }
@@ -171,7 +175,7 @@ function Dashboard({
       try {
         const agents = await axios.get('/namespace/pieces');
 
-        dispatch(actions.get('namespace', agents.data));
+        dispatch(actions.set('namespace', agents.data));
       } catch (error) {
         message.error(error.message);
       }
@@ -459,8 +463,8 @@ function Dashboard({
               disabled={!globalHistoricalDate}
               onClick={() => {
                 const num = layouts.lg.filter((el) => el.component.name === 'Chart').length;
-                dispatch(actions.get('globalQueue', num));
-                dispatch(actions.get('globalHistoricalDate', globalHistoricalDate));
+                dispatch(actions.set('globalQueue', num));
+                dispatch(actions.set('globalHistoricalDate', globalHistoricalDate));
               }}
             >
               Set Global Historical Date
