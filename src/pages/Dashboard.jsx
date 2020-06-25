@@ -57,7 +57,13 @@ function Dashboard({
                     component={layout.component.name}
                     props={layout.component.props}
                   />
-                  <Button />
+                  <Button
+                    className={`absolute bottom-0 left-0 z-50 mb-1 ml-1 ${visible ? 'block' : 'hidden'}`}
+                    shape="circle"
+                    layoutkey={layout.i}
+                    icon={<CloseOutlined />}
+                    onClick={(e) => deleteComponent(e)}
+                  />
                 </div>
               )) : null
         }
