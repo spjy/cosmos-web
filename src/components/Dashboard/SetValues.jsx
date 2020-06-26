@@ -1,17 +1,18 @@
 import React, {
-  useState, useEffect, useRef, useContext,
+  useState, useEffect, useRef,
 } from 'react';
 import PropTypes from 'prop-types';
-
+import { useSelector } from 'react-redux';
 import {
   Form, Input, Button, Select, message, Card, Switch,
 } from 'antd';
 
-import { Context } from '../../store/dashboard';
-
 import BaseComponent from '../BaseComponent';
 import { axios } from '../../api';
 
+const minWidth = {
+  minWidth: '5em',
+};
 /**
  * Component to conveniently get and set values via an agent command.
  */
@@ -27,7 +28,8 @@ function SetValues({
   proc,
   height,
 }) {
-  const { state } = useContext(Context);
+  const macro = useSelector((s) => s.macro);
+
   /** Form storage */
   const [form, setForm] = useState({});
   /** Status of the live switch */
@@ -69,13 +71,13 @@ function SetValues({
       // Specify added value
       setCommandHistory([
         ...commandHistory,
-        `➜ agent ${node} ${proc} ${selectedComponent === 'USRP_UHD_Device' || selectedComponent === 'USRP_Device_Tx' || selectedComponent === 'USRP_Device_Rx' ? 'configure_device' : 'app_configure_component'} ${state.macro ? `${state.macro} ` : ''}${selectedComponent} ${selectedProperty} ${form.value}`,
+        `➜ agent ${node} ${proc} ${selectedComponent === 'USRP_UHD_Device' || selectedComponent === 'USRP_Device_Tx' || selectedComponent === 'USRP_Device_Rx' ? 'configure_device' : 'app_configure_component'} ${macro ? `${macro} ` : ''}${selectedComponent} ${selectedProperty} ${form.value}`,
       ]);
 
       setUpdateLog(true);
 
       const { data } = await axios.post('/command', {
-        command: `${process.env.COSMOS_BIN}/agent ${node} ${proc} ${selectedComponent === 'USRP_UHD_Device' || selectedComponent === 'USRP_Device_Tx' || selectedComponent === 'USRP_Device_Rx' ? 'configure_device' : 'app_configure_component'} ${state.macro ? `${state.macro} ` : ''}${selectedComponent} ${selectedProperty} ${form.value}`,
+        command: `${process.env.COSMOS_BIN}/agent ${node} ${proc} ${selectedComponent === 'USRP_UHD_Device' || selectedComponent === 'USRP_Device_Tx' || selectedComponent === 'USRP_Device_Rx' ? 'configure_device' : 'app_configure_component'} ${macro ? `${macro} ` : ''}${selectedComponent} ${selectedProperty} ${form.value}`,
       });
 
       setCommandHistory([
@@ -131,7 +133,7 @@ function SetValues({
   const getValue = async () => {
     try {
       const { data } = await axios.post('/command', {
-        command: `${process.env.COSMOS_BIN}/agent ${node} ${proc} ${selectedComponent === 'USRP_UHD_Device' || selectedComponent === 'USRP_Device_Tx' || selectedComponent === 'USRP_Device_Rx' ? 'device_properties' : 'app_component'} ${state.macro && !(selectedComponent === 'USRP_UHD_Device' || selectedComponent === 'USRP_Device_Tx' || selectedComponent === 'USRP_Device_Rx') ? `${state.macro} ` : ''}${selectedComponent}`,
+        command: `${process.env.COSMOS_BIN}/agent ${node} ${proc} ${selectedComponent === 'USRP_UHD_Device' || selectedComponent === 'USRP_Device_Tx' || selectedComponent === 'USRP_Device_Rx' ? 'device_properties' : 'app_component'} ${macro && !(selectedComponent === 'USRP_UHD_Device' || selectedComponent === 'USRP_Device_Tx' || selectedComponent === 'USRP_Device_Rx') ? `${macro} ` : ''}${selectedComponent}`,
       });
 
       const json = JSON.parse(data);
@@ -210,7 +212,7 @@ function SetValues({
                         setSelectedComponent(value);
                         setSelectedProperty(values[value][0]);
                       }}
-                      style={{ minWidth: '5em' }}
+                      style={minWidth}
                     >
                       {
                         Object.keys(values).map((value) => (
@@ -229,7 +231,7 @@ function SetValues({
                       value={selectedProperty}
                       dropdownMatchSelectWidth={false}
                       onChange={(value) => setSelectedProperty(value)}
-                      style={{ minWidth: '5em' }}
+                      style={minWidth}
                     >
                       {
                         values[selectedComponent].map((property) => (
