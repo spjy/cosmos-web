@@ -132,7 +132,7 @@ function Commands({
       setUpdateLog(true);
     } catch (error) {
       message.destroy();
-      message.error(error);
+      message.error(error.message);
     }
   };
 

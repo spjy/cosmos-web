@@ -146,7 +146,7 @@ function SetValues({
     } catch (error) {
       setLiveValues([{ id: 'Unable to retrieve component properties.' }]);
 
-      message.error(error);
+      message.error(error.message);
     }
   };
 
@@ -190,7 +190,7 @@ function SetValues({
       >
         {
           // eslint-disable-next-line
-          commandHistory.map((command, i) => (<div key={i}>{ command }</div>))
+          commandHistory.map((command, i) => (<div key={`${command}${i}`}>{ command }</div>))
         }
       </div>
       <Form layout="vertical">
