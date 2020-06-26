@@ -1,13 +1,12 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-
+import { useSelector } from 'react-redux';
 import {
   Form, Input, Collapse,
 } from 'antd';
 
 import BaseComponent from '../BaseComponent';
 import AttitudeThreeD from './Babylon/AttitudeThreeD';
-import { Context } from '../../store/dashboard';
 
 const { Panel } = Collapse;
 
@@ -24,7 +23,7 @@ function Attitude({
   height,
 }) {
   /** Accessing the neutron1 messages from the socket */
-  const { state } = useContext(Context);
+  const state = useSelector((s) => s.data);
 
   /** Storage for form values */
   const [attitudesForm] = Form.useForm();
@@ -65,20 +64,20 @@ function Attitude({
   /** Update the live attitude display */
   useEffect(() => {
     attitudesState.forEach(({ nodeProcess, dataKey, live }, i) => {
-      if (state.data && state.data[nodeProcess]
-        && state.data[nodeProcess][dataKey]
-        && state.data[nodeProcess][dataKey].pos
+      if (state && state[nodeProcess]
+        && state[nodeProcess][dataKey]
+        && state[nodeProcess][dataKey].pos
         && live
       ) {
         const tempAttitude = [...attitudesState];
 
-        tempAttitude[i].quaternions = state.data[nodeProcess][dataKey].pos;
+        tempAttitude[i].quaternions = state[nodeProcess][dataKey].pos;
 
         setAttitudesState(tempAttitude);
       }
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.data]);
+  }, [state]);
 
   /** Process edit value form */
   const processForm = (id) => {
@@ -231,4 +230,4 @@ Attitude.defaultProps = {
   status: 'error',
 };
 
-export default Attitude;
+export default React.memo(Attitude);

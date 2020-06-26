@@ -236,7 +236,7 @@ function LayoutManager() {
 
           setData(layoutsArray);
         } catch (error) {
-          message.error(error);
+          message.error(error.message);
         }
         return route;
       });

@@ -1,5 +1,5 @@
 import React, {
-  useState, useEffect, useReducer, useRef,
+  useState, useEffect, useRef,
 } from 'react';
 import {
   Badge, message, Divider, Collapse, Tag, Tooltip,
@@ -8,19 +8,20 @@ import {
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
-import {
-  Context, actions, reducer,
-} from '../store/dashboard';
+import { useSelector, useDispatch } from 'react-redux';
+import { set, setData } from '../store/actions';
 
 import { socket, axios } from '../api';
 // eslint-disable-next-line
 import routes from '../routes';
 
+const overflowWrap = {
+  overflowWrap: 'break-word',
+};
+
 function CEO() {
-  /**
-   * Store the agent statuses in the global store.
-   */
-  const [state, dispatch] = useReducer(reducer, {});
+  const dispatch = useDispatch();
+  const namespace = useSelector((state) => state.namespace);
 
   /** Store the default page layout in case user wants to switch to it */
   const [, setSocketStatus] = useState('error');
@@ -48,7 +49,7 @@ function CEO() {
       try {
         const json = JSON.parse(data);
 
-        dispatch(actions.setData(json.node_type, json));
+        dispatch(setData(json.node_type, json));
       } catch (err) {
         // console.log(err);
       }
@@ -69,6 +70,7 @@ function CEO() {
     return () => {
       live.close(1000);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -76,15 +78,13 @@ function CEO() {
       try {
         const { data } = await axios.get('/namespace/all');
 
-        dispatch(actions.set('namespace', data));
+        dispatch(set('namespace', data));
       } catch (error) {
         message.error(error.message);
       }
     }
 
-    if (!state.namespace) {
-      fetchNamespace();
-    }
+    fetchNamespace();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -129,28 +129,27 @@ function CEO() {
 
     setAvailableValues({
       ...availableValues,
-      [node]: state.namespace[node].values[component],
+      [node]: namespace[node].values[component],
     });
   };
 
   return (
-    <Context.Provider value={{ state, dispatch }}>
-      <div className="flex flex-wrap mt-5 mx-16 mb-16">
-        {/* For copying values */}
-        <textarea
-          className="w-1 h-1 opacity-0"
-          ref={lastSelectedTagRef}
-          value={lastSelectedTag || ''}
-          readOnly
-        />
-        <br />
-        <br />
-        {
-          state.namespace && !(state.namespace.length === 0)
-            ? Object.entries(state.namespace).map(([node, { pieces, agents }]) => (
+    <div className="flex flex-wrap mt-5 mx-16 mb-16">
+      {/* For copying values */}
+      <textarea
+        className="w-1 h-1 opacity-0"
+        ref={lastSelectedTagRef}
+        value={lastSelectedTag || ''}
+        readOnly
+      />
+      <br />
+      <br />
+      {
+          namespace && !(namespace.length === 0)
+            ? Object.entries(namespace).map(([node, { pieces, agents }]) => (
               <div
                 className="block shadow overflow-y-auto p-4 m-4 bg-white"
-                style={{ overflowWrap: 'break-word' }}
+                style={overflowWrap}
                 key={node}
               >
                 <div>
@@ -240,8 +239,7 @@ function CEO() {
               </div>
             )) : 'Searching for nodes...'
         }
-      </div>
-    </Context.Provider>
+    </div>
   );
 }
 

@@ -60,7 +60,7 @@ function UploadFile({
 
           setFileContentUpload(result);
         } catch (error) {
-          message.error(error);
+          message.error(error.message);
         }
       }));
 

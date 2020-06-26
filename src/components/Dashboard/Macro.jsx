@@ -1,11 +1,13 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 
 import { message, Select, Button } from 'antd';
 
-import { Context, actions } from '../../store/dashboard';
 import { axios } from '../../api';
 import BaseComponent from '../BaseComponent';
+
+import { set } from '../../store/actions';
 
 /**
  * Retrieves the agent list and displays it in a table.
@@ -15,7 +17,7 @@ function Macro({
   height,
 }) {
   /** Get agent list state from the Context */
-  const { dispatch } = useContext(Context);
+  const dispatch = useDispatch();
 
   /** Currently selected macro */
   const [macro, setMacro] = useState('');
@@ -26,7 +28,7 @@ function Macro({
 
   /** Store selected macro in React Context */
   useEffect(() => {
-    dispatch(actions.set('macro', macro));
+    dispatch(set('macro', macro));
   }, [macro, dispatch]);
 
   /** Retreive values upon user wanting to get new macro values from Nordiasoft */

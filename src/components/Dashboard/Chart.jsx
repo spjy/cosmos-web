@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -9,7 +9,6 @@ import {
   Button,
   Switch,
   Collapse,
-  Divider,
   Select,
   message,
   Tag,
@@ -24,9 +23,11 @@ import {
 import Plot from 'react-plotly.js';
 import { saveAs } from 'file-saver';
 import moment from 'moment-timezone';
+import { useSelector } from 'react-redux';
+import { set } from '../../store/actions';
 
 import BaseComponent from '../BaseComponent';
-import { Context } from '../../store/dashboard';
+import ChartValues from './Chart/ChartValues';
 import { axios } from '../../api';
 
 const { RangePicker } = DatePicker;
@@ -50,7 +51,9 @@ function Chart({
   height,
 }) {
   /** Accessing the neutron1 node process context and drilling down */
-  const { state } = useContext(Context);
+  const state = useSelector((s) => s.data);
+  const globalHistoricalDate = useSelector((s) => s.globalHistoricalDate);
+  const globalQueue = useSelector((s) => s.globalQueue);
 
   /** Storage for global form values */
   const [plotsForm] = Form.useForm();
@@ -189,31 +192,31 @@ function Chart({
   useEffect(() => {
     plotsState.forEach((p, i) => {
       // Upon context change, see if changes affect this chart's values
-      if (state.data && state.data[p.nodeProcess]
-        && state.data[p.nodeProcess][XDataKeyState]
-        && state.data[p.nodeProcess][p.YDataKey]
+      if (state && state[p.nodeProcess]
+        && state[p.nodeProcess][XDataKeyState]
+        && state[p.nodeProcess][p.YDataKey]
         && p.live
       ) {
-        // If so, push to arrays and update data
+        // If so, push to arrays and update state
 
         // Check if polar or not
         if (polar) {
-          plotsState[i].r.push(processXDataKeyState.func(state.data[p.nodeProcess][XDataKeyState]));
+          plotsState[i].r.push(processXDataKeyState.func(state[p.nodeProcess][XDataKeyState]));
           plotsState[i]
             .theta
             .push(
               plotsState[i].processThetaDataKey
-                ? plotsState[i].processThetaDataKey(state.data[p.nodeProcess][p.YDataKey])
-                : state.data[p.nodeProcess][p.ThetaDataKey],
+                ? plotsState[i].processThetaDataKey(state[p.nodeProcess][p.YDataKey])
+                : state[p.nodeProcess][p.ThetaDataKey],
             );
         } else {
-          plotsState[i].x.push(processXDataKeyState.func(state.data[p.nodeProcess][XDataKeyState]));
+          plotsState[i].x.push(processXDataKeyState.func(state[p.nodeProcess][XDataKeyState]));
           plotsState[i]
             .y
             .push(
               plotsState[i].processYDataKey
-                ? plotsState[i].processYDataKey(state.data[p.nodeProcess][p.YDataKey])
-                : state.data[p.nodeProcess][p.YDataKey],
+                ? plotsState[i].processYDataKey(state[p.nodeProcess][p.YDataKey])
+                : state[p.nodeProcess][p.YDataKey],
             );
         }
 
@@ -231,7 +234,7 @@ function Chart({
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.data]);
+  }, [state]);
 
   /**
    * Retrieve a data key from a nodeProcess between a date range
@@ -320,17 +323,18 @@ function Chart({
 
   /** Handle the collection of global historical data */
   useEffect(() => {
-    if (state && state.globalHistoricalDate != null && state.globalQueue) {
+    if (globalHistoricalDate != null && globalQueue) {
       plotsState.forEach((plot, i) => {
-        queryHistoricalData(state.globalHistoricalDate, plot.YDataKey, plot.nodeProcess, i);
+        queryHistoricalData(globalHistoricalDate, plot.YDataKey, plot.nodeProcess, i);
       });
 
-      state.globalQueue -= 1;
+      set('globalQueue', globalQueue - 1);
+
       // Reset state to null to allow for detection of future plot history requests
       setRetrievePlotHistory(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.globalHistoricalDate, state.globalQueue]);
+  }, [globalHistoricalDate, globalQueue]);
 
   /** Process edit value form */
   const processForm = (id) => {
@@ -438,42 +442,45 @@ function Chart({
     }
   };
 
+  // const setXRange = () => {
+  //   const fields = plotsForm.getFieldsValue();
+
+  //   if (fields.XRange
+  //         && fields.XRange.length === 2
+  //   ) {
+  //     layout.yaxis.range = [fields.XRange[0], fields.XRange[1]];
+  //     layout.datarevision += 1;
+  //     layout.uirevision += 1;
+  //     setDataRevision(dataRevision + 1);
+  //   } else {
+  //     message.error('Fill in the range fields.');
+  //   }
+  // };
+
+  /**
+   * Process form, set y range in view
+   */
+  const setYRange = () => {
+    const fields = plotsForm.getFieldsValue();
+
+    if ((fields.YRangeMin
+          && fields.YRangeMax)
+          || (fields.YRangeMin.toString()
+          && fields.YRangeMax.toString())
+    ) {
+      layout.yaxis.range = [fields.YRangeMin, fields.YRangeMax];
+      layout.datarevision += 1;
+      layout.uirevision += 1;
+      setDataRevision(dataRevision + 1);
+    } else {
+      message.error('Fill in the range fields.');
+    }
+  };
+
   return (
     <BaseComponent
       name={nameState}
-      subheader={(
-        <span className="text-xs">
-          {
-            plotsState.length === 0 ? 'No charts to display.' : null
-          }
-          {
-            plotsState.map((plot, i) => (
-              <span key={`${plot.nodeProcess}${plot.YDataKey}`}>
-                <span
-                  className="inline-block rounded-full mr-2 indicator"
-                  style={
-                    {
-                      height: '6px',
-                      width: '6px',
-                      marginBottom: '2px',
-                      backgroundColor: plot.marker.color,
-                    }
-                  }
-                />
-                <span className="font-semibold">
-                  {plot.nodeProcess}
-                </span>
-                &nbsp;-&nbsp;
-                {plot.YDataKey}
-
-                {
-                  plotsState.length - 1 === i ? null : <Divider type="vertical" />
-                }
-              </span>
-            ))
-          }
-        </span>
-      )}
+      subheader={<ChartValues plots={plotsState} />}
       liveOnly
       height={height}
       toolsSlot={(
@@ -552,27 +559,14 @@ function Chart({
               <TextArea onBlur={({ target: { id } }) => processForm(id)} />
             </Form.Item>
 
-            <Form.Item label="X Range" name="XRange">
+            {/* <Form.Item label="X Range" name="XRange">
               <RangePicker
                 className="mr-1"
                 showTime
-                format="YYYY-MM-DD HH:mm:ss"
-                onBlur={() => {
-                  const fields = plotsForm.getFieldsValue();
-
-                  if (fields.XRange
-                    && fields.XRange.length === 2
-                  ) {
-                    layout.yaxis.range = [fields.XRange[0], fields.XRange[1]];
-                    layout.datarevision += 1;
-                    layout.uirevision += 1;
-                    setDataRevision(dataRevision + 1);
-                  } else {
-                    message.error('Fill in the range fields.');
-                  }
-                }}
+                format="YYYY-MM-DDTHH:mm:ss"
+                onBlur={setXRange}
               />
-            </Form.Item>
+            </Form.Item> */}
 
             &nbsp;&nbsp;
 
@@ -589,22 +583,7 @@ function Chart({
             &nbsp;&nbsp;
 
             <Button
-              onClick={() => {
-                const fields = plotsForm.getFieldsValue();
-
-                if (fields.YRangeMin
-                  && fields.YRangeMax
-                  && fields.YRangeMin.toString()
-                  && fields.YRangeMax.toString()
-                ) {
-                  layout.yaxis.range = [fields.YRangeMin, fields.YRangeMax];
-                  layout.datarevision += 1;
-                  layout.uirevision += 1;
-                  setDataRevision(dataRevision + 1);
-                } else {
-                  message.error('Fill in the range fields.');
-                }
-              }}
+              onClick={setYRange}
             >
               Set Y Range
             </Button>
@@ -993,8 +972,8 @@ Chart.defaultProps = {
   polar: false,
   plots: [],
   XDataKey: null,
-  processXDataKey: (x) => x,
+  processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
   children: null,
 };
 
-export default Chart;
+export default React.memo(Chart);

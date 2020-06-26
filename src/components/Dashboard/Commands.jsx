@@ -1,8 +1,8 @@
 import React, {
-  useState, useEffect, useRef, useContext,
+  useState, useEffect, useRef,
 } from 'react';
 import PropTypes from 'prop-types';
-
+import { useSelector } from 'react-redux';
 import {
   Input, Select, Tooltip, message, Button,
 } from 'antd';
@@ -12,8 +12,11 @@ import moment from 'moment-timezone';
 // import Search from 'antd/lib/input/Search';
 import { axios } from '../../api';
 
-import { Context } from '../../store/dashboard';
 import BaseComponent from '../BaseComponent';
+
+const minWidth = {
+  minWidth: '5em',
+};
 
 /**
  * Send commands to agents through agent mongo web socket. Simulates a CLI.
@@ -21,16 +24,15 @@ import BaseComponent from '../BaseComponent';
  * command.
  * Allows for running agent commands. Logs inputs and ouputs in the white box above the input box.
  */
-const Commands = React.memo(({
+function Commands({
   height,
   commands,
-}) => {
-  const { state } = useContext(Context);
+}) {
   /** Agents */
   // const [agentList, setAgentList] = useState([]);
+  const list = useSelector((s) => s.list.agent_list);
+  const macro = useSelector((s) => s.macro);
 
-  /** Component's agent list storage */
-  const [list, setList] = useState([]);
   /** Selected agent to get requests from */
   const [selectedAgent, setSelectedAgent] = useState([]);
   /** Requests possible from selectedAgent */
@@ -130,7 +132,7 @@ const Commands = React.memo(({
       setUpdateLog(true);
     } catch (error) {
       message.destroy();
-      message.error(error);
+      message.error(error.message);
     }
   };
 
@@ -146,7 +148,7 @@ const Commands = React.memo(({
         sendCommandApi(`${process.env.COSMOS_BIN}command_generator ${commandArguments.replace(/"/g, "'")}`);
         break;
       default:
-        sendCommandApi(`${process.env.COSMOS_BIN}agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${state.macro ? `${state.macro} ` : ''}${commandArguments}`);
+        sendCommandApi(`${process.env.COSMOS_BIN}agent ${selectedAgent[0]} ${selectedAgent[1]} ${selectedRequest} ${macro ? `${macro} ` : ''}${commandArguments}`);
         break;
     }
 
@@ -175,13 +177,6 @@ const Commands = React.memo(({
 
     setAutocompletions(data.split('\n'));
   };
-
-  /** Upon the state.list updating, update the store's list */
-  useEffect(() => {
-    if (state.list) {
-      setList(state.list.agent_list);
-    }
-  }, [state.list]);
 
   /** Autocomplete automatically if it's the only one in the array */
   useEffect(() => {
@@ -275,14 +270,14 @@ const Commands = React.memo(({
             placeholder="Select agent node and process"
           >
             {
-              list.map(({ agent }) => (
+              list ? list.map(({ agent }) => (
                 <Select.Option
                   key={agent}
                   value={agent}
                 >
                   {agent}
                 </Select.Option>
-              ))
+              )) : null
             }
           </Select>
           <div className="flex">
@@ -375,7 +370,7 @@ const Commands = React.memo(({
               dropdownMatchSelectWidth={false}
               onChange={(value) => setSelectedRequest(value)}
               value={selectedRequest}
-              style={{ minWidth: '5em' }}
+              style={minWidth}
             >
               <Select.Option value="> agent">
                 <Tooltip placement="right" title="node process [arguments]">
@@ -432,7 +427,7 @@ const Commands = React.memo(({
       </div>
     </BaseComponent>
   );
-});
+}
 
 Commands.propTypes = {
   height: PropTypes.number.isRequired,
@@ -448,4 +443,4 @@ Commands.defaultProps = {
   commands: [],
 };
 
-export default Commands;
+export default React.memo(Commands);
