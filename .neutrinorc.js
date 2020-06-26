@@ -5,13 +5,16 @@ const react = require('@neutrinojs/react');
 const airbnb = require('@neutrinojs/airbnb');
 const jest = require('@neutrinojs/jest');
 const devServer = require('@neutrinojs/dev-server');
+const htmlTemplate = require('@neutrinojs/html-template');
+const clean = require('@neutrinojs/clean');
+const copy = require('@neutrinojs/copy');
 const babelMerge = require('babel-merge');
 
 const webpack = require("webpack");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const HtmlWebpackTagsPlugin = require('html-webpack-tags-plugin');
 const Dotenv = require('dotenv-webpack');
+
+const cesiumSource = 'node_modules/cesium/Source';
+const cesiumWorkers = '../Build/Cesium/Workers';
 
 module.exports = {
   options: {
@@ -23,6 +26,8 @@ module.exports = {
       html: {
         title: 'COSMOS Web',
       },
+      path: '/',
+      publicPath: '/',
       style: {
         // Override the default file extension of `.css` if needed
         test: /\.(css|sass|scss)$/,
@@ -55,13 +60,57 @@ module.exports = {
     }),
     devServer({
       disableHostCheck: true,
-      host: '0.0.0.0'
+      host: '0.0.0.0',
+      watchOptions: {
+        ignored: /node_modules/
+      }
+    }),
+    clean(),
+    copy({
+      patterns: [
+        {
+          from: 'src/public',
+          to: '',
+        },
+        {
+          from: path.join(cesiumSource, cesiumWorkers),
+          to: "Workers",
+        },
+        {
+          from: path.join(cesiumSource, "Assets"),
+          to: "Assets",
+        },
+        {
+          from: path.join(cesiumSource, "Widgets"),
+          to: "Widgets",
+        },
+      ]
+    }),
+    htmlTemplate({
+      template: './src/public/index.html'
     }),
     (neutrino) => {
+      neutrino.config.output
+        .filename('[name].bundle.js')
+        .sourcePrefix('');
+
       neutrino.config
-        .externals({
-          cesium: 'Cesium'
+        .amd({
+          // Enable webpack-friendly use of require in Cesium
+          toUrlUndefined: true
         });
+
+      neutrino.config.resolve.alias
+        .set('cesium$', 'cesium/Cesium')
+        .set('cesium', 'cesium/Source');
+      
+      neutrino.config.node
+        .set('fs', 'empty');
+
+      // neutrino.config
+      //   .externals({
+      //     cesium: 'cesium/Cesium'
+      //   });
 
       neutrino.config.module
         .rule('compile')
@@ -80,46 +129,56 @@ module.exports = {
               options,
             ),
           );
-
-      neutrino.config.module
-        .rule('file-loader')
+          
+          
+        neutrino.config.module
+          .rule('file-loader')
           .test(/\.(glb|czml|obj|png)$/)
           .exclude
             .add(/node_modules/)
-            .end()
-          .use('file-loader')
+          .end()
+            .use('file-loader')
             .loader('file-loader')
+            
+        neutrino.config.module
+          .rule('url-loader')
+            .test(/\.(png|gif|jpg|jpeg|svg|xml|json)$/)
+            .exclude
+              .add(/node_modules/)
+              .add(/package\.json/)
+              .add(/package-lock\.json/)
+              .end()
+            .use('url-loader')
+              .loader('url-loader')
+        
+        if (process.env.NODE_ENV === 'production') {
+          neutrino.config.module
+            .rule('strip-pragma-loader')
+              .test(/\.js$/)
+              .include
+                .add(path.resolve(__dirname, cesiumSource))
+                .end()
+              .use('strip-pragma-loader')
+                .loader('strip-pragma-loader')
+                .options({
+                  pragmas: {
+                    debug: false,
+                  }
+                });
+        }
 
       neutrino.config
         .plugin('Dotenv')
         .use(Dotenv, [{
-          defaults: true
+          defaults: true,
         }])
         .end()
-          .plugin('CopyWebpackPlugin')
-          .use(CopyWebpackPlugin, [[
-            {
-              from: "node_modules/cesium/Build/Cesium",
-              to: "cesium",
-            },
-          ]])
+          .plugin('DefinePlugin')
+          .use(webpack.DefinePlugin, [{
+            CESIUM_BASE_URL: JSON.stringify("/"),
+            'process.env.VERSION': JSON.stringify(require("./package.json").version),
+          }])
           .end()
-            .plugin('HtmlWebpackPlugin')
-            .use(HtmlWebpackPlugin, [{
-              template: './src/public/index.html'
-            }])
-            .end()
-              .plugin('HtmlWebpackTagsPlugin')
-              .use(HtmlWebpackTagsPlugin, [{
-                append: false,
-                tags: ["cesium/Widgets/widgets.css", "cesium/Cesium.js"],
-              }])
-              .end()
-                .plugin('DefinePlugin')
-                .use(webpack.DefinePlugin, [{
-                  CESIUM_BASE_URL: JSON.stringify("/cesium"),
-                }])
-                .end()
     },
   ]
 };
