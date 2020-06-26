@@ -5,7 +5,7 @@ import { ArrowLeftOutlined } from '@ant-design/icons';
 function FourOhFour() {
   return (
     <div className="flex flex-col h-screen items-center justify-center font-mono text-center">
-      <img className="w-1/5" src="/src/public/void.png" alt="Man Looking Into The COSMOS" />
+      <img className="w-1/5" src="/void.png" alt="Man Looking Into The COSMOS" />
       <div className="mt-4 mb-4 text-4xl text-gray-700">
         404.
       </div>

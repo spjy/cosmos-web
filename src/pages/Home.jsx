@@ -4,18 +4,16 @@ import {
   Card, Row, Col,
 } from 'antd';
 
-import project from '../../package.json';
-
 const Home = () => (
   <div>
     <div className="text-center p-5 flex items-center justify-center">
-      <img className="w-1/6" src="/src/public/world.png" alt="World" />
+      <img className="w-1/6" src="/world.png" alt="World" />
       <div className="flex-col text-left">
         <h1 className="font-mono text-4xl">COSMOS Web</h1>
         <p className="text-gray-500">
           Version &nbsp;
           {
-            project.version
+            process.env.VERSION
           }
         </p>
         <p>
