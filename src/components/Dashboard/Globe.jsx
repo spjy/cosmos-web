@@ -24,6 +24,10 @@ if (process.env.CESIUM_ION_TOKEN) {
   Cesium.Ion.defaultAccessToken = process.env.CESIUM_ION_TOKEN;
 }
 
+const pixelSize = {
+  pixelSize: 10,
+};
+
 /**
  * Convert from x, y, z to Matrix 4x4
  * @param {*} x meters
@@ -600,7 +604,7 @@ function CesiumGlobe({
                 <Entity
                   name={orbit.name}
                   position={orbit.position}
-                  point={{ pixelSize: 10 }}
+                  point={pixelSize}
                 >
                   <PathGraphics
                     width={3}

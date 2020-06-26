@@ -10,6 +10,9 @@ import {
 import BaseComponent from '../BaseComponent';
 import { axios } from '../../api';
 
+const minWidth = {
+  minWidth: '5em',
+};
 /**
  * Component to conveniently get and set values via an agent command.
  */
@@ -209,7 +212,7 @@ function SetValues({
                         setSelectedComponent(value);
                         setSelectedProperty(values[value][0]);
                       }}
-                      style={{ minWidth: '5em' }}
+                      style={minWidth}
                     >
                       {
                         Object.keys(values).map((value) => (
@@ -228,7 +231,7 @@ function SetValues({
                       value={selectedProperty}
                       dropdownMatchSelectWidth={false}
                       onChange={(value) => setSelectedProperty(value)}
-                      style={{ minWidth: '5em' }}
+                      style={minWidth}
                     >
                       {
                         values[selectedComponent].map((property) => (

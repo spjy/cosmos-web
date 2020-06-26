@@ -12,6 +12,12 @@ import DisplayValuesTable from './DisplayValues/DisplayValuesTable';
 const { Panel } = Collapse;
 const { TextArea } = Input;
 
+const editFormStyle = {
+  height: '6px',
+  width: '6px',
+  marginBottom: '2px',
+};
+
 /**
  * Displays a specified live value from an agent.
  * Updates values every agent heartbeat.
@@ -223,7 +229,7 @@ function DisplayValue({
                   <Panel
                     header={(
                       <span className="text-gray-600">
-                        <span className="inline-block rounded-full mr-2 indicator" style={{ height: '6px', width: '6px', marginBottom: '2px' }} />
+                        <span className="inline-block rounded-full mr-2 indicator" style={editFormStyle} />
                         <strong>
                           {displayValue.nodeProcess}
                         </strong>

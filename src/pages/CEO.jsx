@@ -15,6 +15,10 @@ import { socket, axios } from '../api';
 // eslint-disable-next-line
 import routes from '../routes';
 
+const overflowWrap = {
+  overflowWrap: 'break-word',
+};
+
 function CEO() {
   const dispatch = useDispatch();
   const namespace = useSelector((state) => state.namespace);
@@ -144,7 +148,7 @@ function CEO() {
             ? Object.entries(namespace).map(([node, { pieces, agents }]) => (
               <div
                 className="block shadow overflow-y-auto p-4 m-4 bg-white"
-                style={{ overflowWrap: 'break-word' }}
+                style={overflowWrap}
                 key={node}
               >
                 <div>

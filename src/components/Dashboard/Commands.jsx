@@ -14,6 +14,10 @@ import { axios } from '../../api';
 
 import BaseComponent from '../BaseComponent';
 
+const minWidth = {
+  minWidth: '5em',
+};
+
 /**
  * Send commands to agents through agent mongo web socket. Simulates a CLI.
  * Gives the ability to select commonly used node:process; appends this value to after the `agent`
@@ -366,7 +370,7 @@ function Commands({
               dropdownMatchSelectWidth={false}
               onChange={(value) => setSelectedRequest(value)}
               value={selectedRequest}
-              style={{ minWidth: '5em' }}
+              style={minWidth}
             >
               <Select.Option value="> agent">
                 <Tooltip placement="right" title="node process [arguments]">
