@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -24,9 +24,10 @@ import {
 import Plot from 'react-plotly.js';
 import { saveAs } from 'file-saver';
 import moment from 'moment-timezone';
+import { useSelector } from 'react-redux';
+import { set } from '../../store/actions';
 
 import BaseComponent from '../BaseComponent';
-import { Context } from '../../store/dashboard';
 import { axios } from '../../api';
 
 const { RangePicker } = DatePicker;
@@ -50,7 +51,9 @@ function Chart({
   height,
 }) {
   /** Accessing the neutron1 node process context and drilling down */
-  const { state } = useContext(Context);
+  const state = useSelector((s) => s.data);
+  const globalHistoricalDate = useSelector((s) => s.globalHistoricalDate);
+  const globalQueue = useSelector((s) => s.globalQueue);
 
   /** Storage for global form values */
   const [plotsForm] = Form.useForm();
@@ -189,31 +192,31 @@ function Chart({
   useEffect(() => {
     plotsState.forEach((p, i) => {
       // Upon context change, see if changes affect this chart's values
-      if (state.data && state.data[p.nodeProcess]
-        && state.data[p.nodeProcess][XDataKeyState]
-        && state.data[p.nodeProcess][p.YDataKey]
+      if (state && state[p.nodeProcess]
+        && state[p.nodeProcess][XDataKeyState]
+        && state[p.nodeProcess][p.YDataKey]
         && p.live
       ) {
-        // If so, push to arrays and update data
+        // If so, push to arrays and update state
 
         // Check if polar or not
         if (polar) {
-          plotsState[i].r.push(processXDataKeyState.func(state.data[p.nodeProcess][XDataKeyState]));
+          plotsState[i].r.push(processXDataKeyState.func(state[p.nodeProcess][XDataKeyState]));
           plotsState[i]
             .theta
             .push(
               plotsState[i].processThetaDataKey
-                ? plotsState[i].processThetaDataKey(state.data[p.nodeProcess][p.YDataKey])
-                : state.data[p.nodeProcess][p.ThetaDataKey],
+                ? plotsState[i].processThetaDataKey(state[p.nodeProcess][p.YDataKey])
+                : state[p.nodeProcess][p.ThetaDataKey],
             );
         } else {
-          plotsState[i].x.push(processXDataKeyState.func(state.data[p.nodeProcess][XDataKeyState]));
+          plotsState[i].x.push(processXDataKeyState.func(state[p.nodeProcess][XDataKeyState]));
           plotsState[i]
             .y
             .push(
               plotsState[i].processYDataKey
-                ? plotsState[i].processYDataKey(state.data[p.nodeProcess][p.YDataKey])
-                : state.data[p.nodeProcess][p.YDataKey],
+                ? plotsState[i].processYDataKey(state[p.nodeProcess][p.YDataKey])
+                : state[p.nodeProcess][p.YDataKey],
             );
         }
 
@@ -231,7 +234,7 @@ function Chart({
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.data]);
+  }, [state]);
 
   /**
    * Retrieve a data key from a nodeProcess between a date range
@@ -320,17 +323,18 @@ function Chart({
 
   /** Handle the collection of global historical data */
   useEffect(() => {
-    if (state && state.globalHistoricalDate != null && state.globalQueue) {
+    if (globalHistoricalDate != null && globalQueue) {
       plotsState.forEach((plot, i) => {
-        queryHistoricalData(state.globalHistoricalDate, plot.YDataKey, plot.nodeProcess, i);
+        queryHistoricalData(globalHistoricalDate, plot.YDataKey, plot.nodeProcess, i);
       });
 
-      state.globalQueue -= 1;
+      set('globalQueue', globalQueue - 1);
+
       // Reset state to null to allow for detection of future plot history requests
       setRetrievePlotHistory(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.globalHistoricalDate, state.globalQueue]);
+  }, [globalHistoricalDate, globalQueue]);
 
   /** Process edit value form */
   const processForm = (id) => {
@@ -997,4 +1001,4 @@ Chart.defaultProps = {
   children: null,
 };
 
-export default Chart;
+export default React.memo(Chart);

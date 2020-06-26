@@ -7,6 +7,10 @@ import { SettingOutlined } from '@ant-design/icons';
 
 import ComponentSettings from './ComponentSettings';
 
+const badgePadding = {
+  marginTop: '0.18em',
+};
+
 /**
  * The wrapper component that has a header, content and settings modal.
  */
@@ -48,7 +52,7 @@ function BaseComponent({
         <div className="flex justify-between w-full">
           <div className="flex">
             {showStatus ? (
-              <div style={{ marginTop: '0.2em' }}>
+              <div style={badgePadding}>
                 <Badge status={status} />
               </div>
             ) : null}

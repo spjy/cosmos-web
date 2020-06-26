@@ -1,13 +1,12 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-
+import { useSelector } from 'react-redux';
 import {
   Form, Input, Collapse, Button,
 } from 'antd';
 import moment from 'moment-timezone';
 
 import BaseComponent from '../BaseComponent';
-import { Context } from '../../store/dashboard';
 
 const { Panel } = Collapse;
 const { TextArea } = Input;
@@ -22,7 +21,7 @@ function DisplayValue({
   height,
 }) {
   /** Accessing the neutron1 messages from the socket */
-  const { state } = useContext(Context);
+  const state = useSelector((s) => s.data);
 
   /** Storage for global form values */
   const [displayValuesForm] = Form.useForm();
@@ -85,17 +84,17 @@ function DisplayValue({
     displayValuesState.forEach((v, i) => {
       // Check if the state change involves any of the displayed values
       // by checking the node process and the key it is watching
-      if (state.data && state.data[v.nodeProcess]
-        && state.data[v.nodeProcess][v.dataKey] !== undefined
-        && state.data[v.nodeProcess].node_utc
+      if (state && state[v.nodeProcess]
+        && state[v.nodeProcess][v.dataKey] !== undefined
+        && state[v.nodeProcess].node_utc
       ) {
         // If it does, change the value
-        displayValuesState[i].value = state.data[v.nodeProcess][v.dataKey];
-        displayValuesState[i].node_utc = moment.unix((((state.data[v.nodeProcess].node_utc + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss');
+        displayValuesState[i].value = state[v.nodeProcess][v.dataKey];
+        displayValuesState[i].node_utc = moment.unix((((state[v.nodeProcess].node_utc + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss');
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.data]);
+  }, [state]);
 
   /** Process edit value form */
   const processForm = (id) => {
@@ -421,4 +420,4 @@ DisplayValue.defaultProps = {
   displayValues: [],
 };
 
-export default DisplayValue;
+export default React.memo(DisplayValue);

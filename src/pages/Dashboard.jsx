@@ -1,7 +1,8 @@
 import React, {
-  useState, useEffect, useReducer,
+  useState, useEffect,
 } from 'react';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import {
   Button,
   message,
@@ -33,33 +34,35 @@ import 'react-resizable/css/styles.css';
 
 import Editor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs/components/prism-core';
-import components from '../components/Default/Default';
-import {
-  Context, actions, reducer,
-} from '../store/dashboard';
 
 import { axios, socket } from '../api';
 // eslint-disable-next-line
 import routes from '../routes';
+import components from '../components/Default/Default';
+import { set, setData } from '../store/actions';
 
 import AsyncComponent from '../components/AsyncComponent';
 import LayoutSelector from '../components/LayoutSelector';
 
 const { RangePicker } = DatePicker;
+const { TabPane } = Tabs;
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-const { TabPane } = Tabs;
+const breakpoints = {
+  lg: 996,
+};
+
+const cols = {
+  lg: 12,
+};
 
 function Dashboard({
   id,
   defaultLayout,
   path,
 }) {
-  /**
-   * Store the agent statuses in the global store.
-   */
-  const [state, dispatch] = useReducer(reducer, {});
+  const dispatch = useDispatch();
 
   /** Store the default page layout in case user wants to switch to it */
   const [defaultPageLayout, setDefaultPageLayout] = useState({
@@ -143,9 +146,9 @@ function Dashboard({
         const json = JSON.parse(data);
 
         if (json.node_type === 'list') {
-          dispatch(actions.set('list', json));
+          dispatch(set('list', json));
         } else {
-          dispatch(actions.setData(json.node_type, json));
+          dispatch(setData(json.node_type, json));
         }
       } catch (err) {
         // console.log(err);
@@ -175,7 +178,7 @@ function Dashboard({
       try {
         const agents = await axios.get('/namespace/pieces');
 
-        dispatch(actions.set('namespace', agents.data));
+        dispatch(set('namespace', agents.data));
       } catch (error) {
         message.error(error.message);
       }
@@ -463,8 +466,8 @@ function Dashboard({
               disabled={!globalHistoricalDate}
               onClick={() => {
                 const num = layouts.lg.filter((el) => el.component.name === 'Chart').length;
-                dispatch(actions.set('globalQueue', num));
-                dispatch(actions.set('globalHistoricalDate', globalHistoricalDate));
+                dispatch(set('globalQueue', num));
+                dispatch(set('globalHistoricalDate', globalHistoricalDate));
               }}
             >
               Set Global Historical Date
@@ -522,24 +525,19 @@ function Dashboard({
         </div>
       </div>
       <div className="mt-5 mx-16 mb-16">
-        <Context.Provider value={{ state, dispatch }}>
-          <ResponsiveGridLayout
-            className="layout"
-            breakpoints={{
-              lg: 996,
-            }}
-            cols={{
-              lg: 12,
-            }}
-            layouts={layouts}
-            margin={[12, 12]}
-            draggableHandle=".dragHandle"
-            draggableCancel=".preventDragHandle"
-            rowHeight={20}
-            isDroppable
-            onDrop={(elemParams) => addToLayout(elemParams)}
-          >
-            {
+        <ResponsiveGridLayout
+          className="layout"
+          breakpoints={breakpoints}
+          cols={cols}
+          layouts={layouts}
+          margin={[12, 12]}
+          draggableHandle=".dragHandle"
+          draggableCancel=".preventDragHandle"
+          rowHeight={20}
+          isDroppable
+          onDrop={(elemParams) => addToLayout(elemParams)}
+        >
+          {
               layouts !== null
                 && layouts.lg !== null
                 ? layouts.lg
@@ -565,8 +563,7 @@ function Dashboard({
                     </div>
                   )) : null
             }
-          </ResponsiveGridLayout>
-        </Context.Provider>
+        </ResponsiveGridLayout>
         <Drawer
           placement="bottom"
           onClose={() => setVisible(false)}
@@ -631,7 +628,6 @@ function Dashboard({
                       <InputNumber
                         min={2}
                         max={18}
-                        style={{ margin: '0 16px' }}
                         value={dimensions[1]}
                         onChange={(value) => changeDimensions(value, 'h')}
                       />
@@ -652,7 +648,6 @@ function Dashboard({
                       <InputNumber
                         min={1}
                         max={12}
-                        style={{ margin: '0 16px' }}
                         value={dimensions[0]}
                         onChange={(value) => changeDimensions(value, 'w')}
                       />
@@ -721,4 +716,4 @@ Dashboard.propTypes = {
   defaultLayout: PropTypes.shape({}).isRequired,
 };
 
-export default Dashboard;
+export default React.memo(Dashboard);

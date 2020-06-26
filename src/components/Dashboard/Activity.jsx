@@ -1,11 +1,11 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 
 import { Badge, Form, Button } from 'antd';
 import moment from 'moment-timezone';
 import { highlight, languages } from 'prismjs/components/prism-core';
 
-import { Context } from '../../store/dashboard';
 import BaseComponent from '../BaseComponent';
 
 /**
@@ -15,9 +15,8 @@ function Activity({
   height,
 }) {
   /** Get agent list state from the Context */
-  const { state } = useContext(Context);
-  /** Component's agent list storage */
-  const [activity, setActivity] = useState([]);
+  const activities = useSelector((s) => s.data.activity);
+
   /** Packets currently sent in this session */
   const [packets, setPackets] = useState('');
   /** Option to export packets */
@@ -30,7 +29,7 @@ function Activity({
 
       let savedPackets = '';
 
-      activity.forEach((packet) => {
+      activities.forEach((packet) => {
         savedPackets = `${savedPackets}\n${packet.activity}`;
       });
 
@@ -39,22 +38,6 @@ function Activity({
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exportPackets]);
-
-  /** Upon the state.list updating, update the store's list */
-  useEffect(() => {
-    if (state.activity) {
-      const { activity: event, node_utc } = state.activity; // eslint-disable-line camelcase
-
-      setActivity([
-        {
-          activity: event,
-          node_utc,
-        },
-        ...activity,
-      ]);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.activity]);
 
   return (
     <BaseComponent
@@ -83,12 +66,13 @@ function Activity({
       )}
     >
       {
-        activity.length === 0 ? 'No activity.' : null
+        activities.length === 0 ? 'No activities.' : null
       }
       <table>
         <tbody>
           {
-            activity.map(({ activity: event, node_utc }) => ( // eslint-disable-line camelcase
+            // eslint-disable-next-line camelcase
+            activities ? activities.map(({ activity, node_utc }) => (
               // eslint-disable-next-line camelcase
               <tr className="truncate ..." key={node_utc}>
                 <td>
@@ -103,10 +87,10 @@ function Activity({
                   }
                 </td>
                 <td>
-                  {event}
+                  {activity}
                 </td>
               </tr>
-            ))
+            )) : null
           }
         </tbody>
       </table>

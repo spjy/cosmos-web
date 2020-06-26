@@ -1,11 +1,10 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-
+import { useSelector } from 'react-redux';
 import {
   Form, Select, DatePicker, message, Switch, Button,
 } from 'antd';
 import BaseComponent from '../BaseComponent';
-import { Context } from '../../store/dashboard';
 import { axios } from '../../api';
 
 const { RangePicker } = DatePicker;
@@ -19,24 +18,22 @@ function SOH({
   dateRange,
   height,
 }) {
+  /** Accessing the neutron1 messages from the socket */
+  const state = useSelector((s) => s.data);
+  const namespace = useSelector((s) => s.namespace);
+
   /** Initialize settings */
   const [init, setInit] = useState(true);
-
-  /** Accessing the neutron1 messages from the socket */
-  const { state } = useContext(Context);
   /** Form information */
   const [sohForm] = Form.useForm();
-
   /** The state that manages the component's title */
   const [nameState, setNameState] = useState(name);
   /** The date range of the database query */
   const [dates, setDates] = useState(dateRange);
-
   /** Stores active nodes */
   const [activeNodes, setActiveNodes] = useState([]);
   /** Stores active nodes */
   const [inactiveNodes, setInactiveNodes] = useState([]);
-
   /** Checks if the selected node is inactive or active */
   const [live, setLive] = useState(true);
   /** Allows the user to freeze the information from the state */
@@ -109,7 +106,7 @@ function SOH({
     /** Update active nodes */
     const activeArray = [];
 
-    Object.keys(state.data).forEach((key) => {
+    Object.keys(state).forEach((key) => {
       if (key.split(':')[1] === 'soh') {
         activeArray.push(key.split(':')[0]);
       }
@@ -118,16 +115,16 @@ function SOH({
     setActiveNodes(activeArray);
 
     /** Update inactive nodes */
-    if (Object.keys(state.data).includes('namespace')) {
-      const inactiveArray = Object.keys(state.namespace)
-        .filter((key) => !activeNodes.includes(key) && state.namespace[key].agents.includes('soh'));
+    if (Object.keys(state).includes('namespace')) {
+      const inactiveArray = Object.keys(namespace)
+        .filter((key) => !activeNodes.includes(key) && namespace[key].agents.includes('soh'));
 
       setInactiveNodes(inactiveArray);
     }
 
     /** Update SOH data */
     if (live && stream) {
-      setSoh([state.data[`${nameState}:soh`]]);
+      setSoh([state[`${nameState}:soh`]]);
 
       if (display.length !== 0) {
         findSohProperty(Object.keys(display[0]).slice(1));
@@ -139,7 +136,7 @@ function SOH({
       changeNode(nameState);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.data, state.namespace]);
+  }, [state, namespace]);
 
   const processForm = async () => {
     setDisplay([]);

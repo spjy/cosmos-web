@@ -2,6 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 
+const padding = {
+  padding: '1em',
+};
+
 /**
  * The component containing the modal and form for setting settings for widgets.
  * Used in the BaseComponent to set component settings.
@@ -13,7 +17,7 @@ function ComponentSettings({
 }) {
   return (
     <Modal
-      bodyStyle={{ padding: '1em' }}
+      bodyStyle={padding}
       width={750}
       visible={visible}
       title="Component Settings"
