@@ -6,7 +6,6 @@ import { useDispatch } from 'react-redux';
 import {
   Button,
   message,
-  Typography,
   Drawer,
   Form,
   Input,
@@ -22,12 +21,9 @@ import {
 } from 'antd';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import {
-  CheckCircleTwoTone,
-  CloseCircleTwoTone,
   CloseOutlined,
   EditOutlined,
 } from '@ant-design/icons';
-import moment from 'moment-timezone';
 
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
@@ -43,6 +39,8 @@ import { set, setData } from '../store/actions';
 
 import AsyncComponent from '../components/AsyncComponent';
 import LayoutSelector from '../components/LayoutSelector';
+import Clock from '../components/Clock';
+import SocketStatus from '../components/SocketStatus';
 
 const { RangePicker } = DatePicker;
 const { TabPane } = Tabs;
@@ -56,6 +54,8 @@ const breakpoints = {
 const cols = {
   lg: 12,
 };
+
+const margin = [12, 12];
 
 function Dashboard({
   id,
@@ -113,28 +113,7 @@ function Dashboard({
 
   const [socketStatus, setSocketStatus] = useState('error');
 
-  /** Storage for form values */
-  const [time, setTime] = useState('');
-  /** Storage for form values */
-  const [utcTime, setUtcTime] = useState('');
-  /** Timezone */
-  const [timezoneState] = useState('Pacific/Honolulu');
-
   const [globalHistoricalDate, setGlobalHistoricalDate] = useState(null);
-
-  /** On mount, set the time and update each second */
-  useEffect(() => {
-    // Every second, update local and UTC time view
-    const clock = setTimeout(() => {
-      setTime(moment().tz(timezoneState).format('YYYY-MM-DDTHH:mm:ss'));
-      setUtcTime(moment().tz('Europe/London').format('YYYY-MM-DDTHH:mm:ss'));
-    }, 1000);
-
-    // Stop timeout on unmount
-    return () => {
-      clearTimeout(clock);
-    };
-  }, [time, utcTime, timezoneState]);
 
   /** Get socket data from the agent */
   useEffect(() => {
@@ -414,45 +393,12 @@ function Dashboard({
           className="flex justify-between"
         >
           <div>
-            <table className="">
-              <tbody>
-                <tr>
-                  <td className="pr-4 text-gray-500">
-                    {timezoneState.split('/')[1]}
-                  </td>
-                  <td className="pr-2 text-gray-500 ">
-                    UTC
-                  </td>
-                </tr>
-                <tr>
-                  <td className="pr-4">
-                    {time}
-                  </td>
-                  <td className="pr-2">
-                    {utcTime}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <Clock />
           </div>
           <div className="pt-4">
-            <Typography.Text type="secondary">
-              {
-                socketStatus === 'success'
-                  ? (
-                    <span>
-                      <CheckCircleTwoTone twoToneColor="#52c41a" />
-                      &nbsp;Connected and operational.
-                    </span>
-                  )
-                  : (
-                    <span>
-                      <CloseCircleTwoTone twoToneColor="#d80000" />
-                      &nbsp;&nbsp;No connection available. Attempting to reconnect.
-                    </span>
-                  )
-              }
-            </Typography.Text>
+            <SocketStatus
+              status={socketStatus}
+            />
           </div>
           <div className="pt-2">
             <RangePicker
@@ -530,7 +476,7 @@ function Dashboard({
           breakpoints={breakpoints}
           cols={cols}
           layouts={layouts}
-          margin={[12, 12]}
+          margin={margin}
           draggableHandle=".dragHandle"
           draggableCancel=".preventDragHandle"
           rowHeight={20}
