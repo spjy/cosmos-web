@@ -6,6 +6,7 @@ import { SET_KEY, SET_DATA } from '../actions';
 export default function reducer(state = {
   namespace: {},
   list: {},
+  data: {},
 }, {
   type, key, payload,
 }) {

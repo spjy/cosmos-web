@@ -66,7 +66,7 @@ function Activity({
       )}
     >
       {
-        activities.length === 0 ? 'No activities.' : null
+        !activities || activities.length === 0 ? 'No activities.' : null
       }
       <table>
         <tbody>
