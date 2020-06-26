@@ -442,6 +442,41 @@ function Chart({
     }
   };
 
+  // const setXRange = () => {
+  //   const fields = plotsForm.getFieldsValue();
+
+  //   if (fields.XRange
+  //         && fields.XRange.length === 2
+  //   ) {
+  //     layout.yaxis.range = [fields.XRange[0], fields.XRange[1]];
+  //     layout.datarevision += 1;
+  //     layout.uirevision += 1;
+  //     setDataRevision(dataRevision + 1);
+  //   } else {
+  //     message.error('Fill in the range fields.');
+  //   }
+  // };
+
+  /**
+   * Process form, set y range in view
+   */
+  const setYRange = () => {
+    const fields = plotsForm.getFieldsValue();
+
+    if ((fields.YRangeMin
+          && fields.YRangeMax)
+          || (fields.YRangeMin.toString()
+          && fields.YRangeMax.toString())
+    ) {
+      layout.yaxis.range = [fields.YRangeMin, fields.YRangeMax];
+      layout.datarevision += 1;
+      layout.uirevision += 1;
+      setDataRevision(dataRevision + 1);
+    } else {
+      message.error('Fill in the range fields.');
+    }
+  };
+
   return (
     <BaseComponent
       name={nameState}
@@ -524,27 +559,14 @@ function Chart({
               <TextArea onBlur={({ target: { id } }) => processForm(id)} />
             </Form.Item>
 
-            <Form.Item label="X Range" name="XRange">
+            {/* <Form.Item label="X Range" name="XRange">
               <RangePicker
                 className="mr-1"
                 showTime
-                format="YYYY-MM-DD HH:mm:ss"
-                onBlur={() => {
-                  const fields = plotsForm.getFieldsValue();
-
-                  if (fields.XRange
-                    && fields.XRange.length === 2
-                  ) {
-                    layout.yaxis.range = [fields.XRange[0], fields.XRange[1]];
-                    layout.datarevision += 1;
-                    layout.uirevision += 1;
-                    setDataRevision(dataRevision + 1);
-                  } else {
-                    message.error('Fill in the range fields.');
-                  }
-                }}
+                format="YYYY-MM-DDTHH:mm:ss"
+                onBlur={setXRange}
               />
-            </Form.Item>
+            </Form.Item> */}
 
             &nbsp;&nbsp;
 
@@ -561,22 +583,7 @@ function Chart({
             &nbsp;&nbsp;
 
             <Button
-              onClick={() => {
-                const fields = plotsForm.getFieldsValue();
-
-                if (fields.YRangeMin
-                  && fields.YRangeMax
-                  && fields.YRangeMin.toString()
-                  && fields.YRangeMax.toString()
-                ) {
-                  layout.yaxis.range = [fields.YRangeMin, fields.YRangeMax];
-                  layout.datarevision += 1;
-                  layout.uirevision += 1;
-                  setDataRevision(dataRevision + 1);
-                } else {
-                  message.error('Fill in the range fields.');
-                }
-              }}
+              onClick={setYRange}
             >
               Set Y Range
             </Button>
@@ -965,7 +972,7 @@ Chart.defaultProps = {
   polar: false,
   plots: [],
   XDataKey: null,
-  processXDataKey: (x) => x,
+  processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
   children: null,
 };
 
