@@ -7,7 +7,8 @@ import App from './App';
 
 import store from './store';
 
-import './App.css';
+import './index.css';
+import 'cesium/Widgets/widgets.css';
 
 const load = () => render(
   (

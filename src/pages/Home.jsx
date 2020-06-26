@@ -4,8 +4,6 @@ import {
   Card, Row, Col,
 } from 'antd';
 
-import project from '../../package.json';
-
 const Home = () => (
   <div>
     <div className="text-center p-5 flex items-center justify-center">
@@ -15,7 +13,7 @@ const Home = () => (
         <p className="text-gray-500">
           Version &nbsp;
           {
-            project.version
+            process.env.VERSION
           }
         </p>
         <p>
