@@ -9,7 +9,6 @@ import {
   Button,
   Switch,
   Collapse,
-  Divider,
   Select,
   message,
   Tag,
@@ -28,6 +27,7 @@ import { useSelector } from 'react-redux';
 import { set } from '../../store/actions';
 
 import BaseComponent from '../BaseComponent';
+import ChartValues from './Chart/ChartValues';
 import { axios } from '../../api';
 
 const { RangePicker } = DatePicker;
@@ -445,39 +445,7 @@ function Chart({
   return (
     <BaseComponent
       name={nameState}
-      subheader={(
-        <span className="text-xs">
-          {
-            plotsState.length === 0 ? 'No charts to display.' : null
-          }
-          {
-            plotsState.map((plot, i) => (
-              <span key={`${plot.nodeProcess}${plot.YDataKey}`}>
-                <span
-                  className="inline-block rounded-full mr-2 indicator"
-                  style={
-                    {
-                      height: '6px',
-                      width: '6px',
-                      marginBottom: '2px',
-                      backgroundColor: plot.marker.color,
-                    }
-                  }
-                />
-                <span className="font-semibold">
-                  {plot.nodeProcess}
-                </span>
-                &nbsp;-&nbsp;
-                {plot.YDataKey}
-
-                {
-                  plotsState.length - 1 === i ? null : <Divider type="vertical" />
-                }
-              </span>
-            ))
-          }
-        </span>
-      )}
+      subheader={<ChartValues plots={plotsState} />}
       liveOnly
       height={height}
       toolsSlot={(
