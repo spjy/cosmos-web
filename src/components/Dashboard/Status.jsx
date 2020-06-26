@@ -22,7 +22,7 @@ function Status({
       height={height}
     >
       <StatusTable
-        list={list}
+        list={list || []}
       />
     </BaseComponent>
   );

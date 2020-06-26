@@ -70,6 +70,7 @@ function CEO() {
     return () => {
       live.close(1000);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

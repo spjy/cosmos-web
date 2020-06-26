@@ -150,6 +150,7 @@ function Dashboard({
     return () => {
       live.close(1000);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -164,6 +165,7 @@ function Dashboard({
     }
 
     fetchNamespace();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /** Retrieve default layout for page */
