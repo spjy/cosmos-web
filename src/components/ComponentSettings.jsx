@@ -31,6 +31,7 @@ function ComponentSettings({
         closeModal();
       }}
       footer={null}
+      destroyOnClose
       /**
        * On pressing the "Cancel" button at the footer of the modal, close the modal.
        */
