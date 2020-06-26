@@ -7,6 +7,7 @@ import {
 import moment from 'moment-timezone';
 
 import BaseComponent from '../BaseComponent';
+import DisplayValuesTable from './DisplayValues/DisplayValuesTable';
 
 const { Panel } = Collapse;
 const { TextArea } = Input;
@@ -363,33 +364,9 @@ function DisplayValue({
         </>
       )}
     >
-      {
-        displayValuesState.length === 0 ? 'No values to display.' : null
-      }
-      <table>
-        <tbody>
-          {
-            displayValuesState.map(({ name: label, unit: u }, i) => (
-              <tr key={label}>
-                <td className="pr-2 text-gray-500 text-right">
-                  { label }
-                </td>
-                <td className="pr-2">
-                  {
-                    displayValuesState[i].value !== undefined
-                      ? `${displayValuesState[i].processDataKey
-                        ? displayValuesState[i].processDataKey(displayValuesState[i].value)
-                        : displayValuesState[i].value}${u}` : '-'
-                  }
-                </td>
-                <td className="text-gray-500">
-                  { displayValuesState[i].node_utc ? displayValuesState[i].node_utc : '-' }
-                </td>
-              </tr>
-            ))
-          }
-        </tbody>
-      </table>
+      <DisplayValuesTable
+        displayValues={displayValuesState}
+      />
     </BaseComponent>
   );
 }
