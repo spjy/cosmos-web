@@ -692,4 +692,4 @@ CesiumGlobe.defaultProps = {
   coordinateSystem: 'cartesian',
 };
 
-export default CesiumGlobe;
+export default React.memo(CesiumGlobe);

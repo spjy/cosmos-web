@@ -230,4 +230,4 @@ Attitude.defaultProps = {
   status: 'error',
 };
 
-export default Attitude;
+export default React.memo(Attitude);
