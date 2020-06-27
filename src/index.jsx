@@ -8,6 +8,7 @@ import App from './App';
 import store from './store';
 
 import './index.css';
+// eslint-disable-next-line
 import 'cesium/Widgets/widgets.css';
 
 const load = () => render(
