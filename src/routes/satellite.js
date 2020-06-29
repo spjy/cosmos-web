@@ -1483,13 +1483,53 @@ export default {
             w: 3,
             h: 7,
             component: {
-              name: 'Replacement',
+              name: 'DisplayValue',
+              props: {
+                name: 'beagle1 Temperature',
+                displayValues: [
+                  {
+                    name: 'Temp 000',
+                    nodeProcess: 'beagle1:eps',
+                    dataKey: 'device_tsen_temp_000',
+                    unit: '',
+                    processDataKey: (x) => x.toFixed(2),
+                  },
+                  {
+                    name: 'Temp 001',
+                    nodeProcess: 'beagle1:eps',
+                    dataKey: 'device_tsen_temp_001',
+                    unit: '',
+                    processDataKey: (x) => x.toFixed(2),
+                  },
+                  {
+                    name: 'Temp 002',
+                    nodeProcess: 'beagle1:eps',
+                    dataKey: 'device_tsen_temp_002',
+                    unit: '',
+                    processDataKey: (x) => x.toFixed(2),
+                  },
+                  {
+                    name: 'EPS OBC CPU Temp',
+                    nodeProcess: 'beagle1:eps',
+                    dataKey: 'device_cpu_temp_000',
+                    unit: '',
+                    processDataKey: (x) => x.toFixed(2),
+                  },
+                  {
+                    name: 'Battery Temp',
+                    nodeProcess: 'beagle1:eps',
+                    dataKey: 'device_batt_temp_000',
+                    unit: '',
+                    processDataKey: (x) => x.toFixed(2),
+                  },
+                ],
+              },
             },
           },
           {
             i: 'satellite-simple-neutron1-d',
             x: 0,
-            y: 1,
+            y: 7,
             w: 12,
             h: 10,
             component: {
@@ -1507,7 +1547,7 @@ export default {
           {
             i: 'satellite-simple-neutron1-e',
             x: 0,
-            y: 2,
+            y: 8,
             w: 6,
             h: 21,
             component: {
@@ -1549,7 +1589,7 @@ export default {
           {
             i: 'satellite-simple-neutron1-f',
             x: 6,
-            y: 2,
+            y: 8,
             w: 6,
             h: 21,
             component: {
