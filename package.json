@@ -6,9 +6,10 @@
   "license": "MIT",
   "scripts": {
     "build": "webpack --mode production",
-    "start": "webpack-dev-server --mode development --open",
     "lint": "eslint --cache --format codeframe --ext mjs,jsx,js src",
     "lint:fix": "yarn lint --fix",
+    "prod": "node api",
+    "start": "webpack-dev-server --mode development --open",
     "test": "jest",
     "test:watch": "jest --watch"
   },
@@ -21,6 +22,7 @@
     "babylonjs": "4.1.0",
     "babylonjs-loaders": "4.1.0",
     "cesium": "1.59.0",
+    "express": "^4.17.1",
     "file-saver": "2.0.2",
     "interactjs": "1.9.19",
     "moment-timezone": "0.5.31",
