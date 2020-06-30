@@ -1442,34 +1442,20 @@ export default {
             component: {
               name: 'DisplayValue',
               props: {
-                name: 'beagle1 CPU',
+                name: 'CPU',
                 displayValues: [
                   {
-                    name: 'CPU Load',
+                    name: 'beagle1 CPU Load',
                     nodeProcess: 'beagle1:cpu',
                     dataKey: 'device_cpu_load_000',
                     unit: '',
                     processDataKey: (x) => x.toFixed(2),
                   },
                   {
-                    name: 'CPU Utilization',
-                    nodeProcess: 'beagle1:cpu',
-                    dataKey: 'cpu_utilization_000',
+                    name: 'OBC CPU Load',
+                    nodeProcess: 'neutron1:cpu',
+                    dataKey: 'device_cpu_load_000',
                     unit: '',
-                    processDataKey: (x) => x.toFixed(2),
-                  },
-                  {
-                    name: 'Max GiB',
-                    nodeProcess: 'beagle1:cpu',
-                    dataKey: 'device_cpu_maxgib_000',
-                    unit: 'GiB',
-                    processDataKey: (x) => x.toFixed(2),
-                  },
-                  {
-                    name: 'GiB',
-                    nodeProcess: 'beagle1:cpu',
-                    dataKey: 'device_cpu_gib_000',
-                    unit: 'GiB',
                     processDataKey: (x) => x.toFixed(2),
                   },
                 ],
@@ -1576,66 +1562,6 @@ export default {
             },
           },
           {
-            i: 'satellite-simple-neutron1-d',
-            x: 0,
-            y: 7,
-            w: 12,
-            h: 10,
-            component: {
-              name: 'Commands',
-              props: {
-                commands: [
-                  {
-                    name: 'mov_agent_cpu',
-                    command: 'neutron1 exec add_value mov_agent_cpu',
-                  },
-                ],
-              },
-            },
-          },
-          {
-            i: 'satellite-simple-neutron1-e',
-            x: 0,
-            y: 8,
-            w: 6,
-            h: 21,
-            component: {
-              name: 'Globe',
-              props: {
-                name: 'Orbit',
-                orbits: [
-                  {
-                    name: 'neutron1',
-                    modelFileName: 'cubesat1.glb',
-                    nodeProcess: 'cubesat1:propagator_simple',
-                    dataKey: 'node_loc_pos_eci',
-                    live: true,
-                    position: [21.289373, 157.917480, 350000.0],
-                    orientation: {
-                      d: {
-                        x: 0,
-                        y: 0,
-                        z: 0,
-                      },
-                      w: 0,
-                    },
-                  },
-                ],
-                overlays: [
-                  {
-                    color: 'CRIMSON',
-                    geoJson: {
-                      type: 'Polygon',
-                      coordinates: [
-                        [[30, 10], [40, 40], [20, 40], [10, 20], [30, 10]],
-                      ],
-                    },
-                  },
-                ],
-              },
-            },
-          },
-          {
             i: 'satellite-simple-neutron1-f',
             x: 6,
             y: 8,
@@ -1684,7 +1610,7 @@ export default {
                     marker: {
                       color: 'red',
                     },
-                    name: 'Load',
+                    name: 'beagle1 Load',
                     YDataKey: 'device_cpu_load_000',
                     processYDataKey: (x) => x,
                     nodeProcess: 'beagle1:cpu',
@@ -1697,10 +1623,10 @@ export default {
                     marker: {
                       color: 'blue',
                     },
-                    name: 'Utilization',
-                    YDataKey: 'cpu_utilization_000',
+                    name: 'OBC Load',
+                    YDataKey: 'device_cpu_load_000',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'beagle1:cpu',
+                    nodeProcess: 'neutron1:cpu',
                     live: true,
                   },
                 ],
@@ -2000,7 +1926,7 @@ export default {
           {
             i: 'satellite-simple-default-ja',
             x: 6,
-            y: 6,
+            y: 5,
             w: 6,
             h: 18,
             component: {
@@ -2141,6 +2067,109 @@ export default {
                     live: true,
                   },
 
+                ],
+              },
+            },
+          },
+          {
+            i: 'satellite-simple-default-jb',
+            x: 0,
+            y: 7,
+            w: 12,
+            h: 18,
+            component: {
+              name: 'Chart',
+              props: {
+                name: 'EPS Power',
+                XDataKey: 'node_utc',
+                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                plots: [
+                  {
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    marker: {
+                      color: 'green',
+                    },
+                    name: 'Power Generation',
+                    YDataKey: 'node_powgen',
+                    processYDataKey: (x) => x,
+                    nodeProcess: 'beagle1:eps',
+                    live: true,
+                  },
+                  {
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    marker: {
+                      color: 'blue',
+                    },
+                    name: 'Power Usage',
+                    YDataKey: 'node_powuse',
+                    processYDataKey: (x) => x,
+                    nodeProcess: 'beagle1:eps',
+                    live: true,
+                  },
+                ],
+              },
+            },
+          },
+          {
+            i: 'satellite-simple-neutron1-d',
+            x: 0,
+            y: 8,
+            w: 12,
+            h: 10,
+            component: {
+              name: 'Commands',
+              props: {
+                commands: [
+                  {
+                    name: 'mov_agent_cpu',
+                    command: 'neutron1 exec add_value mov_agent_cpu',
+                  },
+                ],
+              },
+            },
+          },
+          {
+            i: 'satellite-simple-neutron1-e',
+            x: 0,
+            y: 9,
+            w: 6,
+            h: 21,
+            component: {
+              name: 'Globe',
+              props: {
+                name: 'Orbit',
+                orbits: [
+                  {
+                    name: 'neutron1',
+                    modelFileName: 'cubesat1.glb',
+                    nodeProcess: 'cubesat1:propagator_simple',
+                    dataKey: 'node_loc_pos_eci',
+                    live: true,
+                    position: [21.289373, 157.917480, 350000.0],
+                    orientation: {
+                      d: {
+                        x: 0,
+                        y: 0,
+                        z: 0,
+                      },
+                      w: 0,
+                    },
+                  },
+                ],
+                overlays: [
+                  {
+                    color: 'CRIMSON',
+                    geoJson: {
+                      type: 'Polygon',
+                      coordinates: [
+                        [[30, 10], [40, 40], [20, 40], [10, 20], [30, 10]],
+                      ],
+                    },
+                  },
                 ],
               },
             },
