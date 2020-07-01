@@ -497,7 +497,7 @@ export default {
                     nodeProcess: 'beagle1:soh',
                     dataKey: 'device_batt_percentage_000',
                     unit: '%',
-                    processDataKey: (x) => x.toFixed(2),
+                    processDataKey: (x) => (x * 100).toFixed(2),
                   },
                   {
                     name: 'Power Gen',
@@ -1377,7 +1377,7 @@ export default {
                     nodeProcess: 'beagle1:eps',
                     dataKey: 'device_batt_percentage_000',
                     unit: '%',
-                    processDataKey: (x) => x.toFixed(2),
+                    processDataKey: (x) => (x * 100).toFixed(2),
                   },
                   {
                     name: 'Power Gen',
