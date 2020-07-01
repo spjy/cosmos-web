@@ -279,6 +279,12 @@ export default [
     props: {},
   }, */
   {
+    name: 'SOH',
+    props: {
+      name: '',
+    },
+  },
+  {
     name: 'UploadFile',
     props: {},
   },
