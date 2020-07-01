@@ -497,7 +497,7 @@ export default {
                     nodeProcess: 'beagle1:soh',
                     dataKey: 'device_batt_percentage_000',
                     unit: '%',
-                    processDataKey: (x) => (x * 100).toFixed(2),
+                    processDataKey: (x) => (x).toFixed(2),
                   },
                   {
                     name: 'Power Gen',
@@ -1377,7 +1377,7 @@ export default {
                     nodeProcess: 'beagle1:eps',
                     dataKey: 'device_batt_percentage_000',
                     unit: '%',
-                    processDataKey: (x) => (x * 100).toFixed(2),
+                    processDataKey: (x) => x.toFixed(4),
                   },
                   {
                     name: 'Power Gen',
@@ -1706,54 +1706,58 @@ export default {
                 processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
                 plots: [
                   {
-                    "x": [],
-                    "y": [],
-                    "type": "scatter",
-                    "mode": "marker",
-                    "marker": {
-                      "color": "orange"
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    mode: 'marker',
+                    marker: {
+                      color: 'orange',
                     },
-                    "name": "Batt Power",
-                    "YDataKey": "device_batt_power_000",
-                    "nodeProcess": "beagle1:eps",
-                    "live": true
+                    name: 'Batt Power',
+                    YDataKey: 'device_batt_power_000',
+                    processYDataKey: (x) => x,
+                    nodeProcess: 'hiapo:soh',
+                    live: true,
                   },
                   {
-                    "x": [],
-                    "y": [],
-                    "type": "scatter",
-                    "marker": {
-                      "color": "blue"
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    marker: {
+                      color: 'blue',
                     },
-                    "name": "Batt Charge",
-                    "YDataKey": "device_batt_charge_000",
-                    "nodeProcess": "beagle1:eps",
-                    "live": true
+                    name: 'Batt Charge',
+                    YDataKey: 'device_batt_charge_000',
+                    processYDataKey: (x) => x,
+                    nodeProcess: 'hiapo:soh',
+                    live: true,
                   },
                   {
-                    "x": [],
-                    "y": [],
-                    "type": "scatter",
-                    "marker": {
-                      "color": "green"
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    marker: {
+                      color: 'green',
                     },
-                    "name": "Batt Percentage",
-                    "YDataKey": "device_batt_percentage_000",
-                    "nodeProcess": "beagle1:eps",
-                    "live": true
+                    name: 'Batt Percentage',
+                    YDataKey: 'device_batt_percentage_000',
+                    processYDataKey: (x) => x,
+                    nodeProcess: 'hiapo:soh',
+                    live: true,
                   },
                   {
-                    "x": [],
-                    "y": [],
-                    "type": "scatter",
-                    "marker": {
-                      "color": "purple"
+                    x: [],
+                    y: [],
+                    type: 'scatter',
+                    marker: {
+                      color: 'purple',
                     },
-                    "name": "Batt Time Remaining",
-                    "YDataKey": "device_batt_time_remaining_000",
-                    "nodeProcess": "beagle1:eps",
-                    "live": true
-                  }
+                    name: 'Batt Time Remaining',
+                    YDataKey: 'device_batt_time_remaining_000',
+                    processYDataKey: (x) => x,
+                    nodeProcess: 'hiapo:soh',
+                    live: true,
+                  },
                 ],
               },
             },
