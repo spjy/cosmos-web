@@ -1716,7 +1716,7 @@ export default {
                     name: 'Batt Power',
                     YDataKey: 'device_batt_power_000',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'beagle1:soh',
+                    nodeProcess: 'beagle1:eps',
                     live: true,
                   },
                   {
@@ -1729,7 +1729,7 @@ export default {
                     name: 'Batt Charge',
                     YDataKey: 'device_batt_charge_000',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'beagle1:soh',
+                    nodeProcess: 'beagle1:eps',
                     live: true,
                   },
                   {
@@ -1742,7 +1742,7 @@ export default {
                     name: 'Batt Percentage',
                     YDataKey: 'device_batt_percentage_000',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'beagle1:soh',
+                    nodeProcess: 'beagle1:eps',
                     live: true,
                   },
                   {
@@ -1755,7 +1755,7 @@ export default {
                     name: 'Batt Time Remaining',
                     YDataKey: 'device_batt_time_remaining_000',
                     processYDataKey: (x) => x,
-                    nodeProcess: 'beagle1:soh',
+                    nodeProcess: 'beagle1:eps',
                     live: true,
                   },
                 ],
