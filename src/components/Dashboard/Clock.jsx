@@ -24,7 +24,7 @@ function Clock({
     // Every second, update local and UTC time view
     const clock = setTimeout(() => {
       setTime(moment().tz(timezoneState).format('YYYY-MM-DDTHH:mm:ss'));
-      setUtcTime(moment().tz('Europe/London').format('YYYY-MM-DDTHH:mm:ss'));
+      setUtcTime(moment().utc().format('YYYY-MM-DDTHH:mm:ss'));
     }, 1000);
 
     // Stop timeout on unmount
