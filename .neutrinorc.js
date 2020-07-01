@@ -19,6 +19,7 @@ const cesiumWorkers = '../Build/Cesium/Workers';
 module.exports = {
   options: {
     root: __dirname,
+    output: 'api/dist',
   },
   use: [
     airbnb(),
@@ -26,7 +27,6 @@ module.exports = {
       html: {
         title: 'COSMOS Web',
       },
-      path: '/',
       publicPath: '/',
       style: {
         // Override the default file extension of `.css` if needed
@@ -73,17 +73,9 @@ module.exports = {
           to: '',
         },
         {
-          from: path.join(cesiumSource, cesiumWorkers),
-          to: "Workers",
-        },
-        {
-          from: path.join(cesiumSource, "Assets"),
-          to: "Assets",
-        },
-        {
-          from: path.join(cesiumSource, "Widgets"),
-          to: "Widgets",
-        },
+          from: "node_modules/cesium/Build/Cesium",
+          to: "cesium",
+        }
       ]
     }),
     htmlTemplate({
@@ -100,17 +92,13 @@ module.exports = {
           toUrlUndefined: true
         });
 
-      neutrino.config.resolve.alias
-        .set('cesium$', 'cesium/Cesium')
-        .set('cesium', 'cesium/Source');
-      
       neutrino.config.node
         .set('fs', 'empty');
 
-      // neutrino.config
-      //   .externals({
-      //     cesium: 'cesium/Cesium'
-      //   });
+      neutrino.config
+        .externals({
+          cesium: 'Cesium'
+        });
 
       neutrino.config.module
         .rule('compile')
@@ -140,17 +128,6 @@ module.exports = {
             .use('file-loader')
             .loader('file-loader')
             
-        neutrino.config.module
-          .rule('url-loader')
-            .test(/\.(png|gif|jpg|jpeg|svg|xml|json)$/)
-            .exclude
-              .add(/node_modules/)
-              .add(/package\.json/)
-              .add(/package-lock\.json/)
-              .end()
-            .use('url-loader')
-              .loader('url-loader')
-        
         if (process.env.NODE_ENV === 'production') {
           neutrino.config.module
             .rule('strip-pragma-loader')
@@ -175,7 +152,7 @@ module.exports = {
         .end()
           .plugin('DefinePlugin')
           .use(webpack.DefinePlugin, [{
-            CESIUM_BASE_URL: JSON.stringify("/"),
+            CESIUM_BASE_URL: JSON.stringify("/cesium"),
             'process.env.VERSION': JSON.stringify(require("./package.json").version),
           }])
           .end()
