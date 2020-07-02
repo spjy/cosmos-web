@@ -142,8 +142,6 @@ function CEO() {
         value={lastSelectedTag || ''}
         readOnly
       />
-      <br />
-      <br />
       {
           namespace && !(namespace.length === 0)
             ? Object.entries(namespace).map(([node, { pieces, agents }]) => (
