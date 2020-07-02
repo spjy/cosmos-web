@@ -13,7 +13,7 @@ function DisplayValuesTable({
         <tbody>
           {
             displayValues.map(({ name: label, unit: u }, i) => (
-              <tr key={label}>
+              <tr key={`${label}${u}`}>
                 <td className="pr-2 text-gray-500 text-right">
                   { label }
                 </td>
