@@ -52,16 +52,6 @@ export default {
             },
           },
         },
-        {
-          i: 'gs-default-c',
-          x: 8,
-          y: 0,
-          w: 4,
-          h: 7,
-          component: {
-            name: 'Clock',
-          },
-        },
       ],
     },
   },
@@ -424,16 +414,6 @@ export default {
             },
           },
           {
-            i: 'gs-simple-mc3-c',
-            x: 0,
-            y: 1,
-            w: 6,
-            h: 6,
-            component: {
-              name: 'Clock',
-            },
-          },
-          {
             i: 'gs-simple-mc3-f',
             x: 0,
             y: 4,
@@ -602,16 +582,6 @@ export default {
             h: 6,
             component: {
               name: 'Macro',
-            },
-          },
-          {
-            i: 'gs-mc3-c',
-            x: 0,
-            y: 2,
-            w: 6,
-            h: 6,
-            component: {
-              name: 'Clock',
             },
           },
           {
@@ -877,16 +847,6 @@ export default {
                   },
                 ],
               },
-            },
-          },
-          {
-            i: 'gs-mc3-c',
-            x: 0,
-            y: 1,
-            w: 6,
-            h: 6,
-            component: {
-              name: 'Clock',
             },
           },
           {

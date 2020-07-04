@@ -1,17 +1,17 @@
 import React from 'react';
-import { Calendar, momentLocalizer } from 'react-big-calendar';
-import moment from 'moment-timezone';
+import { Calendar } from 'react-big-calendar';
+import dayjs from 'dayjs';
 
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-const localizer = momentLocalizer(moment);
+// const localizer = momentLocalizer(moment);
 
 function MyScheduler() {
   const state = {
     events: [
       {
-        start: moment().toDate(),
-        end: moment()
+        start: dayjs().toDate(),
+        end: dayjs()
           .add(1, 'days')
           .toDate(),
         title: 'Some title',
@@ -22,7 +22,6 @@ function MyScheduler() {
   return (
     <div className="App">
       <Calendar
-        localizer={localizer}
         defaultDate={new Date()}
         defaultView="month"
         selectable

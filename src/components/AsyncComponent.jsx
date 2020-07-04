@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import Activity from './Dashboard/Activity';
 import Attitude from './Dashboard/Attitude';
-import Clock from './Dashboard/Clock';
 import Chart from './Dashboard/Chart';
 import Commands from './Dashboard/Commands';
 import DisplayValue from './Dashboard/DisplayValue';
@@ -26,7 +25,6 @@ import UploadFile from './Dashboard/UploadFile';
 const components = {
   Activity,
   Attitude,
-  Clock,
   Chart,
   Commands,
   DisplayValue,

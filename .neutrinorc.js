@@ -12,6 +12,7 @@ const babelMerge = require('babel-merge');
 
 const webpack = require("webpack");
 const Dotenv = require('dotenv-webpack');
+const AntdDayjsWebpackPlugin = require('antd-dayjs-webpack-plugin');
 
 const cesiumSource = 'node_modules/cesium/Source';
 const cesiumWorkers = '../Build/Cesium/Workers';
@@ -156,6 +157,8 @@ module.exports = {
             'process.env.VERSION': JSON.stringify(require("./package.json").version),
           }])
           .end()
+            .plugin('AntdDayjs')
+              .use(AntdDayjsWebpackPlugin)
     },
   ]
 };

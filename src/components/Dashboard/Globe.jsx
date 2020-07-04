@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-
-import moment from 'moment-timezone';
 import {
   Viewer, Entity, Model, Globe, Clock, CameraFlyTo, PathGraphics, GeoJsonDataSource,
 } from 'resium';
@@ -15,6 +13,7 @@ import {
 import BaseComponent from '../BaseComponent';
 import model from '../../public/cubesat.glb';
 import { axios } from '../../api';
+import { mjdToString } from '../../utility/time';
 
 const { Panel } = Collapse;
 const { RangePicker } = DatePicker;
@@ -106,13 +105,14 @@ function CesiumGlobe({
 
     // Initialize form values for each value
     orbits.forEach(({
-      name: nameVal, nodeProcess, dataKey: dataKeyVal, live,
+      name: nameVal, nodeProcess, dataKey: dataKeyVal, timeDataKey, live,
     }, i) => {
       accumulate = {
         ...accumulate,
         [`name_${i}`]: nameVal,
         [`nodeProcess_${i}`]: nodeProcess,
         [`dataKey_${i}`]: dataKeyVal,
+        [`timeDataKey_${i}`]: timeDataKey || 'node_utc',
         [`live_${i}`]: live,
       };
     });
@@ -124,7 +124,7 @@ function CesiumGlobe({
   /** Retrieve live orbit data */
   useEffect(() => {
     orbitsState.forEach(({
-      nodeProcess, dataKey, live,
+      nodeProcess, dataKey, timeDataKey, live,
     }, i) => {
       if (state && state[nodeProcess]
         && state[nodeProcess][dataKey]
@@ -137,17 +137,13 @@ function CesiumGlobe({
           tempOrbit[i].path = new Cesium.SampledPositionProperty();
         }
 
-        if (state[nodeProcess].node_utc
+        if (state[nodeProcess][timeDataKey]
           && (state[nodeProcess][dataKey]
           || state[nodeProcess].target_loc_pos_geod_s_lat)
         ) {
           const date = Cesium
             .JulianDate
-            .fromDate(
-              moment
-                .unix((((state[nodeProcess].node_utc + 2400000.5) - 2440587.5) * 86400.0))
-                .toDate(),
-            );
+            .fromDate(mjdToString(state[nodeProcess][timeDataKey]));
 
           let pos;
 
@@ -192,7 +188,7 @@ function CesiumGlobe({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
-  const queryHistoricalData = async (dates, dataKey, nodeProcess, orbit) => {
+  const queryHistoricalData = async (dates, dataKey, timeDataKey, nodeProcess, orbit) => {
     // Check to see if user chose a range of dates
     if (dates && dates.length === 2) {
       // Unix time to modified julian date
@@ -203,7 +199,7 @@ function CesiumGlobe({
         const { data } = await axios.post(`/query/${process.env.MONGODB_COLLECTION}/${nodeProcess}`, {
           multiple: true,
           query: {
-            node_utc: {
+            [timeDataKey]: {
               $gt: from,
               $lt: to,
             },
@@ -211,7 +207,7 @@ function CesiumGlobe({
           options: {
             projection: {
               [dataKey]: 1,
-              node_utc: 1,
+              [timeDataKey]: 1,
             },
           },
         });
@@ -234,18 +230,12 @@ function CesiumGlobe({
           if (data.length > 0) {
             startOrbit = Cesium
               .JulianDate
-              .fromDate(
-                moment
-                  .unix((((data[0].node_utc + 2400000.5) - 2440587.5) * 86400.0))
-                  .toDate(),
-              );
+              .fromDate(mjdToString(data[0][timeDataKey]));
+
             stopOrbit = Cesium
               .JulianDate
-              .fromDate(
-                moment
-                  .unix((((data[data.length - 1].node_utc + 2400000.5) - 2440587.5) * 86400.0))
-                  .toDate(),
-              );
+              .fromDate(mjdToString(data[data.length - 1][timeDataKey]));
+
             startOrbitPosition = data[0][dataKey].pos;
           }
 
@@ -254,14 +244,11 @@ function CesiumGlobe({
           data.forEach((o) => {
             const p = o[dataKey].pos;
 
-            if (o.node_utc && o[dataKey]) {
+            if (o[timeDataKey] && o[dataKey]) {
               const date = Cesium
                 .JulianDate
-                .fromDate(
-                  moment
-                    .unix((((o.node_utc + 2400000.5) - 2440587.5) * 86400.0))
-                    .toDate(),
-                );
+                .fromDate(mjdToString(o[timeDataKey]));
+
               const pos = Cesium.Cartesian3.fromArray(p);
 
               sampledPosition.addSample(date, pos);
@@ -480,6 +467,10 @@ function CesiumGlobe({
                     <Form.Item label="Data Key" name={`dataKey_${i}`} hasFeedback>
                       <Input placeholder="Data Key" onBlur={({ target: { id } }) => processForm(id)} />
                     </Form.Item>
+
+                    <Form.Item label="Time Data Key" name={`timeDataKey_${i}`} hasFeedback>
+                      <Input placeholder="Time Data Key" onBlur={({ target: { id } }) => processForm(id)} />
+                    </Form.Item>
                   </Panel>
                 ))
               }
@@ -529,6 +520,10 @@ function CesiumGlobe({
 
                 <Form.Item label="Data Key" name="dataKey" hasFeedback>
                   <Input placeholder="Data Key" />
+                </Form.Item>
+
+                <Form.Item label="Time Data Key" name="timeDataKey" hasFeedback>
+                  <Input placeholder="Time Data Key" />
                 </Form.Item>
 
                 <Button
@@ -660,6 +655,7 @@ CesiumGlobe.propTypes = {
       modelFileName: PropTypes.string,
       nodeProcess: PropTypes.string,
       dataKey: PropTypes.string,
+      timeDataKey: PropTypes.string,
       processDataKey: PropTypes.func,
       live: PropTypes.bool,
     }),

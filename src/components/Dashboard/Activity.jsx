@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
 import { Badge, Form, Button } from 'antd';
-import moment from 'moment-timezone';
 import { highlight, languages } from 'prismjs/components/prism-core';
+
+import { mjdToString } from '../../utility/time';
 
 import BaseComponent from '../BaseComponent';
 
@@ -80,10 +81,7 @@ function Activity({
                 </td>
                 <td className="pr-4 text-gray-500">
                   {
-                    moment
-                      // eslint-disable-next-line camelcase
-                      .unix((((node_utc + 2400000.5) - 2440587.5) * 86400.0))
-                      .format('YYYY-MM-DDTHH:mm:ss')
+                    mjdToString(node_utc)
                   }
                 </td>
                 <td>
