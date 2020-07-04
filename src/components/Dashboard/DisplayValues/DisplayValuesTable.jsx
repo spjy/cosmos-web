@@ -12,21 +12,21 @@ function DisplayValuesTable({
       <table>
         <tbody>
           {
-            displayValues.map(({ name: label, unit: u }, i) => (
-              <tr key={`${label}${u}`}>
+            displayValues.map(({ name, processDataKey, value, unit, time }, i) => (
+              <tr key={`${i}`}>
                 <td className="pr-2 text-gray-500 text-right">
-                  { label }
+                  { name }
                 </td>
                 <td className="pr-2">
                   {
-                    displayValues[i].value !== undefined
-                      ? `${displayValues[i].processDataKey
-                        ? displayValues[i].processDataKey(displayValues[i].value)
-                        : displayValues[i].value}${u}` : '-'
+                    value !== undefined
+                      ? `${processDataKey
+                        ? processDataKey(value)
+                        : value}${unit}` : '-'
                   }
                 </td>
                 <td className="text-gray-500">
-                  { displayValues[i].node_utc ? displayValues[i].node_utc : '-' }
+                  { time ? time : '-' }
                 </td>
               </tr>
             ))
