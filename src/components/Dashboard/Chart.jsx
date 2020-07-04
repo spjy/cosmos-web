@@ -28,7 +28,7 @@ import { set } from '../../store/actions';
 import BaseComponent from '../BaseComponent';
 import ChartValues from './Chart/ChartValues';
 import { axios } from '../../api';
-import { mjdToString } from '../../utility/time';
+import { mjdToString, dateToMJD } from '../../utility/time';
 
 const { RangePicker } = DatePicker;
 const { Panel } = Collapse;
@@ -139,7 +139,7 @@ function Chart({
       [
         [
           ['mjd', 'time', ...yValues].join(','), // columns
-          Object.entries(xValues).map(([key, value]) => [(moment(key).unix() / 86400.0) + 2440587.5 - 2400000.5, key, ...value].join(',')).join('\n'), // rows
+          Object.entries(xValues).map(([key, value]) => [dateToMJD(key), key, ...value].join(',')).join('\n'), // rows
         ].join('\n'),
       ],
       { type: 'text/csv' },
@@ -248,8 +248,8 @@ function Chart({
       message.loading(`Querying ${nodeProcess} for ${YDataKey}...`, 0);
 
       // Unix time to modified julian date
-      const from = (dates[0].unix() / 86400.0) + 2440587.5 - 2400000.5;
-      const to = (dates[1].unix() / 86400.0) + 2440587.5 - 2400000.5;
+      const from = dateToMJD(dates[0]);
+      const to = dateToMJD(dates[1]);
 
       try {
         const { data } = await axios.post(`/query/${process.env.MONGODB_COLLECTION}/${nodeProcess}`, {

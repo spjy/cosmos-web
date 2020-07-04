@@ -241,7 +241,7 @@ function DisplayValue({
                         </span>
                       </span>
                     )}
-                    key={`${displayValue.name}${displayValue.nodeProcess}${displayValue.dataKey}`}
+                    key={displayValue}
                     extra={(
                       <span
                         onClick={(event) => {

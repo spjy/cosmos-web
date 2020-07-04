@@ -7,7 +7,7 @@ import {
   Input, Select, Tooltip, message, Button,
 } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
-import { DateTime } from 'luxon';
+import dayjs from 'dayjs';
 
 // import Search from 'antd/lib/input/Search';
 import { axios } from '../../api';
@@ -66,7 +66,7 @@ function Commands({
   const sendCommandApi = async (command) => {
     setCommandHistory([
       ...commandHistoryEl.current,
-      `➜ ${DateTime.local().toUTC().toFormat('yyyy-MM-dd\'T\'TTZZZ')} ${command}`,
+      `➜ ${dayjs.utc().format()} ${command}`,
     ]);
 
     setUpdateLog(true);
@@ -112,7 +112,7 @@ function Commands({
           // agent node proc cmd
           setCommandHistory([
             ...commandHistoryEl.current,
-            `${moment().toISOString()} ${data.output}`,
+            `${dayjs.utc().format()} ${data.output}`,
           ]);
 
           message.destroy();
@@ -126,7 +126,7 @@ function Commands({
         // non-json
         setCommandHistory([
           ...commandHistoryEl.current,
-          `${moment().toISOString()} ${data}`,
+          `${dayjs.utc().format()} ${data}`,
         ]);
       }
       setUpdateLog(true);

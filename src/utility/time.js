@@ -1,8 +1,12 @@
-import { DateTime } from 'luxon';
+import dayjs from 'dayjs';
 
 export function mjdToString(mjd) {
-  return DateTime
-    .fromSeconds((((mjd + 2400000.5) - 2440587.5) * 86400.0))
-    .toUTC()
-    .toFormat('yyyy-MM-dd\'T\'TTZZZ');
+  return dayjs
+    .unix((((mjd + 2400000.5) - 2440587.5) * 86400.0))
+    .utc()
+    .format();
+}
+
+export function dateToMJD(date) {
+  return (date.unix() / 86400.0) + 2440587.5 - 2400000.5;
 }

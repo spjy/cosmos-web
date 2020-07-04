@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { DateTime } from 'luxon';
+import dayjs from 'dayjs';
+import dayjsPluginUTC from 'dayjs-plugin-utc';
+
+dayjs.extend(dayjsPluginUTC);
 
 function Clock() {
   /** Storage for local time */
@@ -11,8 +14,8 @@ function Clock() {
   useEffect(() => {
     // Every second, update local and UTC time view
     const clock = setTimeout(() => {
-      setTime(DateTime.local().toFormat('yyyy-mm-dd\'T\'TTZZZ'));
-      setUtcTime(DateTime.utc().toFormat('yyyy-mm-dd\'T\'TTZZZ'));
+      setTime(dayjs().format());
+      setUtcTime(dayjs.utc().format());
     }, 1000);
 
     // Stop timeout on unmount

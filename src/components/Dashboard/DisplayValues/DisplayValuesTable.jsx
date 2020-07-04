@@ -12,8 +12,12 @@ function DisplayValuesTable({
       <table>
         <tbody>
           {
-            displayValues.map(({ name, processDataKey, value, unit, time }, i) => (
-              <tr key={`${i}`}>
+            displayValues.map((
+              {
+                name, dataKey, timeDataKey, processDataKey, value, unit, time,
+              },
+            ) => (
+              <tr key={name + dataKey + timeDataKey + processDataKey.toString() + time}>
                 <td className="pr-2 text-gray-500 text-right">
                   { name }
                 </td>
@@ -26,7 +30,7 @@ function DisplayValuesTable({
                   }
                 </td>
                 <td className="text-gray-500">
-                  { time ? time : '-' }
+                  { time || '-' }
                 </td>
               </tr>
             ))
