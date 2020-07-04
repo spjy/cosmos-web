@@ -4,10 +4,11 @@ import { useSelector } from 'react-redux';
 import {
   Form, Input, Collapse, Button,
 } from 'antd';
-import moment from 'moment-timezone';
 
 import BaseComponent from '../BaseComponent';
 import DisplayValuesTable from './DisplayValues/DisplayValuesTable';
+
+import { mjdToString } from '../../utility/time';
 
 const { Panel } = Collapse;
 const { TextArea } = Input;
@@ -57,13 +58,14 @@ function DisplayValue({
 
     // Initialize form values for each value
     displayValues.forEach(({
-      name: nameVal, nodeProcess, dataKey, processDataKey, unit,
+      name: nameVal, nodeProcess, dataKey, timeDataKey, processDataKey, unit,
     }, i) => {
       accumulate = {
         ...accumulate,
         [`name_${i}`]: nameVal,
         [`nodeProcess_${i}`]: nodeProcess,
         [`dataKey_${i}`]: dataKey,
+        [`timeDataKey_${i}`]: timeDataKey || 'node_utc',
         [`processDataKey_${i}`]: processDataKey
           ? processDataKey.toString().replace(/^(.+\s?=>\s?)/, 'return ').replace(/^(\s*function\s*.*\([\s\S]*\)\s*{)([\s\S]*)(})/, '$2').trim()
           : 'return x',
@@ -93,11 +95,11 @@ function DisplayValue({
       // by checking the node process and the key it is watching
       if (state && state[v.nodeProcess]
         && state[v.nodeProcess][v.dataKey] !== undefined
-        && state[v.nodeProcess].node_utc
+        && state[v.nodeProcess][v.timeDataKey]
       ) {
         // If it does, change the value
         displayValuesState[i].value = state[v.nodeProcess][v.dataKey];
-        displayValuesState[i].node_utc = moment.unix((((state[v.nodeProcess].node_utc + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss');
+        displayValuesState[i].time = mjdToString(state[v.nodeProcess][v.timeDataKey]);
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -267,6 +269,10 @@ function DisplayValue({
                       <Input placeholder="Data Key" onBlur={({ target: { id } }) => processForm(id)} />
                     </Form.Item>
 
+                    <Form.Item label="Time Data Key" name={`timeDataKey_${i}`} hasFeedback>
+                      <Input placeholder="Time Data Key" onBlur={({ target: { id } }) => processForm(id)} />
+                    </Form.Item>
+
                     <Form.Item label="Process Data Key" name={`processDataKey_${i}`} hasFeedback help="Define the function body (in JavaScript) here to process the variable 'x'.">
                       <TextArea placeholder="Process Data Key" onBlur={({ target: { id } }) => processForm(id)} />
                     </Form.Item>
@@ -329,10 +335,23 @@ function DisplayValue({
                   ]}
                   label="Data Key"
                   name="dataKey"
-                  help="Define the function body (in JavaScript) here to process the variable 'x'."
                   hasFeedback
                 >
                   <Input placeholder="Data Key" />
+                </Form.Item>
+
+                <Form.Item
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Data Key is required!',
+                    },
+                  ]}
+                  label="Time Data Key"
+                  name="timeDataKey"
+                  hasFeedback
+                >
+                  <Input placeholder="Time Data Key" />
                 </Form.Item>
 
                 <Form.Item
@@ -389,6 +408,8 @@ DisplayValue.propTypes = {
       nodeProcess: PropTypes.string,
       /** The data key to pull the value from */
       dataKey: PropTypes.string,
+      /** The data key to pull the time from */
+      timeDataKey: PropTypes.string,
       /** The function to put the value through to manipulate it */
       processDataKey: PropTypes.func,
       /** The unit of the  */

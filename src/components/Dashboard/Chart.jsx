@@ -22,13 +22,13 @@ import {
 } from '@ant-design/icons';
 import Plot from 'react-plotly.js';
 import { saveAs } from 'file-saver';
-import moment from 'moment-timezone';
 import { useSelector } from 'react-redux';
 import { set } from '../../store/actions';
 
 import BaseComponent from '../BaseComponent';
 import ChartValues from './Chart/ChartValues';
 import { axios } from '../../api';
+import { mjdToString } from '../../utility/time';
 
 const { RangePicker } = DatePicker;
 const { Panel } = Collapse;
@@ -972,7 +972,7 @@ Chart.defaultProps = {
   polar: false,
   plots: [],
   XDataKey: null,
-  processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+  processXDataKey: (x) => mjdToString(x),
   children: null,
 };
 

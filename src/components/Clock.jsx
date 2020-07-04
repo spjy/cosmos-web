@@ -1,34 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import moment from 'moment-timezone';
+import { DateTime } from 'luxon';
 
 function Clock() {
-  /** Storage for form values */
+  /** Storage for local time */
   const [time, setTime] = useState('');
-  /** Storage for form values */
+  /** Storage for utc time */
   const [utcTime, setUtcTime] = useState('');
-  /** Timezone */
-  const [timezoneState] = useState('Pacific/Honolulu');
 
   /** On mount, set the time and update each second */
   useEffect(() => {
     // Every second, update local and UTC time view
     const clock = setTimeout(() => {
-      setTime(moment().tz(timezoneState).format('YYYY-MM-DDTHH:mm:ss'));
-      setUtcTime(moment().utc().format('YYYY-MM-DDTHH:mm:ss'));
+      setTime(DateTime.local().toFormat('yyyy-mm-dd\'T\'TTZZZ'));
+      setUtcTime(DateTime.utc().toFormat('yyyy-mm-dd\'T\'TTZZZ'));
     }, 1000);
 
     // Stop timeout on unmount
     return () => {
       clearTimeout(clock);
     };
-  }, [time, utcTime, timezoneState]);
+  }, [time, utcTime]);
 
   return (
     <table>
       <tbody>
         <tr>
           <td className="pr-4 text-gray-500">
-            {timezoneState.split('/')[1]}
+            Local
           </td>
           <td className="pr-2 text-gray-500 ">
             UTC

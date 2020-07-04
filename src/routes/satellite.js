@@ -1,4 +1,4 @@
-import moment from 'moment-timezone';
+import { mjdToString } from '../utility/time';
 
 export default {
   name: 'Satellites',
@@ -52,16 +52,6 @@ export default {
                 },
               ],
             },
-          },
-        },
-        {
-          i: 'satellite-default-c',
-          x: 8,
-          y: 0,
-          w: 4,
-          h: 7,
-          component: {
-            name: 'Clock',
           },
         },
         {
@@ -155,7 +145,7 @@ export default {
             props: {
               name: 'CPU',
               XDataKey: 'node_utc',
-              processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+              processXDataKey: (x) => mjdToString(x),
               plots: [
                 {
                   x: [],
@@ -211,7 +201,7 @@ export default {
             props: {
               name: 'EPS Buses',
               XDataKey: 'node_utc',
-              processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+              processXDataKey: (x) => mjdToString(x),
               plots: [
                 {
                   x: [],
@@ -300,7 +290,7 @@ export default {
             props: {
               name: 'EPS Battery Charge Regulators',
               XDataKey: 'node_utc',
-              processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+              processXDataKey: (x) => mjdToString(x),
               plots: [
                 {
                   x: [],
@@ -652,7 +642,7 @@ export default {
               props: {
                 name: 'CPU',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -695,7 +685,7 @@ export default {
               props: {
                 name: 'EPS Bus Aux',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -765,7 +755,7 @@ export default {
               props: {
                 name: 'EPS Bus Amp',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -861,7 +851,7 @@ export default {
               props: {
                 name: 'EPS Bus Volt',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -944,7 +934,7 @@ export default {
               props: {
                 name: 'EPS Battery Charge Regulator Amp',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -1000,7 +990,7 @@ export default {
               props: {
                 name: 'EPS Battery Charge Regulator Volt',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -1056,7 +1046,7 @@ export default {
               props: {
                 name: 'EPS PDM Switch Amp',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -1204,7 +1194,7 @@ export default {
               props: {
                 name: 'EPS PDM Switch Volt',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -1369,6 +1359,7 @@ export default {
                     name: 'Battery Capacity',
                     nodeProcess: 'beagle1:eps',
                     dataKey: 'node_battcap',
+                    timeDataKey: 'node_utc',
                     unit: 'Whr',
                     processDataKey: (x) => x.toFixed(2),
                   },
@@ -1376,12 +1367,14 @@ export default {
                     name: 'Battery Percent',
                     nodeProcess: 'beagle1:eps',
                     dataKey: 'device_batt_percentage_000',
+                    timeDataKey: 'node_utc',
                     unit: '%',
                     processDataKey: (x) => x.toFixed(4),
                   },
                   {
                     name: 'Power Gen',
                     nodeProcess: 'beagle1:eps',
+                    timeDataKey: 'node_utc',
                     dataKey: 'node_powgen',
                     unit: 'W',
                     processDataKey: (x) => x.toFixed(2),
@@ -1389,6 +1382,7 @@ export default {
                   {
                     name: 'Power Use',
                     nodeProcess: 'beagle1:eps',
+                    timeDataKey: 'node_utc',
                     dataKey: 'node_powuse',
                     unit: 'W',
                     processDataKey: (x) => x.toFixed(2),
@@ -1412,6 +1406,7 @@ export default {
                     name: 'beagle1 CPU Load',
                     nodeProcess: 'beagle1:cpu',
                     dataKey: 'device_cpu_load_000',
+                    timeDataKey: 'device_cpu_utc_000',
                     unit: '',
                     processDataKey: (x) => x.toFixed(2),
                   },
@@ -1419,6 +1414,7 @@ export default {
                     name: 'OBC CPU Load',
                     nodeProcess: 'neutron1:cpu',
                     dataKey: 'device_cpu_load_000',
+                    timeDataKey: 'device_cpu_utc_001',
                     unit: '',
                     processDataKey: (x) => x.toFixed(2),
                   },
@@ -1441,6 +1437,7 @@ export default {
                     name: 'Battery Temp',
                     nodeProcess: 'beagle1:eps',
                     dataKey: 'device_batt_temp_000',
+                    timeDataKey: 'device_batt_utc_000',
                     unit: 'C',
                     processDataKey: (x) => (x - 272.15).toFixed(2),
                   },
@@ -1448,6 +1445,7 @@ export default {
                     name: 'Batt Daughterboard 1 Temp',
                     nodeProcess: 'beagle1:eps',
                     dataKey: 'device_tsen_temp_000',
+                    timeDataKey: 'device_tsen_utc_000',
                     unit: 'C',
                     processDataKey: (x) => (x - 272.15).toFixed(2),
                   },
@@ -1455,6 +1453,7 @@ export default {
                     name: 'Batt Daughterboard 2 Temp',
                     nodeProcess: 'beagle1:eps',
                     dataKey: 'device_tsen_temp_001',
+                    timeDataKey: 'device_tsen_utc_001',
                     unit: 'C',
                     processDataKey: (x) => (x - 272.15).toFixed(2),
                   },
@@ -1462,6 +1461,7 @@ export default {
                     name: 'Batt Daughterboard 2 Temp',
                     nodeProcess: 'beagle1:eps',
                     dataKey: 'device_tsen_temp_002',
+                    timeDataKey: 'device_tsen_utc_002',
                     unit: 'C',
                     processDataKey: (x) => (x - 272.15).toFixed(2),
                   },
@@ -1469,6 +1469,7 @@ export default {
                     name: 'Batt Daughterboard 2 Temp',
                     nodeProcess: 'beagle1:eps',
                     dataKey: 'device_tsen_temp_003',
+                    timeDataKey: 'device_tsen_utc_003',
                     unit: 'C',
                     processDataKey: (x) => (x - 272.15).toFixed(2),
                   },
@@ -1476,6 +1477,7 @@ export default {
                     name: 'BBB CPU Temp',
                     nodeProcess: 'beagle1:cpu',
                     dataKey: 'device_cpu_temp_000',
+                    timeDataKey: 'device_cpu_utc_000',
                     unit: 'C',
                     processDataKey: (x) => (x - 272.15).toFixed(2),
                   },
@@ -1483,6 +1485,7 @@ export default {
                     name: 'EPS DU CPU Temp',
                     nodeProcess: 'beagle1:eps',
                     dataKey: 'device_cpu_temp_001',
+                    timeDataKey: 'device_cpu_utc_001',
                     unit: 'C',
                     processDataKey: (x) => (x - 272.15).toFixed(2),
                   },
@@ -1490,6 +1493,7 @@ export default {
                     name: 'CubeComputer CPU Temp',
                     nodeProcess: 'beagle1:eps',
                     dataKey: 'device_cpu_temp_002',
+                    timeDataKey: 'device_cpu_utc_002',
                     unit: 'C',
                     processDataKey: (x) => (x - 272.15).toFixed(2),
                   },
@@ -1497,6 +1501,7 @@ export default {
                     name: 'IMU Temp',
                     nodeProcess: 'beagle1:adcs',
                     dataKey: 'device_imu_temp_000',
+                    timeDataKey: 'device_imu_utc_000',
                     unit: 'C',
                     processDataKey: (x) => (x - 272.15).toFixed(2),
                   },
@@ -1504,6 +1509,7 @@ export default {
                     name: 'Battery Temp',
                     nodeProcess: 'beagle1:eps',
                     dataKey: 'device_batt_temp_000',
+                    timeDataKey: 'device_batt_utc_000',
                     unit: 'K',
                     processDataKey: (x) => x.toFixed(2),
                   },
@@ -1607,7 +1613,7 @@ export default {
               props: {
                 name: 'CPU',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -1650,7 +1656,7 @@ export default {
               props: {
                 name: 'Thermal',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -1784,7 +1790,7 @@ export default {
               props: {
                 name: 'EPS Bus Aux',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -1854,7 +1860,7 @@ export default {
               props: {
                 name: 'EPS Bus Power',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -1923,7 +1929,7 @@ export default {
               props: {
                 name: 'EPS Battery Charge Regulator Power',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -1979,7 +1985,7 @@ export default {
               props: {
                 name: 'EPS PDM Switch Power',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -2061,7 +2067,7 @@ export default {
               props: {
                 name: 'EPS Power',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -2373,7 +2379,7 @@ export default {
               props: {
                 name: 'CPU',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -2416,7 +2422,7 @@ export default {
               props: {
                 name: 'EPS Bus Aux',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -2486,7 +2492,7 @@ export default {
               props: {
                 name: 'EPS Bus Amp',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -2582,7 +2588,7 @@ export default {
               props: {
                 name: 'EPS Bus Volt',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -2665,7 +2671,7 @@ export default {
               props: {
                 name: 'EPS Battery Charge Regulator Amp',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -2721,7 +2727,7 @@ export default {
               props: {
                 name: 'EPS Battery Charge Regulator Volt',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -2777,7 +2783,7 @@ export default {
               props: {
                 name: 'EPS PDM Switch Amp',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -2925,7 +2931,7 @@ export default {
               props: {
                 name: 'EPS PDM Switch Volt',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -3360,7 +3366,7 @@ export default {
               props: {
                 name: 'CPU',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -3403,7 +3409,7 @@ export default {
               props: {
                 name: 'Thermal',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -3498,7 +3504,7 @@ export default {
               props: {
                 name: 'EPS Bus Aux',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -3568,7 +3574,7 @@ export default {
               props: {
                 name: 'EPS Bus Power',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -3637,7 +3643,7 @@ export default {
               props: {
                 name: 'EPS Battery Charge Regulator Power',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -3693,7 +3699,7 @@ export default {
               props: {
                 name: 'EPS PDM Switch Power',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -3885,16 +3891,6 @@ export default {
             },
           },
           {
-            i: 'satellite-hyti-c',
-            x: 8,
-            y: 0,
-            w: 4,
-            h: 7,
-            component: {
-              name: 'Clock',
-            },
-          },
-          {
             i: 'satellite-hyti-d',
             x: 0,
             y: 1,
@@ -3974,7 +3970,7 @@ export default {
               props: {
                 name: 'Temperature',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -4030,7 +4026,7 @@ export default {
               props: {
                 name: 'Voltage',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],
@@ -4086,7 +4082,7 @@ export default {
               props: {
                 name: 'Amperage',
                 XDataKey: 'node_utc',
-                processXDataKey: (x) => moment.unix((((x + 2400000.5) - 2440587.5) * 86400.0)).format('YYYY-MM-DDTHH:mm:ss'),
+                processXDataKey: (x) => mjdToString(x),
                 plots: [
                   {
                     x: [],

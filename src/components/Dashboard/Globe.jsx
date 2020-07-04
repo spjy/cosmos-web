@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-
-import moment from 'moment-timezone';
 import {
   Viewer, Entity, Model, Globe, Clock, CameraFlyTo, PathGraphics, GeoJsonDataSource,
 } from 'resium';
@@ -15,6 +13,7 @@ import {
 import BaseComponent from '../BaseComponent';
 import model from '../../public/cubesat.glb';
 import { axios } from '../../api';
+import { mjdToString } from '../../utility/time';
 
 const { Panel } = Collapse;
 const { RangePicker } = DatePicker;
@@ -144,9 +143,7 @@ function CesiumGlobe({
           const date = Cesium
             .JulianDate
             .fromDate(
-              moment
-                .unix((((state[nodeProcess].node_utc + 2400000.5) - 2440587.5) * 86400.0))
-                .toDate(),
+              mjdToString(state[nodeProcess].node_utc)
             );
 
           let pos;

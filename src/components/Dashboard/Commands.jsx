@@ -7,7 +7,7 @@ import {
   Input, Select, Tooltip, message, Button,
 } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
-import moment from 'moment-timezone';
+import { DateTime } from 'luxon';
 
 // import Search from 'antd/lib/input/Search';
 import { axios } from '../../api';
@@ -66,7 +66,7 @@ function Commands({
   const sendCommandApi = async (command) => {
     setCommandHistory([
       ...commandHistoryEl.current,
-      `➜ ${moment().toISOString()} ${command}`,
+      `➜ ${DateTime.local().toUTC().toFormat('yyyy-MM-dd\'T\'TTZZZ')} ${command}`,
     ]);
 
     setUpdateLog(true);
