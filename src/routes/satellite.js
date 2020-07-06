@@ -1335,6 +1335,16 @@ export default {
       defaultLayout: {
         lg: [
           {
+            i: 'satellite-neutron1-cad',
+            x: 4,
+            y: 0,
+            w: 4,
+            h: 7,
+            component: {
+              name: 'MissionEventsDisplay',
+            },
+          },
+          {
             i: 'satellite-simple-neutron1-a',
             x: 0,
             y: 0,
