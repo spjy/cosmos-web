@@ -22,7 +22,7 @@ import UploadFile from './Dashboard/UploadFile';
 /** Store all of the available dashboard components into an object
  * This should contain all components that the dashboard should be able to render in the layout.
  */
-const components = {
+export const components = {
   Activity,
   Attitude,
   Chart,
