@@ -4,7 +4,7 @@ import React, {
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import {
-  Input, Select, Tooltip, message, Button,
+  Tabs, Form, Input, InputNumber, Select, Tooltip, message, Button,
 } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
@@ -13,6 +13,9 @@ import dayjs from 'dayjs';
 import { axios } from '../../api';
 
 import BaseComponent from '../BaseComponent';
+import satellite from '../../routes/satellite';
+
+const { TabPane } = Tabs;
 
 const minWidth = {
   minWidth: '5em',
@@ -25,8 +28,8 @@ const minWidth = {
  * Allows for running agent commands. Logs inputs and ouputs in the white box above the input box.
  */
 function Commands({
+  node,
   height,
-  commands,
 }) {
   /** Agents */
   // const [agentList, setAgentList] = useState([]);
@@ -54,6 +57,13 @@ function Commands({
   /** Currently selected dropdown value of command list */
   const [macroCommand, setMacroCommand] = useState(null);
 
+  /** List of commands */
+  const [nodeProcess, setNodeProcess] = useState(node);
+  const [commands, setCommands] = useState([]);
+  const [commandForm] = Form.useForm();
+  const [selected, setSelected] = useState(null);
+  const [globalNode, setGlobalNode] = useState(nodeProcess);
+
   /** DOM Element selector for history log */
   const cliEl = useRef(null);
   /** DOM Element selector for argument input */
@@ -61,6 +71,72 @@ function Commands({
 
   const commandHistoryEl = useRef(null);
   commandHistoryEl.current = commandHistory;
+
+  const queryCommands = async (query = null) => {
+    try {
+      let data;
+      switch (query) {
+        case 'send':
+          try {
+            const info = commands.find((command) => command.name === macroCommand);
+            await axios.post(`/exec/${nodeProcess}`, {
+              data: {
+                event_data: info.data,
+                event_utc: (dayjs().unix() / 86400.0) + 2440587.5 - 2400000.5,
+                event_type: info.type,
+                event_flag: info.flag,
+                event_name: info.name,
+              },
+            });
+          } catch {
+            message.error(`Error executing ${macroCommand} on ${nodeProcess}.`);
+          }
+          break;
+        case 'delete':
+          try {
+            data = await axios.delete(`/commands/${nodeProcess}`, {
+              name: {
+                selected,
+              },
+            });
+            message.success(`${selected} deleted successfully`);
+            setSelected('');
+          } catch {
+            message.error(`Error deleting ${selected}.`);
+          }
+          break;
+        default:
+          break;
+      }
+      data = await axios.get(`/${process.env.MONGODB_COLLECTION}/commands/${nodeProcess}`);
+      setCommands(data);
+    } catch {
+      message.error('Error connecting to database.');
+    }
+  };
+
+  /** Generate commands in database */
+  const createCommand = async () => {
+    const form = commandForm.getFieldsValue();
+    if (commands.includes((command) => command.name === form.name)) {
+      message.error('Duplicate command cannot be created.');
+    } else {
+      try {
+        await axios.post(`/commands/${nodeProcess}`, {
+          command: {
+            name: form.name,
+            type: form.type,
+            flag: form.flag,
+            data: form.data,
+          },
+        });
+        message.success(`Successfully created ${form.name}!`);
+      } catch {
+        message.error(`Error creating ${form.name}`);
+      }
+    }
+    queryCommands();
+  };
 
   /** Manages requests for agent list and agent [node] [process] */
   const sendCommandApi = async (command) => {
@@ -155,11 +231,6 @@ function Commands({
     setUpdateLog(true);
   };
 
-  /** Send macro command */
-  const sendMacroCommand = async () => {
-    sendCommandApi(`${process.env.COSMOS_BIN}agent ${macroCommand}`);
-  };
-
   /** Retrieve file autocompletion */
   const getAutocomplete = async (autocomplete) => {
     setCommandHistory([
@@ -225,11 +296,11 @@ function Commands({
           ➜&nbsp;
           <span className="text-gray-600">
             [
-            { time }
+            {time}
             ]
           </span>
           &nbsp;
-          { allCommands.join(' ') }
+          { allCommands.join(' ')}
         </div>
       );
     }
@@ -240,7 +311,7 @@ function Commands({
       <div key={i}>
         <span className="text-gray-600">
           [
-          { time }
+          {time}
           ]
         </span>
         &nbsp;
@@ -258,6 +329,107 @@ function Commands({
       liveOnly
       height={height}
       showStatus={false}
+      formItems={(
+        <>
+          <div>
+            Target Node:
+            <Select
+              className="ml-2 w-32"
+              showSearch
+              onChange={(value) => setGlobalNode(value)}
+              defaultValue={globalNode}
+              placeholder="Select target node"
+            >
+              {
+                satellite.children.map((child) => (
+                  <Select.Option
+                    key={child.name}
+                    value={child.name}
+                  />
+                ))
+              }
+            </Select>
+          </div>
+          <Tabs defaultActiveKey="1">
+            <TabPane tab="Create Command" key="1">
+              <Form
+                form={commandForm}
+                layout="vertical"
+                name="commandForm"
+                onFinish={() => createCommand()}
+              >
+                <table className="w-full">
+                  <tbody>
+                    <tr>
+                      <th>
+                        <Form.Item
+                          className="font-light w-4/5"
+                          label="Event Name"
+                          name="name"
+                          rules={[{ required: true, message: 'Please type a name.' }]}
+                        >
+                          <Input placeholder="Name" />
+                        </Form.Item>
+                      </th>
+                      <th rowSpan={2}>
+                        <Form.Item
+                          className="font-light"
+                          label="Type"
+                          name="type"
+                          rules={[{ required: true, message: 'Please choose a type.' }]}
+                        >
+                          <InputNumber placeholder="#" />
+                        </Form.Item>
+                      </th>
+                      <th>
+                        <Form.Item
+                          className="font-light"
+                          label="Flag"
+                          name="flag"
+                          rules={[{ required: true, message: 'Please choose a flag.' }]}
+                        >
+                          <InputNumber placeholder="#" />
+                        </Form.Item>
+                      </th>
+                    </tr>
+                  </tbody>
+                </table>
+                <Form.Item
+                  label="Command"
+                  name="command"
+                  rules={[{ required: true, message: 'Please type a command.' }]}
+                >
+                  <Input placeholder="ex: ls, /bin/systemctl stop agent_cpu" prefix="$" />
+                </Form.Item>
+                <hr className="mb-6" />
+                <Form.Item>
+                  <Button htmlType="submit" type="primary">
+                    Create
+                  </Button>
+                </Form.Item>
+              </Form>
+            </TabPane>
+            <TabPane tab="Delete Command" key="2">
+              <Select
+                placeholder="Select command to delete"
+                className="w-full mb-4"
+                onBlur={(value) => setSelected(value)}
+              >
+                {commands.map((com) => <Select.Option key={com.name}>{com.name}</Select.Option>)}
+              </Select>
+              <hr className="mb-5" />
+              <Button
+                onClick={() => queryCommands('delete')}
+                type="primary"
+                disabled={!selected}
+                danger
+              >
+                Delete
+              </Button>
+            </TabPane>
+          </Tabs>
+        </>
+      )}
     >
       <div className="flex flex-wrap">
         <div
@@ -281,20 +453,36 @@ function Commands({
             }
           </Select>
           <div className="flex">
+            <Select
+              showSearch
+              className="mr-2 w-32"
+              defaultValue={nodeProcess}
+              onChange={(value) => setNodeProcess(value)}
+              placeholder="Select node"
+            >
+              {satellite.children.map((n) => (
+                <Select.Option
+                  key={n.name}
+                >
+                  {n.name}
+                </Select.Option>
+              ))}
+            </Select>
             <div className="mr-2">
               <Select
                 showSearch
+                disabled={!nodeProcess}
                 className="block mb-2"
                 onChange={(value) => setMacroCommand(value)}
                 placeholder="Command List"
               >
                 {
-                  commands.map(({ name, command }) => (
+                  commands.map(({ name, data }) => (
                     <Select.Option
                       key={name}
-                      value={command}
+                      value={data}
                     >
-                      <Tooltip placement="right" title={command}>
+                      <Tooltip placement="right" title={data}>
                         {name}
                       </Tooltip>
                     </Select.Option>
@@ -303,10 +491,18 @@ function Commands({
               </Select>
             </div>
             <Button
+              className="mr-2"
               disabled={!macroCommand}
-              onClick={() => sendMacroCommand()}
+              onClick={() => queryCommands('send')}
             >
               Send
+            </Button>
+            <Button
+              disabled={!nodeProcess}
+              onClick={() => queryCommands()}
+              type="primary"
+            >
+              Re-query Command List
             </Button>
           </div>
         </div>
@@ -351,7 +547,7 @@ function Commands({
 
                 inputEl.current.focus();
               }}
-              onKeyDown={() => {}}
+              onKeyDown={() => { }}
               className="text-blue-500 p-2 hover:underline cursor-pointer"
               key={autocompletion}
             >
@@ -386,7 +582,7 @@ function Commands({
                 sortedAgentRequests.map((token) => (
                   <Select.Option value={token} key={token}>
                     <Tooltip placement="right" title={`${agentRequests[token] && agentRequests[token].synopsis ? `${agentRequests[token].synopsis} ` : ''}${agentRequests[token].description}`}>
-                      { token }
+                      {token}
                     </Tooltip>
                   </Select.Option>
                 ))
@@ -400,7 +596,7 @@ function Commands({
                 sendCommand();
                 setCommandArguments('');
               }}
-              onKeyDown={() => {}}
+              onKeyDown={() => { }}
               role="button"
               tabIndex={0}
             >
@@ -430,17 +626,8 @@ function Commands({
 }
 
 Commands.propTypes = {
+  node: PropTypes.string.isRequired,
   height: PropTypes.number.isRequired,
-  commands: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string,
-      command: PropTypes.string,
-    }),
-  ),
-};
-
-Commands.defaultProps = {
-  commands: [],
 };
 
 export default React.memo(Commands);

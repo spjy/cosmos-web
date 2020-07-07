@@ -62,6 +62,9 @@ export default {
           h: 10,
           component: {
             name: 'Commands',
+            props: {
+              node: '',
+            },
           },
         },
         {
@@ -558,6 +561,9 @@ export default {
             h: 10,
             component: {
               name: 'Commands',
+              props: {
+                node: 'neutron1',
+              },
             },
           },
           {
@@ -2108,12 +2114,7 @@ export default {
             component: {
               name: 'Commands',
               props: {
-                commands: [
-                  {
-                    name: 'mov_agent_cpu',
-                    command: 'neutron1 exec add_value mov_agent_cpu',
-                  },
-                ],
+                node: 'neutron1',
               },
             },
           },
@@ -2296,6 +2297,9 @@ export default {
             h: 10,
             component: {
               name: 'Commands',
+              props: {
+                node: 'hiapo',
+              },
             },
           },
           {
@@ -3276,12 +3280,7 @@ export default {
             component: {
               name: 'Commands',
               props: {
-                commands: [
-                  {
-                    name: 'mov_agent_cpu',
-                    command: 'hiapo exec add_value mov_agent_cpu',
-                  },
-                ],
+                node: 'hiapo',
               },
             },
           },
@@ -3899,6 +3898,9 @@ export default {
             h: 10,
             component: {
               name: 'Commands',
+              props: {
+                node: 'hyti',
+              },
             },
           },
           {
