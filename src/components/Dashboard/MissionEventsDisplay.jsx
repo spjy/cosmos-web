@@ -3,37 +3,34 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
 import {
-  Select, Row, Col,
+  Select, message,
 } from 'antd';
-
-import satellites from '../../routes/satellite';
 
 import BaseComponent from '../BaseComponent';
 import MED from './MED/MED';
+import { axios } from '../../api';
 
-/**
- * Displays a specified live value from an agent.
- * Updates values every agent heartbeat.
- */
 function MissionEventsDisplay({
-  name,
+  nodes,
   height,
 }) {
-  const [node, setNode] = useState(name);
+  const live = useSelector((s) => s.data);
 
-  const [satelliteList] = useState([name]);
+  const [node, setNode] = useState(nodes[0]);
+  const [info, setInfo] = useState([]);
 
-  const [init, setInit] = useState(true);
-
-  // Change here to retrieve events
-  const info = useSelector((s) => s.event);
+  const queryEventLog = async () => {
+    try {
+      const { data } = await axios.post(`/query/${process.env.MONGODB_COLLECTION}/${node}:executed`);
+      setInfo(data);
+    } catch {
+      message.error(`Error retrieving event logs for ${node}`);
+    }
+  };
 
   useEffect(() => {
-    if (init) {
-      satellites.children.forEach((child) => satelliteList.push(child.name));
-      setInit(false);
-    }
-  }, [init, satelliteList]);
+    queryEventLog();
+  }, []);
 
   return (
     <BaseComponent
@@ -44,14 +41,14 @@ function MissionEventsDisplay({
           <Select
             defaultValue={node}
             style={{ width: 120 }}
-            onSelect={(val) => setNode(val)}
+            onChange={(val) => setNode(val)}
           >
             {
-              satelliteList.map((satellite) => (
+              nodes.map((el) => (
                 <Select.Option
-                  key={satellite}
+                  key={el}
                 >
-                  {satellite}
+                  {el}
                 </Select.Option>
               ))
             }
@@ -59,33 +56,35 @@ function MissionEventsDisplay({
         </>
       )}
     >
-      <Row>
-        <Col span={6}>UTC</Col>
-        <Col span={6}>Event Name</Col>
-        <Col span={6}>Status</Col>
-        <Col span={6}>Event Output</Col>
-        {/* <Col span={4}>Orbital Events</Col>
-        <Col span={5}>Ground Station</Col>
-        <Col span={5}>UTC</Col>
-        <Col span={5}>Scheduled Events</Col>
-        <Col span={5}>Executed Events</Col> */}
-      </Row>
-      <hr />
-      <MED
-        info={info}
-      />
+      <table className="flex">
+        <tbody>
+          <tr>
+            <th>UTC</th>
+            <th>Event Name</th>
+            <th>Status</th>
+            <th>Event Output</th>
+          </tr>
+          {/* <Col span={4}>Orbital Events</Col>
+          <Col span={5}>Ground Station</Col>
+          <Col span={5}>UTC</Col>
+          <Col span={5}>Scheduled Events</Col>
+          <Col span={5}>Executed Events</Col> */}
+          <hr />
+          <tr>
+            <MED
+              info={info}
+            />
+          </tr>
+        </tbody>
+      </table>
     </BaseComponent>
   );
 }
 
 MissionEventsDisplay.propTypes = {
   /** Name of the component to display at the time */
-  name: PropTypes.string,
+  nodes: PropTypes.array.string.isRequired,
   height: PropTypes.number.isRequired,
-};
-
-MissionEventsDisplay.defaultProps = {
-  name: 'All',
 };
 
 export default MissionEventsDisplay;
