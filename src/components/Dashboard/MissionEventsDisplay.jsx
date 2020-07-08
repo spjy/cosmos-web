@@ -21,7 +21,11 @@ function MissionEventsDisplay({
 
   const queryEventLog = async () => {
     try {
-      const { data } = await axios.post(`/query/${process.env.MONGODB_COLLECTION}/${node}:executed`);
+      const { data } = await axios.post(`/query/${process.env.MONGODB_COLLECTION}/${node}:executed`, {
+        multiple: true,
+        query: {
+        },
+      });
       setInfo(data);
     } catch {
       message.error(`Error retrieving event logs for ${node}`);
@@ -31,6 +35,16 @@ function MissionEventsDisplay({
   useEffect(() => {
     queryEventLog();
   }, []);
+
+  useEffect(() => {
+    if (Object.keys(live).length !== 0) {
+      const executed = Object.keys(live).find((item) => item.split(':')[1] === 'executed');
+      if (live[executed] != null) {
+        const idx = info.findIndex((event) => event.event_name === live[executed].event_name);
+        info[idx] = live[executed];
+      }
+    }
+  }, [live]);
 
   return (
     <BaseComponent
@@ -56,13 +70,13 @@ function MissionEventsDisplay({
         </>
       )}
     >
-      <table className="flex">
-        <tbody>
-          <tr>
-            <th>UTC</th>
-            <th>Event Name</th>
-            <th>Status</th>
-            <th>Event Output</th>
+      <table className="flex w-full">
+        <tbody className="w-full">
+          <tr className="flex w-full">
+            <td className="w-1/4">UTC</td>
+            <td className="w-1/4">Event Name</td>
+            <td className="w-1/4">Status</td>
+            <td className="w-1/4">Event Output</td>
           </tr>
           {/* <Col span={4}>Orbital Events</Col>
           <Col span={5}>Ground Station</Col>
@@ -83,7 +97,7 @@ function MissionEventsDisplay({
 
 MissionEventsDisplay.propTypes = {
   /** Name of the component to display at the time */
-  nodes: PropTypes.array.string.isRequired,
+  nodes: PropTypes.arrayOf(PropTypes.string).isRequired,
   height: PropTypes.number.isRequired,
 };
 

@@ -1342,6 +1342,9 @@ export default {
             h: 7,
             component: {
               name: 'MissionEventsDisplay',
+              props: {
+                nodes: ['neutron1', 'beagle1'],
+              },
             },
           },
           {
