@@ -34,10 +34,10 @@ import { highlight, languages } from 'prismjs/components/prism-core';
 import { axios, socket } from '../api';
 // eslint-disable-next-line
 import routes from '../routes';
-import components from '../components/Default/Default';
+import defaultComponent from '../components/Default/Default';
 import { set, setData } from '../store/actions';
 
-import AsyncComponent from '../components/AsyncComponent';
+import AsyncComponent, { components } from '../components/AsyncComponent';
 import LayoutSelector from '../components/LayoutSelector';
 import Clock from '../components/Clock';
 import SocketStatus from '../components/SocketStatus';
@@ -338,7 +338,7 @@ function Dashboard({
 
   const retrieveInfo = (e) => {
     const compName = e.currentTarget.getAttribute('keyid');
-    const retrieved = components.find((el) => el.name === compName);
+    const retrieved = defaultComponent.find((el) => el.name === compName);
     const modify = JSON.parse(componentEditor);
 
     modify.component.name = retrieved.name;
@@ -538,14 +538,14 @@ function Dashboard({
           <Tabs defaultActiveKey="1">
             <TabPane tab="Add Components" key="1">
               <Divider orientation="left">1. Choose component</Divider>
-              { components.map((piece) => (
+              { Object.keys(components).map((piece) => (
                 <Button
-                  key={piece.name}
+                  key={piece}
                   className="mr-1"
-                  keyid={piece.name}
+                  keyid={piece}
                   onClick={(e) => retrieveInfo(e)}
                 >
-                  {piece.name}
+                  {piece}
                 </Button>
               ))}
               <Divider orientation="left">
