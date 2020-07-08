@@ -563,6 +563,7 @@ export default {
               name: 'Commands',
               props: {
                 node: 'neutron1',
+                nodes: ['beagle1', 'neutron1'],
               },
             },
           },
@@ -2115,6 +2116,7 @@ export default {
               name: 'Commands',
               props: {
                 node: 'neutron1',
+                nodes: ['beagle1', 'neutron1'],
               },
             },
           },
