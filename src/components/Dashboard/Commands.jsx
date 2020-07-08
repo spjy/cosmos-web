@@ -4,9 +4,9 @@ import React, {
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import {
-  Tabs, Form, Input, InputNumber, Select, Tooltip, message, Button,
+  Tabs, Form, Input, InputNumber, Select, Tooltip, message, Button, Popconfirm,
 } from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
+import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 
 // import Search from 'antd/lib/input/Search';
@@ -35,6 +35,7 @@ function Commands({
   // const [agentList, setAgentList] = useState([]);
   const list = useSelector((s) => s.list.agent_list);
   const macro = useSelector((s) => s.macro);
+  const incoming = useSelector((s) => s.data);
 
   /** Selected agent to get requests from */
   const [selectedAgent, setSelectedAgent] = useState([]);
@@ -57,12 +58,22 @@ function Commands({
   /** Currently selected dropdown value of command list */
   const [macroCommand, setMacroCommand] = useState(null);
 
-  /** List of commands */
+  /** Node to send data to */
   const [nodeProcess, setNodeProcess] = useState(node);
+  /** List of commands stored in the node */
   const [commands, setCommands] = useState([]);
+  /** Command to be sent */
+  const [sending, setSending] = useState({});
+  /** Form to create a new command */
   const [commandForm] = Form.useForm();
+  /** The command selected to be deleted */
   const [selected, setSelected] = useState(null);
+  /** The global node to create/delete commands from */
   const [globalNode, setGlobalNode] = useState(nodeProcess);
+  /** List of commands from the global node selected */
+  const [deleteList, setDeleteList] = useState([]);
+  /** Initialize the command list and the delete list */
+  const [init, setInit] = useState(true);
 
   /** DOM Element selector for history log */
   const cliEl = useRef(null);
@@ -78,38 +89,45 @@ function Commands({
       switch (query) {
         case 'send':
           try {
-            const info = commands.find((command) => command.name === macroCommand);
             await axios.post(`/exec/${nodeProcess}`, {
-              data: {
-                event_data: info.data,
+              event: {
+                event_data: sending.event_data,
                 event_utc: (dayjs().unix() / 86400.0) + 2440587.5 - 2400000.5,
-                event_type: info.type,
-                event_flag: info.flag,
-                event_name: info.name,
+                event_type: sending.event_type,
+                event_flag: sending.event_flag,
+                event_name: sending.event_name,
               },
             });
+            setCommandHistory([
+              ...commandHistoryEl.current,
+              `➜ ${dayjs.utc().format()} ${nodeProcess} ${sending.event_data}`,
+            ]);
+            message.success(`Command '${sending.event_name}' has been sent to ${nodeProcess}!`);
           } catch {
             message.error(`Error executing ${macroCommand} on ${nodeProcess}.`);
           }
           break;
         case 'delete':
           try {
-            data = await axios.delete(`/commands/${nodeProcess}`, {
-              name: {
-                selected,
+            data = await axios.delete(`/commands/${globalNode}`, {
+              data: {
+                event_name: selected,
               },
             });
             message.success(`${selected} deleted successfully`);
-            setSelected('');
-          } catch {
+            setSelected(null);
+          } catch (err) {
             message.error(`Error deleting ${selected}.`);
           }
           break;
         default:
           break;
       }
-      data = await axios.get(`/${process.env.MONGODB_COLLECTION}/commands/${nodeProcess}`);
-      setCommands(data);
+
+      data = await axios.get(`/commands/${globalNode}`);
+      setDeleteList(data.data);
+      data = await axios.get(`/commands/${nodeProcess}`);
+      setCommands(data.data);
     } catch {
       message.error('Error connecting to database.');
     }
@@ -118,16 +136,16 @@ function Commands({
   /** Generate commands in database */
   const createCommand = async () => {
     const form = commandForm.getFieldsValue();
-    if (commands.includes((command) => command.name === form.name)) {
+    if (deleteList.includes((command) => command.name === form.name)) {
       message.error('Duplicate command cannot be created.');
     } else {
       try {
-        await axios.post(`/commands/${nodeProcess}`, {
+        await axios.post(`/commands/${globalNode}`, {
           command: {
-            name: form.name,
-            type: form.type,
-            flag: form.flag,
-            data: form.data,
+            event_name: form.name,
+            event_type: form.type,
+            event_flag: form.flag,
+            event_data: form.command,
           },
         });
         message.success(`Successfully created ${form.name}!`);
@@ -137,6 +155,23 @@ function Commands({
     }
     queryCommands();
   };
+
+  useEffect(() => {
+    if (init) {
+      queryCommands();
+      setInit(false);
+    }
+  });
+
+  useEffect(() => {
+    const incomingInfo = Object.keys(incoming).find((el) => el.split(':')[1] === 'executed');
+    if (incomingInfo != null) {
+      setCommandHistory([
+        ...commandHistoryEl.current,
+        `${dayjs.utc().format()} ${incomingInfo}`,
+      ]);
+    }
+  }, [incoming]);
 
   /** Manages requests for agent list and agent [node] [process] */
   const sendCommandApi = async (command) => {
@@ -337,6 +372,7 @@ function Commands({
               className="ml-2 w-32"
               showSearch
               onChange={(value) => setGlobalNode(value)}
+              onBlur={() => queryCommands()}
               defaultValue={globalNode}
               placeholder="Select target node"
             >
@@ -344,8 +380,9 @@ function Commands({
                 satellite.children.map((child) => (
                   <Select.Option
                     key={child.name}
-                    value={child.name}
-                  />
+                  >
+                    {child.name}
+                  </Select.Option>
                 ))
               }
             </Select>
@@ -399,7 +436,7 @@ function Commands({
                   name="command"
                   rules={[{ required: true, message: 'Please type a command.' }]}
                 >
-                  <Input placeholder="ex: ls, /bin/systemctl stop agent_cpu" prefix="$" />
+                  <Input placeholder="ex: ls, /bin/systemctl stop agent_cpu" prefix="➜" />
                 </Form.Item>
                 <hr className="mb-6" />
                 <Form.Item>
@@ -413,19 +450,33 @@ function Commands({
               <Select
                 placeholder="Select command to delete"
                 className="w-full mb-4"
-                onBlur={(value) => setSelected(value)}
+                onChange={(value) => setSelected(value)}
               >
-                {commands.map((com) => <Select.Option key={com.name}>{com.name}</Select.Option>)}
+                {deleteList.map((com) => (
+                  <Select.Option
+                    key={com.event_name}
+                  >
+                    {com.event_name}
+                  </Select.Option>
+                ))}
               </Select>
               <hr className="mb-5" />
-              <Button
-                onClick={() => queryCommands('delete')}
-                type="primary"
-                disabled={!selected}
-                danger
+              <Popconfirm
+                placement="right"
+                title={`Are you sure you want to delete '${selected}' for ${globalNode}?`}
+                onConfirm={() => queryCommands('delete')}
+                okText="Yes"
+                cancelText="No"
+                icon={<ExclamationCircleOutlined style={{ color: 'red' }} />}
               >
-                Delete
-              </Button>
+                <Button
+                  type="primary"
+                  disabled={!selected}
+                  danger
+                >
+                  Delete
+                </Button>
+              </Popconfirm>
             </TabPane>
           </Tabs>
         </>
@@ -445,7 +496,6 @@ function Commands({
               list ? list.map(({ agent }) => (
                 <Select.Option
                   key={agent}
-                  value={agent}
                 >
                   {agent}
                 </Select.Option>
@@ -458,6 +508,7 @@ function Commands({
               className="mr-2 w-32"
               defaultValue={nodeProcess}
               onChange={(value) => setNodeProcess(value)}
+              onBlur={() => queryCommands()}
               placeholder="Select node"
             >
               {satellite.children.map((n) => (
@@ -471,36 +522,49 @@ function Commands({
             <div className="mr-2">
               <Select
                 showSearch
-                disabled={!nodeProcess}
                 className="block mb-2"
                 onChange={(value) => setMacroCommand(value)}
+                onBlur={() => {
+                  const info = commands.find((command) => command.event_name === macroCommand);
+                  if (info) {
+                    setSending(info);
+                  }
+                }}
                 placeholder="Command List"
               >
                 {
-                  commands.map(({ name, data }) => (
+                  commands.map((command) => (
                     <Select.Option
-                      key={name}
-                      value={data}
+                      key={command.event_name}
                     >
-                      <Tooltip placement="right" title={data}>
-                        {name}
-                      </Tooltip>
+                      {command.event_name}
                     </Select.Option>
                   ))
                 }
               </Select>
             </div>
-            <Button
-              className="mr-2"
-              disabled={!macroCommand}
-              onClick={() => queryCommands('send')}
+            <Popconfirm
+              placement="topRight"
+              title={`Send '➜ ${nodeProcess} ${sending.event_data}'?`}
+              onConfirm={() => queryCommands('send')}
+              okText="Yes"
+              cancelText="No"
             >
-              Send
-            </Button>
+              <Button
+                className="mr-2"
+                disabled={!macroCommand}
+              >
+                Send
+              </Button>
+            </Popconfirm>
             <Button
-              disabled={!nodeProcess}
-              onClick={() => queryCommands()}
-              type="primary"
+              onClick={() => {
+                message.loading('Querying...');
+                queryCommands();
+                message.destroy();
+                message.success('Querying complete.');
+              }}
+              type="dashed"
             >
               Re-query Command List
             </Button>
