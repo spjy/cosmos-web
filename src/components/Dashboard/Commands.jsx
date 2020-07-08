@@ -4,7 +4,7 @@ import React, {
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import {
-  Tabs, Form, Input, InputNumber, Select, Tooltip, message, Button, Popconfirm,
+  Tabs, Form, Input, InputNumber, Select, Tooltip, message, Button, Popconfirm, DatePicker,
 } from 'antd';
 import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
@@ -63,6 +63,8 @@ function Commands({
   const [commands, setCommands] = useState([]);
   /** Command to be sent */
   const [sending, setSending] = useState({});
+  /** Time to send command */
+  const [timeSend, setTimeSend] = useState(null);
   /** Form to create a new command */
   const [commandForm] = Form.useForm();
   /** The command selected to be deleted */
@@ -89,7 +91,7 @@ function Commands({
             await axios.post(`/exec/${commandNode}`, {
               event: {
                 event_data: sending.event_data,
-                event_utc: (dayjs().unix() / 86400.0) + 2440587.5 - 2400000.5,
+                event_utc: timeSend != null ? (dayjs().unix() / 86400.0) + 2440587.5 - 2400000.5 : timeSend,
                 event_type: sending.event_type,
                 event_flag: sending.event_flag,
                 event_name: sending.event_name,
@@ -554,6 +556,7 @@ function Commands({
                 }
               </Select>
             </div>
+            <DatePicker className="h-8 mr-2" showTime />
             <Popconfirm
               placement="topRight"
               title={`Send '${commandNode} ➜ ${sending.event_data}'?`}
