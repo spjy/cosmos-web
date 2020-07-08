@@ -1917,13 +1917,68 @@ export default {
         OBC: {
           lg: [
             {
-              i: 'satellite-neutron1-tab-adcs-a',
+              i: 'satellite-neutron1-tab-obc-a',
               x: 0,
               y: 0,
               w: 3,
               h: 7,
               component: {
                 name: 'Status',
+              },
+            },
+            {
+              i: 'satellite-neutron1-tab-obc-ba',
+              x: 3,
+              y: 0,
+              w: 3,
+              h: 7,
+              component: {
+                name: 'DisplayValue',
+                props: {
+                  name: 'EPS Overview',
+                  displayValues: [
+                    {
+                      name: 'Battery Capacity',
+                      nodeProcess: 'beagle1:eps',
+                      dataKey: 'node_battcap',
+                      timeDataKey: 'node_utc',
+                      unit: 'Whr',
+                      processDataKey: (x) => x.toFixed(2),
+                    },
+                    {
+                      name: 'Battery Percent',
+                      nodeProcess: 'beagle1:eps',
+                      dataKey: 'device_batt_percentage_000',
+                      timeDataKey: 'node_utc',
+                      unit: '%',
+                      processDataKey: (x) => x.toFixed(4),
+                    },
+                    {
+                      name: 'Power Gen',
+                      nodeProcess: 'beagle1:eps',
+                      timeDataKey: 'node_utc',
+                      dataKey: 'node_powgen',
+                      unit: 'W',
+                      processDataKey: (x) => x.toFixed(2),
+                    },
+                    {
+                      name: 'Power Use',
+                      nodeProcess: 'beagle1:eps',
+                      timeDataKey: 'node_utc',
+                      dataKey: 'node_powuse',
+                      unit: 'W',
+                      processDataKey: (x) => x.toFixed(2),
+                    },
+                    {
+                      name: 'Battery Temperature',
+                      nodeProcess: 'beagle1:eps',
+                      dataKey: 'device_batt_temp_000',
+                      timeDataKey: 'node_utc',
+                      unit: 'C',
+                      processDataKey: (x) => (x - 272.15).toFixed(2),
+                    },
+                  ],
+                },
               },
             },
           ],
