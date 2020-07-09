@@ -13,7 +13,7 @@ import {
 import BaseComponent from '../BaseComponent';
 import model from '../../public/cubesat.glb';
 import { axios } from '../../api';
-import { mjdToString } from '../../utility/time';
+import { MJDtoJavaScriptDate } from '../../utility/time';
 
 const { Panel } = Collapse;
 const { RangePicker } = DatePicker;
@@ -129,6 +129,7 @@ function CesiumGlobe({
       if (state && state[nodeProcess]
         && state[nodeProcess][dataKey]
         && state[nodeProcess][dataKey].pos
+        && state[nodeProcess][timeDataKey]
         && live
       ) {
         const tempOrbit = [...orbitsState];
@@ -143,7 +144,7 @@ function CesiumGlobe({
         ) {
           const date = Cesium
             .JulianDate
-            .fromDate(mjdToString(state[nodeProcess][timeDataKey]));
+            .fromDate(MJDtoJavaScriptDate(state[nodeProcess][timeDataKey]));
 
           let pos;
 
@@ -230,11 +231,11 @@ function CesiumGlobe({
           if (data.length > 0) {
             startOrbit = Cesium
               .JulianDate
-              .fromDate(mjdToString(data[0][timeDataKey]));
+              .fromDate(MJDtoJavaScriptDate(data[0][timeDataKey]));
 
             stopOrbit = Cesium
               .JulianDate
-              .fromDate(mjdToString(data[data.length - 1][timeDataKey]));
+              .fromDate(MJDtoJavaScriptDate(data[data.length - 1][timeDataKey]));
 
             startOrbitPosition = data[0][dataKey].pos;
           }
@@ -247,7 +248,7 @@ function CesiumGlobe({
             if (o[timeDataKey] && o[dataKey]) {
               const date = Cesium
                 .JulianDate
-                .fromDate(mjdToString(o[timeDataKey]));
+                .fromDate(MJDtoJavaScriptDate(o[timeDataKey]));
 
               const pos = Cesium.Cartesian3.fromArray(p);
 

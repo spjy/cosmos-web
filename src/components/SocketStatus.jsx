@@ -1,29 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Typography } from 'antd';
+import { Tag } from 'antd';
 import { CheckCircleTwoTone, CloseCircleTwoTone } from '@ant-design/icons';
 
 function SocketStatus({
   status,
 }) {
   return (
-    <Typography.Text type="secondary">
+    <>
       {
         status === 'success'
           ? (
-            <span>
-              <CheckCircleTwoTone twoToneColor="#52c41a" />
-              &nbsp;Connected.
-            </span>
+            <Tag icon={<CheckCircleTwoTone twoToneColor="#52c41a" />} color="success">
+              Connected.
+            </Tag>
           )
           : (
-            <span>
-              <CloseCircleTwoTone twoToneColor="#d80000" />
-              &nbsp;&nbsp;Not connected. Attempting to reconnect.
-            </span>
+            <Tag icon={<CloseCircleTwoTone twoToneColor="#d80000" />} color="error">
+              No connection. Attempting to reconnect.
+            </Tag>
           )
       }
-    </Typography.Text>
+    </>
   );
 }
 

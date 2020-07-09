@@ -67,7 +67,7 @@ function LayoutSelector({
   };
 
   return (
-    <div className="flex">
+    <>
       <Select
         className="mr-3"
         defaultActiveFirstOption
@@ -104,8 +104,6 @@ function LayoutSelector({
           label="System Defined"
         >
           <Select.Option key="defaultRouteLayout" value="defaultRouteLayout">Route Default</Select.Option>
-          <Select.Option key="defaultPageLayout" value="defaultPageLayout">Page Default</Select.Option>
-          <Select.Option key="defaultPageLayoutSimple" value="defaultPageLayoutSimple">Page Default Simple</Select.Option>
         </Select.OptGroup>
 
         <Select.OptGroup
@@ -124,7 +122,7 @@ function LayoutSelector({
       >
         Change Layout
       </Button>
-    </div>
+    </>
   );
 }
 

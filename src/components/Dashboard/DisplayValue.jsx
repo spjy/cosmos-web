@@ -241,7 +241,7 @@ function DisplayValue({
                         </span>
                       </span>
                     )}
-                    key={displayValue}
+                    key={JSON.stringify(displayValue)}
                     extra={(
                       <span
                         onClick={(event) => {
