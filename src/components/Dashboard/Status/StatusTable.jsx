@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Badge } from 'antd';
 
+import { mjdToString } from '../../../utility/time';
+
 function StatusTable({
   list,
 }) {
@@ -13,22 +15,22 @@ function StatusTable({
       <table>
         <tbody>
           {
-      list ? list.map(({
-        agent, utc,
-      }) => (
-        <tr key={agent}>
-          <td>
-            <Badge status="success" />
-          </td>
-          <td className="text-gray-500 pr-2">
-            {utc}
-          </td>
-          <td>
-            {agent}
-          </td>
-        </tr>
-      )) : null
-    }
+            list ? list.map(({
+              agent, utc,
+            }) => (
+              <tr key={agent}>
+                <td>
+                  <Badge status="success" />
+                </td>
+                <td className="text-gray-500 pr-2">
+                  {mjdToString(utc)}
+                </td>
+                <td>
+                  {agent}
+                </td>
+              </tr>
+            )) : null
+          }
         </tbody>
       </table>
     </>
