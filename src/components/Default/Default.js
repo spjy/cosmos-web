@@ -52,6 +52,9 @@ export default [
   },
   {
     name: 'Commands',
+    props: {
+      nodes: [],
+    },
   },
   {
     name: 'DisplayValue',
