@@ -6,6 +6,7 @@ import {
 } from 'antd';
 import BaseComponent from '../BaseComponent';
 import { axios } from '../../api';
+import { mjdToString, dateToMJD } from '../../utility/time';
 
 const { RangePicker } = DatePicker;
 
@@ -48,8 +49,8 @@ function SOH({
   const queryDatabase = async () => {
     message.loading('Retrieving information from database...', 0);
 
-    const start = (dates[0].unix() / 86400.0) + 2440587.5 - 2400000.5;
-    const end = (dates[1].unix() / 86400.0) + 2440587.5 - 2400000.5;
+    const start = dateToMJD(dates[0]);
+    const end = dateToMJD(dates[1]);
 
     const { data } = await axios.post(`/query/${process.env.MONGODB_COLLECTION}/${nameState}:soh`, {
       multiple: true,
@@ -75,7 +76,7 @@ function SOH({
     if (input.length !== 0) {
       soh.forEach((obj) => {
         const newObj = {
-          localTime: new Date((obj.node_utc - 2440587.5 + 2400000.5) * 86400.0 * 1000),
+          localTime: mjdToString(obj.node_utc),
         };
 
         input.forEach((item) => {

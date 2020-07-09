@@ -3,14 +3,13 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
 import {
-  Select, message,
+  Select, message, Table,
 } from 'antd';
 
 import dayjs from 'dayjs';
 import BaseComponent from '../BaseComponent';
-import MED from './MED/MED';
 import { axios } from '../../api';
-import { dateToMJD } from '../../utility/time';
+import { mjdToString } from '../../utility/time';
 
 function MissionEventsDisplay({
   nodes,
@@ -20,38 +19,60 @@ function MissionEventsDisplay({
 
   const [node, setNode] = useState(nodes[0]);
   const [info, setInfo] = useState([]);
+  const [columns] = useState([
+    {
+      title: 'UTC',
+      dataIndex: 'time',
+      key: 'time',
+    },
+    {
+      title: 'Event Name',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+    },
+  ]);
 
-  const queryEventLog = async (dates) => {
+  const queryEventLog = async () => {
     try {
-      const from = dateToMJD(dates[0]);
-      const to = dateToMJD(dates[1]);
-
       const { data } = await axios.post(`/query/${process.env.MONGODB_COLLECTION}/${node}:executed`, {
         multiple: true,
-        query: {
-          // event_utc: {
-          //   $gt: from,
-          //   $lt: to,
-          // },
-        },
+        query: {},
       });
-      setInfo(data);
+      const modify = data.map((el, i) => {
+        const newObj = el;
+        // eslint-disable-next-line no-underscore-dangle
+        delete newObj._id;
+        return {
+          key: i,
+          time: mjdToString(el.event_utc),
+          name: el.event_name,
+          status: el.event_executc != null ? 'Done.' : 'Pending...',
+          log: newObj,
+        };
+      });
+      setInfo(modify);
     } catch {
       message.error(`Error retrieving event logs for ${node}`);
     }
   };
 
   useEffect(() => {
-    const dates = [dayjs().startOf('day'), dayjs().endOf('day')];
-    queryEventLog(dates);
+    const date = [dayjs().startOf('day'), dayjs().endOf('day')];
+    queryEventLog(date);
   }, []);
 
   useEffect(() => {
     if (Object.keys(live).length !== 0) {
       const executed = Object.keys(live).find((item) => item.split(':')[1] === 'executed');
       if (live[executed] != null) {
-        const idx = info.findIndex((event) => event.event_name === live[executed].event_name);
-        info[idx] = live[executed];
+        const idx = info.findIndex((event) => event.time === live[executed].event_utc);
+        info[idx].status = 'Done.';
+        info[idx].log = live[executed];
       }
     }
   }, [live]);
@@ -65,6 +86,7 @@ function MissionEventsDisplay({
           <Select
             defaultValue={node}
             style={{ width: 120 }}
+            onBlur={() => queryEventLog()}
             onChange={(val) => setNode(val)}
           >
             {
@@ -80,26 +102,11 @@ function MissionEventsDisplay({
         </>
       )}
     >
-      <table className="flex w-full">
-        <tbody className="w-full">
-          <tr className="flex w-full">
-            <td className="w-1/4">UTC</td>
-            <td className="w-1/4">Event Name</td>
-            <td className="w-1/4">Status</td>
-            <td className="w-1/4">Event Output</td>
-          </tr>
-          {/* <Col span={4}>Orbital Events</Col>
-          <Col span={5}>Ground Station</Col>
-          <Col span={5}>UTC</Col>
-          <Col span={5}>Scheduled Events</Col>
-          <Col span={5}>Executed Events</Col> */}
-          <hr />
-          <MED
-            className="w-full"
-            info={info}
-          />
-        </tbody>
-      </table>
+      <Table
+        columns={columns}
+        dataSource={info}
+        expandedRowRender={(record) => <p>{JSON.stringify(record.log)}</p>}
+      />
     </BaseComponent>
   );
 }
