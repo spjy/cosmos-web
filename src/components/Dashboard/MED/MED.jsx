@@ -5,7 +5,7 @@ import {
   Row, Col,
 } from 'antd';
 
-// import dayjs from 'dayjs';
+import { mjdToString } from '../../../utility/time';
 
 /**
  * Displays a specified live value from an agent.
@@ -48,24 +48,24 @@ function MED({
     //   {selectedNode}
     // </Row>
     <>
-      {
-        info.forEach((event) => (
-          <Row>
-            <Col>
-              {event.event_utc}
-            </Col>
-            <Col>
+      { info != null && info.length !== 0
+        ? info.map((event) => (
+          <tr className="w-full" key={event.event_name + event.event_utc}>
+            <td className="w-1/4">
+              {mjdToString(event.event_utc)}
+            </td>
+            <td className="w-1/4">
               {event.event_name}
-            </Col>
-            <Col>
+            </td>
+            <td className="w-1/4">
               {event.event_utcexec != null ? 'Done.' : 'Pending...'}
-            </Col>
-            <Col>
-              {event}
-            </Col>
-          </Row>
+            </td>
+            <td className="w-1/4">
+              Empty
+            </td>
+          </tr>
         ))
-      }
+        : null }
     </>
   );
 }

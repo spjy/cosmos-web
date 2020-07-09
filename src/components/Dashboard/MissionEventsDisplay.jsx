@@ -6,9 +6,11 @@ import {
   Select, message,
 } from 'antd';
 
+import dayjs from 'dayjs';
 import BaseComponent from '../BaseComponent';
 import MED from './MED/MED';
 import { axios } from '../../api';
+import { dateToMJD } from '../../utility/time';
 
 function MissionEventsDisplay({
   nodes,
@@ -19,11 +21,18 @@ function MissionEventsDisplay({
   const [node, setNode] = useState(nodes[0]);
   const [info, setInfo] = useState([]);
 
-  const queryEventLog = async () => {
+  const queryEventLog = async (dates) => {
     try {
+      const from = dateToMJD(dates[0]);
+      const to = dateToMJD(dates[1]);
+
       const { data } = await axios.post(`/query/${process.env.MONGODB_COLLECTION}/${node}:executed`, {
         multiple: true,
         query: {
+          // event_utc: {
+          //   $gt: from,
+          //   $lt: to,
+          // },
         },
       });
       setInfo(data);
@@ -33,7 +42,8 @@ function MissionEventsDisplay({
   };
 
   useEffect(() => {
-    queryEventLog();
+    const dates = [dayjs().startOf('day'), dayjs().endOf('day')];
+    queryEventLog(dates);
   }, []);
 
   useEffect(() => {
@@ -84,11 +94,10 @@ function MissionEventsDisplay({
           <Col span={5}>Scheduled Events</Col>
           <Col span={5}>Executed Events</Col> */}
           <hr />
-          <tr>
-            <MED
-              info={info}
-            />
-          </tr>
+          <MED
+            className="w-full"
+            info={info}
+          />
         </tbody>
       </table>
     </BaseComponent>
