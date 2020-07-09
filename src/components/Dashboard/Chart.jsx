@@ -265,6 +265,9 @@ function Chart({
               [XDataKeyState]: 1,
               [YDataKey]: 1,
             },
+            sort: {
+              [XDataKeyState]: 1,
+            },
           },
         });
 
