@@ -4,9 +4,20 @@ import React, {
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import {
-  Tabs, Form, Input, InputNumber, Select, Tooltip, message, Button, Popconfirm, DatePicker,
+  Tabs,
+  Form,
+  Input,
+  InputNumber,
+  Select,
+  Tooltip,
+  message,
+  Button,
+  Popconfirm,
+  DatePicker,
 } from 'antd';
-import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import {
+  CloseOutlined, ExclamationCircleOutlined, SendOutlined, RetweetOutlined,
+} from '@ant-design/icons';
 import dayjs from 'dayjs';
 
 // import Search from 'antd/lib/input/Search';
@@ -65,6 +76,8 @@ function Commands({
   const [sending, setSending] = useState({});
   /** Time to send command */
   const [timeSend, setTimeSend] = useState(null);
+  /** Time to send command */
+  const [elapsedTime, setElapsedTime] = useState(0);
   /** Form to create a new command */
   const [commandForm] = Form.useForm();
   /** The command selected to be deleted */
@@ -82,7 +95,7 @@ function Commands({
   const commandHistoryEl = useRef(null);
   commandHistoryEl.current = commandHistory;
 
-  const queryCommands = async (query = null) => {
+  const queryCommands = async (query = null, timeToSend = null) => {
     try {
       let data;
       switch (query) {
@@ -91,7 +104,7 @@ function Commands({
             await axios.post(`/exec/${commandNode}`, {
               event: {
                 event_data: sending.event_data,
-                event_utc: timeSend != null ? (dayjs().unix() / 86400.0) + 2440587.5 - 2400000.5 : timeSend,
+                event_utc: timeToSend != null ? (dayjs().unix() / 86400.0) + 2440587.5 - 2400000.5 : timeToSend,
                 event_type: sending.event_type,
                 event_flag: sending.event_flag,
                 event_name: sending.event_name,
@@ -556,21 +569,52 @@ function Commands({
                 }
               </Select>
             </div>
-            <DatePicker className="h-8 mr-2" showTime />
+            <div className="border-l mr-2 h-8" />
+            <DatePicker
+              className="h-8 mr-2"
+              showTime
+              onChange={(val) => setTimeSend(val)}
+            />
             <Popconfirm
               placement="topRight"
               title={`Send '${commandNode} ➜ ${sending.event_data}'?`}
-              onConfirm={() => queryCommands('send')}
+              onConfirm={() => queryCommands('send', timeSend)}
               okText="Yes"
               cancelText="No"
             >
               <Button
+                icon={<SendOutlined />}
                 className="mr-2"
-                disabled={!macroCommand}
+                disabled={timeSend === null || macroCommand === null}
               >
                 Send
               </Button>
             </Popconfirm>
+            <RetweetOutlined className="mt-2 mr-2" />
+            <InputNumber
+              className="h-8 mr-2 w-12"
+              formatter={(val) => `${val}s`}
+              parser={(val) => val.replace('s', '')}
+              min={0}
+              max={60}
+              onChange={(val) => setElapsedTime(val)}
+            />
+            <Popconfirm
+              placement="topRight"
+              title={`Send '${commandNode} ➜ ${sending.event_data}' ${elapsedTime} seconds from now?`}
+              onConfirm={() => queryCommands('send', dayjs().add(elapsedTime, 's'))}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button
+                icon={<SendOutlined />}
+                className="mr-2"
+                disabled={macroCommand === null || elapsedTime === null}
+              >
+                Send
+              </Button>
+            </Popconfirm>
+            <div className="border-l mr-2 h-8" />
             <Button
               onClick={() => {
                 message.loading('Querying...');
