@@ -7,19 +7,6 @@ export default {
   defaultLayout: {
     lg: [
       {
-        i: 'satellite-simple-neutron1-aaa',
-        x: 0,
-        y: 0,
-        w: 3,
-        h: 7,
-        component: {
-          name: 'MissionEventsDisplay',
-          props: {
-            nodes: ['neutron1', 'beagle1'],
-          },
-        },
-      },
-      {
         i: 'satellite-simple-neutron1-a',
         x: 0,
         y: 0,
@@ -91,6 +78,22 @@ export default {
                 name: 'beagle1 CPU Load',
                 nodeProcess: 'beagle1:cpu',
                 dataKey: 'device_cpu_load_000',
+                timeDataKey: 'device_cpu_utc_000',
+                unit: '',
+                processDataKey: (x) => x.toFixed(2),
+              },
+              {
+                name: 'beagle1 CPU Uptime',
+                nodeProcess: 'beagle1:cpu',
+                dataKey: 'device_cpu_uptime_000',
+                timeDataKey: 'device_cpu_utc_000',
+                unit: 's',
+                processDataKey: (x) => x.toFixed(2),
+              },
+              {
+                name: 'beagle1 CPU Bootcount',
+                nodeProcess: 'beagle1:cpu',
+                dataKey: 'device_cpu_boot_count_000',
                 timeDataKey: 'device_cpu_utc_000',
                 unit: '',
                 processDataKey: (x) => x.toFixed(2),
@@ -779,24 +782,6 @@ export default {
                 processYDataKey: (x) => x,
                 nodeProcess: 'beagle1:eps',
                 live: true,
-              },
-            ],
-          },
-        },
-      },
-      {
-        i: 'satellite-simple-neutron1-d',
-        x: 0,
-        y: 8,
-        w: 12,
-        h: 10,
-        component: {
-          name: 'Commands',
-          props: {
-            commands: [
-              {
-                name: 'mov_agent_cpu',
-                command: 'neutron1 exec add_value mov_agent_cpu',
               },
             ],
           },
@@ -1606,6 +1591,36 @@ export default {
           h: 7,
           component: {
             name: 'Status',
+          },
+        },
+      ],
+    },
+    Commands: {
+      lg: [
+        {
+          i: 'satellite-simple-neutron1-med',
+          x: 0,
+          y: 0,
+          w: 12,
+          h: 10,
+          component: {
+            name: 'MissionEventsDisplay',
+            props: {
+              nodes: ['neutron1', 'beagle1'],
+            },
+          },
+        },
+        {
+          i: 'satellite-simple-neutron1-d',
+          x: 0,
+          y: 10,
+          w: 12,
+          h: 10,
+          component: {
+            name: 'Commands',
+            props: {
+              nodes: ['neutron1', 'beagle1'],
+            },
           },
         },
       ],
