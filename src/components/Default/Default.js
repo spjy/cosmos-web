@@ -271,6 +271,12 @@ export default [
     },
   },
   {
+    name: 'SOH',
+    props: {
+      name: '',
+    },
+  },
+  {
     name: 'Status',
   },
   /* {

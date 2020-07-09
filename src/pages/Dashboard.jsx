@@ -18,6 +18,7 @@ import {
   Row,
   InputNumber,
   DatePicker,
+  Menu,
 } from 'antd';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import {
@@ -34,10 +35,10 @@ import { highlight, languages } from 'prismjs/components/prism-core';
 import { axios, socket } from '../api';
 // eslint-disable-next-line
 import routes from '../routes';
-import components from '../components/Default/Default';
+import defaultComponent from '../components/Default/Default';
 import { set, setData } from '../store/actions';
 
-import AsyncComponent from '../components/AsyncComponent';
+import AsyncComponent, { components } from '../components/AsyncComponent';
 import LayoutSelector from '../components/LayoutSelector';
 import Clock from '../components/Clock';
 import SocketStatus from '../components/SocketStatus';
@@ -69,7 +70,7 @@ function Dashboard({
     lg: [],
   });
 
-  const [defaultPageLayoutSimple, setDefaultPageLayoutSimple] = useState({
+  const [tabs, setTabs] = useState({
     lg: [],
   });
 
@@ -184,8 +185,8 @@ function Dashboard({
           }
 
           // Get page layout simple from route config and save it into the state
-          if (child.path.split('/')[1] === id && child.defaultLayoutSimple) {
-            setDefaultPageLayoutSimple(child.defaultLayoutSimple);
+          if (child.path.split('/')[1] === id && child.tabs) {
+            setTabs(child.tabs);
           }
         });
       }
@@ -276,7 +277,7 @@ function Dashboard({
     } else if (layout === 'defaultPageLayout') {
       setLayouts(defaultPageLayout);
     } else if (layout === 'defaultPageLayoutSimple') {
-      setLayouts(defaultPageLayoutSimple);
+      // setLayouts(defaultPageLayoutSimple);
     } else {
       setLayouts(layout);
     }
@@ -338,7 +339,7 @@ function Dashboard({
 
   const retrieveInfo = (e) => {
     const compName = e.currentTarget.getAttribute('keyid');
-    const retrieved = components.find((el) => el.name === compName);
+    const retrieved = defaultComponent.find((el) => el.name === compName);
     const modify = JSON.parse(componentEditor);
 
     modify.component.name = retrieved.name;
@@ -390,9 +391,9 @@ function Dashboard({
 
   return (
     <div>
-      <div className="component-color sticky z-10 py-2 px-5 border-gray-200 border-solid border-b top-0">
+      <div className="sticky z-10 top-0">
         <div
-          className="flex justify-between"
+          className="flex justify-between component-color py-2 px-5 border-gray-200 border-solid border-b"
         >
           <div>
             <Clock />
@@ -421,17 +422,25 @@ function Dashboard({
               Set Global Historical Date
             </Button>
           </div>
-          <div className="pt-2">
-            <div className="float-left">
-              <LayoutSelector
-                path={path}
-                updateLayout={updateLayoutSelector}
-                selectLayout={(value) => selectLayout(value)}
-              />
-            </div>
+        </div>
+        <Menu mode="horizontal">
+          <Menu.Item onClick={() => setLayouts(defaultPageLayout)}>
+            Overview
+          </Menu.Item>
+          {
+            Object.keys(tabs).map((tab) => (
+              <Menu.Item onClick={() => setLayouts(tabs[tab])}>{tab}</Menu.Item>
+            ))
+          }
+          <Menu.Item className="float-right">
+            <LayoutSelector
+              path={path}
+              updateLayout={updateLayoutSelector}
+              selectLayout={(value) => selectLayout(value)}
+            />
             <Button
               key="savelayout"
-              className="flex-1 ml-3"
+              className="ml-3"
               type="primary"
               onClick={() => setFormVisible(true)}
             >
@@ -469,8 +478,8 @@ function Dashboard({
                 </Form.Item>
               </Form>
             </Modal>
-          </div>
-        </div>
+          </Menu.Item>
+        </Menu>
       </div>
       <div className="mt-5 mx-16 mb-16">
         <ResponsiveGridLayout
@@ -538,14 +547,14 @@ function Dashboard({
           <Tabs defaultActiveKey="1">
             <TabPane tab="Add Components" key="1">
               <Divider orientation="left">1. Choose component</Divider>
-              { components.map((piece) => (
+              { Object.keys(components).map((piece) => (
                 <Button
-                  key={piece.name}
+                  key={piece}
                   className="mr-1"
-                  keyid={piece.name}
+                  keyid={piece}
                   onClick={(e) => retrieveInfo(e)}
                 >
-                  {piece.name}
+                  {piece}
                 </Button>
               ))}
               <Divider orientation="left">
