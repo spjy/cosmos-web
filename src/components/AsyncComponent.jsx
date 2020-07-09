@@ -9,6 +9,7 @@ import DisplayValue from './Dashboard/DisplayValue';
 import Events from './Dashboard/Events';
 import Globe from './Dashboard/Globe';
 import Macro from './Dashboard/Macro';
+import MissionEventsDisplay from './Dashboard/MissionEventsDisplay';
 import Replacement from './Dashboard/Replacement';
 import SatellitePasses from './Dashboard/SatellitePasses';
 import SetValues from './Dashboard/SetValues';
@@ -31,6 +32,7 @@ export const components = {
   Events,
   Globe,
   Macro,
+  MissionEventsDisplay,
   Replacement,
   SatellitePasses,
   SetValues,

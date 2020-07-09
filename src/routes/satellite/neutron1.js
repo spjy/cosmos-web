@@ -7,6 +7,19 @@ export default {
   defaultLayout: {
     lg: [
       {
+        i: 'satellite-simple-neutron1-aaa',
+        x: 0,
+        y: 0,
+        w: 3,
+        h: 7,
+        component: {
+          name: 'MissionEventsDisplay',
+          props: {
+            nodes: ['neutron1', 'beagle1'],
+          },
+        },
+      },
+      {
         i: 'satellite-simple-neutron1-a',
         x: 0,
         y: 0,
