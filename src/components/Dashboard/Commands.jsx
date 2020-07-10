@@ -22,9 +22,9 @@ import dayjs from 'dayjs';
 
 // import Search from 'antd/lib/input/Search';
 import { axios } from '../../api';
+import { dateToMJD } from '../../utility/time';
 
 import BaseComponent from '../BaseComponent';
-import { dateToMJD } from '../../utility/time';
 
 const { TabPane } = Tabs;
 
@@ -180,6 +180,7 @@ function Commands({
 
   useEffect(() => {
     queryCommands();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
