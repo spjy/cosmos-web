@@ -32,7 +32,7 @@ import 'react-resizable/css/styles.css';
 import Editor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs/components/prism-core';
 
-import { axios, socket } from '../api';
+import { axios, live } from '../api';
 // eslint-disable-next-line
 import routes from '../routes';
 import defaultComponent from '../components/Default/Default';
@@ -62,6 +62,7 @@ function Dashboard({
   id,
   defaultLayout,
   path,
+  realms,
 }) {
   const dispatch = useDispatch();
 
@@ -118,7 +119,8 @@ function Dashboard({
 
   /** Get socket data from the agent */
   useEffect(() => {
-    const live = socket('/live/all');
+    // Set current realm
+    dispatch(set('realm', id));
 
     /** Get latest data from neutron1_exec */
     live.onmessage = ({ data }) => {
@@ -127,11 +129,12 @@ function Dashboard({
 
         if (json.node_type === 'list') {
           dispatch(set('list', json));
-        } else {
-          dispatch(setData(json.node_type, json));
+        } else if (realms[id].includes(json.node_type.split(':')[0])) {
+          // Store in realm object
+          dispatch(setData(id, json));
         }
-      } catch (err) {
-        // console.log(err);
+      } catch (error) {
+        message.error(error.message);
       }
     };
 
@@ -671,6 +674,7 @@ Dashboard.propTypes = {
   id: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,
   defaultLayout: PropTypes.shape({}).isRequired,
+  realms: PropTypes.shape(PropTypes.arrayOf(PropTypes.string)).isRequired,
 };
 
 export default React.memo(Dashboard);

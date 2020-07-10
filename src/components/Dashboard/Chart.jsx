@@ -45,8 +45,6 @@ function Chart({
   dataLimit,
   plots,
   polar,
-  XDataKey,
-  processXDataKey,
   children,
   height,
 }) {
@@ -54,6 +52,7 @@ function Chart({
   const state = useSelector((s) => s.data);
   const globalHistoricalDate = useSelector((s) => s.globalHistoricalDate);
   const globalQueue = useSelector((s) => s.globalQueue);
+  const realm = useSelector((s) => s.realm);
 
   /** Storage for global form values */
   const [plotsForm] = Form.useForm();
@@ -64,16 +63,10 @@ function Chart({
 
   /** Initial form values for editForm */
   const [initialValues, setInitialValues] = useState({});
-  /** Store the function to process the X Data Key */
-  const [processXDataKeyState, setProcessXDataKeyState] = useState({
-    func: processXDataKey,
-  });
   /** The state that manages the component's title */
   const [nameState, setNameState] = useState(name);
   /** Specify a limit on the number of data poitns displayed */
   const [dataLimitState, setDataLimitState] = useState(dataLimit);
-  /** The state that manages the component's X-axis data key displayed */
-  const [XDataKeyState, setXDataKeyState] = useState(XDataKey);
   /** Counter determining when the plot should be updated */
   const [dataRevision, setDataRevision] = useState(0);
   /** Layout parameters for the plot */
@@ -167,13 +160,22 @@ function Chart({
 
     // Initialize form values for each value
     plots.forEach(({
-      name: nameVal, nodeProcess, YDataKey, processYDataKey, type, marker, mode, live,
+      name: nameVal,
+      nodeProcess,
+      YDataKey,
+      timeDataKey,
+      processYDataKey,
+      type,
+      marker,
+      mode,
+      live,
     }, i) => {
       accumulate = {
         ...accumulate,
         [`name_${i}`]: nameVal,
         [`nodeProcess_${i}`]: nodeProcess,
         [`YDataKey_${i}`]: YDataKey,
+        [`timeDataKey_${i}`]: timeDataKey || 'node_utc',
         [`processYDataKey_${i}`]: processYDataKey
           ? processYDataKey.toString().replace(/^(.+\s?=>\s?)/, 'return ').replace(/^(\s*function\s*.*\([\s\S]*\)\s*{)([\s\S]*)(})/, '$2').trim()
           : 'return x',
@@ -192,31 +194,31 @@ function Chart({
   useEffect(() => {
     plotsState.forEach((p, i) => {
       // Upon context change, see if changes affect this chart's values
-      if (state && state[p.nodeProcess]
-        && state[p.nodeProcess][XDataKeyState]
-        && state[p.nodeProcess][p.YDataKey]
+      if (state && realm && state[realm]
+        && state[realm][p.timeDataKey]
+        && state[realm][p.YDataKey]
         && p.live
       ) {
         // If so, push to arrays and update state
 
         // Check if polar or not
         if (polar) {
-          plotsState[i].r.push(processXDataKeyState.func(state[p.nodeProcess][XDataKeyState]));
+          plotsState[i].r.push(mjdToString(state[realm][p.timeDataKey]));
           plotsState[i]
             .theta
             .push(
               plotsState[i].processThetaDataKey
-                ? plotsState[i].processThetaDataKey(state[p.nodeProcess][p.YDataKey])
-                : state[p.nodeProcess][p.ThetaDataKey],
+                ? plotsState[i].processThetaDataKey(state[realm][p.YDataKey])
+                : state[realm][p.ThetaDataKey],
             );
         } else {
-          plotsState[i].x.push(processXDataKeyState.func(state[p.nodeProcess][XDataKeyState]));
+          plotsState[i].x.push(mjdToString(state[realm][p.timeDataKey]));
           plotsState[i]
             .y
             .push(
               plotsState[i].processYDataKey
-                ? plotsState[i].processYDataKey(state[p.nodeProcess][p.YDataKey])
-                : state[p.nodeProcess][p.YDataKey],
+                ? plotsState[i].processYDataKey(state[realm][p.YDataKey])
+                : state[realm][p.YDataKey],
             );
         }
 
@@ -243,7 +245,7 @@ function Chart({
    * @param {string} nodeProcess node:process to retrieve data key from
    * @param {number} plot Plot index to modify
    */
-  const queryHistoricalData = async (dates, YDataKey, nodeProcess, plot) => {
+  const queryHistoricalData = async (dates, YDataKey, timeDataKey, nodeProcess, plot) => {
     if (dates && dates.length === 2) {
       message.loading(`Querying ${nodeProcess} for ${YDataKey}...`, 0);
 
@@ -255,18 +257,18 @@ function Chart({
         const { data } = await axios.post(`/query/${process.env.MONGODB_COLLECTION}/${nodeProcess}`, {
           multiple: true,
           query: {
-            [XDataKeyState]: {
+            [timeDataKey]: {
               $gt: from,
               $lt: to,
             },
           },
           options: {
             projection: {
-              [XDataKeyState]: 1,
+              [timeDataKey]: 1,
               [YDataKey]: 1,
             },
             sort: {
-              [XDataKeyState]: 1,
+              [timeDataKey]: 1,
             },
           },
         });
@@ -284,7 +286,7 @@ function Chart({
 
           // Insert past data into chart
           data.forEach((d) => {
-            plotsState[plot].x.push(processXDataKeyState.func(d[XDataKeyState]));
+            plotsState[plot].x.push(mjdToString(d[timeDataKey]));
             plotsState[plot]
               .y
               .push(
@@ -309,11 +311,13 @@ function Chart({
       const fields = editForm.getFieldsValue();
 
       const YDataKey = fields[`YDataKey_${retrievePlotHistory}`];
+      const timeDataKey = fields[`timeDataKey_${retrievePlotHistory}`];
       const dates = fields[`dateRange_${retrievePlotHistory}`];
 
       queryHistoricalData(
         dates,
         YDataKey,
+        timeDataKey,
         plotsState[retrievePlotHistory].nodeProcess,
         retrievePlotHistory,
       );
@@ -355,12 +359,6 @@ function Chart({
         case 'dataLimit':
           setDataLimitState(fields.dataLimit);
           break;
-        case 'XDataKey':
-          setXDataKeyState(fields.XDataKey);
-          break;
-        case 'processXDataKey':
-          setProcessXDataKeyState(fields.processXDataKey);
-          break;
         default:
           break;
       }
@@ -394,6 +392,7 @@ function Chart({
     mode,
     live,
     YDataKey,
+    timeDataKey,
     processYDataKey,
     marker,
   }) => {
@@ -404,6 +403,7 @@ function Chart({
       name: nameVal || '',
       nodeProcess,
       YDataKey,
+      timeDataKey,
       processYDataKey: processYDataKey
         ? new Function('x', processYDataKey) // eslint-disable-line no-new-func
         : (x) => x,
@@ -424,6 +424,7 @@ function Chart({
       [`name_${newIndex}`]: nameVal,
       [`nodeProcess_${newIndex}`]: nodeProcess,
       [`YDataKey_${newIndex}`]: YDataKey,
+      [`timeDataKey_${newIndex}`]: timeDataKey,
       [`processYDataKey_${newIndex}`]: processYDataKey
         ? processYDataKey.toString().replace(/^(.+\s?=>\s?)/, 'return ').replace(/^(\s*function\s*.*\([\s\S]*\)\s*{)([\s\S]*)(})/, '$2').trim()
         : 'return x',
@@ -534,8 +535,6 @@ function Chart({
             initialValues={{
               name,
               dataLimit,
-              XDataKey,
-              processXDataKey: processXDataKey.toString().replace(/^(.+\s?=>\s?)/, 'return ').replace(/^(\s*function\s*.*\([\s\S]*\)\s*{)([\s\S]*)(})/, '$2').trim(),
             }}
           >
             <Form.Item label="Name" name="name" hasFeedback>
@@ -552,14 +551,6 @@ function Chart({
                 max={Infinity}
                 onBlur={({ target: { id } }) => processForm(id)}
               />
-            </Form.Item>
-
-            <Form.Item label="X Data Key" name="XDataKey" hasFeedback>
-              <Input onBlur={({ target: { id } }) => processForm(id)} />
-            </Form.Item>
-
-            <Form.Item label="Process X Data key" name="processXDataKey" hasFeedback>
-              <TextArea onBlur={({ target: { id } }) => processForm(id)} />
             </Form.Item>
 
             {/* <Form.Item label="X Range" name="XRange">
@@ -747,6 +738,10 @@ function Chart({
                       <Input placeholder="Y Data Key" onBlur={({ target: { id } }) => processForm(id)} />
                     </Form.Item>
 
+                    <Form.Item label="Time Data Key" name={`timeDataKey_${i}`} hasFeedback>
+                      <Input placeholder="Time Data Key" onBlur={({ target: { id } }) => processForm(id)} />
+                    </Form.Item>
+
                     <Form.Item label="Process Y Data Key" name={`processYDataKey_${i}`} hasFeedback>
                       <TextArea placeholder="Process Y Data Key" onBlur={({ target: { id } }) => processForm(id)} />
                     </Form.Item>
@@ -886,6 +881,20 @@ function Chart({
                   <Input placeholder="Y Data Key" />
                 </Form.Item>
 
+                <Form.Item
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Time Data Key is required!',
+                    },
+                  ]}
+                  label="Time Data Key"
+                  name="timeDataKey"
+                  hasFeedback
+                >
+                  <Input placeholder="Time Data Key" />
+                </Form.Item>
+
                 <Form.Item label="Process Y Data Key" name="processYDataKey" hasFeedback help="Define the function body (in JavaScript) here to process the variable 'x'.">
                   <TextArea placeholder="Process Y Data Key" />
                 </Form.Item>
@@ -960,10 +969,6 @@ Chart.propTypes = {
   ),
   /** Specify whether this chart is a polar or cartesian plot */
   polar: PropTypes.bool,
-  /** X-axis key to display from the data JSON object above */
-  XDataKey: PropTypes.string,
-  /** Function to process the X-axis key */
-  processXDataKey: PropTypes.func,
   /** Children node */
   children: PropTypes.node,
   height: PropTypes.number.isRequired,
@@ -974,8 +979,6 @@ Chart.defaultProps = {
   dataLimit: 5000,
   polar: false,
   plots: [],
-  XDataKey: null,
-  processXDataKey: (x) => mjdToString(x),
   children: null,
 };
 
