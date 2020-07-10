@@ -311,21 +311,7 @@ export default {
                 marker: {
                   color: 'red',
                 },
-                name: 'beagle1 Load',
-                YDataKey: 'device_cpu_load_000',
-                timeDataKey: 'device_cpu_utc_000',
-                processYDataKey: (x) => x,
-                nodeProcess: 'any',
-                live: true,
-              },
-              {
-                x: [],
-                y: [],
-                type: 'scatter',
-                marker: {
-                  color: 'blue',
-                },
-                name: 'OBC Load',
+                name: 'beagle1 CPU Load',
                 YDataKey: 'device_cpu_load_000',
                 timeDataKey: 'device_cpu_utc_000',
                 processYDataKey: (x) => x,
