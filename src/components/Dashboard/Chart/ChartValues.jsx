@@ -1,10 +1,36 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Divider } from 'antd';
+import { useSelector } from 'react-redux';
 
 function ChartValues({
   plots,
 }) {
+  const namespace = useSelector((s) => s.namespace);
+
+  const findPiece = (dataKey) => {
+    if (namespace && namespace.beagle1) {
+      let piece;
+      let pieceName = null;
+
+      Object.entries(namespace.beagle1.values).some(([k, v]) => {
+        piece = Number(k);
+
+        return v.includes(dataKey);
+      });
+
+      Object.entries(namespace.beagle1.pieces).some(([k, v]) => {
+        pieceName = k;
+
+        return v === piece;
+      });
+
+      return pieceName;
+    }
+
+    return 'any';
+  };
+
   return (
     <>
       <span className="text-xs">
@@ -26,7 +52,9 @@ function ChartValues({
                 }
               />
               <span className="font-semibold">
-                {plot.nodeProcess}
+                {
+                  findPiece(plot.YDataKey)
+                }
               </span>
               &nbsp;-&nbsp;
               {plot.YDataKey}
