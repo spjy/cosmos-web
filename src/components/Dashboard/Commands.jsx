@@ -24,6 +24,7 @@ import dayjs from 'dayjs';
 import { axios } from '../../api';
 
 import BaseComponent from '../BaseComponent';
+import { dateToMJD } from '../../utility/time';
 
 const { TabPane } = Tabs;
 
@@ -104,7 +105,7 @@ function Commands({
             await axios.post(`/exec/${commandNode}`, {
               event: {
                 event_data: sending.event_data,
-                event_utc: timeToSend != null ? (dayjs().unix() / 86400.0) + 2440587.5 - 2400000.5 : timeToSend,
+                event_utc: timeToSend != null ? dateToMJD(dayjs()) : timeToSend,
                 event_type: sending.event_type,
                 event_flag: sending.event_flag,
                 event_name: sending.event_name,
