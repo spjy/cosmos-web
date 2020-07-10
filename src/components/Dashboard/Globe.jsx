@@ -198,7 +198,7 @@ function CesiumGlobe({
       const to = (dates[1].unix() / 86400.0) + 2440587.5 - 2400000.5;
 
       try {
-        const { data } = await axios.post(`/query/${process.env.MONGODB_COLLECTION}/${nodeProcess}`, {
+        const { data } = await axios.post(`/query/${realm}/${nodeProcess}`, {
           multiple: true,
           query: {
             [timeDataKey]: {

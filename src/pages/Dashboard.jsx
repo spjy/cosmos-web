@@ -126,10 +126,11 @@ function Dashboard({
     live.onmessage = ({ data }) => {
       try {
         const json = JSON.parse(data);
+        const [node, process] = json.node_type.split(':');
 
         if (json.node_type === 'list') {
           dispatch(set('list', json));
-        } else if (realms[id].includes(json.node_type.split(':')[0])) {
+        } else if (realms[id].includes(node) && process !== 'soh') {
           // Store in realm object
           dispatch(setData(id, json));
         }

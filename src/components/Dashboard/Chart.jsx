@@ -254,7 +254,7 @@ function Chart({
       const to = dateToMJD(dates[1]);
 
       try {
-        const { data } = await axios.post(`/query/${process.env.MONGODB_COLLECTION}/${nodeProcess}`, {
+        const { data } = await axios.post(`/query/${realm}/${nodeProcess}`, {
           multiple: true,
           query: {
             [timeDataKey]: {
