@@ -30,7 +30,7 @@ export default {
             displayValues: [
               {
                 name: 'Battery Capacity',
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 dataKey: 'node_battcap',
                 timeDataKey: 'node_utc',
                 unit: 'Whr',
@@ -38,7 +38,7 @@ export default {
               },
               {
                 name: 'Battery Percent',
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 dataKey: 'device_batt_percentage_000',
                 timeDataKey: 'node_utc',
                 unit: '%',
@@ -46,7 +46,7 @@ export default {
               },
               {
                 name: 'Power Gen',
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 timeDataKey: 'node_utc',
                 dataKey: 'node_powgen',
                 unit: 'W',
@@ -54,7 +54,7 @@ export default {
               },
               {
                 name: 'Power Use',
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 timeDataKey: 'node_utc',
                 dataKey: 'node_powuse',
                 unit: 'W',
@@ -77,7 +77,7 @@ export default {
             displayValues: [
               {
                 name: 'beagle1 CPU Load',
-                nodeProcess: 'beagle1:cpu',
+                nodeProcess: 'any',
                 dataKey: 'device_cpu_load_000',
                 timeDataKey: 'device_cpu_utc_000',
                 unit: '',
@@ -85,7 +85,7 @@ export default {
               },
               {
                 name: 'OBC CPU Load',
-                nodeProcess: 'neutron1:cpu',
+                nodeProcess: 'any',
                 dataKey: 'device_cpu_load_000',
                 timeDataKey: 'device_cpu_utc_001',
                 unit: '',
@@ -108,7 +108,7 @@ export default {
             displayValues: [
               {
                 name: 'Battery Temp',
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 dataKey: 'device_batt_temp_000',
                 timeDataKey: 'device_batt_utc_000',
                 unit: 'C',
@@ -116,7 +116,7 @@ export default {
               },
               {
                 name: 'Batt Daughterboard 1 Temp',
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 dataKey: 'device_tsen_temp_000',
                 timeDataKey: 'device_tsen_utc_000',
                 unit: 'C',
@@ -124,7 +124,7 @@ export default {
               },
               {
                 name: 'Batt Daughterboard 2 Temp',
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 dataKey: 'device_tsen_temp_001',
                 timeDataKey: 'device_tsen_utc_001',
                 unit: 'C',
@@ -132,7 +132,7 @@ export default {
               },
               {
                 name: 'Batt Daughterboard 2 Temp',
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 dataKey: 'device_tsen_temp_002',
                 timeDataKey: 'device_tsen_utc_002',
                 unit: 'C',
@@ -140,7 +140,7 @@ export default {
               },
               {
                 name: 'Batt Daughterboard 2 Temp',
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 dataKey: 'device_tsen_temp_003',
                 timeDataKey: 'device_tsen_utc_003',
                 unit: 'C',
@@ -148,7 +148,7 @@ export default {
               },
               {
                 name: 'BBB CPU Temp',
-                nodeProcess: 'beagle1:cpu',
+                nodeProcess: 'any',
                 dataKey: 'device_cpu_temp_000',
                 timeDataKey: 'device_cpu_utc_000',
                 unit: 'C',
@@ -156,7 +156,7 @@ export default {
               },
               {
                 name: 'EPS DU CPU Temp',
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 dataKey: 'device_cpu_temp_001',
                 timeDataKey: 'device_cpu_utc_001',
                 unit: 'C',
@@ -164,7 +164,7 @@ export default {
               },
               {
                 name: 'CubeComputer CPU Temp',
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 dataKey: 'device_cpu_temp_002',
                 timeDataKey: 'device_cpu_utc_002',
                 unit: 'C',
@@ -172,7 +172,7 @@ export default {
               },
               {
                 name: 'IMU Temp',
-                nodeProcess: 'beagle1:adcs',
+                nodeProcess: 'any',
                 dataKey: 'device_imu_temp_000',
                 timeDataKey: 'device_imu_utc_000',
                 unit: 'C',
@@ -180,7 +180,7 @@ export default {
               },
               {
                 name: 'Battery Temp',
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 dataKey: 'device_batt_temp_000',
                 timeDataKey: 'device_batt_utc_000',
                 unit: 'K',
@@ -188,56 +188,56 @@ export default {
               },
               {
                 name: 'Batt Daughterboard 1 Temp',
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 dataKey: 'device_tsen_temp_000',
                 unit: 'K',
                 processDataKey: (x) => x.toFixed(2),
               },
               {
                 name: 'Batt Daughterboard 2 Temp',
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 dataKey: 'device_tsen_temp_001',
                 unit: 'K',
                 processDataKey: (x) => x.toFixed(2),
               },
               {
                 name: 'Batt Daughterboard 2 Temp',
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 dataKey: 'device_tsen_temp_002',
                 unit: 'K',
                 processDataKey: (x) => x.toFixed(2),
               },
               {
                 name: 'Batt Daughterboard 2 Temp',
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 dataKey: 'device_tsen_temp_003',
                 unit: 'K',
                 processDataKey: (x) => x.toFixed(2),
               },
               {
                 name: 'BBB CPU Temp',
-                nodeProcess: 'beagle1:cpu',
+                nodeProcess: 'any',
                 dataKey: 'device_cpu_temp_000',
                 unit: 'K',
                 processDataKey: (x) => x.toFixed(2),
               },
               {
                 name: 'EPS DU CPU Temp',
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 dataKey: 'device_cpu_temp_001',
                 unit: 'K',
                 processDataKey: (x) => x.toFixed(2),
               },
               {
                 name: 'CubeComputer CPU Temp',
-                nodeProcess: 'beagle1:adcs',
+                nodeProcess: 'any',
                 dataKey: 'device_cpu_temp_002',
                 unit: 'K',
                 processDataKey: (x) => x.toFixed(2),
               },
               {
                 name: 'IMU Temp',
-                nodeProcess: 'beagle1:adcs',
+                nodeProcess: 'any',
                 dataKey: 'device_imu_temp_000',
                 unit: 'K',
                 processDataKey: (x) => x.toFixed(2),
@@ -299,7 +299,7 @@ export default {
                 YDataKey: 'device_cpu_load_000',
                 timeDataKey: 'device_cpu_utc_000',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:cpu',
+                nodeProcess: 'any',
                 live: true,
               },
               {
@@ -344,7 +344,7 @@ export default {
                 YDataKey: 'device_batt_temp_000',
                 timeDataKey: 'device_batt_utc_000',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 live: true,
               },
               {
@@ -358,7 +358,7 @@ export default {
                 YDataKey: 'device_tsen_temp_000',
                 timeDataKey: 'device_tsen_utc_000',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 live: true,
               },
               {
@@ -372,7 +372,7 @@ export default {
                 YDataKey: 'device_tsen_temp_001',
                 timeDataKey: 'device_tsen_utc_000',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 live: true,
               },
               {
@@ -386,7 +386,7 @@ export default {
                 YDataKey: 'device_tsen_temp_002',
                 timeDataKey: 'device_tsen_utc_000',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 live: true,
               },
               {
@@ -400,7 +400,7 @@ export default {
                 YDataKey: 'device_tsen_temp_003',
                 timeDataKey: 'device_tsen_utc_000',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 live: true,
               },
               {
@@ -414,7 +414,7 @@ export default {
                 YDataKey: 'device_cpu_temp_000',
                 timeDataKey: 'device_cpu_utc_000',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:cpu',
+                nodeProcess: 'any',
                 live: true,
               },
               {
@@ -428,7 +428,7 @@ export default {
                 YDataKey: 'device_cpu_temp_001',
                 timeDataKey: 'device_cpu_utc_001',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 live: true,
               },
               {
@@ -442,7 +442,7 @@ export default {
                 YDataKey: 'device_cpu_temp_002',
                 timeDataKey: 'device_cpu_utc_002',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:adcs',
+                nodeProcess: 'any',
                 live: true,
               },
               {
@@ -456,7 +456,7 @@ export default {
                 YDataKey: 'device_imu_temp_000',
                 timeDataKey: 'device_imu_utc_0001',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:adcs',
+                nodeProcess: 'any',
                 live: true,
               },
             ],
@@ -488,7 +488,7 @@ export default {
                 YDataKey: 'device_batt_power_000',
                 timeDataKey: 'device_batt_utc_000',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 live: true,
               },
               {
@@ -502,7 +502,7 @@ export default {
                 YDataKey: 'device_batt_charge_000',
                 timeDataKey: 'device_batt_utc_000',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 live: true,
               },
               {
@@ -516,7 +516,7 @@ export default {
                 YDataKey: 'device_batt_percentage_000',
                 timeDataKey: 'device_batt_utc_000',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 live: true,
               },
               {
@@ -530,7 +530,7 @@ export default {
                 YDataKey: 'device_batt_time_remaining_000',
                 timeDataKey: 'device_batt_utc_000',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 live: true,
               },
             ],
@@ -561,7 +561,7 @@ export default {
                 YDataKey: 'device_bus_power_000',
                 timeDataKey: 'device_bus_utc_000',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 live: true,
               },
               {
@@ -575,7 +575,7 @@ export default {
                 YDataKey: 'device_bus_power_001',
                 timeDataKey: 'device_bus_utc_001',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 live: true,
               },
               {
@@ -589,7 +589,7 @@ export default {
                 YDataKey: 'device_bus_power_002',
                 timeDataKey: 'device_bus_utc_002',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 live: true,
               },
               {
@@ -603,7 +603,7 @@ export default {
                 YDataKey: 'device_bus_power_003',
                 timeDataKey: 'device_bus_utc_003',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 live: true,
               },
             ],
@@ -634,7 +634,7 @@ export default {
                 YDataKey: 'device_bcreg_power_000',
                 timeDataKey: 'device_bcreg_utc_000',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 live: true,
               },
               {
@@ -648,7 +648,7 @@ export default {
                 YDataKey: 'device_bcreg_power_001',
                 timeDataKey: 'device_bus_utc_001',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 live: true,
               },
               {
@@ -662,7 +662,7 @@ export default {
                 YDataKey: 'device_bcreg_power_002',
                 timeDataKey: 'device_bcreg_utc_002',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 live: true,
               },
             ],
@@ -693,7 +693,7 @@ export default {
                 YDataKey: 'bbb_power',
                 timeDataKey: 'device_swch_utc_000',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 live: true,
               },
               {
@@ -707,7 +707,7 @@ export default {
                 YDataKey: 'obc_power',
                 timeDataKey: 'device_swch_utc_000',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 live: true,
               },
               {
@@ -721,7 +721,7 @@ export default {
                 YDataKey: 'duplex_power',
                 timeDataKey: 'device_swch_utc_000',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 live: true,
               },
               {
@@ -735,7 +735,7 @@ export default {
                 YDataKey: 'trxvu_power',
                 timeDataKey: 'device_swch_utc_000',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 live: true,
               },
               {
@@ -749,7 +749,7 @@ export default {
                 YDataKey: 'asu_power',
                 timeDataKey: 'device_swch_utc_000',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 live: true,
               },
             ],
@@ -780,7 +780,7 @@ export default {
                 YDataKey: 'node_powgen',
                 timeDataKey: 'node_utc',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 live: true,
               },
               {
@@ -794,7 +794,7 @@ export default {
                 YDataKey: 'node_powuse',
                 timeDataKey: 'node_utc',
                 processYDataKey: (x) => x,
-                nodeProcess: 'beagle1:eps',
+                nodeProcess: 'any',
                 live: true,
               },
             ],
@@ -910,7 +910,7 @@ export default {
               displayValues: [
                 {
                   name: 'Battery Capacity',
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   dataKey: 'node_battcap',
                   timeDataKey: 'node_utc',
                   unit: 'Whr',
@@ -918,7 +918,7 @@ export default {
                 },
                 {
                   name: 'Battery Percent',
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   dataKey: 'device_batt_percentage_000',
                   timeDataKey: 'node_utc',
                   unit: '%',
@@ -926,7 +926,7 @@ export default {
                 },
                 {
                   name: 'Power Gen',
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   timeDataKey: 'node_utc',
                   dataKey: 'node_powgen',
                   unit: 'W',
@@ -934,7 +934,7 @@ export default {
                 },
                 {
                   name: 'Power Use',
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   timeDataKey: 'node_utc',
                   dataKey: 'node_powuse',
                   unit: 'W',
@@ -942,7 +942,7 @@ export default {
                 },
                 {
                   name: 'Battery Temperature',
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   dataKey: 'device_batt_temp_000',
                   timeDataKey: 'node_utc',
                   unit: 'C',
@@ -975,7 +975,7 @@ export default {
                   name: 'Amp 000',
                   YDataKey: 'device_bus_amp_000',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -988,7 +988,7 @@ export default {
                   name: 'Amp 001',
                   YDataKey: 'device_bus_amp_001',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1001,7 +1001,7 @@ export default {
                   name: 'Amp 002',
                   YDataKey: 'device_bus_amp_002',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1014,7 +1014,7 @@ export default {
                   name: '12V Amperage',
                   YDataKey: 'device_bus_amp_003',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1027,7 +1027,7 @@ export default {
                   name: 'Batt Amerage',
                   YDataKey: 'device_batt_amp_000',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1041,7 +1041,7 @@ export default {
                   name: 'Batt Voltage',
                   YDataKey: 'device_batt_volt_000',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
               ],
@@ -1071,7 +1071,7 @@ export default {
                   name: 'Volt 000',
                   YDataKey: 'device_bus_volt_000',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1084,7 +1084,7 @@ export default {
                   name: 'Volt 001',
                   YDataKey: 'device_bus_volt_001',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1097,7 +1097,7 @@ export default {
                   name: 'Volt 002',
                   YDataKey: 'device_bus_volt_002',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1110,7 +1110,7 @@ export default {
                   name: 'Volt 003',
                   YDataKey: 'device_bus_volt_003',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1124,7 +1124,7 @@ export default {
                   name: 'Batt Voltage',
                   YDataKey: 'device_batt_volt_000',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
               ],
@@ -1154,7 +1154,7 @@ export default {
                   name: 'Amp 000',
                   YDataKey: 'device_bcreg_amp_000',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1167,7 +1167,7 @@ export default {
                   name: 'Amp 001',
                   YDataKey: 'device_bcreg_amp_001',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1180,7 +1180,7 @@ export default {
                   name: 'Amp 002',
                   YDataKey: 'device_bcreg_amp_002',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
               ],
@@ -1210,7 +1210,7 @@ export default {
                   name: 'Volt 000',
                   YDataKey: 'device_bcreg_volt_000',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1223,7 +1223,7 @@ export default {
                   name: 'Volt 001',
                   YDataKey: 'device_bcreg_volt_001',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1236,7 +1236,7 @@ export default {
                   name: 'Volt 002',
                   YDataKey: 'device_bcreg_volt_002',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
               ],
@@ -1266,7 +1266,7 @@ export default {
                   name: 'Amp 000',
                   YDataKey: 'device_swch_amp_000',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1279,7 +1279,7 @@ export default {
                   name: 'Amp 001',
                   YDataKey: 'device_swch_amp_001',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1292,7 +1292,7 @@ export default {
                   name: 'Amp 002',
                   YDataKey: 'device_swch_amp_002',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1305,7 +1305,7 @@ export default {
                   name: 'Amp 003',
                   YDataKey: 'device_swch_amp_003',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1318,7 +1318,7 @@ export default {
                   name: 'Amp 004',
                   YDataKey: 'device_swch_amp_004',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1331,7 +1331,7 @@ export default {
                   name: 'Amp 005',
                   YDataKey: 'device_swch_amp_005',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1344,7 +1344,7 @@ export default {
                   name: 'Amp 006',
                   YDataKey: 'device_swch_amp_006',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1357,7 +1357,7 @@ export default {
                   name: 'Amp 007',
                   YDataKey: 'device_swch_amp_007',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1370,7 +1370,7 @@ export default {
                   name: 'Amp 008',
                   YDataKey: 'device_swch_amp_008',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1383,7 +1383,7 @@ export default {
                   name: 'Amp 009',
                   YDataKey: 'device_swch_amp_009',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
               ],
@@ -1413,7 +1413,7 @@ export default {
                   name: 'Volt 000',
                   YDataKey: 'device_swch_volt_000',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1426,7 +1426,7 @@ export default {
                   name: 'Volt 001',
                   YDataKey: 'device_swch_volt_001',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1439,7 +1439,7 @@ export default {
                   name: 'Volt 002',
                   YDataKey: 'device_swch_volt_002',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1452,7 +1452,7 @@ export default {
                   name: 'Volt 003',
                   YDataKey: 'device_swch_volt_003',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1465,7 +1465,7 @@ export default {
                   name: 'Volt 004',
                   YDataKey: 'device_swch_volt_004',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1478,7 +1478,7 @@ export default {
                   name: 'Volt 005',
                   YDataKey: 'device_swch_volt_005',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1491,7 +1491,7 @@ export default {
                   name: 'Volt 006',
                   YDataKey: 'device_swch_volt_006',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1504,7 +1504,7 @@ export default {
                   name: 'Volt 007',
                   YDataKey: 'device_swch_volt_007',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1517,7 +1517,7 @@ export default {
                   name: 'Volt 008',
                   YDataKey: 'device_swch_volt_008',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1530,7 +1530,7 @@ export default {
                   name: 'Volt 009',
                   YDataKey: 'device_swch_volt_009',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
               ],
@@ -1564,7 +1564,7 @@ export default {
               displayValues: [
                 {
                   name: 'Battery Capacity',
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   dataKey: 'node_battcap',
                   timeDataKey: 'node_utc',
                   unit: 'Whr',
@@ -1572,7 +1572,7 @@ export default {
                 },
                 {
                   name: 'Battery Percent',
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   dataKey: 'device_batt_percentage_000',
                   timeDataKey: 'node_utc',
                   unit: '%',
@@ -1580,7 +1580,7 @@ export default {
                 },
                 {
                   name: 'Power Gen',
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   timeDataKey: 'node_utc',
                   dataKey: 'node_powgen',
                   unit: 'W',
@@ -1588,7 +1588,7 @@ export default {
                 },
                 {
                   name: 'Power Use',
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   timeDataKey: 'node_utc',
                   dataKey: 'node_powuse',
                   unit: 'W',
@@ -1596,7 +1596,7 @@ export default {
                 },
                 {
                   name: 'Battery Temperature',
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   dataKey: 'device_batt_temp_000',
                   timeDataKey: 'node_utc',
                   unit: 'C',
