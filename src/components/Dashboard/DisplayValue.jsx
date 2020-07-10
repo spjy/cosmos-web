@@ -30,6 +30,7 @@ function DisplayValue({
 }) {
   /** Accessing the neutron1 messages from the socket */
   const state = useSelector((s) => s.data);
+  const realm = useSelector((s) => s.realm);
 
   /** Storage for global form values */
   const [displayValuesForm] = Form.useForm();
@@ -93,13 +94,13 @@ function DisplayValue({
     displayValuesState.forEach((v, i) => {
       // Check if the state change involves any of the displayed values
       // by checking the node process and the key it is watching
-      if (state && state[v.nodeProcess]
-        && state[v.nodeProcess][v.dataKey] !== undefined
-        && state[v.nodeProcess][v.timeDataKey]
+      if (state && realm && state[realm]
+        && state[realm][v.dataKey] !== undefined
+        && state[realm][v.timeDataKey]
       ) {
         // If it does, change the value
-        displayValuesState[i].value = state[v.nodeProcess][v.dataKey];
-        displayValuesState[i].time = mjdToString(state[v.nodeProcess][v.timeDataKey]);
+        displayValuesState[i].value = state[realm][v.dataKey];
+        displayValuesState[i].time = mjdToString(state[realm][v.timeDataKey]);
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps

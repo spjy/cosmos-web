@@ -1,6 +1,6 @@
 import Home from './home';
 import CEO from './ceo';
-import Satellite from './satellite';
+import Realms from './realms';
 // import Scheduler from './scheduler';
 import GroundStations from './ground-stations';
 import DashboardManager from './dashboard-manager';
@@ -8,7 +8,7 @@ import DashboardManager from './dashboard-manager';
 const routes = [
   Home,
   CEO,
-  Satellite,
+  Realms,
   GroundStations,
   // Scheduler,
   DashboardManager,

@@ -69,6 +69,7 @@ function CesiumGlobe({
 }) {
   /** Accessing the neutron1 messages from the socket */
   const state = useSelector((s) => s.data);
+  const realm = useSelector((s) => s.realm);
 
   /** Storage for global; form values */
   const [orbitsForm] = Form.useForm();
@@ -124,12 +125,12 @@ function CesiumGlobe({
   /** Retrieve live orbit data */
   useEffect(() => {
     orbitsState.forEach(({
-      nodeProcess, dataKey, timeDataKey, live,
+      dataKey, timeDataKey, live,
     }, i) => {
-      if (state && state[nodeProcess]
-        && state[nodeProcess][dataKey]
-        && state[nodeProcess][dataKey].pos
-        && state[nodeProcess][timeDataKey]
+      if (state && realm && state[realm]
+        && state[realm][dataKey]
+        && state[realm][dataKey].pos
+        && state[realm][timeDataKey]
         && live
       ) {
         const tempOrbit = [...orbitsState];
@@ -138,13 +139,13 @@ function CesiumGlobe({
           tempOrbit[i].path = new Cesium.SampledPositionProperty();
         }
 
-        if (state[nodeProcess][timeDataKey]
-          && (state[nodeProcess][dataKey]
-          || state[nodeProcess].target_loc_pos_geod_s_lat)
+        if (state[realm][timeDataKey]
+          && (state[realm][dataKey]
+          || state[realm].target_loc_pos_geod_s_lat)
         ) {
           const date = Cesium
             .JulianDate
-            .fromDate(MJDtoJavaScriptDate(state[nodeProcess][timeDataKey]));
+            .fromDate(MJDtoJavaScriptDate(state[realm][timeDataKey]));
 
           let pos;
 
@@ -153,33 +154,33 @@ function CesiumGlobe({
               .Cartesian3
               .fromArray(
                 [
-                  state[nodeProcess][dataKey].pos[0],
-                  state[nodeProcess][dataKey].pos[1],
-                  state[nodeProcess][dataKey].pos[2],
+                  state[realm][dataKey].pos[0],
+                  state[realm][dataKey].pos[1],
+                  state[realm][dataKey].pos[2],
                 ],
               );
             tempOrbit[i].path.addSample(date, pos);
           }
           // else if (coordinateSystem === 'geodetic') {
           //   pos = Cesium.Cartesian3.fromDegrees(
-          //     state[nodeProcess].target_loc_pos_geod_s_lat * (180 / Math.PI),
-          //     state[nodeProcess].target_loc_pos_geod_s_lon * (180 / Math.PI),
-          //     state[nodeProcess].target_loc_pos_geod_s_h,
+          //     state[realm].target_loc_pos_geod_s_lat * (180 / Math.PI),
+          //     state[realm].target_loc_pos_geod_s_lon * (180 / Math.PI),
+          //     state[realm].target_loc_pos_geod_s_h,
           //   );
           // }
         }
 
-        tempOrbit[i].position = state[nodeProcess][dataKey].pos;
+        tempOrbit[i].position = state[realm][dataKey].pos;
 
         if (coordinateSystem === 'geodetic'
-          && state[nodeProcess].target_loc_pos_geod_s_lat
-          && state[nodeProcess].target_loc_pos_geod_s_lon
-          && state[nodeProcess].target_loc_pos_geod_s_h
+          && state[realm].target_loc_pos_geod_s_lat
+          && state[realm].target_loc_pos_geod_s_lon
+          && state[realm].target_loc_pos_geod_s_h
         ) {
           tempOrbit[i].geodetic = {
-            latitude: state[nodeProcess].target_loc_pos_geod_s_lat,
-            longitude: state[nodeProcess].target_loc_pos_geod_s_lon,
-            altitude: state[nodeProcess].target_loc_pos_geod_s_h,
+            latitude: state[realm].target_loc_pos_geod_s_lat,
+            longitude: state[realm].target_loc_pos_geod_s_lon,
+            altitude: state[realm].target_loc_pos_geod_s_h,
           };
         }
 
@@ -197,7 +198,7 @@ function CesiumGlobe({
       const to = (dates[1].unix() / 86400.0) + 2440587.5 - 2400000.5;
 
       try {
-        const { data } = await axios.post(`/query/${process.env.MONGODB_COLLECTION}/${nodeProcess}`, {
+        const { data } = await axios.post(`/query/${realm}/${nodeProcess}`, {
           multiple: true,
           query: {
             [timeDataKey]: {

@@ -7,6 +7,7 @@ export default function reducer(state = {
   namespace: {},
   list: {},
   data: {},
+  realm: null,
 }, {
   type, key, payload,
 }) {
@@ -21,7 +22,10 @@ export default function reducer(state = {
         ...state,
         data: {
           ...state.data,
-          [key]: payload,
+          [key]: {
+            ...state.data[key],
+            ...payload,
+          },
         },
       };
     default:

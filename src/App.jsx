@@ -36,6 +36,7 @@ const App = () => (
               id={route.path}
               key={route.path}
               path={route.path}
+              name={route.name}
               // eslint-disable-next-line
               {...route.props}
             />
