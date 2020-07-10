@@ -161,7 +161,7 @@ function Dashboard({
   useEffect(() => {
     async function fetchNamespace() {
       try {
-        const agents = await axios.get('/namespace/pieces');
+        const agents = await axios.get('/namespace/all');
 
         dispatch(set('namespace', agents.data));
       } catch (error) {
