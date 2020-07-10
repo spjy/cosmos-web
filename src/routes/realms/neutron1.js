@@ -85,7 +85,7 @@ export default {
               },
               {
                 name: 'beagle1 CPU Uptime',
-                nodeProcess: 'beagle1:cpu',
+                nodeProcess: 'any',
                 dataKey: 'device_cpu_uptime_000',
                 timeDataKey: 'device_cpu_utc_000',
                 unit: 's',
@@ -93,7 +93,7 @@ export default {
               },
               {
                 name: 'beagle1 CPU Bootcount',
-                nodeProcess: 'beagle1:cpu',
+                nodeProcess: 'any',
                 dataKey: 'device_cpu_boot_count_000',
                 timeDataKey: 'device_cpu_utc_000',
                 unit: '',
@@ -329,7 +329,7 @@ export default {
                 YDataKey: 'device_cpu_load_000',
                 timeDataKey: 'device_cpu_utc_000',
                 processYDataKey: (x) => x,
-                nodeProcess: 'neutron1:cpu',
+                nodeProcess: 'any',
                 live: true,
               },
             ],
@@ -888,7 +888,7 @@ export default {
               displayValues: [
                 {
                   name: 'CPU Load',
-                  nodeProcess: 'beagle1:cpu',
+                  nodeProcess: 'any',
                   dataKey: 'device_cpu_load_000',
                   timeDataKey: 'device_cpu_utc_000',
                   unit: '',
@@ -896,7 +896,7 @@ export default {
                 },
                 {
                   name: 'CPU Uptime',
-                  nodeProcess: 'beagle1:cpu',
+                  nodeProcess: 'any',
                   dataKey: 'device_cpu_uptime_000',
                   timeDataKey: 'device_cpu_utc_000',
                   unit: 's',
@@ -904,7 +904,7 @@ export default {
                 },
                 {
                   name: 'CPU Bootcount',
-                  nodeProcess: 'beagle1:cpu',
+                  nodeProcess: 'any',
                   dataKey: 'device_cpu_boot_count_000',
                   timeDataKey: 'device_cpu_utc_000',
                   unit: '',
@@ -927,7 +927,7 @@ export default {
               displayValues: [
                 {
                   name: 'CPU GiB',
-                  nodeProcess: 'beagle1:cpu',
+                  nodeProcess: 'any',
                   dataKey: 'device_cpu_gib_000',
                   timeDataKey: 'device_cpu_utc_000',
                   unit: '',
@@ -935,7 +935,7 @@ export default {
                 },
                 {
                   name: 'CPU Max GiB',
-                  nodeProcess: 'beagle1:cpu',
+                  nodeProcess: 'any',
                   dataKey: 'device_cpu_maxgib_000',
                   timeDataKey: 'device_cpu_utc_000',
                   unit: '',
@@ -968,7 +968,7 @@ export default {
                   name: 'beagle1 Load',
                   YDataKey: 'device_cpu_load_000',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:cpu',
+                  nodeProcess: 'any',
                   live: true,
                 },
               ],
@@ -1012,7 +1012,7 @@ export default {
                   name: 'Motherboard',
                   YDataKey: 'device_batt_temp_000',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1025,7 +1025,7 @@ export default {
                   name: 'Daughterboard 1 000',
                   YDataKey: 'device_tsen_temp_000',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1038,7 +1038,7 @@ export default {
                   name: 'Daughterboard 2 001',
                   YDataKey: 'device_tsen_temp_001',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1051,7 +1051,7 @@ export default {
                   name: 'Daughterboard 2 002',
                   YDataKey: 'device_tsen_temp_002',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
                 {
@@ -1064,7 +1064,7 @@ export default {
                   name: 'Daughterboard 2 003',
                   YDataKey: 'device_tsen_temp_003',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   live: true,
                 },
               ],
@@ -1084,7 +1084,7 @@ export default {
               displayValues: [
                 {
                   name: 'Motherboard',
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   dataKey: 'device_batt_temp_000',
                   timeDataKey: 'device_batt_utc_000',
                   unit: 'C',
@@ -1092,7 +1092,7 @@ export default {
                 },
                 {
                   name: 'Daughterboard 1 000',
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   dataKey: 'device_tsen_temp_000',
                   timeDataKey: 'device_batt_utc_000',
                   unit: 'C',
@@ -1100,7 +1100,7 @@ export default {
                 },
                 {
                   name: 'Daughterboard 2 001',
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   dataKey: 'device_tsen_temp_001',
                   timeDataKey: 'device_batt_utc_000',
                   unit: 'C',
@@ -1108,7 +1108,7 @@ export default {
                 },
                 {
                   name: 'Daughterboard 2 002',
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   dataKey: 'device_tsen_temp_002',
                   timeDataKey: 'device_batt_utc_000',
                   unit: 'C',
@@ -1116,7 +1116,7 @@ export default {
                 },
                 {
                   name: 'Daughterboard 2 003',
-                  nodeProcess: 'beagle1:eps',
+                  nodeProcess: 'any',
                   dataKey: 'device_tsen_temp_003',
                   timeDataKey: 'device_batt_utc_000',
                   unit: 'C',
@@ -1153,7 +1153,7 @@ export default {
               displayValues: [
                 {
                   name: 'Power (ADD)',
-                  nodeProcess: 'beagle1:cpu',
+                  nodeProcess: 'any',
                   dataKey: 'device_cpu_gib_000',
                   timeDataKey: 'device_cpu_utc_000',
                   unit: 'W',
@@ -1176,7 +1176,7 @@ export default {
               displayValues: [
                 {
                   name: 'Temperature (ADD)',
-                  nodeProcess: 'beagle1:cpu',
+                  nodeProcess: 'any',
                   dataKey: 'device_cpu_gib_000',
                   timeDataKey: 'device_cpu_utc_000',
                   unit: 'C',
@@ -1863,7 +1863,7 @@ export default {
               displayValues: [
                 {
                   name: 'CPU Load',
-                  nodeProcess: 'neutron1:cpu',
+                  nodeProcess: 'any',
                   dataKey: 'device_cpu_load_000',
                   timeDataKey: 'device_cpu_utc_000',
                   unit: '',
@@ -1871,7 +1871,7 @@ export default {
                 },
                 {
                   name: 'CPU Uptime',
-                  nodeProcess: 'neutron1:cpu',
+                  nodeProcess: 'any',
                   dataKey: 'device_cpu_uptime_000',
                   timeDataKey: 'device_cpu_utc_000',
                   unit: 's',
@@ -1879,7 +1879,7 @@ export default {
                 },
                 {
                   name: 'CPU Bootcount',
-                  nodeProcess: 'neutron1:cpu',
+                  nodeProcess: 'any',
                   dataKey: 'device_cpu_boot_count_000',
                   timeDataKey: 'device_cpu_utc_000',
                   unit: '',
@@ -1902,7 +1902,7 @@ export default {
               displayValues: [
                 {
                   name: 'CPU GiB',
-                  nodeProcess: 'neutron1:cpu',
+                  nodeProcess: 'any',
                   dataKey: 'device_cpu_gib_000',
                   timeDataKey: 'device_cpu_utc_000',
                   unit: '',
@@ -1910,7 +1910,7 @@ export default {
                 },
                 {
                   name: 'CPU Max GiB',
-                  nodeProcess: 'neutron1:cpu',
+                  nodeProcess: 'any',
                   dataKey: 'device_cpu_maxgib_000',
                   timeDataKey: 'device_cpu_utc_000',
                   unit: '',
@@ -1943,7 +1943,7 @@ export default {
                   name: 'neutron1 Load',
                   YDataKey: 'device_cpu_load_000',
                   processYDataKey: (x) => x,
-                  nodeProcess: 'neutron1:cpu',
+                  nodeProcess: 'any',
                   live: true,
                 },
               ],
@@ -1967,7 +1967,7 @@ export default {
               displayValues: [
                 {
                   name: 'Euler',
-                  nodeProcess: 'beagle1:adcs',
+                  nodeProcess: 'any',
                   dataKey: 'device_imu_euler_000',
                   timeDataKey: 'device_imu_utc_000',
                   unit: '',
@@ -1975,7 +1975,7 @@ export default {
                 },
                 {
                   name: 'Theta',
-                  nodeProcess: 'beagle1:adcs',
+                  nodeProcess: 'any',
                   dataKey: 'device_imu_euler_000',
                   timeDataKey: 'device_imu_utc_000',
                   unit: '',
@@ -1983,7 +1983,7 @@ export default {
                 },
                 {
                   name: 'Omega',
-                  nodeProcess: 'beagle1:adcs',
+                  nodeProcess: 'any',
                   timeDataKey: 'node_utc',
                   dataKey: 'device_imu_utc_000',
                   unit: '',
@@ -1991,7 +1991,7 @@ export default {
                 },
                 {
                   name: 'Alpha',
-                  nodeProcess: 'beagle1:adcs',
+                  nodeProcess: 'any',
                   timeDataKey: 'node_utc',
                   dataKey: 'device_imu_utc_000',
                   unit: '',
@@ -1999,7 +1999,7 @@ export default {
                 },
                 {
                   name: 'Mag',
-                  nodeProcess: 'beagle1:adcs',
+                  nodeProcess: 'any',
                   dataKey: 'device_imu_mag_000',
                   timeDataKey: 'device_imu_utc_000',
                   unit: '',
@@ -2007,7 +2007,7 @@ export default {
                 },
                 {
                   name: 'Bdot',
-                  nodeProcess: 'beagle1:adcs',
+                  nodeProcess: 'any',
                   dataKey: 'device_imu_bdot_000',
                   timeDataKey: 'device_imu_utc_000',
                   unit: '',
@@ -2015,7 +2015,7 @@ export default {
                 },
                 {
                   name: 'Temperature',
-                  nodeProcess: 'beagle1:adcs',
+                  nodeProcess: 'any',
                   dataKey: 'device_imu_temp_000',
                   timeDataKey: 'device_imu_utc_000',
                   unit: 'C',
@@ -2023,7 +2023,7 @@ export default {
                 },
                 {
                   name: 'Power',
-                  nodeProcess: 'beagle1:adcs',
+                  nodeProcess: 'any',
                   dataKey: 'device_imu_power_000',
                   timeDataKey: 'device_imu_utc_000',
                   unit: 'W',
@@ -2046,7 +2046,7 @@ export default {
               displayValues: [
                 {
                   name: 'Momentum 000',
-                  nodeProcess: 'beagle1:adcs',
+                  nodeProcess: 'any',
                   dataKey: 'device_mtr_mom_000',
                   timeDataKey: 'device_mtr_utc_000',
                   unit: '',
@@ -2054,7 +2054,7 @@ export default {
                 },
                 {
                   name: 'Power 000',
-                  nodeProcess: 'beagle1:adcs',
+                  nodeProcess: 'any',
                   dataKey: 'device_mtr_power_000',
                   timeDataKey: 'device_mtr_utc_000',
                   unit: 'W',
@@ -2062,7 +2062,7 @@ export default {
                 },
                 {
                   name: 'Momentum 001',
-                  nodeProcess: 'beagle1:adcs',
+                  nodeProcess: 'any',
                   dataKey: 'device_mtr_mom_001',
                   timeDataKey: 'device_mtr_utc_001',
                   unit: '',
@@ -2070,7 +2070,7 @@ export default {
                 },
                 {
                   name: 'Power 001',
-                  nodeProcess: 'beagle1:adcs',
+                  nodeProcess: 'any',
                   dataKey: 'device_mtr_power_001',
                   timeDataKey: 'device_mtr_utc_001',
                   unit: 'W',
@@ -2078,7 +2078,7 @@ export default {
                 },
                 {
                   name: 'Momentum 002',
-                  nodeProcess: 'beagle1:adcs',
+                  nodeProcess: 'any',
                   dataKey: 'device_mtr_mom_002',
                   timeDataKey: 'device_mtr_utc_002',
                   unit: '',
@@ -2086,7 +2086,7 @@ export default {
                 },
                 {
                   name: 'Power 002',
-                  nodeProcess: 'beagle1:adcs',
+                  nodeProcess: 'any',
                   dataKey: 'device_mtr_power_002',
                   timeDataKey: 'device_mtr_utc_002',
                   unit: 'W',
@@ -2109,7 +2109,7 @@ export default {
               displayValues: [
                 {
                   name: 'Omega 000',
-                  nodeProcess: 'beagle1:adcs',
+                  nodeProcess: 'any',
                   dataKey: 'device_rw_omg_000',
                   timeDataKey: 'device_rw_utc_000',
                   unit: '',
@@ -2117,7 +2117,7 @@ export default {
                 },
                 {
                   name: 'Power 000',
-                  nodeProcess: 'beagle1:adcs',
+                  nodeProcess: 'any',
                   dataKey: 'device_rw_power_000',
                   timeDataKey: 'device_rw_utc_000',
                   unit: 'W',
@@ -2125,7 +2125,7 @@ export default {
                 },
                 {
                   name: 'Omega 001',
-                  nodeProcess: 'beagle1:adcs',
+                  nodeProcess: 'any',
                   dataKey: 'device_rw_omg_001',
                   timeDataKey: 'device_rw_utc_001',
                   unit: '',
@@ -2133,7 +2133,7 @@ export default {
                 },
                 {
                   name: 'Power 001',
-                  nodeProcess: 'beagle1:adcs',
+                  nodeProcess: 'any',
                   dataKey: 'device_rw_power_001',
                   timeDataKey: 'device_rw_utc_001',
                   unit: 'W',
@@ -2141,7 +2141,7 @@ export default {
                 },
                 {
                   name: 'Omega 002',
-                  nodeProcess: 'beagle1:adcs',
+                  nodeProcess: 'any',
                   dataKey: 'device_rw_omg_002',
                   timeDataKey: 'device_rw_utc_002',
                   unit: '',
@@ -2149,7 +2149,7 @@ export default {
                 },
                 {
                   name: 'Power 002',
-                  nodeProcess: 'beagle1:adcs',
+                  nodeProcess: 'any',
                   dataKey: 'device_rw_power_002',
                   timeDataKey: 'device_rw_utc_002',
                   unit: 'W',
@@ -2172,7 +2172,7 @@ export default {
               displayValues: [
                 {
                   name: 'Temperature',
-                  nodeProcess: 'beagle1:adcs',
+                  nodeProcess: 'any',
                   dataKey: 'device_cpu_temp_002',
                   timeDataKey: 'device_cpu_utc_002',
                   unit: 'C',
@@ -2180,7 +2180,7 @@ export default {
                 },
                 {
                   name: 'Power',
-                  nodeProcess: 'beagle1:adcs',
+                  nodeProcess: 'any',
                   dataKey: 'device_cpu_power_002',
                   timeDataKey: 'device_cpu_utc_002',
                   unit: 'W',
@@ -2188,7 +2188,7 @@ export default {
                 },
                 {
                   name: 'Load',
-                  nodeProcess: 'beagle1:adcs',
+                  nodeProcess: 'any',
                   dataKey: 'device_cpu_load_002',
                   timeDataKey: 'device_cpu_utc_002',
                   unit: '',
@@ -2196,7 +2196,7 @@ export default {
                 },
                 {
                   name: 'Uptime',
-                  nodeProcess: 'beagle1:adcs',
+                  nodeProcess: 'any',
                   dataKey: 'device_cpu_uptime_002',
                   timeDataKey: 'device_cpu_utc_002',
                   unit: 's',
@@ -2204,7 +2204,7 @@ export default {
                 },
                 {
                   name: 'Boot Count',
-                  nodeProcess: 'beagle1:adcs',
+                  nodeProcess: 'any',
                   dataKey: 'device_cpu_boot_count_002',
                   timeDataKey: 'device_cpu_utc_002',
                   unit: '',
@@ -2212,7 +2212,7 @@ export default {
                 },
                 {
                   name: 'Power 002',
-                  nodeProcess: 'beagle1:adcs',
+                  nodeProcess: 'any',
                   dataKey: 'device_rw_power_002',
                   timeDataKey: 'device_rw_utc_002',
                   unit: 'W',

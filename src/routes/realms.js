@@ -1,7 +1,7 @@
-import defaultLayout from './satellite/defaultLayout';
-import neutron1 from './satellite/neutron1';
-import hiapo from './satellite/hiapo';
-import hyti from './satellite/hyti';
+import defaultLayout from './realms/defaultLayout';
+import neutron1 from './realms/neutron1';
+import hiapo from './realms/hiapo';
+import hyti from './realms/hyti';
 
 export default {
   name: 'Realms',
