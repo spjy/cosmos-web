@@ -7,7 +7,7 @@ export default {
   defaultLayout: {
     lg: [
       {
-        i: 'satellite-simple-neutron1-a',
+        i: 'satellite-neutron1-a',
         x: 0,
         y: 0,
         w: 3,
@@ -17,7 +17,7 @@ export default {
         },
       },
       {
-        i: 'satellite-simple-neutron1-ba',
+        i: 'satellite-neutron1-b',
         x: 3,
         y: 0,
         w: 3,
@@ -64,7 +64,7 @@ export default {
         },
       },
       {
-        i: 'satellite-simple-neutron1-b',
+        i: 'satellite-neutron1-c',
         x: 6,
         y: 0,
         w: 3,
@@ -83,6 +83,22 @@ export default {
                 processDataKey: (x) => x.toFixed(2),
               },
               {
+                name: 'beagle1 CPU Uptime',
+                nodeProcess: 'beagle1:cpu',
+                dataKey: 'device_cpu_uptime_000',
+                timeDataKey: 'device_cpu_utc_000',
+                unit: 's',
+                processDataKey: (x) => x.toFixed(2),
+              },
+              {
+                name: 'beagle1 CPU Bootcount',
+                nodeProcess: 'beagle1:cpu',
+                dataKey: 'device_cpu_boot_count_000',
+                timeDataKey: 'device_cpu_utc_000',
+                unit: '',
+                processDataKey: (x) => x.toFixed(2),
+              },
+              {
                 name: 'OBC CPU Load',
                 nodeProcess: 'neutron1:cpu',
                 dataKey: 'device_cpu_load_000',
@@ -95,7 +111,7 @@ export default {
         },
       },
       {
-        i: 'satellite-simple-neutron1-c',
+        i: 'satellite-neutron1-d',
         x: 9,
         y: 0,
         w: 3,
@@ -275,7 +291,7 @@ export default {
         },
       },
       {
-        i: 'satellite-simple-neutron1-g',
+        i: 'satellite-neutron1-e',
         x: 0,
         y: 3,
         w: 6,
@@ -318,7 +334,7 @@ export default {
         },
       },
       {
-        i: 'satellite-simple-default-iaa',
+        i: 'satellite-default-f',
         x: 6,
         y: 3,
         w: 6,
@@ -452,7 +468,7 @@ export default {
         },
       },
       {
-        i: 'satellite-simple-neutron1-hc',
+        i: 'satellite-neutron1-g',
         x: 0,
         y: 4,
         w: 6,
@@ -522,7 +538,7 @@ export default {
         },
       },
       {
-        i: 'satellite-simple-neutron1-ha',
+        i: 'satellite-neutron1-h',
         x: 6,
         y: 4,
         w: 6,
@@ -591,7 +607,7 @@ export default {
         },
       },
       {
-        i: 'satellite-simple-default-ia',
+        i: 'satellite-default-i',
         x: 0,
         y: 5,
         w: 6,
@@ -647,7 +663,7 @@ export default {
         },
       },
       {
-        i: 'satellite-simple-default-ja',
+        i: 'satellite-default-j',
         x: 6,
         y: 5,
         w: 6,
@@ -729,7 +745,7 @@ export default {
         },
       },
       {
-        i: 'satellite-simple-default-jb',
+        i: 'satellite-default-k',
         x: 0,
         y: 7,
         w: 12,
@@ -772,20 +788,7 @@ export default {
         },
       },
       {
-        i: 'satellite-simple-neutron1-d',
-        x: 0,
-        y: 8,
-        w: 12,
-        h: 10,
-        component: {
-          name: 'Commands',
-          props: {
-            nodes: ['beagle1', 'neutron1'],
-          },
-        },
-      },
-      {
-        i: 'satellite-simple-neutron1-e',
+        i: 'satellite-neutron1-l',
         x: 0,
         y: 9,
         w: 6,
@@ -832,7 +835,116 @@ export default {
   tabs: {
     BBB: {
       lg: [
-
+        {
+          i: 'satellite-neutron1-bbb-a',
+          x: 0,
+          y: 0,
+          w: 4,
+          h: 7,
+          component: {
+            name: 'Status',
+          },
+        },
+        {
+          i: 'satellite-neutron1-bbb-b',
+          x: 4,
+          y: 0,
+          w: 4,
+          h: 7,
+          component: {
+            name: 'DisplayValue',
+            props: {
+              name: 'CPU',
+              displayValues: [
+                {
+                  name: 'CPU Load',
+                  nodeProcess: 'beagle1:cpu',
+                  dataKey: 'device_cpu_load_000',
+                  timeDataKey: 'device_cpu_utc_000',
+                  unit: '',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+                {
+                  name: 'CPU Uptime',
+                  nodeProcess: 'beagle1:cpu',
+                  dataKey: 'device_cpu_uptime_000',
+                  timeDataKey: 'device_cpu_utc_000',
+                  unit: 's',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+                {
+                  name: 'CPU Bootcount',
+                  nodeProcess: 'beagle1:cpu',
+                  dataKey: 'device_cpu_boot_count_000',
+                  timeDataKey: 'device_cpu_utc_000',
+                  unit: '',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+              ],
+            },
+          },
+        },
+        {
+          i: 'satellite-neutron1-bbb-c',
+          x: 8,
+          y: 0,
+          w: 4,
+          h: 7,
+          component: {
+            name: 'DisplayValue',
+            props: {
+              name: 'Memory',
+              displayValues: [
+                {
+                  name: 'CPU GiB',
+                  nodeProcess: 'beagle1:cpu',
+                  dataKey: 'device_cpu_gib_000',
+                  timeDataKey: 'device_cpu_utc_000',
+                  unit: '',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+                {
+                  name: 'CPU Max GiB',
+                  nodeProcess: 'beagle1:cpu',
+                  dataKey: 'device_cpu_maxgib_000',
+                  timeDataKey: 'device_cpu_utc_000',
+                  unit: '',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+              ],
+            },
+          },
+        },
+        {
+          i: 'satellite-neutron1-bbb-d',
+          x: 0,
+          y: 8,
+          w: 12,
+          h: 18,
+          component: {
+            name: 'Chart',
+            props: {
+              name: 'CPU',
+              XDataKey: 'device_cpu_utc_000',
+              processXDataKey: (x) => mjdToString(x),
+              plots: [
+                {
+                  x: [],
+                  y: [],
+                  type: 'scatter',
+                  marker: {
+                    color: 'red',
+                  },
+                  name: 'beagle1 Load',
+                  YDataKey: 'device_cpu_load_000',
+                  processYDataKey: (x) => x,
+                  nodeProcess: 'beagle1:cpu',
+                  live: true,
+                },
+              ],
+            },
+          },
+        },
       ],
     },
     'ISIS Radio': {
@@ -847,29 +959,210 @@ export default {
     },
     Battery: {
       lg: [
-
-      ],
-    },
-    Payload: {
-      lg: [
-
-      ],
-    },
-    EPS: {
-      lg: [
         {
-          i: 'satellite-neutron1-tab-eps-a',
+          i: 'satellite-neutron1-batt-a',
           x: 0,
+          y: 0,
+          w: 9,
+          h: 18,
+          component: {
+            name: 'Chart',
+            props: {
+              name: 'Battery Temperature',
+              XDataKey: 'device_batt_utc_000',
+              processXDataKey: (x) => mjdToString(x),
+              plots: [
+                {
+                  x: [],
+                  y: [],
+                  type: 'scatter',
+                  marker: {
+                    color: 'red',
+                  },
+                  name: 'Motherboard',
+                  YDataKey: 'device_batt_temp_000',
+                  processYDataKey: (x) => x,
+                  nodeProcess: 'beagle1:eps',
+                  live: true,
+                },
+                {
+                  x: [],
+                  y: [],
+                  type: 'scatter',
+                  marker: {
+                    color: 'orange',
+                  },
+                  name: 'Daughterboard 1 000',
+                  YDataKey: 'device_tsen_temp_000',
+                  processYDataKey: (x) => x,
+                  nodeProcess: 'beagle1:eps',
+                  live: true,
+                },
+                {
+                  x: [],
+                  y: [],
+                  type: 'scatter',
+                  marker: {
+                    color: 'blue',
+                  },
+                  name: 'Daughterboard 2 001',
+                  YDataKey: 'device_tsen_temp_001',
+                  processYDataKey: (x) => x,
+                  nodeProcess: 'beagle1:eps',
+                  live: true,
+                },
+                {
+                  x: [],
+                  y: [],
+                  type: 'scatter',
+                  marker: {
+                    color: 'gray',
+                  },
+                  name: 'Daughterboard 2 002',
+                  YDataKey: 'device_tsen_temp_002',
+                  processYDataKey: (x) => x,
+                  nodeProcess: 'beagle1:eps',
+                  live: true,
+                },
+                {
+                  x: [],
+                  y: [],
+                  type: 'scatter',
+                  marker: {
+                    color: 'yellow',
+                  },
+                  name: 'Daughterboard 2 003',
+                  YDataKey: 'device_tsen_temp_003',
+                  processYDataKey: (x) => x,
+                  nodeProcess: 'beagle1:eps',
+                  live: true,
+                },
+              ],
+            },
+          },
+        },
+        {
+          i: 'satellite-neutron1-batt-b',
+          x: 9,
           y: 0,
           w: 3,
           h: 7,
           component: {
-            name: 'Status',
+            name: 'DisplayValue',
+            props: {
+              name: 'Battery Temperature',
+              displayValues: [
+                {
+                  name: 'Motherboard',
+                  nodeProcess: 'beagle1:eps',
+                  dataKey: 'device_batt_temp_000',
+                  timeDataKey: 'device_batt_utc_000',
+                  unit: 'C',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+                {
+                  name: 'Daughterboard 1 000',
+                  nodeProcess: 'beagle1:eps',
+                  dataKey: 'device_tsen_temp_000',
+                  timeDataKey: 'device_batt_utc_000',
+                  unit: 'C',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+                {
+                  name: 'Daughterboard 2 001',
+                  nodeProcess: 'beagle1:eps',
+                  dataKey: 'device_tsen_temp_001',
+                  timeDataKey: 'device_batt_utc_000',
+                  unit: 'C',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+                {
+                  name: 'Daughterboard 2 002',
+                  nodeProcess: 'beagle1:eps',
+                  dataKey: 'device_tsen_temp_002',
+                  timeDataKey: 'device_batt_utc_000',
+                  unit: 'C',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+                {
+                  name: 'Daughterboard 2 003',
+                  nodeProcess: 'beagle1:eps',
+                  dataKey: 'device_tsen_temp_003',
+                  timeDataKey: 'device_batt_utc_000',
+                  unit: 'C',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+              ],
+            },
+          },
+        },
+      ],
+    },
+    Payload: {
+      lg: [
+        {
+          i: 'satellite-neutron1-payload-a',
+          x: 0,
+          y: 0,
+          w: 4,
+          h: 7,
+          component: {
+            name: 'Replacement',
           },
         },
         {
-          i: 'satellite-neutron1-tab-eps-ba',
-          x: 3,
+          i: 'satellite-neutron1-payload-b',
+          x: 4,
+          y: 0,
+          w: 4,
+          h: 7,
+          component: {
+            name: 'DisplayValue',
+            props: {
+              name: 'Payload Power',
+              displayValues: [
+                {
+                  name: 'Power (ADD)',
+                  nodeProcess: 'beagle1:cpu',
+                  dataKey: 'device_cpu_gib_000',
+                  timeDataKey: 'device_cpu_utc_000',
+                  unit: 'W',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+              ],
+            },
+          },
+        },
+        {
+          i: 'satellite-neutron1-payload-c',
+          x: 8,
+          y: 0,
+          w: 4,
+          h: 7,
+          component: {
+            name: 'DisplayValue',
+            props: {
+              name: 'Payload Temperature',
+              displayValues: [
+                {
+                  name: 'Temperature (ADD)',
+                  nodeProcess: 'beagle1:cpu',
+                  dataKey: 'device_cpu_gib_000',
+                  timeDataKey: 'device_cpu_utc_000',
+                  unit: 'C',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+              ],
+            },
+          },
+        },
+      ],
+    },
+    'EPS Battery': {
+      lg: [
+        {
+          i: 'satellite-neutron1-epsbatt-a',
+          x: 0,
           y: 0,
           w: 3,
           h: 7,
@@ -923,7 +1216,7 @@ export default {
           },
         },
         {
-          i: 'satellite-neutron1-tab-eps-ha',
+          i: 'satellite-neutron1-tab-epsbatt-b',
           x: 0,
           y: 4,
           w: 6,
@@ -1019,7 +1312,7 @@ export default {
           },
         },
         {
-          i: 'satellite-neutron1-tab-eps-hb',
+          i: 'satellite-neutron1-tab-epsbatt-c',
           x: 6,
           y: 4,
           w: 6,
@@ -1102,7 +1395,7 @@ export default {
           },
         },
         {
-          i: 'satellite-neutron1-tab-eps-ia',
+          i: 'satellite-neutron1-tab-epsbatt-d',
           x: 0,
           y: 5,
           w: 6,
@@ -1158,7 +1451,7 @@ export default {
           },
         },
         {
-          i: 'satellite-neutron1-tab-eps-ib',
+          i: 'satellite-neutron1-tab-epsbatt-e',
           x: 6,
           y: 5,
           w: 6,
@@ -1214,7 +1507,7 @@ export default {
           },
         },
         {
-          i: 'satellite-neutron1-tab-eps-ja',
+          i: 'satellite-neutron1-tab-epsbatt-f',
           x: 0,
           y: 6,
           w: 6,
@@ -1361,7 +1654,7 @@ export default {
           },
         },
         {
-          i: 'satellite-neutron1-tab-eps-jb',
+          i: 'satellite-neutron1-tab-epsbatt-g',
           x: 6,
           y: 6,
           w: 6,
@@ -1509,68 +1802,119 @@ export default {
         },
       ],
     },
+    'EPS Solar Panel': {
+      lg: [],
+    },
+    'EPS Range': {
+      lg: [],
+    },
     OBC: {
       lg: [
         {
-          i: 'satellite-neutron1-tab-obc-a',
+          i: 'satellite-neutron1-obc-a',
           x: 0,
           y: 0,
-          w: 3,
+          w: 4,
           h: 7,
           component: {
             name: 'Status',
           },
         },
         {
-          i: 'satellite-neutron1-tab-obc-ba',
-          x: 3,
+          i: 'satellite-neutron1-obc-b',
+          x: 4,
           y: 0,
-          w: 3,
+          w: 4,
           h: 7,
           component: {
             name: 'DisplayValue',
             props: {
-              name: 'EPS Overview',
+              name: 'CPU',
               displayValues: [
                 {
-                  name: 'Battery Capacity',
-                  nodeProcess: 'beagle1:eps',
-                  dataKey: 'node_battcap',
-                  timeDataKey: 'node_utc',
-                  unit: 'Whr',
+                  name: 'CPU Load',
+                  nodeProcess: 'neutron1:cpu',
+                  dataKey: 'device_cpu_load_000',
+                  timeDataKey: 'device_cpu_utc_000',
+                  unit: '',
                   processDataKey: (x) => x.toFixed(2),
                 },
                 {
-                  name: 'Battery Percent',
-                  nodeProcess: 'beagle1:eps',
-                  dataKey: 'device_batt_percentage_000',
-                  timeDataKey: 'node_utc',
-                  unit: '%',
-                  processDataKey: (x) => x.toFixed(4),
-                },
-                {
-                  name: 'Power Gen',
-                  nodeProcess: 'beagle1:eps',
-                  timeDataKey: 'node_utc',
-                  dataKey: 'node_powgen',
-                  unit: 'W',
+                  name: 'CPU Uptime',
+                  nodeProcess: 'neutron1:cpu',
+                  dataKey: 'device_cpu_uptime_000',
+                  timeDataKey: 'device_cpu_utc_000',
+                  unit: 's',
                   processDataKey: (x) => x.toFixed(2),
                 },
                 {
-                  name: 'Power Use',
-                  nodeProcess: 'beagle1:eps',
-                  timeDataKey: 'node_utc',
-                  dataKey: 'node_powuse',
-                  unit: 'W',
+                  name: 'CPU Bootcount',
+                  nodeProcess: 'neutron1:cpu',
+                  dataKey: 'device_cpu_boot_count_000',
+                  timeDataKey: 'device_cpu_utc_000',
+                  unit: '',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+              ],
+            },
+          },
+        },
+        {
+          i: 'satellite-neutron1-obc-c',
+          x: 8,
+          y: 0,
+          w: 4,
+          h: 7,
+          component: {
+            name: 'DisplayValue',
+            props: {
+              name: 'Memory',
+              displayValues: [
+                {
+                  name: 'CPU GiB',
+                  nodeProcess: 'neutron1:cpu',
+                  dataKey: 'device_cpu_gib_000',
+                  timeDataKey: 'device_cpu_utc_000',
+                  unit: '',
                   processDataKey: (x) => x.toFixed(2),
                 },
                 {
-                  name: 'Battery Temperature',
-                  nodeProcess: 'beagle1:eps',
-                  dataKey: 'device_batt_temp_000',
-                  timeDataKey: 'node_utc',
-                  unit: 'C',
-                  processDataKey: (x) => (x - 272.15).toFixed(2),
+                  name: 'CPU Max GiB',
+                  nodeProcess: 'neutron1:cpu',
+                  dataKey: 'device_cpu_maxgib_000',
+                  timeDataKey: 'device_cpu_utc_000',
+                  unit: '',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+              ],
+            },
+          },
+        },
+        {
+          i: 'satellite-neutron1-obc-d',
+          x: 0,
+          y: 8,
+          w: 12,
+          h: 18,
+          component: {
+            name: 'Chart',
+            props: {
+              name: 'CPU',
+              XDataKey: 'device_cpu_utc_000',
+              processXDataKey: (x) => mjdToString(x),
+              plots: [
+                {
+                  x: [],
+                  y: [],
+                  type: 'scatter',
+                  marker: {
+                    color: 'red',
+                  },
+                  name: 'neutron1 Load',
+                  YDataKey: 'device_cpu_load_000',
+                  processYDataKey: (x) => x,
+                  nodeProcess: 'neutron1:cpu',
+                  live: true,
                 },
               ],
             },
@@ -1581,13 +1925,373 @@ export default {
     ADCS: {
       lg: [
         {
-          i: 'satellite-neutron1-tab-adcs-a',
+          i: 'satellite-neutron1-adcs-a',
           x: 0,
           y: 0,
           w: 3,
           h: 7,
           component: {
-            name: 'Status',
+            name: 'DisplayValue',
+            props: {
+              name: 'Inertial Measurement Unit',
+              displayValues: [
+                {
+                  name: 'Euler',
+                  nodeProcess: 'beagle1:adcs',
+                  dataKey: 'device_imu_euler_000',
+                  timeDataKey: 'device_imu_utc_000',
+                  unit: '',
+                  processDataKey: (x) => JSON.stringify(x),
+                },
+                {
+                  name: 'Theta',
+                  nodeProcess: 'beagle1:adcs',
+                  dataKey: 'device_imu_euler_000',
+                  timeDataKey: 'device_imu_utc_000',
+                  unit: '',
+                  processDataKey: (x) => JSON.stringify(x),
+                },
+                {
+                  name: 'Omega',
+                  nodeProcess: 'beagle1:adcs',
+                  timeDataKey: 'node_utc',
+                  dataKey: 'device_imu_utc_000',
+                  unit: '',
+                  processDataKey: (x) => x,
+                },
+                {
+                  name: 'Alpha',
+                  nodeProcess: 'beagle1:adcs',
+                  timeDataKey: 'node_utc',
+                  dataKey: 'device_imu_utc_000',
+                  unit: '',
+                  processDataKey: (x) => x,
+                },
+                {
+                  name: 'Mag',
+                  nodeProcess: 'beagle1:adcs',
+                  dataKey: 'device_imu_mag_000',
+                  timeDataKey: 'device_imu_utc_000',
+                  unit: '',
+                  processDataKey: (x) => x,
+                },
+                {
+                  name: 'Bdot',
+                  nodeProcess: 'beagle1:adcs',
+                  dataKey: 'device_imu_bdot_000',
+                  timeDataKey: 'device_imu_utc_000',
+                  unit: '',
+                  processDataKey: (x) => x,
+                },
+                {
+                  name: 'Temperature',
+                  nodeProcess: 'beagle1:adcs',
+                  dataKey: 'device_imu_temp_000',
+                  timeDataKey: 'device_imu_utc_000',
+                  unit: 'C',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+                {
+                  name: 'Power',
+                  nodeProcess: 'beagle1:adcs',
+                  dataKey: 'device_imu_power_000',
+                  timeDataKey: 'device_imu_utc_000',
+                  unit: 'W',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+              ],
+            },
+          },
+        },
+        {
+          i: 'satellite-neutron1-adcs-b',
+          x: 3,
+          y: 0,
+          w: 3,
+          h: 7,
+          component: {
+            name: 'DisplayValue',
+            props: {
+              name: 'Motor',
+              displayValues: [
+                {
+                  name: 'Momentum 000',
+                  nodeProcess: 'beagle1:adcs',
+                  dataKey: 'device_mtr_mom_000',
+                  timeDataKey: 'device_mtr_utc_000',
+                  unit: '',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+                {
+                  name: 'Power 000',
+                  nodeProcess: 'beagle1:adcs',
+                  dataKey: 'device_mtr_power_000',
+                  timeDataKey: 'device_mtr_utc_000',
+                  unit: 'W',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+                {
+                  name: 'Momentum 001',
+                  nodeProcess: 'beagle1:adcs',
+                  dataKey: 'device_mtr_mom_001',
+                  timeDataKey: 'device_mtr_utc_001',
+                  unit: '',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+                {
+                  name: 'Power 001',
+                  nodeProcess: 'beagle1:adcs',
+                  dataKey: 'device_mtr_power_001',
+                  timeDataKey: 'device_mtr_utc_001',
+                  unit: 'W',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+                {
+                  name: 'Momentum 002',
+                  nodeProcess: 'beagle1:adcs',
+                  dataKey: 'device_mtr_mom_002',
+                  timeDataKey: 'device_mtr_utc_002',
+                  unit: '',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+                {
+                  name: 'Power 002',
+                  nodeProcess: 'beagle1:adcs',
+                  dataKey: 'device_mtr_power_002',
+                  timeDataKey: 'device_mtr_utc_002',
+                  unit: 'W',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+              ],
+            },
+          },
+        },
+        {
+          i: 'satellite-neutron1-adcs-c',
+          x: 6,
+          y: 0,
+          w: 3,
+          h: 7,
+          component: {
+            name: 'DisplayValue',
+            props: {
+              name: 'Reaction Wheel',
+              displayValues: [
+                {
+                  name: 'Omega 000',
+                  nodeProcess: 'beagle1:adcs',
+                  dataKey: 'device_rw_omg_000',
+                  timeDataKey: 'device_rw_utc_000',
+                  unit: '',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+                {
+                  name: 'Power 000',
+                  nodeProcess: 'beagle1:adcs',
+                  dataKey: 'device_rw_power_000',
+                  timeDataKey: 'device_rw_utc_000',
+                  unit: 'W',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+                {
+                  name: 'Omega 001',
+                  nodeProcess: 'beagle1:adcs',
+                  dataKey: 'device_rw_omg_001',
+                  timeDataKey: 'device_rw_utc_001',
+                  unit: '',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+                {
+                  name: 'Power 001',
+                  nodeProcess: 'beagle1:adcs',
+                  dataKey: 'device_rw_power_001',
+                  timeDataKey: 'device_rw_utc_001',
+                  unit: 'W',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+                {
+                  name: 'Omega 002',
+                  nodeProcess: 'beagle1:adcs',
+                  dataKey: 'device_rw_omg_002',
+                  timeDataKey: 'device_rw_utc_002',
+                  unit: '',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+                {
+                  name: 'Power 002',
+                  nodeProcess: 'beagle1:adcs',
+                  dataKey: 'device_rw_power_002',
+                  timeDataKey: 'device_rw_utc_002',
+                  unit: 'W',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+              ],
+            },
+          },
+        },
+        {
+          i: 'satellite-neutron1-adcs-d',
+          x: 9,
+          y: 0,
+          w: 3,
+          h: 7,
+          component: {
+            name: 'DisplayValue',
+            props: {
+              name: 'CPU',
+              displayValues: [
+                {
+                  name: 'Temperature',
+                  nodeProcess: 'beagle1:adcs',
+                  dataKey: 'device_cpu_temp_002',
+                  timeDataKey: 'device_cpu_utc_002',
+                  unit: 'C',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+                {
+                  name: 'Power',
+                  nodeProcess: 'beagle1:adcs',
+                  dataKey: 'device_cpu_power_002',
+                  timeDataKey: 'device_cpu_utc_002',
+                  unit: 'W',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+                {
+                  name: 'Load',
+                  nodeProcess: 'beagle1:adcs',
+                  dataKey: 'device_cpu_load_002',
+                  timeDataKey: 'device_cpu_utc_002',
+                  unit: '',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+                {
+                  name: 'Uptime',
+                  nodeProcess: 'beagle1:adcs',
+                  dataKey: 'device_cpu_uptime_002',
+                  timeDataKey: 'device_cpu_utc_002',
+                  unit: 's',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+                {
+                  name: 'Boot Count',
+                  nodeProcess: 'beagle1:adcs',
+                  dataKey: 'device_cpu_boot_count_002',
+                  timeDataKey: 'device_cpu_utc_002',
+                  unit: '',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+                {
+                  name: 'Power 002',
+                  nodeProcess: 'beagle1:adcs',
+                  dataKey: 'device_rw_power_002',
+                  timeDataKey: 'device_rw_utc_002',
+                  unit: 'W',
+                  processDataKey: (x) => x.toFixed(2),
+                },
+              ],
+            },
+          },
+        },
+        {
+          i: 'satellite-neutron1-adcs-e',
+          x: 6,
+          y: 7,
+          w: 6,
+          h: 21,
+          component: {
+            name: 'Attitude',
+            props: {
+              name: 'Attitude',
+              attitudes: [
+                {
+                  name: 'n1',
+                  nodeProcess: 'cubesat1:propagator_simple',
+                  dataKey: 'node_loc_att_icrf',
+                  quaternions: {
+                    d: {
+                      x: 0,
+                      y: 0,
+                      z: 0,
+                    },
+                    w: 0,
+                  },
+                  live: true,
+                },
+              ],
+            },
+          },
+        },
+        {
+          i: 'satellite-neutron1-adcs-f',
+          x: 0,
+          y: 7,
+          w: 6,
+          h: 21,
+          component: {
+            name: 'Globe',
+            props: {
+              name: 'Orbit',
+              orbits: [
+                {
+                  name: 'neutron1',
+                  modelFileName: 'cubesat1.glb',
+                  nodeProcess: 'cubesat1:propagator_simple',
+                  dataKey: 'node_loc_pos_eci',
+                  timeDataKey: 'node_utc',
+                  live: true,
+                  position: [21.289373, 157.917480, 350000.0],
+                  orientation: {
+                    d: {
+                      x: 0,
+                      y: 0,
+                      z: 0,
+                    },
+                    w: 0,
+                  },
+                },
+              ],
+              overlays: [
+                {
+                  color: 'CRIMSON',
+                  geoJson: {
+                    type: 'Polygon',
+                    coordinates: [
+                      [[30, 10], [40, 40], [20, 40], [10, 20], [30, 10]],
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        },
+      ],
+    },
+    Commands: {
+      lg: [
+        {
+          i: 'satellite-neutron1-commands-a',
+          x: 0,
+          y: 0,
+          w: 12,
+          h: 10,
+          component: {
+            name: 'MissionEventsDisplay',
+            props: {
+              nodes: ['neutron1', 'beagle1'],
+            },
+          },
+        },
+        {
+          i: 'satellite-neutron1-commands-b',
+          x: 0,
+          y: 10,
+          w: 12,
+          h: 10,
+          component: {
+            name: 'Commands',
+            props: {
+              nodes: ['neutron1', 'beagle1'],
+            },
           },
         },
       ],
