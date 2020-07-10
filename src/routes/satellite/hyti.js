@@ -60,6 +60,9 @@ export default {
         h: 10,
         component: {
           name: 'Commands',
+          props: {
+            nodes: ['neutron1'],
+          },
         },
       },
       {

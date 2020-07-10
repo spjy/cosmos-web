@@ -210,12 +210,7 @@ export default {
         component: {
           name: 'Commands',
           props: {
-            commands: [
-              {
-                name: 'mov_agent_cpu',
-                command: 'hiapo exec add_value mov_agent_cpu',
-              },
-            ],
+            nodes: ['cubesat1'],
           },
         },
       },
