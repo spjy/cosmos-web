@@ -64,6 +64,7 @@ function MissionEventsDisplay({
   useEffect(() => {
     const date = [dayjs().startOf('day'), dayjs().endOf('day')];
     queryEventLog(date);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -75,6 +76,7 @@ function MissionEventsDisplay({
         info[idx].log = live[executed];
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [live]);
 
   return (
