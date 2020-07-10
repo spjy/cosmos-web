@@ -14,8 +14,8 @@ function Clock() {
   useEffect(() => {
     // Every second, update local and UTC time view
     const clock = setTimeout(() => {
-      setTime(dayjs().format());
-      setUtcTime(dayjs.utc().format());
+      setTime(dayjs().format('YYYY-MM-DDTHH:mm:ss'));
+      setUtcTime(dayjs.utc().format('YYYY-MM-DDTHH:mm:ss'));
     }, 1000);
 
     // Stop timeout on unmount
@@ -29,7 +29,7 @@ function Clock() {
       <tbody>
         <tr>
           <td className="pr-4 text-gray-500">
-            Local
+            {`Local (UTC ${dayjs().format('Z')})`}
           </td>
           <td className="pr-2 text-gray-500 ">
             UTC
