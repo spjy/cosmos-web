@@ -332,7 +332,13 @@ function Chart({
   useEffect(() => {
     if (globalHistoricalDate != null && globalQueue) {
       plotsState.forEach((plot, i) => {
-        queryHistoricalData(globalHistoricalDate, plot.YDataKey, plot.nodeProcess, i);
+        queryHistoricalData(
+          globalHistoricalDate,
+          plot.YDataKey,
+          plot.timeDataKey,
+          plot.nodeProcess,
+          i,
+        );
       });
 
       set('globalQueue', globalQueue - 1);
