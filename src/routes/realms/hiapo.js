@@ -13,7 +13,7 @@ export default {
         w: 3,
         h: 7,
         component: {
-          name: 'Status',
+          name: 'AgentList',
         },
       },
       {
