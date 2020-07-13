@@ -5,6 +5,7 @@ import Activity from './Dashboard/Activity';
 import Attitude from './Dashboard/Attitude';
 import Chart from './Dashboard/Chart';
 import Commands from './Dashboard/Commands';
+import Contact from './Dashboard/Contact';
 import DisplayValue from './Dashboard/DisplayValue';
 import Events from './Dashboard/Events';
 import Globe from './Dashboard/Globe';
@@ -28,6 +29,7 @@ export const components = {
   Attitude,
   Chart,
   Commands,
+  Contact,
   DisplayValue,
   Events,
   Globe,
