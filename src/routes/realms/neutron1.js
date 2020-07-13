@@ -859,6 +859,9 @@ export default {
           h: 7,
           component: {
             name: 'Status',
+            props: {
+              node: 'beagle1',
+            },
           },
         },
         {
@@ -1834,6 +1837,9 @@ export default {
           h: 7,
           component: {
             name: 'Status',
+            props: {
+              node: 'neutron1',
+            },
           },
         },
         {
@@ -1865,7 +1871,7 @@ export default {
                 },
                 {
                   name: 'CPU Bootcount',
-                  nodeProcess: 'any',
+                  nodeProqueryHistoricalcess: 'any',
                   dataKey: 'device_cpu_boot_count_000',
                   timeDataKey: 'device_cpu_utc_000',
                   unit: '',
