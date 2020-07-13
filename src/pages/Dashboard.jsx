@@ -25,6 +25,7 @@ import {
   CloseOutlined,
   EditOutlined,
 } from '@ant-design/icons';
+import dayjs from 'dayjs';
 
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
@@ -131,6 +132,8 @@ function Dashboard({
         if (json.node_type === 'list') {
           dispatch(set('list', json));
         } else if (realms[id].includes(node) && process !== 'soh') {
+          dispatch(set('lastDate'), dayjs());
+
           // Store in realm object
           dispatch(setData(id, json));
         }
