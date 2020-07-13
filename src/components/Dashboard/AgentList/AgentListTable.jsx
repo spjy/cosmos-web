@@ -4,7 +4,7 @@ import { Badge } from 'antd';
 
 import { mjdToString } from '../../../utility/time';
 
-function StatusTable({
+function AgentListTable({
   list,
 }) {
   return (
@@ -40,8 +40,8 @@ function StatusTable({
   );
 }
 
-StatusTable.propTypes = {
+AgentListTable.propTypes = {
   list: PropTypes.arrayOf(PropTypes.shape).isRequired,
 };
 
-export default StatusTable;
+export default AgentListTable;

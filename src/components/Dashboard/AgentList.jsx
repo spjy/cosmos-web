@@ -3,25 +3,23 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import BaseComponent from '../BaseComponent';
-import StatusTable from './Status/StatusTable';
+import AgentListTable from './AgentList/AgentListTable';
 
 /**
  * Retrieves the agent list and displays it in a table.
  * Also displays the timestamp of the agent's last heartbeat.
  */
-function Status({
+function AgentList({
   node,
   height,
 }) {
   /** Get agent list state from the Context */
   const list = useSelector((s) => s.list.agent_list);
-  const state = useSelector((s) => s);
   const [agentList, setAgentList] = useState([]);
 
   useEffect(() => {
-    console.log(list, state);
     setAgentList([]);
-    if (node && list != null) {
+    if (node !== '' && list != null) {
       setAgentList(list.filter((item) => item.agent.split(':')[0] === node));
     } else if (list != null) {
       setAgentList(list.filter((item) => item.utc !== -1));
@@ -34,7 +32,7 @@ function Status({
       movable
       height={height}
     >
-      <StatusTable
+      <AgentListTable
         list={agentList || []}
         node={node}
       />
@@ -42,13 +40,13 @@ function Status({
   );
 }
 
-Status.propTypes = {
+AgentList.propTypes = {
   node: PropTypes.string,
   height: PropTypes.number.isRequired,
 };
 
-Status.defaultProps = {
-  node: null,
+AgentList.defaultProps = {
+  node: '',
 };
 
-export default Status;
+export default AgentList;
