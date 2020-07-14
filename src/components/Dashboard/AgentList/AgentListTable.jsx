@@ -4,7 +4,7 @@ import { Badge } from 'antd';
 
 import { mjdToString } from '../../../utility/time';
 
-function StatusTable({
+function AgentListTable({
   list,
 }) {
   return (
@@ -20,12 +20,15 @@ function StatusTable({
             }) => (
               <tr key={agent}>
                 <td>
-                  <Badge status="success" />
+                  {
+                    utc >= 0 ? <Badge status="success" />
+                      : <Badge status="error" />
+                  }
                 </td>
                 <td className="text-gray-500 pr-2">
-                  {mjdToString(utc)}
+                  {utc >= 0 ? mjdToString(utc) : mjdToString(-utc)}
                 </td>
-                <td>
+                <td style={{ color: utc >= 0 ? 'rgba(0, 0, 0, 0.65)' : 'lightgrey' }}>
                   {agent}
                 </td>
               </tr>
@@ -37,8 +40,8 @@ function StatusTable({
   );
 }
 
-StatusTable.propTypes = {
+AgentListTable.propTypes = {
   list: PropTypes.arrayOf(PropTypes.shape).isRequired,
 };
 
-export default StatusTable;
+export default AgentListTable;

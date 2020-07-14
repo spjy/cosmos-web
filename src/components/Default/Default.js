@@ -4,6 +4,12 @@ export default [
     props: {},
   },
   {
+    name: 'AgentList',
+    props: {
+      node: '',
+    },
+  },
+  {
     name: 'Attitude',
     props: {
       attitudes: [
@@ -275,9 +281,6 @@ export default [
     props: {
       name: '',
     },
-  },
-  {
-    name: 'Status',
   },
   /* {
     name: 'Subsystem',

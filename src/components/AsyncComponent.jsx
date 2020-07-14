@@ -15,7 +15,7 @@ import SatellitePasses from './Dashboard/SatellitePasses';
 import SetValues from './Dashboard/SetValues';
 import Sequence from './Dashboard/Sequence';
 import SOH from './Dashboard/SOH';
-import Status from './Dashboard/Status';
+import AgentList from './Dashboard/AgentList';
 import Subsystem from './Dashboard/Subsystem';
 import ThreeD from './Dashboard/ThreeD';
 import UploadFile from './Dashboard/UploadFile';
@@ -26,6 +26,7 @@ import UploadFile from './Dashboard/UploadFile';
 export const components = {
   Activity,
   Attitude,
+  AgentList,
   Chart,
   Commands,
   DisplayValue,
@@ -38,7 +39,6 @@ export const components = {
   SetValues,
   Sequence,
   SOH,
-  Status,
   Subsystem,
   ThreeD,
   UploadFile,
