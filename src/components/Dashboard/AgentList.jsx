@@ -24,6 +24,7 @@ function AgentList({
     } else if (list != null) {
       setAgentList(list.filter((item) => item.utc !== -1));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [list]);
 
   return (
