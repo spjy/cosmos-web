@@ -123,6 +123,10 @@ export default [
     name: 'MASDRCommands',
   },
   {
+    name: 'PacketActivity',
+    props: {},
+  },
+  {
     name: 'Replacement',
   },
   /* {

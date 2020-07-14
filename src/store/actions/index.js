@@ -1,5 +1,6 @@
 export const SET_KEY = 'SET_KEY';
 export const SET_DATA = 'SET_DATA';
+export const SET_ACTIVITY = 'SET_ACTIVITY';
 
 /**
  * Add a key within the context
@@ -15,10 +16,23 @@ export function set(key, payload) {
   };
 }
 
-export function setData(node, data) {
+/**
+ * Add a key in state.data field for realms
+ *
+ * @param {String} realm Realm key to store
+ * @param {*} data Data associated with realm
+ */
+export function setData(realm, data) {
   return {
     type: SET_DATA,
-    key: node,
+    key: realm,
     payload: data,
+  };
+}
+
+export function setActivity(activity) {
+  return {
+    type: SET_ACTIVITY,
+    payload: activity,
   };
 }

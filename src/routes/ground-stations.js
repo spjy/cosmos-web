@@ -299,7 +299,7 @@ export default {
             w: 12,
             h: 7,
             component: {
-              name: 'Activity',
+              name: 'PacketActivity',
               props: {
               },
             },
@@ -423,7 +423,7 @@ export default {
             w: 12,
             h: 7,
             component: {
-              name: 'Activity',
+              name: 'PacketActivity',
               props: {
               },
             },
@@ -738,7 +738,7 @@ export default {
             w: 12,
             h: 7,
             component: {
-              name: 'Activity',
+              name: 'PacketActivity',
               props: {
               },
             },
@@ -862,7 +862,7 @@ export default {
             w: 6,
             h: 6,
             component: {
-              name: 'Activity',
+              name: 'PacketActivity',
               props: {
               },
             },

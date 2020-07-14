@@ -11,6 +11,7 @@ import Events from './Dashboard/Events';
 import Globe from './Dashboard/Globe';
 import Macro from './Dashboard/Macro';
 import MissionEventsDisplay from './Dashboard/MissionEventsDisplay';
+import PacketActivity from './Dashboard/PacketActivity';
 import Replacement from './Dashboard/Replacement';
 import SatellitePasses from './Dashboard/SatellitePasses';
 import SetValues from './Dashboard/SetValues';
@@ -36,6 +37,7 @@ export const components = {
   Globe,
   Macro,
   MissionEventsDisplay,
+  PacketActivity,
   Replacement,
   SatellitePasses,
   SetValues,

@@ -36,7 +36,7 @@ import { highlight, languages } from 'prismjs/components/prism-core';
 import { axios, socket } from '../api';
 import routes from '../routes';
 import defaultComponent from '../components/Default/Default';
-import { set, setData } from '../store/actions';
+import { set, setData, setActivity } from '../store/actions';
 
 import AsyncComponent, { components } from '../components/AsyncComponent';
 import LayoutSelector from '../components/LayoutSelector';
@@ -137,6 +137,13 @@ function Dashboard({
 
           // Store in realm object
           dispatch(setData(id, json));
+
+          dispatch(setActivity({
+            status: 'success',
+            summary: 'Data received',
+            scope: `from ${json.node_type}`,
+            time: dayjs().utc().format('HH:mm:ss'),
+          }));
         }
       } catch (error) {
         message.error(error.message);
