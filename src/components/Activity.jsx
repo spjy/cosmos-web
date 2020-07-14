@@ -4,8 +4,6 @@ import { useSelector } from 'react-redux';
 import { Badge } from 'antd';
 import dayjs from 'dayjs';
 
-import BaseComponent from '../BaseComponent';
-
 /**
  * Retrieves data from a web socket. Displays an event along with the timestamp in a table.
  */
@@ -46,28 +44,20 @@ function Activity({
   }, [lastDate]);
 
   return (
-    <BaseComponent
-      name="Activity"
-      liveOnly
-      toolsSlot={(
-        <>
-          <span className="mr-3">
-            <Badge status="success" />
-            {'< 5 min'}
-          </span>
-          <span className="mr-3">
-            <Badge status="warning" />
-            {'< 10 min'}
-          </span>
-          <span className="mr-3">
-            <Badge status="error" />
-            {'> 10 min'}
-          </span>
-        </>
-      )}
-      height={height}
-    >
-      <div className={`bg-${color}-200 rounded p-4`}>
+    <>
+      <style jsx>
+        {`
+        .grow {
+          height: 36px;
+        }
+
+        .grow:hover {
+          height: 100px;
+          overflow: scroll;
+        }
+      `}
+      </style>
+      <div className={`bg-${color}-200 rounded p-2 overflow-hidden grow absolute z-10 transition-all ease-in duration-100`}>
         <table>
           <tbody>
             {
@@ -98,7 +88,7 @@ function Activity({
           </tbody>
         </table>
       </div>
-    </BaseComponent>
+    </>
   );
 }
 

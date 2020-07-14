@@ -24,7 +24,7 @@ export default {
         w: 3,
         h: 14,
         component: {
-          name: 'Contact',
+          name: 'Activity',
         },
       },
       {
