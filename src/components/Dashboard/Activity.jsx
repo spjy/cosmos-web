@@ -76,7 +76,7 @@ function Activity({
           `
         }
       </style>
-      <div className={`bg-${color}-200 transition ease-in duration-500 rounded p-3 activity overflow-scroll-x`}>
+      <div className={`bg-${color}-200 transition ease-in duration-500 rounded p-3 activity overflow-auto`}>
         <table>
           <tbody>
             {
