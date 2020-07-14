@@ -133,11 +133,11 @@ function Dashboard({
         if (json.node_type === 'list') {
           dispatch(set('list', json));
         } else if (realms[id].includes(node) && process !== 'soh') {
+          dispatch(set('lastDate', dayjs()));
+
           // Store in realm object
           dispatch(setData(id, json));
         }
-
-        dispatch(set('lastDate', dayjs()));
       } catch (error) {
         message.error(error.message);
       }
