@@ -4,9 +4,8 @@ import dayjs from 'dayjs';
 import { Badge } from 'antd';
 import BaseComponent from '../BaseComponent';
 
-
 function Contact() {
-  const state = useSelector((s) => s);
+  const lastDate = useSelector((s) => s.lastDate);
 
   const [color, setColor] = useState('red');
 
@@ -17,8 +16,8 @@ function Contact() {
   // Compare. If <2 min, green, <5min, yellow, < 10min, red
 
   useEffect(() => {
-    if (state.lastDate) {
-      const minuteDifference = state.lastDate.diff(dayjs(), 'minute');
+    if (lastDate) {
+      const minuteDifference = lastDate.diff(dayjs(), 'minute');
       if (-minuteDifference <= 2) {
         setColor('green');
 
@@ -28,14 +27,14 @@ function Contact() {
         }
 
         timerYellow.current = setTimeout(() => {
-          setColor('yellow');
+          setColor('orange');
         }, 300000);
         timerRed.current = setTimeout(() => {
           setColor('red');
         }, 600000);
       }
     }
-  }, [state]);
+  }, [lastDate]);
 
   return (
     <BaseComponent
@@ -58,7 +57,7 @@ function Contact() {
       )}
     >
       <div
-        className={`w-full h-screen rounded transition ease-in duration-500 bg-${color}-300`}
+        className={`w-full h-64 rounded transition ease-in duration-500 bg-${color}-300`}
       >
         &nbsp;
       </div>
