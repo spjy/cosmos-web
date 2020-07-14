@@ -1,12 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import dayjs from 'dayjs';
 import BaseComponent from '../BaseComponent';
 
-function Contact({
-  height,
-}) {
+function Contact() {
   const state = useSelector((s) => s);
 
   const [color, setColor] = useState('red');
@@ -44,17 +41,12 @@ function Contact({
       name="Contact"
     >
       <div
-        className={`w-full rounded transition ease-in duration-500 bg-${color}-300`}
-        style={{ height: height / 2 }}
+        className={`w-full h-screen rounded transition ease-in duration-500 bg-${color}-300`}
       >
         &nbsp;
       </div>
     </BaseComponent>
   );
 }
-
-Contact.propTypes = {
-  height: PropTypes.number.isRequired,
-};
 
 export default Contact;

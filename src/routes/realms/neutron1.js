@@ -12,7 +12,7 @@ export default {
         x: 0,
         y: 0,
         w: 3,
-        h: 7,
+        h: 14,
         component: {
           name: 'AgentList',
         },
@@ -22,46 +22,9 @@ export default {
         x: 3,
         y: 0,
         w: 3,
-        h: 7,
+        h: 14,
         component: {
-          name: 'DisplayValue',
-          props: {
-            name: 'beagle1 EPS',
-            displayValues: [
-              {
-                name: 'Battery Capacity',
-                nodeProcess: 'any',
-                dataKey: 'node_battcap',
-                timeDataKey: 'node_utc',
-                unit: 'Whr',
-                processDataKey: (x) => x.toFixed(2),
-              },
-              {
-                name: 'Battery Percent',
-                nodeProcess: 'any',
-                dataKey: 'device_batt_percentage_000',
-                timeDataKey: 'node_utc',
-                unit: '%',
-                processDataKey: (x) => x.toFixed(4),
-              },
-              {
-                name: 'Power Gen',
-                nodeProcess: 'any',
-                timeDataKey: 'node_utc',
-                dataKey: 'node_powgen',
-                unit: 'W',
-                processDataKey: (x) => x.toFixed(2),
-              },
-              {
-                name: 'Power Use',
-                nodeProcess: 'any',
-                timeDataKey: 'node_utc',
-                dataKey: 'node_powuse',
-                unit: 'W',
-                processDataKey: (x) => x.toFixed(2),
-              },
-            ],
-          },
+          name: 'Contact',
         },
       },
       {
@@ -116,7 +79,7 @@ export default {
         x: 9,
         y: 0,
         w: 3,
-        h: 7,
+        h: 14,
         component: {
           name: 'DisplayValue',
           props: {
@@ -263,38 +226,56 @@ export default {
         },
       },
       {
-        i: 'satellite-simple-neutron1-f',
+        i: 'satellite-neutron1-e',
         x: 6,
-        y: 8,
-        w: 6,
-        h: 21,
+        y: 7,
+        w: 3,
+        h: 7,
         component: {
-          name: 'Attitude',
+          name: 'DisplayValue',
           props: {
-            name: 'Attitude',
-            attitudes: [
+            name: 'beagle1 EPS',
+            displayValues: [
               {
-                name: 'n1',
-                nodeProcess: 'cubesat1:propagator_simple',
-                dataKey: 'node_loc_att_icrf',
-                quaternions: {
-                  d: {
-                    x: 0,
-                    y: 0,
-                    z: 0,
-                  },
-                  w: 0,
-                },
-                live: true,
+                name: 'Battery Capacity',
+                nodeProcess: 'any',
+                dataKey: 'node_battcap',
+                timeDataKey: 'node_utc',
+                unit: 'Whr',
+                processDataKey: (x) => x.toFixed(2),
+              },
+              {
+                name: 'Battery Percent',
+                nodeProcess: 'any',
+                dataKey: 'device_batt_percentage_000',
+                timeDataKey: 'node_utc',
+                unit: '%',
+                processDataKey: (x) => x.toFixed(4),
+              },
+              {
+                name: 'Power Gen',
+                nodeProcess: 'any',
+                timeDataKey: 'node_utc',
+                dataKey: 'node_powgen',
+                unit: 'W',
+                processDataKey: (x) => x.toFixed(2),
+              },
+              {
+                name: 'Power Use',
+                nodeProcess: 'any',
+                timeDataKey: 'node_utc',
+                dataKey: 'node_powuse',
+                unit: 'W',
+                processDataKey: (x) => x.toFixed(2),
               },
             ],
           },
         },
       },
       {
-        i: 'satellite-neutron1-e',
+        i: 'satellite-neutron1-f',
         x: 0,
-        y: 3,
+        y: 14,
         w: 6,
         h: 18,
         component: {
@@ -321,9 +302,9 @@ export default {
         },
       },
       {
-        i: 'satellite-default-f',
+        i: 'satellite-default-g',
         x: 6,
-        y: 3,
+        y: 14,
         w: 6,
         h: 18,
         component: {
@@ -462,9 +443,9 @@ export default {
         },
       },
       {
-        i: 'satellite-neutron1-g',
+        i: 'satellite-neutron1-h',
         x: 0,
-        y: 4,
+        y: 32,
         w: 6,
         h: 18,
         component: {
@@ -536,9 +517,9 @@ export default {
         },
       },
       {
-        i: 'satellite-neutron1-h',
+        i: 'satellite-neutron1-i',
         x: 6,
-        y: 4,
+        y: 32,
         w: 6,
         h: 18,
         component: {
@@ -609,9 +590,9 @@ export default {
         },
       },
       {
-        i: 'satellite-default-i',
+        i: 'satellite-neutron1-j',
         x: 0,
-        y: 5,
+        y: 50,
         w: 6,
         h: 18,
         component: {
@@ -668,9 +649,9 @@ export default {
         },
       },
       {
-        i: 'satellite-default-j',
+        i: 'satellite-neutron1-k',
         x: 6,
-        y: 5,
+        y: 50,
         w: 6,
         h: 18,
         component: {
@@ -755,9 +736,9 @@ export default {
         },
       },
       {
-        i: 'satellite-default-k',
+        i: 'satellite-neutron1-l',
         x: 0,
-        y: 7,
+        y: 68,
         w: 12,
         h: 18,
         component: {
@@ -800,9 +781,38 @@ export default {
         },
       },
       {
-        i: 'satellite-neutron1-l',
+        i: 'satellite-neutron1-m',
+        x: 6,
+        y: 86,
+        w: 6,
+        h: 21,
+        component: {
+          name: 'Attitude',
+          props: {
+            name: 'Attitude',
+            attitudes: [
+              {
+                name: 'n1',
+                nodeProcess: 'cubesat1:propagator_simple',
+                dataKey: 'node_loc_att_icrf',
+                quaternions: {
+                  d: {
+                    x: 0,
+                    y: 0,
+                    z: 0,
+                  },
+                  w: 0,
+                },
+                live: true,
+              },
+            ],
+          },
+        },
+      },
+      {
+        i: 'satellite-neutron1-n',
         x: 0,
-        y: 9,
+        y: 86,
         w: 6,
         h: 21,
         component: {
