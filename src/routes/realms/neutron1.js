@@ -39,7 +39,7 @@ export default {
             name: 'CPU',
             displayValues: [
               {
-                name: 'beagle1 CPU Load',
+                name: 'CPU Load',
                 nodeProcess: 'any',
                 dataKey: 'device_cpu_load_000',
                 timeDataKey: 'device_cpu_utc_000',
@@ -47,7 +47,7 @@ export default {
                 processDataKey: (x) => x.toFixed(2),
               },
               {
-                name: 'beagle1 CPU Uptime',
+                name: 'CPU Uptime',
                 nodeProcess: 'any',
                 dataKey: 'device_cpu_uptime_000',
                 timeDataKey: 'device_cpu_utc_000',
@@ -55,7 +55,7 @@ export default {
                 processDataKey: (x) => x.toFixed(2),
               },
               {
-                name: 'beagle1 CPU Bootcount',
+                name: 'CPU Bootcount',
                 nodeProcess: 'any',
                 dataKey: 'device_cpu_boot_count_000',
                 timeDataKey: 'device_cpu_utc_000',
@@ -63,7 +63,7 @@ export default {
                 processDataKey: (x) => x.toFixed(2),
               },
               {
-                name: 'OBC CPU Load',
+                name: 'CPU Load',
                 nodeProcess: 'any',
                 dataKey: 'device_cpu_load_000',
                 timeDataKey: 'device_cpu_utc_001',
