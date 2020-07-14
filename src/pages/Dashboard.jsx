@@ -32,8 +32,7 @@ import 'react-resizable/css/styles.css';
 import Editor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs/components/prism-core';
 
-import { axios, live } from '../api';
-// eslint-disable-next-line
+import { axios, socket } from '../api';
 import routes from '../routes';
 import defaultComponent from '../components/Default/Default';
 import { set, setData } from '../store/actions';
@@ -119,6 +118,8 @@ function Dashboard({
 
   /** Get socket data from the agent */
   useEffect(() => {
+    const live = socket('/live/all');
+
     // Set current realm
     dispatch(set('realm', id));
 
