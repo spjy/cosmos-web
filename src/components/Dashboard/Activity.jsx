@@ -67,7 +67,16 @@ function Activity({
       )}
       height={height}
     >
-      <div className={`bg-${color}-200 rounded p-4`}>
+      <style jsx>
+        {
+          `
+            .activity {
+              min-height: 350px;
+            }
+          `
+        }
+      </style>
+      <div className={`bg-${color}-200 rounded p-3 activity`}>
         <table>
           <tbody>
             {
