@@ -25,6 +25,7 @@ import {
   CloseOutlined,
   EditOutlined,
 } from '@ant-design/icons';
+import dayjs from 'dayjs';
 
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
@@ -135,6 +136,8 @@ function Dashboard({
           // Store in realm object
           dispatch(setData(id, json));
         }
+
+        dispatch(set('lastDate', dayjs()));
       } catch (error) {
         message.error(error.message);
       }
@@ -434,7 +437,7 @@ function Dashboard({
           </Menu.Item>
           {
             Object.keys(tabs).map((tab) => (
-              <Menu.Item onClick={() => setLayouts(tabs[tab])}>{tab}</Menu.Item>
+              <Menu.Item key={tab} onClick={() => setLayouts(tabs[tab])}>{tab}</Menu.Item>
             ))
           }
           <Menu.Item className="float-right">
