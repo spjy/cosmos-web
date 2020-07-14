@@ -22,7 +22,7 @@ function AgentList({
     if (node !== '' && list != null) {
       setAgentList(list.filter((item) => item.agent.split(':')[0] === node));
     } else if (list != null) {
-      setAgentList(list.filter((item) => item.utc !== -1));
+      setAgentList(list);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [list]);
