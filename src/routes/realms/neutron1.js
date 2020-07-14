@@ -14,7 +14,7 @@ export default {
         w: 3,
         h: 7,
         component: {
-          name: 'Contact',
+          name: 'AgentList',
         },
       },
       {
@@ -854,7 +854,10 @@ export default {
           w: 4,
           h: 7,
           component: {
-            name: 'Status',
+            name: 'AgentList',
+            props: {
+              node: 'beagle1',
+            },
           },
         },
         {
@@ -1868,7 +1871,10 @@ export default {
           w: 4,
           h: 7,
           component: {
-            name: 'Status',
+            name: 'AgentList',
+            props: {
+              node: 'neutron1',
+            },
           },
         },
         {
