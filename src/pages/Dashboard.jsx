@@ -676,7 +676,11 @@ Dashboard.propTypes = {
   id: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,
   defaultLayout: PropTypes.shape({}).isRequired,
-  realms: PropTypes.shape(PropTypes.arrayOf(PropTypes.string)).isRequired,
+  realms: PropTypes.shape(PropTypes.arrayOf(PropTypes.string)),
+};
+
+Dashboard.defaultProps = {
+  realms: [],
 };
 
 export default React.memo(Dashboard);
